@@ -14,10 +14,10 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { addTask } = useTenders();
+  const { addTask, teamMembers } = useTenders();
 
   const [title, setTitle] = useState('');
-  const [assignee, setAssignee] = useState('Dr. Marcus Vance');
+  const [assignee, setAssignee] = useState(teamMembers[0]?.name || 'Sarah Jenkins');
   const [priority, setPriority] = useState<TenderPriority>('HIGH');
   const [deadline, setDeadline] = useState('Sep 08');
   const [status, setStatus] = useState<TaskStatus>('TODO');
@@ -82,10 +82,11 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                 onChange={(e) => setAssignee(e.target.value)}
                 className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               >
-                <option value="Sarah Jenkins">Sarah Jenkins (Director)</option>
-                <option value="Dr. Marcus Vance">Dr. Marcus Vance (Tech Lead)</option>
-                <option value="Elena Rostova">Elena Rostova (Bid Lead)</option>
-                <option value="Tariq Al-Mansoor">Tariq Al-Mansoor (Finance)</option>
+                {teamMembers.map((m) => (
+                  <option key={m.id} value={m.name}>
+                    {m.name} ({m.title || m.role.replace('_', ' ')})
+                  </option>
+                ))}
               </select>
             </div>
 
