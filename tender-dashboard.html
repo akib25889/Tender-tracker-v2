@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tender Registry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F4EE;
+    --paper-raised:#FFFFFF;
+    --ink:#1E2A33;
+    --ink-soft:#4B5A63;
+    --slate:#4F6C82;
+    --slate-deep:#365F6F;
+    --line:#DBD6C8;
+    --line-soft:#EAE6D9;
+    --rust:#A6432F;
+    --moss:#4B7A5B;
+    --amber:#9C7A2E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    line-height:1.5;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace; letter-spacing:0.01em;}
+  .serif{font-family:'Source Serif 4',serif;}
+
+  /* ---------- App shell ---------- */
+  #app{
+    display:flex;
+    min-height:100vh;
+    max-width:1280px;
+    margin:0 auto;
+    border-left:1px solid var(--line);
+    border-right:1px solid var(--line);
+    background:var(--paper-raised);
+  }
+  .rail{
+    width:290px;
+    flex-shrink:0;
+    background:var(--paper);
+    border-right:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    position:sticky;
+    top:0;
+  }
+  .rail-head{
+    padding:22px 20px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .rail-head .wordmark{
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:20px;
+    color:var(--ink);
+    margin:0 0 3px;
+  }
+  .rail-head .sub{
+    color:var(--ink-soft);
+    font-size:12px;
+  }
+  .new-btn{
+    margin:14px 20px 0;
+    padding:9px 14px;
+    background:var(--slate-deep);
+    color:#fff;
+    border:none;
+    border-radius:3px;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    text-align:left;
+  }
+  .new-btn:hover{background:var(--ink);}
+  .search-wrap{padding:14px 20px 8px;}
+  .search-wrap input{
+    width:100%;
+    padding:7px 10px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:#fff;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    color:var(--ink);
+  }
+  .search-wrap input:focus{outline:none; border-color:var(--slate);}
+  .entry-list{
+    flex:1;
+    overflow-y:auto;
+    padding:4px 10px 20px;
+  }
+  .entry-card{
+    padding:12px 12px;
+    border-radius:3px;
+    cursor:pointer;
+    border:1px solid transparent;
+    margin-bottom:2px;
+  }
+  .entry-card:hover{background:var(--line-soft);}
+  .entry-card.active{
+    background:#fff;
+    border-color:var(--line);
+    box-shadow:inset 3px 0 0 var(--slate-deep);
+  }
+  .entry-card .eid{
+    font-size:11px;
+    color:var(--slate-deep);
+  }
+  .entry-card .etitle{
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink);
+    margin:2px 0 4px;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .entry-card .emeta{
+    font-size:11px;
+    color:var(--ink-soft);
+  }
+  .empty-rail{
+    padding:30px 20px;
+    color:var(--ink-soft);
+    font-size:12.5px;
+  }
+
+  /* ---------- Main panel ---------- */
+  .main{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+  }
+  .main-scroll{
+    flex:1;
+    overflow-y:auto;
+    padding:30px 44px 80px;
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 44px;
+    border-bottom:1px solid var(--line);
+    background:var(--paper-raised);
+  }
+  .topbar .status{
+    font-size:12px;
+    color:var(--ink-soft);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .status .dot{width:6px;height:6px;border-radius:50%;background:var(--moss);}
+  .status.unsaved .dot{background:var(--amber);}
+  .actions{display:flex; gap:10px;}
+  .btn{
+    padding:7px 14px;
+    border-radius:3px;
+    font-size:12.5px;
+    font-weight:600;
+    font-family:'Inter',sans-serif;
+    cursor:pointer;
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+  }
+  .btn:hover{border-color:var(--ink-soft);}
+  .btn.primary{background:var(--slate-deep); color:#fff; border-color:var(--slate-deep);}
+  .btn.primary:hover{background:var(--ink);}
+  .btn.danger{color:var(--rust); border-color:var(--rust);}
+  .btn.danger:hover{background:var(--rust); color:#fff;}
+
+  .title-row{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:2px;
+  }
+  .title-row input.title-input{
+    font-family:'Source Serif 4',serif;
+    font-size:24px;
+    font-weight:600;
+    border:none;
+    background:transparent;
+    color:var(--ink);
+    width:100%;
+    padding:2px 0;
+  }
+  .title-row input.title-input:focus{outline:none; border-bottom:1px solid var(--slate);}
+  .id-line{
+    font-size:12px;
+    color:var(--slate-deep);
+    margin-bottom:26px;
+  }
+
+  .classify-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:30px;
+    flex-wrap:wrap;
+  }
+  .classify-row button{
+    padding:6px 12px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:#fff;
+    font-size:12px;
+    font-weight:500;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .classify-row button.active{
+    background:var(--ink);
+    color:#fff;
+    border-color:var(--ink);
+  }
+
+  section.block{margin-bottom:34px;}
+  section.block h2{
+    font-family:'Source Serif 4',serif;
+    font-size:16px;
+    font-weight:600;
+    color:var(--slate-deep);
+    margin:0 0 3px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--line);
+  }
+  section.block .hint{
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin:6px 0 14px;
+  }
+  h3.sub{
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--slate);
+    text-transform:none;
+    margin:18px 0 8px;
+  }
+
+  .grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px 20px;
+  }
+  .field label{
+    display:block;
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .field input, .field textarea, .field select{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:#fff;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    color:var(--ink);
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{
+    outline:none; border-color:var(--slate);
+  }
+  .field textarea{resize:vertical; min-height:70px; font-family:'Inter',sans-serif;}
+
+  /* dynamic list rows */
+  .list-rows{display:flex; flex-direction:column; gap:8px;}
+  .list-row{display:flex; gap:8px; align-items:flex-start;}
+  .list-row input, .list-row textarea{flex:1;}
+  .list-row select.risk-type{
+    flex:0 0 168px;
+    font-size:12px;
+  }
+  .row-remove{
+    flex:0 0 auto;
+    width:30px; height:34px;
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:3px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    font-size:15px;
+    line-height:1;
+  }
+  .row-remove:hover{color:var(--rust); border-color:var(--rust);}
+  .row-add{
+    margin-top:8px;
+    align-self:flex-start;
+    background:none;
+    border:1px dashed var(--line);
+    color:var(--slate-deep);
+    padding:6px 12px;
+    font-size:12px;
+    font-weight:600;
+    border-radius:3px;
+    cursor:pointer;
+  }
+  .row-add:hover{border-color:var(--slate-deep); background:var(--line-soft);}
+
+  /* tables */
+  table.entry-table{width:100%; border-collapse:collapse; margin-top:4px;}
+  table.entry-table th{
+    text-align:left;
+    font-size:11px;
+    font-weight:700;
+    color:var(--ink-soft);
+    padding:0 8px 6px;
+  }
+  table.entry-table td{
+    padding:4px 6px;
+    vertical-align:top;
+  }
+  table.entry-table td input{width:100%;}
+  table.entry-table td.qtycol input{width:60px;}
+  table.entry-table td.rmcol{width:34px;}
+
+  .empty-main{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100%;
+    flex-direction:column;
+    color:var(--ink-soft);
+    gap:16px;
+    text-align:center;
+    padding:40px;
+  }
+  .empty-main .serif{font-size:19px; color:var(--ink);}
+  .empty-main p{max-width:340px; font-size:13px; margin:0;}
+
+  .status.error .dot{background:var(--rust);}
+  .status.error #statusText{color:var(--rust);}
+
+  .confirm-overlay{
+    position:fixed; inset:0;
+    background:rgba(30,42,51,0.35);
+    display:flex; align-items:center; justify-content:center;
+    z-index:100;
+  }
+  .confirm-box{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:22px 24px;
+    max-width:340px;
+    box-shadow:0 8px 30px rgba(30,42,51,0.18);
+  }
+  .confirm-box p{margin:0 0 18px; font-size:13.5px; color:var(--ink); line-height:1.5;}
+  .confirm-actions{display:flex; justify-content:flex-end; gap:10px;}
+
+  .error-banner{
+    display:none;
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:200;
+    background:#FBEAE6;
+    border-bottom:1px solid var(--rust);
+    color:var(--rust);
+    font-size:12.5px;
+    padding:10px 20px;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .error-banner.show{display:flex;}
+  .error-banner button{
+    background:none; border:none; color:var(--rust); font-weight:700;
+    cursor:pointer; font-size:14px; flex-shrink:0;
+  }
+
+  ::-webkit-scrollbar{width:9px;}
+  ::-webkit-scrollbar-thumb{background:var(--line); border-radius:5px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+
+  @media (max-width: 780px){
+    #app{flex-direction:column;}
+    .rail{position:relative; width:100%; height:auto; max-height:280px;}
+    .main{height:auto;}
+    .main-scroll{padding:22px 18px 60px;}
+    .topbar{padding:14px 18px;}
+    .grid2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="error-banner" id="errorBanner">
+    <span id="errorBannerText"></span>
+    <button id="errorBannerClose">&times;</button>
+  </div>
+  <aside class="rail">
+    <div class="rail-head">
+      <p class="wordmark">Tender Registry</p>
+      <p class="sub">Data entry — fields from the Tender Summary template</p>
+    </div>
+    <button class="new-btn" id="newBtn">+ New tender entry</button>
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="Search by title, ref no. or ID…">
+    </div>
+    <div class="entry-list" id="entryList"></div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar" id="topbar" style="display:none;">
+      <div class="status" id="statusEl"><span class="dot"></span><span id="statusText">Saved</span></div>
+      <div class="actions">
+        <button class="btn" id="exportOneBtn">Export JSON</button>
+        <button class="btn danger" id="deleteBtn">Delete</button>
+        <button class="btn primary" id="saveBtn">Save entry</button>
+      </div>
+    </div>
+    <div class="main-scroll" id="mainScroll">
+      <div class="empty-main" id="emptyMain">
+        <p class="serif">No entry selected</p>
+        <p>Choose a tender from the list on the left, or start a new entry to fill in Basic Information, Requirements, Eligibility, and the rest of the template's fields.</p>
+      </div>
+      <div id="formRoot" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+  const CLASSIFICATIONS = ["SOFTWARE / IT RELATED","PARTIALLY SOFTWARE / IT RELATED","NOT SOFTWARE / IT RELATED","UNCLEAR"];
+
+  const BASIC_FIELDS = [
+    ["country","Country"],["projectName","Project Name"],["tenderTitle","Tender Title"],
+    ["referenceNo","Reference No."],["tenderId","Tender ID"],["client","Client / Organization"],
+    ["portal","Portal"],["publishedDate","Published Date"],["lastDate","Last Date (Submission Deadline)"],
+    ["submissionTime","Submission Time"]
+  ];
+  const COMMERCIAL_FIELDS = [
+    ["tenderSecurity","Tender Security"],["contractPeriod","Contract / Service Period"],
+    ["tenderDocPrice","Tender Document Price"],["performanceSecurity","Performance Security"]
+  ];
+  const ELIGIBILITY_FIELDS = [
+    ["generalExperience","General Experience"],["similarExperience","Similar Experience"],
+    ["similarProjectValue","Similar Project Value"],["avgTurnover","Average Annual Turnover"],
+    ["financialResources","Financial Resources"],["certification","Required Certification"],
+    ["localPresence","Local Presence"]
+  ];
+  const JV_FIELDS = [
+    ["participation","JV Participation"],["leadMember","Lead Member Requirement"],
+    ["memberRules","Member Qualification / Experience Rules"],["localPartner","Local Partner Requirement"],
+    ["jvAgreement","JV Agreement Requirement"]
+  ];
+  const DATE_FIELDS = [
+    ["clarificationDeadline","Clarification Deadline"],["submissionDeadline","Submission Deadline"],
+    ["openingDate","Opening Date / Time"],["contractStart","Contract Start Date"]
+  ];
+
+  function blankEntry(id){
+    return {
+      id: id,
+      classification: "",
+      basic: Object.fromEntries(BASIC_FIELDS.map(f=>[f[0],""])),
+      mainIdea: "",
+      commercial: Object.fromEntries(COMMERCIAL_FIELDS.map(f=>[f[0],""])),
+      technical: [""],
+      technology: [""],
+      operational: [""],
+      eligibility: Object.fromEntries(ELIGIBILITY_FIELDS.map(f=>[f[0],""])),
+      jv: Object.fromEntries(JV_FIELDS.map(f=>[f[0],""])),
+      documents: [""],
+      personnel: [{position:"",qualification:"",experience:"",qty:""}],
+      hardware: [{equipment:"",purpose:""}],
+      dates: Object.fromEntries(DATE_FIELDS.map(f=>[f[0],""])),
+      risks: [{type:"Tender Requirement",text:""}],
+      management: [""],
+      notes: "",
+      updatedAt: Date.now()
+    };
+  }
+
+  let index = [];       // [{id,title,tenderId,referenceNo,deadline}]
+  let current = null;   // full entry object currently loaded
+  let dirty = false;
+
+  const el = sel => document.querySelector(sel);
+  const entryListEl = el('#entryList');
+  const formRoot = el('#formRoot');
+  const emptyMain = el('#emptyMain');
+  const topbar = el('#topbar');
+  const statusEl = el('#statusEl');
+  const statusText = el('#statusText');
+  const errorBanner = el('#errorBanner');
+  const errorBannerText = el('#errorBannerText');
+
+  function showError(msg){
+    errorBannerText.textContent = msg;
+    errorBanner.classList.add('show');
+  }
+  el('#errorBannerClose').addEventListener('click', ()=> errorBanner.classList.remove('show'));
+  window.addEventListener('error', (e)=> showError('Script error: ' + e.message));
+  window.addEventListener('unhandledrejection', (e)=> showError('Error: ' + (e.reason && e.reason.message ? e.reason.message : e.reason)));
+
+  function setStatus(saved){
+    dirty = !saved;
+    statusEl.classList.remove('error');
+    statusEl.classList.toggle('unsaved', !saved);
+    statusText.textContent = saved ? "Saved" : "Unsaved changes";
+  }
+
+  async function loadIndex(){
+    try{
+      const res = await window.storage.get('tenders-index', false);
+      index = res ? JSON.parse(res.value) : [];
+    }catch(e){
+      index = [];
+    }
+    renderList();
+  }
+
+  async function saveIndex(){
+    try{
+      await window.storage.set('tenders-index', JSON.stringify(index), false);
+    }catch(e){
+      console.error('Failed to save index', e);
+      showError('Could not save the entry list: ' + e.message);
+    }
+  }
+
+  function indexSummary(entry){
+    return {
+      id: entry.id,
+      title: entry.basic.tenderTitle || entry.basic.projectName || "Untitled tender",
+      tenderId: entry.basic.tenderId || "",
+      referenceNo: entry.basic.referenceNo || "",
+      deadline: entry.basic.lastDate || ""
+    };
+  }
+
+  function renderList(){
+    const q = (el('#searchInput').value || "").toLowerCase();
+    const filtered = index.filter(e=>{
+      if(!q) return true;
+      return (e.title+e.tenderId+e.referenceNo).toLowerCase().includes(q);
+    }).sort((a,b)=> (b._updatedAt||0) - (a._updatedAt||0));
+
+    if(filtered.length === 0){
+      entryListEl.innerHTML = '<div class="empty-rail">'+(index.length? "No matches." : "No entries yet. Click \u201c+ New tender entry\u201d to start.")+'</div>';
+      return;
+    }
+    entryListEl.innerHTML = filtered.map(e=>`
+      <div class="entry-card ${current && current.id===e.id ? 'active':''}" data-id="${e.id}">
+        <div class="eid mono">${escapeHtml(e.tenderId || 'No ID')}${e.referenceNo? ' · '+escapeHtml(e.referenceNo):''}</div>
+        <div class="etitle">${escapeHtml(e.title)}</div>
+        <div class="emeta">${e.deadline ? 'Deadline: '+escapeHtml(e.deadline) : 'No deadline set'}</div>
+      </div>
+    `).join('');
+    entryListEl.querySelectorAll('.entry-card').forEach(card=>{
+      card.addEventListener('click', ()=> openEntry(card.dataset.id).catch(e=>{
+        console.error(e);
+        showError('Could not open that entry: ' + e.message);
+      }));
+    });
+  }
+
+  async function openEntry(id){
+    try{
+      if(dirty && current){
+        const ok = await showConfirm("You have unsaved changes on this entry. Discard them and switch?");
+        if(!ok) return;
+      }
+      let res;
+      try{
+        res = await window.storage.get('tender:'+id, false);
+      }catch(e){
+        res = null;
+      }
+      current = res ? JSON.parse(res.value) : blankEntry(id);
+      renderForm();
+      setStatus(true);
+    }catch(e){
+      console.error(e);
+      showError('Could not open that entry: ' + e.message);
+    }
+  }
+
+  function newEntry(){
+    try{
+      const id = 't_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+      current = blankEntry(id);
+      renderForm();
+      setStatus(false);
+      renderList();
+    }catch(e){
+      console.error(e);
+      showError('Could not create a new entry: ' + e.message);
+    }
+  }
+
+  async function saveCurrent(){
+    if(!current) return;
+    current.updatedAt = Date.now();
+    try{
+      await window.storage.set('tender:'+current.id, JSON.stringify(current), false);
+      const summary = indexSummary(current);
+      summary._updatedAt = current.updatedAt;
+      const pos = index.findIndex(e=>e.id===current.id);
+      if(pos>=0) index[pos] = summary; else index.push(summary);
+      await saveIndex();
+      setStatus(true);
+      renderList();
+    }catch(e){
+      console.error(e);
+      statusEl.classList.add('error');
+      statusText.textContent = "Save failed — storage error (changes kept in form)";
+      showError('Save failed: ' + e.message);
+    }
+  }
+
+  async function deleteCurrent(){
+    if(!current) return;
+    try{
+      const ok = await showConfirm("Delete this tender entry? This can't be undone.");
+      if(!ok) return;
+      try{
+        await window.storage.delete('tender:'+current.id, false);
+      }catch(e){ /* key may not have existed if never saved */ }
+      index = index.filter(e=>e.id !== current.id);
+      await saveIndex();
+      current = null;
+      formRoot.style.display = 'none';
+      emptyMain.style.display = 'flex';
+      topbar.style.display = 'none';
+      renderList();
+    }catch(e){
+      console.error(e);
+      showError('Could not delete that entry: ' + e.message);
+    }
+  }
+
+  function exportCurrent(){
+    if(!current) return;
+    const blob = new Blob([JSON.stringify(current, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const name = (current.basic.tenderId || current.id) + '.json';
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function showConfirm(message){
+    return new Promise(resolve=>{
+      const overlay = document.createElement('div');
+      overlay.className = 'confirm-overlay';
+      overlay.innerHTML = `
+        <div class="confirm-box">
+          <p>${escapeHtml(message)}</p>
+          <div class="confirm-actions">
+            <button class="btn" data-choice="cancel">Cancel</button>
+            <button class="btn danger" data-choice="ok">Discard</button>
+          </div>
+        </div>`;
+      document.body.appendChild(overlay);
+      function cleanup(result){ overlay.remove(); resolve(result); }
+      overlay.addEventListener('click', e=>{ if(e.target === overlay) cleanup(false); });
+      overlay.querySelector('[data-choice="cancel"]').addEventListener('click', ()=>cleanup(false));
+      overlay.querySelector('[data-choice="ok"]').addEventListener('click', ()=>cleanup(true));
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ---------- form rendering ----------
+
+  function fieldHtml(path, label, value, tag){
+    tag = tag || 'input';
+    if(tag === 'textarea'){
+      return `<div class="field"><label>${label}</label><textarea data-path="${path}">${escapeHtml(value)}</textarea></div>`;
+    }
+    return `<div class="field"><label>${label}</label><input type="text" data-path="${path}" value="${escapeHtml(value)}"></div>`;
+  }
+
+  function gridFields(objPath, defs, obj){
+    return `<div class="grid2">${defs.map(([k,label])=>fieldHtml(objPath+'.'+k, label, obj[k])).join('')}</div>`;
+  }
+
+  function listEditor(sectionKey, items, opts){
+    opts = opts || {};
+    const rows = items.map((val, i)=>`
+      <div class="list-row" data-idx="${i}">
+        <input type="text" data-list="${sectionKey}" data-idx="${i}" value="${escapeHtml(val)}" placeholder="${opts.placeholder||''}">
+        <button class="row-remove" data-remove-list="${sectionKey}" data-idx="${i}" title="Remove">&times;</button>
+      </div>
+    `).join('');
+    return `<div class="list-rows" data-list-container="${sectionKey}">${rows}</div>
+      <button class="row-add" data-add-list="${sectionKey}">+ Add line</button>`;
+  }
+
+  function riskEditor(risks){
+    const rows = risks.map((r,i)=>`
+      <div class="list-row" data-idx="${i}">
+        <select class="risk-type" data-risk-type="${i}">
+          <option ${r.type==='Tender Requirement'?'selected':''}>Tender Requirement</option>
+          <option ${r.type==='Analyst Observation'?'selected':''}>Analyst Observation</option>
+        </select>
+        <input type="text" data-risk-text="${i}" value="${escapeHtml(r.text)}" placeholder="Point senior management needs to know…">
+        <button class="row-remove" data-remove-risk="${i}" title="Remove">&times;</button>
+      </div>
+    `).join('');
+    return `<div class="list-rows" data-list-container="risks">${rows}</div>
+      <button class="row-add" data-add-risk>+ Add risk / point</button>`;
+  }
+
+  function personnelTable(rows){
+    const trs = rows.map((r,i)=>`
+      <tr data-idx="${i}">
+        <td><input data-pers="position" data-idx="${i}" value="${escapeHtml(r.position)}" placeholder="Position"></td>
+        <td><input data-pers="qualification" data-idx="${i}" value="${escapeHtml(r.qualification)}" placeholder="Minimum qualification"></td>
+        <td><input data-pers="experience" data-idx="${i}" value="${escapeHtml(r.experience)}" placeholder="Required experience"></td>
+        <td class="qtycol"><input data-pers="qty" data-idx="${i}" value="${escapeHtml(r.qty)}" placeholder="Qty"></td>
+        <td class="rmcol"><button class="row-remove" data-remove-pers="${i}">&times;</button></td>
+      </tr>
+    `).join('');
+    return `<table class="entry-table"><thead><tr>
+        <th>Position</th><th>Min. Qualification</th><th>Required Experience</th><th>Qty.</th><th></th>
+      </tr></thead><tbody>${trs}</tbody></table>
+      <button class="row-add" data-add-pers>+ Add position</button>`;
+  }
+
+  function hardwareTable(rows){
+    const trs = rows.map((r,i)=>`
+      <tr data-idx="${i}">
+        <td><input data-hw="equipment" data-idx="${i}" value="${escapeHtml(r.equipment)}" placeholder="Hardware / equipment"></td>
+        <td><input data-hw="purpose" data-idx="${i}" value="${escapeHtml(r.purpose)}" placeholder="Purpose"></td>
+        <td class="rmcol"><button class="row-remove" data-remove-hw="${i}">&times;</button></td>
+      </tr>
+    `).join('');
+    return `<table class="entry-table"><thead><tr>
+        <th>Hardware / Equipment</th><th>Purpose</th><th></th>
+      </tr></thead><tbody>${trs}</tbody></table>
+      <button class="row-add" data-add-hw>+ Add item</button>`;
+  }
+
+  function renderForm(){
+    emptyMain.style.display = 'none';
+    topbar.style.display = 'flex';
+    formRoot.style.display = 'block';
+
+    const c = current;
+    formRoot.innerHTML = `
+      <div class="title-row">
+        <input class="title-input" data-path="basic.tenderTitle" value="${escapeHtml(c.basic.tenderTitle)}" placeholder="Tender title…">
+      </div>
+      <div class="id-line mono">${escapeHtml(c.basic.tenderId || 'Tender ID not set')}${c.basic.referenceNo? ' · '+escapeHtml(c.basic.referenceNo):''}</div>
+
+      <div class="classify-row" id="classifyRow">
+        ${CLASSIFICATIONS.map(opt=>`<button data-classify="${opt}" class="${c.classification===opt?'active':''}">${opt}</button>`).join('')}
+      </div>
+
+      <section class="block">
+        <h2>Basic Information</h2>
+        ${gridFields('basic', BASIC_FIELDS, c.basic)}
+      </section>
+
+      <section class="block">
+        <h2>Requirements</h2>
+        <h3 class="sub">Main Idea</h3>
+        <p class="hint">What the tender is about, what the client wants, and the main software/IT component if applicable.</p>
+        ${fieldHtml('mainIdea','', c.mainIdea, 'textarea')}
+
+        <h3 class="sub">Commercial Requirements</h3>
+        ${gridFields('commercial', COMMERCIAL_FIELDS, c.commercial)}
+
+        <h3 class="sub">Technical Requirements</h3>
+        ${listEditor('technical', c.technical, {placeholder:'e.g. Web-based information management system'})}
+
+        <h3 class="sub">Software / Technology Mentioned</h3>
+        ${listEditor('technology', c.technology, {placeholder:'e.g. Oracle Database, RFID, GIS'})}
+
+        <h3 class="sub">Operational / Service Requirements</h3>
+        ${listEditor('operational', c.operational, {placeholder:'e.g. Operation and maintenance, user support'})}
+      </section>
+
+      <section class="block">
+        <h2>Key Eligibility / Qualification</h2>
+        <p class="hint">The tender's stated requirement only — not a bidder-specific assessment.</p>
+        ${gridFields('eligibility', ELIGIBILITY_FIELDS, c.eligibility)}
+      </section>
+
+      <section class="block">
+        <h2>JV / Consortium</h2>
+        ${gridFields('jv', JV_FIELDS, c.jv)}
+      </section>
+
+      <section class="block">
+        <h2>Documents Required in Submission</h2>
+        ${listEditor('documents', c.documents, {placeholder:'e.g. Trade license, financial statements'})}
+      </section>
+
+      <section class="block">
+        <h2>CV / Personnel Requirements</h2>
+        <p class="hint">Leave blank and remove rows if the tender has no named-personnel requirement.</p>
+        ${personnelTable(c.personnel)}
+      </section>
+
+      <section class="block">
+        <h2>Hardware Requirements</h2>
+        <p class="hint">Only when equipment is a material part of the tender.</p>
+        ${hardwareTable(c.hardware)}
+      </section>
+
+      <section class="block">
+        <h2>Important Dates</h2>
+        ${gridFields('dates', DATE_FIELDS, c.dates)}
+      </section>
+
+      <section class="block">
+        <h2>Key Risks / Important Points</h2>
+        <p class="hint">3–6 points, each labeled Tender Requirement or Analyst Observation.</p>
+        ${riskEditor(c.risks)}
+      </section>
+
+      <section class="block">
+        <h2>Important for Management</h2>
+        ${listEditor('management', c.management, {placeholder:'e.g. Relevance, main opportunity, biggest requirement'})}
+      </section>
+
+      <section class="block">
+        <h2>Notes / Comments</h2>
+        <p class="hint">Anything else worth recording — internal remarks, follow-ups, or context that doesn't fit elsewhere.</p>
+        ${fieldHtml('notes','', c.notes, 'textarea')}
+      </section>
+    `;
+
+    attachFormListeners();
+  }
+
+  function markDirty(){ setStatus(false); }
+
+  function attachFormListeners(){
+    // simple path-based fields (input/textarea with data-path like "basic.country")
+    formRoot.querySelectorAll('[data-path]').forEach(input=>{
+      input.addEventListener('input', ()=>{
+        const path = input.dataset.path.split('.');
+        let obj = current;
+        for(let i=0;i<path.length-1;i++) obj = obj[path[i]];
+        obj[path[path.length-1]] = input.value;
+        if(input.dataset.path === 'basic.tenderTitle'){
+          el('.id-line') && (el('.id-line').textContent = (current.basic.tenderId||'Tender ID not set') + (current.basic.referenceNo? ' · '+current.basic.referenceNo:''));
+        }
+        markDirty();
+      });
+    });
+
+    // classification pills
+    formRoot.querySelectorAll('[data-classify]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        current.classification = btn.dataset.classify;
+        formRoot.querySelectorAll('[data-classify]').forEach(b=>b.classList.toggle('active', b===btn));
+        markDirty();
+      });
+    });
+
+    // generic list editors (technical, technology, operational, documents, management)
+    ['technical','technology','operational','documents','management'].forEach(key=>{
+      const container = formRoot.querySelector(`[data-list-container="${key}"]`);
+      if(!container) return;
+      container.querySelectorAll(`input[data-list="${key}"]`).forEach(inp=>{
+        inp.addEventListener('input', ()=>{
+          current[key][+inp.dataset.idx] = inp.value;
+          markDirty();
+        });
+      });
+      container.querySelectorAll(`[data-remove-list="${key}"]`).forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          current[key].splice(+btn.dataset.idx,1);
+          if(current[key].length===0) current[key].push("");
+          markDirty();
+          renderForm();
+        });
+      });
+    });
+    formRoot.querySelectorAll('[data-add-list]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const key = btn.dataset.addList;
+        current[key].push("");
+        markDirty();
+        renderForm();
+      });
+    });
+
+    // risks
+    formRoot.querySelectorAll('[data-risk-type]').forEach(sel=>{
+      sel.addEventListener('change', ()=>{
+        current.risks[+sel.dataset.riskType].type = sel.value;
+        markDirty();
+      });
+    });
+    formRoot.querySelectorAll('[data-risk-text]').forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        current.risks[+inp.dataset.riskText].text = inp.value;
+        markDirty();
+      });
+    });
+    formRoot.querySelectorAll('[data-remove-risk]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        current.risks.splice(+btn.dataset.removeRisk,1);
+        if(current.risks.length===0) current.risks.push({type:"Tender Requirement",text:""});
+        markDirty();
+        renderForm();
+      });
+    });
+    const addRiskBtn = formRoot.querySelector('[data-add-risk]');
+    if(addRiskBtn) addRiskBtn.addEventListener('click', ()=>{
+      current.risks.push({type:"Tender Requirement", text:""});
+      markDirty();
+      renderForm();
+    });
+
+    // personnel table
+    formRoot.querySelectorAll('[data-pers]').forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        current.personnel[+inp.dataset.idx][inp.dataset.pers] = inp.value;
+        markDirty();
+      });
+    });
+    formRoot.querySelectorAll('[data-remove-pers]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        current.personnel.splice(+btn.dataset.removePers,1);
+        if(current.personnel.length===0) current.personnel.push({position:"",qualification:"",experience:"",qty:""});
+        markDirty();
+        renderForm();
+      });
+    });
+    const addPersBtn = formRoot.querySelector('[data-add-pers]');
+    if(addPersBtn) addPersBtn.addEventListener('click', ()=>{
+      current.personnel.push({position:"",qualification:"",experience:"",qty:""});
+      markDirty();
+      renderForm();
+    });
+
+    // hardware table
+    formRoot.querySelectorAll('[data-hw]').forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        current.hardware[+inp.dataset.idx][inp.dataset.hw] = inp.value;
+        markDirty();
+      });
+    });
+    formRoot.querySelectorAll('[data-remove-hw]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        current.hardware.splice(+btn.dataset.removeHw,1);
+        if(current.hardware.length===0) current.hardware.push({equipment:"",purpose:""});
+        markDirty();
+        renderForm();
+      });
+    });
+    const addHwBtn = formRoot.querySelector('[data-add-hw]');
+    if(addHwBtn) addHwBtn.addEventListener('click', ()=>{
+      current.hardware.push({equipment:"",purpose:""});
+      markDirty();
+      renderForm();
+    });
+  }
+
+  // ---------- wire up top-level controls ----------
+  el('#newBtn').addEventListener('click', newEntry);
+  el('#saveBtn').addEventListener('click', saveCurrent);
+  el('#deleteBtn').addEventListener('click', deleteCurrent);
+  el('#exportOneBtn').addEventListener('click', exportCurrent);
+  el('#searchInput').addEventListener('input', renderList);
+
+  window.addEventListener('beforeunload', (e)=>{
+    if(dirty){ e.preventDefault(); e.returnValue = ''; }
+  });
+
+  loadIndex();
+})();
+</script>
+</body>
+</html>
