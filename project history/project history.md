@@ -24,6 +24,29 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Tender Management: Added Direct Edit & Delete Capabilities
+- **Category:** Core Pipeline Operations & CRUD
+- **Summary:**
+  - **Tender Pipeline Table ([`TenderListPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderListPage.tsx)):**
+    - Added **"Edit"** button to each row, linking directly to the full specification editor in `/registry?id={id}`.
+    - Added **"Delete"** button to each row with an interactive confirmation modal protecting against accidental deletions.
+    - Added **"Delete Selected ({count})"** button to the bulk action bar for multi-tender deletion.
+  - **Tender Registry Integration ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx)):**
+    - Connected `useSearchParams` (`?id=` / `?edit=`) to auto-select and open the target tender for immediate editing.
+    - Added a **"Delete"** action button in the editor header with confirmation.
+  - **Workspace Header ([`TenderDetailPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderDetailPage.tsx)):**
+    - Added **"Edit"** and **"Delete"** action buttons alongside the export action in the top header.
+  - **Context Operations ([`TenderContext.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/context/TenderContext.tsx)):**
+    - Implemented and exposed `updateTender`, `deleteTender`, and `deleteMultipleTenders` with local storage persistence.
+    - Updated `addTender` to update existing entries when matching IDs.
+- **Relevant Files:**
+  - `frontend/src/context/TenderContext.tsx`
+  - `frontend/src/pages/TenderListPage.tsx`
+  - `frontend/src/pages/TenderRegistryPage.tsx`
+  - `frontend/src/pages/TenderDetailPage.tsx`
+
+---
+
 ### [2026-09-03] — Terminology Alignment: Replaced "Post-Mortem" with "Outcome & Debrief"
 - **Category:** Copywriting & Domain Semantics
 - **Summary:**

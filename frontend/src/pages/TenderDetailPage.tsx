@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useParams, NavLink, Outlet, useLocation, useNavigate, Link } from 'react-router-dom';
 import {
   FileText,
   CheckSquare,
@@ -13,6 +13,8 @@ import {
   User,
   ArrowRight,
   ArrowLeft,
+  Trash2,
+  Edit3,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -26,10 +28,18 @@ import { TenderStage } from '../types/tender';
 export const TenderDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
-  const { tenders, updateTenderStage, formatCurrency } = useTenders();
+  const navigate = useNavigate();
+  const { tenders, updateTenderStage, deleteTender, formatCurrency } = useTenders();
 
   // Find the tender or fallback to the first tender
   const tender = tenders.find((t) => t.id === id) || tenders[0];
+
+  const handleDeleteTender = () => {
+    if (window.confirm(`Are you sure you want to permanently delete tender "${tender.title}" (${tender.id})?`)) {
+      deleteTender(tender.id);
+      navigate('/tenders');
+    }
+  };
 
   const subNavTabs = [
     { label: 'Overview', path: `/tenders/${tender.id}`, exact: true, icon: FileText },
@@ -69,7 +79,25 @@ export const TenderDetailPage: React.FC = () => {
           <span className="font-semibold text-[#0F172A]">Proposal Workspace</span>
         </nav>
 
-        <ExportDropdown tender={tender} label="Export Brief" />
+        <div className="flex items-center gap-2">
+          <Link
+            to={`/registry?id=${tender.id}`}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] text-xs font-semibold text-[#0F172A] rounded-lg transition-colors shadow-2xs"
+            title="Edit tender specifications in Registry"
+          >
+            <Edit3 className="w-3.5 h-3.5 text-[#64748B]" />
+            <span>Edit</span>
+          </Link>
+          <button
+            onClick={handleDeleteTender}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#FECACA] hover:bg-[#FEF2F2] text-xs font-semibold text-[#DC2626] rounded-lg transition-colors shadow-2xs"
+            title="Delete this tender"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            <span>Delete</span>
+          </button>
+          <ExportDropdown tender={tender} label="Export Brief" />
+        </div>
       </div>
 
       {/* Master Tender Header Banner */}

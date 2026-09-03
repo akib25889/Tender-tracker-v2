@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   Plus,
   Search,
@@ -32,13 +32,21 @@ const CLASSIFICATIONS: TenderClassification[] = [
 ];
 
 export const TenderRegistryPage: React.FC = () => {
-  const { tenders, addTender } = useTenders();
+  const { tenders, addTender, deleteTender } = useTenders();
+  const [searchParams] = useSearchParams();
+  const editIdFromUrl = searchParams.get('id') || searchParams.get('edit');
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClassificationFilter, setSelectedClassificationFilter] = useState<string>('ALL');
   const [selectedTenderId, setSelectedTenderId] = useState<string>(
-    tenders[0]?.id || ''
+    editIdFromUrl || tenders[0]?.id || ''
   );
+
+  useEffect(() => {
+    if (editIdFromUrl && tenders.some((t) => t.id === editIdFromUrl)) {
+      setSelectedTenderId(editIdFromUrl);
+    }
+  }, [editIdFromUrl, tenders]);
 
   const [activeEditorTab, setActiveEditorTab] = useState<
     'BASIC' | 'SCOPE' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS'
@@ -517,6 +525,17 @@ export const TenderRegistryPage: React.FC = () => {
     setTimeout(() => setSaveSuccess(false), 2500);
   };
 
+  const handleDeleteCurrent = () => {
+    if (!selectedTender) return;
+    if (window.confirm(`Are you sure you want to permanently delete tender "${selectedTender.title}" (${selectedTender.id})?`)) {
+      deleteTender(selectedTender.id);
+      const remaining = tenders.filter((t) => t.id !== selectedTender.id);
+      if (remaining.length > 0) {
+        setSelectedTenderId(remaining[0].id);
+      }
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Top Header */}
@@ -699,6 +718,15 @@ export const TenderRegistryPage: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleDeleteCurrent}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#FECACA] text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg text-xs font-semibold transition-colors shadow-2xs"
+                title="Delete this tender"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete</span>
+              </button>
               <Link
                 to={`/tenders/${selectedTender?.id}`}
                 className="flex items-center gap-1 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors"

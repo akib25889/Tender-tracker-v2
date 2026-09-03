@@ -20,6 +20,9 @@ export type CurrencyMode = 'USD' | 'BDT';
 interface TenderContextType {
   tenders: Tender[];
   addTender: (tenderData: Partial<Tender>) => void;
+  updateTender: (id: string, updates: Partial<Tender>) => void;
+  deleteTender: (id: string) => void;
+  deleteMultipleTenders: (ids: string[]) => void;
   updateTenderStage: (tenderId: string, stage: TenderStage) => void;
   setTenderDecision: (
     tenderId: string,
@@ -227,7 +230,27 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       summary: tenderData.summary,
     };
 
-    setTenders((prev) => [newTender, ...prev]);
+    setTenders((prev) => {
+      const exists = prev.some((t) => t.id === newId);
+      if (exists) {
+        return prev.map((t) => (t.id === newId ? { ...t, ...tenderData, summary: { ...t.summary, ...tenderData.summary } } : t));
+      }
+      return [newTender, ...prev];
+    });
+  };
+
+  const updateTender = (id: string, updates: Partial<Tender>) => {
+    setTenders((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, ...updates } : t))
+    );
+  };
+
+  const deleteTender = (id: string) => {
+    setTenders((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const deleteMultipleTenders = (ids: string[]) => {
+    setTenders((prev) => prev.filter((t) => !ids.includes(t.id)));
   };
 
   const updateTenderStage = (tenderId: string, stage: TenderStage) => {
@@ -508,6 +531,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         tenders,
         addTender,
+        updateTender,
+        deleteTender,
+        deleteMultipleTenders,
         updateTenderStage,
         setTenderDecision,
         addTask,

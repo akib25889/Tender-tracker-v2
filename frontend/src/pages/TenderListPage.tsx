@@ -8,6 +8,9 @@ import {
   CheckSquare,
   Square,
   Compass,
+  Trash2,
+  Edit3,
+  AlertTriangle,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -17,7 +20,7 @@ import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { TenderStage } from '../types/tender';
 
 export const TenderListPage: React.FC = () => {
-  const { tenders, updateTenderStage, formatCurrency } = useTenders();
+  const { tenders, updateTenderStage, deleteTender, deleteMultipleTenders, formatCurrency } = useTenders();
   const [searchParams, setSearchParams] = useSearchParams();
   const stageFromUrl = searchParams.get('stage');
 
@@ -27,6 +30,8 @@ export const TenderListPage: React.FC = () => {
   );
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [tenderToDelete, setTenderToDelete] = useState<{ id: string; title: string } | null>(null);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   useEffect(() => {
     if (stageFromUrl) {
@@ -74,6 +79,20 @@ export const TenderListPage: React.FC = () => {
   const handleBatchAdvanceStage = (nextStage: TenderStage) => {
     selectedIds.forEach((id) => updateTenderStage(id, nextStage));
     setSelectedIds([]);
+  };
+
+  const handleConfirmSingleDelete = () => {
+    if (tenderToDelete) {
+      deleteTender(tenderToDelete.id);
+      setSelectedIds((prev) => prev.filter((id) => id !== tenderToDelete.id));
+      setTenderToDelete(null);
+    }
+  };
+
+  const handleConfirmBulkDelete = () => {
+    deleteMultipleTenders(selectedIds);
+    setSelectedIds([]);
+    setIsBulkDeleting(false);
   };
 
   const categories = [
@@ -220,6 +239,13 @@ export const TenderListPage: React.FC = () => {
               Move to Review
             </button>
             <button
+              onClick={() => setIsBulkDeleting(true)}
+              className="px-3 py-1 bg-[#DC2626] hover:bg-[#B91C1C] rounded text-white font-semibold flex items-center gap-1.5 transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Delete Selected ({selectedIds.length})</span>
+            </button>
+            <button
               onClick={() => setSelectedIds([])}
               className="px-2 py-1 text-[#94A3B8] hover:text-white"
             >
@@ -321,14 +347,35 @@ export const TenderListPage: React.FC = () => {
                     <ReadinessBar score={tender.readinessScore} />
                   </td>
 
-                  <td className="py-3.5 px-4 text-right">
-                    <Link
-                      to={`/tenders/${tender.id}`}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#2563EB] hover:bg-[#EFF6FF] rounded border border-[#BFDBFE] transition-colors"
-                    >
-                      <span>Workspace</span>
-                      <ChevronRight className="w-3 h-3" />
-                    </Link>
+                  <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <Link
+                        to={`/registry?id=${tender.id}`}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] bg-white hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] hover:border-[#CBD5E1] transition-colors shadow-2xs"
+                        title="Edit Tender Specifications"
+                      >
+                        <Edit3 className="w-3.5 h-3.5 text-[#64748B]" />
+                        <span>Edit</span>
+                      </Link>
+
+                      <button
+                        onClick={() => setTenderToDelete({ id: tender.id, title: tender.title })}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#DC2626] bg-white hover:bg-[#FEF2F2] rounded-lg border border-[#FECACA] hover:border-[#F87171] transition-colors shadow-2xs"
+                        title="Delete Tender"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Delete</span>
+                      </button>
+
+                      <Link
+                        to={`/tenders/${tender.id}`}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#2563EB] hover:bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] transition-colors shadow-2xs"
+                        title="Open Tender Workspace"
+                      >
+                        <span>Workspace</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -336,6 +383,78 @@ export const TenderListPage: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {/* Single Delete Confirmation Dialog */}
+      {tenderToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-xl max-w-md w-full p-5 border border-[#E2E8F0] shadow-2xl space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-[#FEF2F2] flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5 text-[#DC2626]" />
+              </div>
+              <div>
+                <h3 className="font-display text-sm font-bold text-[#0F172A]">Delete Tender</h3>
+                <p className="text-xs text-[#64748B]">This action cannot be undone.</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-[#475569] leading-relaxed">
+              Are you sure you want to permanently delete <strong className="text-[#0F172A]">{tenderToDelete.title}</strong> (<span className="font-mono text-[11px] font-semibold">{tenderToDelete.id}</span>)? All associated tasks, requirements, and records will be removed.
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#F1F5F9]">
+              <button
+                onClick={() => setTenderToDelete(null)}
+                className="px-3.5 py-1.5 text-xs font-semibold text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmSingleDelete}
+                className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-lg transition-colors shadow-sm"
+              >
+                Delete Tender
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Delete Confirmation Dialog */}
+      {isBulkDeleting && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-xl max-w-md w-full p-5 border border-[#E2E8F0] shadow-2xl space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-[#FEF2F2] flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5 text-[#DC2626]" />
+              </div>
+              <div>
+                <h3 className="font-display text-sm font-bold text-[#0F172A]">Delete {selectedIds.length} Selected Tenders</h3>
+                <p className="text-xs text-[#64748B]">Irreversible bulk action.</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-[#475569] leading-relaxed">
+              Are you sure you want to delete the <strong className="text-[#0F172A]">{selectedIds.length} selected tenders</strong>?
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#F1F5F9]">
+              <button
+                onClick={() => setIsBulkDeleting(false)}
+                className="px-3.5 py-1.5 text-xs font-semibold text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmBulkDelete}
+                className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#DC2626] hover:bg-[#B91C1C] rounded-lg transition-colors shadow-sm"
+              >
+                Delete All {selectedIds.length}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
