@@ -423,22 +423,6 @@ export const TenderDetailPage: React.FC = () => {
                 </div>
               </div>
             </Card>
-
-            <Card title="Vault Storage Verification" subtitle="Local SSD SHA-256 cryptographic logs">
-              <div className="space-y-2 text-[11px] text-[#64748B]">
-                <div className="p-2.5 bg-[#F8FAFC] rounded border border-[#E2E8F0] font-mono">
-                  <div className="text-[#0F172A] font-semibold truncate">
-                    storage/tenders/{tender.id}/05_final_submission_package/
-                  </div>
-                  <div className="text-[10px] text-[#94A3B8] mt-1 truncate">
-                    SHA-256: 8f4c2b9a7d1e3f5...389c
-                  </div>
-                </div>
-                <p className="text-[11px] text-[#16A34A] flex items-center gap-1 font-medium">
-                  ✓ Vault directory locked &amp; replicated
-                </p>
-              </div>
-            </Card>
           </div>
         </div>
       ) : (
