@@ -186,3 +186,4 @@ export const NewTenderModal: React.FC = () => {
     </div>
   );
 };
+
