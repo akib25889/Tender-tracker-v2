@@ -114,26 +114,63 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [tenders]);
 
   const addTender = (tenderData: Partial<Tender>) => {
-    const newId = `TDR-2026-${Math.floor(100 + Math.random() * 900)}`;
+    const newId = tenderData.id || `TDR-2026-${Math.floor(100 + Math.random() * 900)}`;
+    const deadlineDate = tenderData.submissionDeadline
+      ? new Date(tenderData.submissionDeadline)
+      : new Date(Date.now() + 14 * 86400000);
+    const diffMs = Math.max(0, deadlineDate.getTime() - Date.now());
+    const daysRemaining = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+    const hoursRemaining = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60)));
+
+    // Generate initial requirements from submissionDocuments if provided
+    const docReqs = (tenderData.summary?.submissionDocuments || [])
+      .filter((d) => d && d.trim().length > 0)
+      .map((docName, idx) => ({
+        id: `REQ-DOC-${idx + 1}`,
+        title: docName,
+        category: 'Statutory Document',
+        status: 'PENDING' as RequirementStatus,
+        owner: 'Elena Rostova',
+      }));
+
+    const defaultReqs = [
+      {
+        id: 'REQ-01',
+        title: 'Trade License & Company Incorporation',
+        category: 'Statutory',
+        status: 'PENDING' as RequirementStatus,
+        owner: 'Tariq Al-Mansoor',
+      },
+      {
+        id: 'REQ-02',
+        title: 'Tax Compliance Clearance',
+        category: 'Finance',
+        status: 'PENDING' as RequirementStatus,
+        owner: 'Tariq Al-Mansoor',
+      },
+    ];
+
+    const finalReqs = docReqs.length > 0 ? [...defaultReqs, ...docReqs] : defaultReqs;
+
     const newTender: Tender = {
       id: newId,
       referenceNo: tenderData.referenceNo || `REF/${newId}`,
-      title: tenderData.title || 'Untitled Tender Opportunity',
+      title: tenderData.title || tenderData.summary?.projectName || 'Untitled Tender Opportunity',
       organization: tenderData.organization || 'Multilateral Donor Agency',
       country: tenderData.country || 'Global / Regional',
       category: tenderData.category || 'IT & Cloud Infrastructure',
       estimatedValue: Number(tenderData.estimatedValue) || 1000000,
       stage: tenderData.stage || 'DISCOVERED',
       decision: 'PENDING',
-      priority: tenderData.priority || 'MEDIUM',
-      submissionDeadline: tenderData.submissionDeadline || new Date(Date.now() + 14 * 86400000).toISOString(),
-      daysRemaining: 14,
-      hoursRemaining: 336,
+      priority: tenderData.priority || 'HIGH',
+      submissionDeadline: deadlineDate.toISOString(),
+      daysRemaining,
+      hoursRemaining,
       readinessScore: 10,
-      missingDocumentsCount: 3,
+      missingDocumentsCount: Math.max(1, (tenderData.summary?.submissionDocuments?.length || 3)),
       completedTasksCount: 0,
       totalTasksCount: 5,
-      leadOwner: {
+      leadOwner: tenderData.leadOwner || {
         name: 'Sarah Jenkins',
         role: 'Senior Bid Operations Director',
       },
@@ -141,29 +178,22 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       tasks: [
         {
           id: `TSK-${Math.floor(100 + Math.random() * 900)}`,
-          title: 'Review Scope of Work & RFP Specifications',
-          assignee: 'Sarah Jenkins',
+          title: 'Review Scope of Work & Technical SOW',
+          assignee: 'Dr. Marcus Vance',
           priority: 'HIGH',
           deadline: 'Day 3',
           status: 'TODO',
         },
-      ],
-      requirements: [
         {
-          id: 'REQ-01',
-          title: 'Trade License & Company Incorporation',
-          category: 'Statutory',
-          status: 'PENDING',
-          owner: 'Tariq Al-Mansoor',
-        },
-        {
-          id: 'REQ-02',
-          title: 'Tax Compliance Clearance',
-          category: 'Finance',
-          status: 'PENDING',
-          owner: 'Tariq Al-Mansoor',
+          id: `TSK-${Math.floor(100 + Math.random() * 900)}`,
+          title: 'Commercial BOQ & Tender Security Guarantee',
+          assignee: 'Tariq Al-Mansoor',
+          priority: 'HIGH',
+          deadline: 'Day 5',
+          status: 'TODO',
         },
       ],
+      requirements: finalReqs,
       documents: [],
       reviews: [
         { tierNumber: 1, name: 'Technical Sign-Off', reviewer: 'Dr. Marcus Vance', status: 'WAITING', comments: 'Pending review' },
@@ -171,6 +201,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         { tierNumber: 3, name: 'Legal Solvency Sign-Off', reviewer: 'Elena Rostova', status: 'WAITING', comments: 'Pending review' },
         { tierNumber: 4, name: 'Executive Gatekeeper Sign-Off', reviewer: 'Sarah Jenkins', status: 'WAITING', comments: 'Pending review' },
       ],
+      summary: tenderData.summary,
     };
 
     setTenders((prev) => [newTender, ...prev]);

@@ -24,6 +24,26 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Comprehensive Tender Registration Fields from Tender-Dashboard Template
+- **Category:** Domain Model Expansion & Opportunity Intake
+- **Summary:**
+  - Integrated all fields from [`tender-dashboard.html`](file:///h:/Tender%20tracker%20v2/tender-dashboard.html) into the New Tender Registration modal ([`NewTenderModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/NewTenderModal.tsx)), organized into 5 intuitive tabs:
+    1. **Basic Info & Classification:** Domain classification pills (`SOFTWARE / IT RELATED`, etc.), Tender Title, Project Name, Tender ID, Reference No., Client / Donor, Portal, Country, SOW Category, Estimated Net Value (USD/BDT), Published Date, Submission Cutoff Date & Time, Priority.
+    2. **Scope & Commercial Requirements:** Concept & Main Idea, Tender Security (EMD), Contract / Service Period, Document Price, Performance Security, dynamic Technical Requirements list, Software/Tech Stack mentioned, Operational & SLA service lines.
+    3. **Eligibility & JV Guidelines:** General Experience, Similar Contracts Experience, Min Contract Value, Annual Turnover, Liquid Assets / Credit Line, Quality Certifications, Local Presence mandate, and JV / Consortium rules.
+    4. **Submission Docs, Staffing & Hardware:** Submission Documents checklist, Key Personnel / CV Table (`position`, `qualification`, `experience`, `qty`), and Hardware & Equipment specifications Table (`equipment`, `purpose`).
+    5. **Dates, Risks & Notes:** Clarification Deadline, Opening Date, Expected Contract Start, Key Risks / Points with Type tag (`Tender Requirement` vs `Analyst Observation`), Management Highlights, and Internal Notes.
+  - Expanded TypeScript domain interfaces ([`tender.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/types/tender.ts)) with `TenderExtendedSummary`, `TenderPersonnelReq`, `TenderHardwareReq`, and `TenderRiskPoint`.
+  - Updated [`TenderContext.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/context/TenderContext.tsx) to automatically seed compliance checklist requirements and tasks from registered summary documents.
+  - Enhanced Proposal Workspace ([`TenderDetailPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderDetailPage.tsx)) to render the comprehensive Tender Summary, commercial securities, personnel mandates, and risk flags.
+- **Relevant Files:**
+  - `frontend/src/types/tender.ts`
+  - `frontend/src/components/modals/NewTenderModal.tsx`
+  - `frontend/src/context/TenderContext.tsx`
+  - `frontend/src/pages/TenderDetailPage.tsx`
+
+---
+
 ### [2026-09-03] — Currency Switcher (USD/BDT), AI Button Cleanup & Lifecycle Stage Revert
 - **Category:** UI/UX & Functional Refinements
 - **Summary:**

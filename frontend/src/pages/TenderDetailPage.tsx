@@ -224,33 +224,118 @@ export const TenderDetailPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main 2 Cols: Scope Overview & Gatekeeper QA */}
           <div className="lg:col-span-2 space-y-6">
-            <Card title="Bid Proposal Executive Summary" subtitle="Scope statement, procurement authority requirements, and deliverables">
+            <Card
+              title="Tender Summary &amp; Stated Concept"
+              subtitle="Stated specifications, commercial requirements, and scope objectives"
+              headerAction={
+                tender.summary?.classification && (
+                  <span className="px-2.5 py-1 rounded-full bg-[#0F172A] text-white text-[10px] font-bold tracking-wider">
+                    {tender.summary.classification}
+                  </span>
+                )
+              }
+            >
               <div className="space-y-4 text-xs text-[#334155] leading-relaxed">
-                <p>
-                  This bid addresses sovereign requirements for deploying a secure, high-availability ERP and data infrastructure across multilateral regional nodes. The scope requires compliance with tier-4 security certifications, zero-trust cloud orchestration, and 24/7 technical operations SLA.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                  <div className="p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
-                    <span className="font-semibold text-[#0F172A] block mb-1">
-                      Technical SOW Milestones
-                    </span>
-                    <ul className="list-disc pl-4 space-y-1 text-[#64748B]">
-                      <li>Phase 1: Architecture Blueprint &amp; Zero-Trust Audit</li>
-                      <li>Phase 2: High-Performance Database Replication</li>
-                      <li>Phase 3: User Acceptance &amp; Production Handover</li>
-                    </ul>
-                  </div>
-                  <div className="p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
-                    <span className="font-semibold text-[#0F172A] block mb-1">
-                      Key Evaluation Criteria
-                    </span>
-                    <ul className="list-disc pl-4 space-y-1 text-[#64748B]">
-                      <li>70% Technical Methodology &amp; Past Experience</li>
-                      <li>30% Commercial Pricing &amp; SOW BOQ Breakdown</li>
-                      <li>Mandatory ISO 27001 &amp; SOC2 Type II certifications</li>
-                    </ul>
-                  </div>
+                <div>
+                  <span className="font-bold text-[#0F172A] block mb-1">
+                    Main Concept &amp; Deliverables:
+                  </span>
+                  <p className="p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] text-[#334155]">
+                    {tender.summary?.mainIdea ||
+                      'This bid addresses sovereign requirements for deploying a secure, high-availability ERP and data infrastructure across multilateral regional nodes. The scope requires compliance with tier-4 security certifications, zero-trust cloud orchestration, and 24/7 technical operations SLA.'}
+                  </p>
                 </div>
+
+                {tender.summary?.commercial && (
+                  <div>
+                    <span className="font-bold text-[#0F172A] block mb-1.5">
+                      Commercial Terms &amp; Financial Securities:
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                      <div className="p-2.5 bg-[#F8FAFC] rounded border border-[#E2E8F0]">
+                        <span className="text-[#64748B] block font-medium">Tender Security</span>
+                        <span className="font-mono font-bold text-[#0F172A]">
+                          {tender.summary.commercial.tenderSecurity || 'Bank Guarantee Required'}
+                        </span>
+                      </div>
+                      <div className="p-2.5 bg-[#F8FAFC] rounded border border-[#E2E8F0]">
+                        <span className="text-[#64748B] block font-medium">Contract / Service Period</span>
+                        <span className="font-semibold text-[#0F172A]">
+                          {tender.summary.commercial.contractPeriod || '12 Months + 24 Months O&M'}
+                        </span>
+                      </div>
+                      <div className="p-2.5 bg-[#F8FAFC] rounded border border-[#E2E8F0]">
+                        <span className="text-[#64748B] block font-medium">Document Price</span>
+                        <span className="font-mono text-[#0F172A]">
+                          {tender.summary.commercial.tenderDocPrice || 'Free on Portal'}
+                        </span>
+                      </div>
+                      <div className="p-2.5 bg-[#F8FAFC] rounded border border-[#E2E8F0]">
+                        <span className="text-[#64748B] block font-medium">Performance Security</span>
+                        <span className="font-mono font-bold text-[#16A34A]">
+                          {tender.summary.commercial.performanceSecurity || '10% of Contract Value'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {tender.summary?.personnel && tender.summary.personnel.length > 0 && (
+                  <div>
+                    <span className="font-bold text-[#0F172A] block mb-1.5">
+                      CV &amp; Key Personnel Mandates:
+                    </span>
+                    <div className="overflow-x-auto border border-[#E2E8F0] rounded-lg">
+                      <table className="w-full text-left text-[11px]">
+                        <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B]">
+                          <tr>
+                            <th className="p-2">Position Title</th>
+                            <th className="p-2">Min. Qualification</th>
+                            <th className="p-2">Required Experience</th>
+                            <th className="p-2 text-center w-12">Qty</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#F1F5F9]">
+                          {tender.summary.personnel.map((p, idx) => (
+                            <tr key={idx}>
+                              <td className="p-2 font-semibold text-[#0F172A]">{p.position}</td>
+                              <td className="p-2 text-[#64748B]">{p.qualification}</td>
+                              <td className="p-2 text-[#64748B]">{p.experience}</td>
+                              <td className="p-2 text-center font-mono font-bold text-[#0F172A]">{p.qty}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {tender.summary?.risks && tender.summary.risks.length > 0 && (
+                  <div>
+                    <span className="font-bold text-[#0F172A] block mb-1.5">
+                      Key Risks &amp; Analyst Observations:
+                    </span>
+                    <div className="space-y-1.5">
+                      {tender.summary.risks.map((r, idx) => (
+                        <div
+                          key={idx}
+                          className="p-2.5 bg-[#FEF2F2]/60 rounded border border-[#FECACA] flex items-start gap-2 text-xs"
+                        >
+                          <span
+                            className={`px-1.5 py-0.5 rounded text-[10px] font-bold font-mono shrink-0 ${
+                              r.type === 'Tender Requirement'
+                                ? 'bg-[#DC2626] text-white'
+                                : 'bg-[#D97706] text-white'
+                            }`}
+                          >
+                            {r.type}
+                          </span>
+                          <span className="text-[#991B1B] font-medium">{r.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </Card>
 
