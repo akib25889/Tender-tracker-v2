@@ -96,6 +96,12 @@ def extract_project_nodes():
             "module": "tenders",
         },
         {
+            "id": "screen:tender_registry",
+            "name": "Tender Registry & Data Entry",
+            "route": "/registry",
+            "module": "registry",
+        },
+        {
             "id": "screen:tender_detail",
             "name": "Tender Detail & Proposal Workspace",
             "route": "/tenders/{id}",

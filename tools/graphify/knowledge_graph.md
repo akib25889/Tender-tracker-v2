@@ -19,6 +19,7 @@
 | `screen:dashboard` | Tender Command Center Dashboard | `/dashboard` | `dashboard` |
 | `screen:my_tasks` | My Tasks - Cross-Tender Console | `/tasks/my-tasks` | `tasks` |
 | `screen:tenders_list` | Tender List & Pipeline Registry | `/tenders` | `tenders` |
+| `screen:tender_registry` | Tender Registry & Data Entry | `/registry` | `registry` |
 | `screen:tender_detail` | Tender Detail & Proposal Workspace | `/tenders/{id}` | `tenders` |
 | `screen:tender_analysis` | Tender Analysis & Scope Workspace | `/tenders/{id}/analysis` | `analysis` |
 | `screen:tender_requirements` | Compliance & Requirements Matrix | `/tenders/{id}/requirements` | `compliance` |

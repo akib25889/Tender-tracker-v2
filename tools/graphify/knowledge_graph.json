@@ -65,6 +65,13 @@
       "module": "tenders"
     },
     {
+      "id": "screen:tender_registry",
+      "name": "Tender Registry & Data Entry",
+      "type": "screen",
+      "route": "/registry",
+      "module": "registry"
+    },
+    {
       "id": "screen:tender_detail",
       "name": "Tender Detail & Proposal Workspace",
       "type": "screen",
