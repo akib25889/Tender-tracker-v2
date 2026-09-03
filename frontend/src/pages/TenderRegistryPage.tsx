@@ -76,16 +76,20 @@ export const TenderRegistryPage: React.FC = () => {
     selectedTender?.summary?.portal || 'e-GP / UNGM'
   );
   const [publishedDate, setPublishedDate] = useState(
-    selectedTender?.summary?.publishedDate ||
-      new Date().toISOString().split('T')[0]
+    selectedTender?.summary?.publishedDate || ''
   );
   const [lastDate, setLastDate] = useState(
     selectedTender?.submissionDeadline
       ? selectedTender.submissionDeadline.split('T')[0]
-      : new Date().toISOString().split('T')[0]
+      : ''
   );
   const [submissionTime, setSubmissionTime] = useState(
-    selectedTender?.summary?.submissionTime || '14:00 BST'
+    selectedTender?.summary?.submissionTime || ''
+  );
+  const [estimatedValue, setEstimatedValue] = useState<string | number>(
+    selectedTender?.estimatedValue && selectedTender.estimatedValue > 0
+      ? selectedTender.estimatedValue
+      : ''
   );
   const [priority, setPriority] = useState<TenderPriority>(
     selectedTender?.priority || 'HIGH'
@@ -229,16 +233,13 @@ export const TenderRegistryPage: React.FC = () => {
 
   // Dates, Risks, Management
   const [clarificationDeadline, setClarificationDeadline] = useState(
-    selectedTender?.summary?.dates?.clarificationDeadline ||
-      new Date().toISOString().split('T')[0]
+    selectedTender?.summary?.dates?.clarificationDeadline || ''
   );
   const [openingDate, setOpeningDate] = useState(
-    selectedTender?.summary?.dates?.openingDate ||
-      new Date().toISOString().split('T')[0]
+    selectedTender?.summary?.dates?.openingDate || ''
   );
   const [contractStart, setContractStart] = useState(
-    selectedTender?.summary?.dates?.contractStart ||
-      new Date().toISOString().split('T')[0]
+    selectedTender?.summary?.dates?.contractStart || ''
   );
 
   const [risks, setRisks] = useState<TenderRiskPoint[]>(
@@ -278,16 +279,18 @@ export const TenderRegistryPage: React.FC = () => {
     setClient(selectedTender.organization);
     setCountry(selectedTender.country);
     setPortal(selectedTender.summary?.portal || 'e-GP / UNGM');
-    setPublishedDate(
-      selectedTender.summary?.publishedDate ||
-        new Date().toISOString().split('T')[0]
-    );
+    setPublishedDate(selectedTender.summary?.publishedDate || '');
     setLastDate(
       selectedTender.submissionDeadline
         ? selectedTender.submissionDeadline.split('T')[0]
-        : new Date().toISOString().split('T')[0]
+        : ''
     );
-    setSubmissionTime(selectedTender.summary?.submissionTime || '14:00 BST');
+    setSubmissionTime(selectedTender.summary?.submissionTime || '');
+    setEstimatedValue(
+      selectedTender.estimatedValue && selectedTender.estimatedValue > 0
+        ? selectedTender.estimatedValue
+        : ''
+    );
     setPriority(selectedTender.priority);
     setCategory(selectedTender.category);
 
@@ -394,16 +397,13 @@ export const TenderRegistryPage: React.FC = () => {
     );
 
     setClarificationDeadline(
-      selectedTender.summary?.dates?.clarificationDeadline ||
-        new Date().toISOString().split('T')[0]
+      selectedTender.summary?.dates?.clarificationDeadline || ''
     );
     setOpeningDate(
-      selectedTender.summary?.dates?.openingDate ||
-        new Date().toISOString().split('T')[0]
+      selectedTender.summary?.dates?.openingDate || ''
     );
     setContractStart(
-      selectedTender.summary?.dates?.contractStart ||
-        new Date().toISOString().split('T')[0]
+      selectedTender.summary?.dates?.contractStart || ''
     );
 
     setRisks(
@@ -441,20 +441,26 @@ export const TenderRegistryPage: React.FC = () => {
       id: newId,
       referenceNo: `REF/${newId}`,
       title: 'New Tender Entry',
-      organization: 'Issuing Authority / Client',
-      country: 'Bangladesh / Regional',
+      organization: '',
+      country: '',
       category: 'IT & Cloud Infrastructure',
-      estimatedValue: 1000000,
+      estimatedValue: 0,
       stage: 'DISCOVERED',
       priority: 'HIGH',
-      submissionDeadline: new Date(Date.now() + 21 * 86400000).toISOString(),
+      submissionDeadline: '',
       summary: {
         classification: 'SOFTWARE / IT RELATED',
-        projectName: 'New Project Specification',
+        projectName: '',
         portal: 'e-GP Portal',
-        publishedDate: new Date().toISOString().split('T')[0],
-        submissionTime: '14:00 BST',
-        mainIdea: 'Detailed description of the tender requirement.',
+        publishedDate: '',
+        submissionTime: '',
+        mainIdea: '',
+        dates: {
+          clarificationDeadline: '',
+          openingDate: '',
+          contractStart: '',
+          submissionDeadline: '',
+        },
       },
     });
     setSelectedTenderId(newId);
@@ -462,6 +468,16 @@ export const TenderRegistryPage: React.FC = () => {
 
   const handleSaveEntry = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const parsedDeadline =
+      lastDate && !isNaN(Date.parse(lastDate))
+        ? new Date(lastDate).toISOString()
+        : '';
+
+    const parsedEstVal =
+      estimatedValue !== '' && !isNaN(Number(estimatedValue)) && Number(estimatedValue) > 0
+        ? Number(estimatedValue)
+        : 0;
 
     addTender({
       id: tenderId,
@@ -471,7 +487,8 @@ export const TenderRegistryPage: React.FC = () => {
       country,
       category,
       priority,
-      submissionDeadline: new Date(lastDate).toISOString(),
+      estimatedValue: parsedEstVal,
+      submissionDeadline: parsedDeadline,
       summary: {
         classification,
         projectName,
@@ -510,10 +527,10 @@ export const TenderRegistryPage: React.FC = () => {
         personnel: personnel.filter((p) => p.position.trim().length > 0),
         hardware: hardware.filter((h) => h.equipment.trim().length > 0),
         dates: {
-          clarificationDeadline,
-          submissionDeadline: `${lastDate} ${submissionTime}`,
-          openingDate,
-          contractStart,
+          clarificationDeadline: clarificationDeadline || '',
+          submissionDeadline: lastDate ? `${lastDate} ${submissionTime}`.trim() : '',
+          openingDate: openingDate || '',
+          contractStart: contractStart || '',
         },
         risks: risks.filter((r) => r.text.trim().length > 0),
         managementHighlights: management.filter((m) => m.trim().length > 0),
@@ -978,11 +995,10 @@ export const TenderRegistryPage: React.FC = () => {
 
                   <div>
                     <label className="block font-semibold text-[#0F172A] mb-1">
-                      Last Date (Submission Deadline) *
+                      Last Date (Submission Deadline)
                     </label>
                     <input
                       type="date"
-                      required
                       value={lastDate}
                       onChange={(e) => setLastDate(e.target.value)}
                       className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
@@ -991,11 +1007,11 @@ export const TenderRegistryPage: React.FC = () => {
 
                   <div>
                     <label className="block font-semibold text-[#0F172A] mb-1">
-                      Submission Cutoff Time *
+                      Submission Cutoff Time
                     </label>
                     <input
                       type="text"
-                      required
+                      placeholder="e.g. 14:00 BST"
                       value={submissionTime}
                       onChange={(e) => setSubmissionTime(e.target.value)}
                       className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
@@ -1003,24 +1019,44 @@ export const TenderRegistryPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
-                    Operational Priority
-                  </label>
-                  <select
-                    value={priority}
-                    onChange={(e) =>
-                      setPriority(e.target.value as TenderPriority)
-                    }
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
-                  >
-                    <option value="CRITICAL">
-                      CRITICAL (Window &lt; 48h / Urgent Gate)
-                    </option>
-                    <option value="HIGH">HIGH Priority</option>
-                    <option value="MEDIUM">MEDIUM Priority</option>
-                    <option value="LOW">LOW Priority</option>
-                  </select>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-[#0F172A] mb-1">
+                      Estimated Net Value ($ USD)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="any"
+                      placeholder="Leave blank if not entry / unannounced"
+                      value={estimatedValue}
+                      onChange={(e) => setEstimatedValue(e.target.value)}
+                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] placeholder:text-[#94A3B8]"
+                    />
+                    <span className="text-[10px] text-[#64748B] mt-0.5 block">
+                      Leave blank if not specified. Will not display if not entered.
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-[#0F172A] mb-1">
+                      Operational Priority
+                    </label>
+                    <select
+                      value={priority}
+                      onChange={(e) =>
+                        setPriority(e.target.value as TenderPriority)
+                      }
+                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                    >
+                      <option value="CRITICAL">
+                        CRITICAL (Window &lt; 48h / Urgent Gate)
+                      </option>
+                      <option value="HIGH">HIGH Priority</option>
+                      <option value="MEDIUM">MEDIUM Priority</option>
+                      <option value="LOW">LOW Priority</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             )}
@@ -1086,6 +1122,21 @@ export const TenderRegistryPage: React.FC = () => {
                       value={performanceSecurity}
                       onChange={(e) => setPerformanceSecurity(e.target.value)}
                       className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block font-semibold text-[#475569] mb-1">
+                      Estimated Net Value ($ USD)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="any"
+                      placeholder="Leave blank if not specified / entry"
+                      value={estimatedValue}
+                      onChange={(e) => setEstimatedValue(e.target.value)}
+                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] placeholder:text-[#94A3B8]"
                     />
                   </div>
                 </div>

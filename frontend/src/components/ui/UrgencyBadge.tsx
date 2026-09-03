@@ -11,6 +11,16 @@ export const UrgencyBadge: React.FC<UrgencyBadgeProps> = ({
   hoursRemaining,
   className = '',
 }) => {
+  if (daysRemaining <= 0 && (!hoursRemaining || hoursRemaining <= 0)) {
+    return (
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap shrink-0 text-[#94A3B8] bg-[#F8FAFC] border border-[#E2E8F0] ${className}`}
+      >
+        No Deadline
+      </span>
+    );
+  }
+
   const isCritical = daysRemaining <= 2;
   const isUrgent = daysRemaining > 2 && daysRemaining <= 5;
 

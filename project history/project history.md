@@ -24,6 +24,27 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Tender Data Entry: Blank Dates Fallback Removal & Conditional Net Value
+- **Category:** Form Ergonomics & UI Precision
+- **Summary:**
+  - **Blank Dates If Not Entered ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx)):**
+    - Removed arbitrary `new Date().toISOString()` fallbacks from `Clarification Deadline`, `Bid Opening Date`, `Expected Contract Start`, `Published Date`, and `Submission Deadline`.
+    - Removed mandatory HTML `required` attributes from deadline dates and submission cutoff times so unannounced/discovery-stage tenders can be created and saved with blank dates.
+    - Updated [`UrgencyBadge.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/UrgencyBadge.tsx) to display a neutral `"No Deadline"` badge when dates are omitted rather than triggering a false-positive critical alert.
+  - **Estimated Net Value Field in Registry ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx)):**
+    - Added dedicated **"Estimated Net Value ($ USD)"** input field in both Tab 1 (Basic Information) and Tab 2 (Scope & Commercial).
+    - Removed the hardcoded default fallback of `$1,000,000` (which previously forced all newly created tenders to display `৳12.20 Cr`).
+  - **Conditional Estimated Net Value Display ([`TenderDetailPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderDetailPage.tsx), [`TenderContext.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/context/TenderContext.tsx)):**
+    - Updated Proposal Workspace header widget: if a tender has no entered estimated value (zero or undefined), the **"Estimated Net Value"** block is completely hidden, cleanly displaying only the SOW Category.
+    - Updated `formatCurrency` to return a clean `"—"` dash when amounts are zero, null, or undefined.
+- **Relevant Files:**
+  - `frontend/src/pages/TenderRegistryPage.tsx`
+  - `frontend/src/pages/TenderDetailPage.tsx`
+  - `frontend/src/context/TenderContext.tsx`
+  - `frontend/src/components/ui/UrgencyBadge.tsx`
+
+---
+
 ### [2026-09-03] — UI Cleanup: Removed Dashboard Attention Rule Subtitle
 - **Category:** Copywriting & Visual Cleanup
 - **Summary:**

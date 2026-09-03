@@ -144,17 +144,28 @@ export const TenderDetailPage: React.FC = () => {
 
           {/* Value & Readiness Widget */}
           <div className="flex items-center gap-6 lg:border-l lg:border-[#F1F5F9] lg:pl-6 shrink-0 justify-between lg:justify-end">
-            <div>
-              <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
-                Estimated Net Value
-              </span>
-              <span className="font-mono font-bold text-2xl text-[#0F172A] mt-0.5 block">
-                {formatCurrency(tender.estimatedValue)}
-              </span>
-              <span className="text-[11px] text-[#2563EB] font-medium">
-                SOW Category: {tender.category}
-              </span>
-            </div>
+            {Boolean(tender.estimatedValue && tender.estimatedValue > 0) ? (
+              <div>
+                <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+                  Estimated Net Value
+                </span>
+                <span className="font-mono font-bold text-2xl text-[#0F172A] mt-0.5 block">
+                  {formatCurrency(tender.estimatedValue)}
+                </span>
+                <span className="text-[11px] text-[#2563EB] font-medium">
+                  SOW Category: {tender.category}
+                </span>
+              </div>
+            ) : (
+              <div>
+                <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+                  SOW Category
+                </span>
+                <span className="font-semibold text-sm text-[#0F172A] mt-0.5 block">
+                  {tender.category}
+                </span>
+              </div>
+            )}
 
             <div className="w-36">
               <div className="flex items-center justify-between text-[11px] mb-1">

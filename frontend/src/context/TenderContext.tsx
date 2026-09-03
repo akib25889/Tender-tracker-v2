@@ -111,7 +111,10 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem(CURRENCY_KEY, c);
   };
 
-  const formatCurrency = (amountInUSD: number): string => {
+  const formatCurrency = (amountInUSD: number | undefined | null): string => {
+    if (amountInUSD === undefined || amountInUSD === null || amountInUSD <= 0 || isNaN(amountInUSD)) {
+      return '—';
+    }
     if (currency === 'USD') {
       if (amountInUSD >= 1_000_000) {
         return `$${(amountInUSD / 1_000_000).toFixed(2)}M`;
@@ -141,12 +144,15 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addTender = (tenderData: Partial<Tender>) => {
     const newId = tenderData.id || `TDR-2026-${Math.floor(100 + Math.random() * 900)}`;
-    const deadlineDate = tenderData.submissionDeadline
-      ? new Date(tenderData.submissionDeadline)
-      : new Date(Date.now() + 14 * 86400000);
-    const diffMs = Math.max(0, deadlineDate.getTime() - Date.now());
-    const daysRemaining = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-    const hoursRemaining = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60)));
+    const submissionDeadlineStr =
+      tenderData.submissionDeadline && tenderData.submissionDeadline.trim().length > 0
+        ? tenderData.submissionDeadline
+        : '';
+    const hasDeadline = Boolean(submissionDeadlineStr && !isNaN(Date.parse(submissionDeadlineStr)));
+    const deadlineDate = hasDeadline ? new Date(submissionDeadlineStr) : null;
+    const diffMs = deadlineDate ? Math.max(0, deadlineDate.getTime() - Date.now()) : 0;
+    const daysRemaining = deadlineDate ? Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24))) : 0;
+    const hoursRemaining = deadlineDate ? Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60))) : 0;
 
     // Generate initial requirements from submissionDocuments if provided
     const docReqs = (tenderData.summary?.submissionDocuments || [])
@@ -178,18 +184,26 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const finalReqs = docReqs.length > 0 ? [...defaultReqs, ...docReqs] : defaultReqs;
 
+    const parsedEstimatedValue =
+      tenderData.estimatedValue !== undefined &&
+      tenderData.estimatedValue !== null &&
+      !isNaN(Number(tenderData.estimatedValue)) &&
+      Number(tenderData.estimatedValue) > 0
+        ? Number(tenderData.estimatedValue)
+        : 0;
+
     const newTender: Tender = {
       id: newId,
       referenceNo: tenderData.referenceNo || `REF/${newId}`,
       title: tenderData.title || tenderData.summary?.projectName || 'Untitled Tender Opportunity',
-      organization: tenderData.organization || 'Multilateral Donor Agency',
-      country: tenderData.country || 'Global / Regional',
+      organization: tenderData.organization || '',
+      country: tenderData.country || '',
       category: tenderData.category || 'IT & Cloud Infrastructure',
-      estimatedValue: Number(tenderData.estimatedValue) || 1000000,
+      estimatedValue: parsedEstimatedValue,
       stage: tenderData.stage || 'DISCOVERED',
       decision: 'PENDING',
       priority: tenderData.priority || 'HIGH',
-      submissionDeadline: deadlineDate.toISOString(),
+      submissionDeadline: submissionDeadlineStr,
       daysRemaining,
       hoursRemaining,
       readinessScore: 10,
@@ -233,7 +247,19 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     setTenders((prev) => {
       const exists = prev.some((t) => t.id === newId);
       if (exists) {
-        return prev.map((t) => (t.id === newId ? { ...t, ...tenderData, summary: { ...t.summary, ...tenderData.summary } } : t));
+        return prev.map((t) =>
+          t.id === newId
+            ? {
+                ...t,
+                ...tenderData,
+                estimatedValue:
+                  tenderData.estimatedValue !== undefined && !isNaN(Number(tenderData.estimatedValue))
+                    ? Number(tenderData.estimatedValue)
+                    : t.estimatedValue,
+                summary: { ...t.summary, ...tenderData.summary },
+              }
+            : t
+        );
       }
       return [newTender, ...prev];
     });
