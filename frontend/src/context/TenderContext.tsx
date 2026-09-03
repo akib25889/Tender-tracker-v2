@@ -9,6 +9,7 @@ import {
   TenderDecisionMatrix,
   RequirementStatus,
   UserProfile,
+  UserRole,
   TenderComment,
   DocumentShareLink,
 } from '../types/tender';
@@ -52,6 +53,14 @@ interface TenderContextType {
   currentUser: UserProfile;
   setCurrentUser: (user: UserProfile) => void;
   teamMembers: UserProfile[];
+  addTeamMember: (member: {
+    name: string;
+    role: UserRole;
+    title: string;
+    email: string;
+    dept?: string;
+    maxCapacity?: number;
+  }) => void;
   canPerformAction: (action: 'ADVANCE_STAGE' | 'SIGN_OFF_TIER_3' | 'DELETE_TENDER' | 'ASSIGN_TASK' | 'EDIT_TECHNICAL') => boolean;
   // Task assignment
   assignTask: (tenderId: string, taskId: string, newAssignee: string) => void;
@@ -526,14 +535,55 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // RBAC & Collaborative State
-  const [currentUser, setCurrentUser] = useState<UserProfile>(TEAM_PROFILES[0]);
+  const [teamMembers, setTeamMembers] = useState<UserProfile[]>(() => {
+    const saved = localStorage.getItem('tendertracker_team_profiles');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {
+        console.error('Failed to parse team profiles:', e);
+      }
+    }
+    return TEAM_PROFILES;
+  });
+
+  const [currentUser, setCurrentUser] = useState<UserProfile>(teamMembers[0] || TEAM_PROFILES[0]);
   const [sharedLinks, setSharedLinks] = useState<DocumentShareLink[]>([]);
   const [activeDocForShare, setActiveDocForShare] = useState<{
     tenderId: string;
     doc: TenderDocument;
   } | null>(null);
 
-  // Full access: every role has all operational permissions
+  const addTeamMember = (member: {
+    name: string;
+    role: UserRole;
+    title: string;
+    email: string;
+    dept?: string;
+    maxCapacity?: number;
+  }) => {
+    const initials = member.name
+      .split(' ')
+      .filter(Boolean)
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+    const newProfile: UserProfile = {
+      id: `USR-0${teamMembers.length + 1}`,
+      name: member.name,
+      role: member.role,
+      title: member.title || member.role.replace('_', ' '),
+      email: member.email,
+      avatar: initials || 'TM',
+    };
+    const updated = [...teamMembers, newProfile];
+    setTeamMembers(updated);
+    localStorage.setItem('tendertracker_team_profiles', JSON.stringify(updated));
+  };
+
+  // Full access: every role has operational permissions
   const canPerformAction = (): boolean => true;
 
   const assignTask = (
@@ -631,7 +681,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         submitTenderProof,
         currentUser,
         setCurrentUser,
-        teamMembers: TEAM_PROFILES,
+        teamMembers,
+        addTeamMember,
         canPerformAction,
         assignTask,
         addComment,
