@@ -24,6 +24,8 @@ interface TenderContextType {
   deleteTender: (id: string) => void;
   deleteMultipleTenders: (ids: string[]) => void;
   updateTenderStage: (tenderId: string, stage: TenderStage) => void;
+  archiveTender: (tenderId: string) => void;
+  restoreTender: (tenderId: string) => void;
   setTenderDecision: (
     tenderId: string,
     decision: DecisionStatus,
@@ -291,7 +293,48 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateTenderStage = (tenderId: string, stage: TenderStage) => {
     setTenders((prev) =>
-      prev.map((t) => (t.id === tenderId ? { ...t, stage } : t))
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        return {
+          ...t,
+          stage,
+          archivedFromStage:
+            stage === 'ARCHIVED'
+              ? (t.stage !== 'ARCHIVED' ? t.stage : t.archivedFromStage || 'DISCOVERED')
+              : undefined,
+          archivedAt: stage === 'ARCHIVED' ? new Date().toISOString() : undefined,
+        };
+      })
+    );
+  };
+
+  const archiveTender = (tenderId: string) => {
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        if (t.stage === 'SUBMITTED') return t;
+        return {
+          ...t,
+          stage: 'ARCHIVED' as TenderStage,
+          archivedFromStage: t.stage !== 'ARCHIVED' ? t.stage : t.archivedFromStage || 'DISCOVERED',
+          archivedAt: new Date().toISOString(),
+        };
+      })
+    );
+  };
+
+  const restoreTender = (tenderId: string) => {
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        const restoredStage: TenderStage = t.archivedFromStage || 'DISCOVERED';
+        return {
+          ...t,
+          stage: restoredStage,
+          archivedFromStage: undefined,
+          archivedAt: undefined,
+        };
+      })
     );
   };
 
@@ -571,6 +614,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         deleteTender,
         deleteMultipleTenders,
         updateTenderStage,
+        archiveTender,
+        restoreTender,
         setTenderDecision,
         addTask,
         moveTask,

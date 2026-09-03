@@ -16,6 +16,8 @@ import {
   Trash2,
   Edit3,
   Printer,
+  Archive,
+  RotateCcw,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -30,7 +32,7 @@ export const TenderDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const { tenders, updateTenderStage, deleteTender, formatCurrency } = useTenders();
+  const { tenders, updateTenderStage, archiveTender, restoreTender, deleteTender, formatCurrency } = useTenders();
 
   // Find the tender or fallback to the first tender
   const tender = tenders.find((t) => t.id === id) || tenders[0];
@@ -183,26 +185,65 @@ export const TenderDetailPage: React.FC = () => {
         {/* 6-Gate Lifecycle Progression Bar */}
         <div className="mt-6 pt-4 border-t border-[#F1F5F9]">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-            <span className="text-xs font-semibold text-[#0F172A]">
-              Current Lifecycle Stage: {tender.stage.replace('_', ' ')}
-            </span>
             <div className="flex items-center gap-2">
-              {currentStageIndex > 0 && (
+              <span className="text-xs font-semibold text-[#0F172A] dark:text-white">
+                Current Lifecycle Stage: {tender.stage.replace('_', ' ')}
+              </span>
+              {tender.stage === 'ARCHIVED' && (
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#F1F5F9] dark:bg-[#21262D] text-[#475569] dark:text-[#94A3B8] border border-[#CBD5E1] dark:border-[#30363D]">
+                  Archived Record
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {currentStageIndex > 0 && tender.stage !== 'ARCHIVED' && (
                 <button
+                  type="button"
                   onClick={() => updateTenderStage(tender.id, stages[currentStageIndex - 1])}
-                  className="flex items-center gap-1 px-2.5 py-1 bg-white border border-[#E2E8F0] text-[#475569] hover:text-[#0F172A] hover:bg-[#F8FAFC] text-[11px] font-semibold rounded transition-colors shadow-xs"
+                  className="flex items-center gap-1 px-2.5 py-1 bg-white dark:bg-[#21262D] border border-[#E2E8F0] dark:border-[#30363D] text-[#475569] dark:text-[#C9D1D9] hover:text-[#0F172A] hover:bg-[#F8FAFC] text-[11px] font-semibold rounded transition-colors shadow-xs"
                 >
                   <ArrowLeft className="w-3 h-3" />
                   <span>Back to {stages[currentStageIndex - 1].replace('_', ' ')}</span>
                 </button>
               )}
-              {currentStageIndex < stages.length - 1 && (
+              {currentStageIndex < stages.length - 1 && tender.stage !== 'ARCHIVED' && (
                 <button
+                  type="button"
                   onClick={() => updateTenderStage(tender.id, stages[currentStageIndex + 1])}
                   className="flex items-center gap-1 px-2.5 py-1 bg-[#0F172A] text-white text-[11px] font-semibold rounded hover:bg-[#1E293B] transition-colors shadow-sm"
                 >
                   <span>Advance to {stages[currentStageIndex + 1].replace('_', ' ')}</span>
                   <ArrowRight className="w-3 h-3" />
+                </button>
+              )}
+
+              {/* Archive for Records button (available in ANY stage except SUBMITTED) */}
+              {tender.stage !== 'SUBMITTED' && tender.stage !== 'ARCHIVED' && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm(`Send tender "${tender.title}" (${tender.id}) to Archive for record-keeping?`)) {
+                      archiveTender(tender.id);
+                    }
+                  }}
+                  className="flex items-center gap-1.5 px-2.5 py-1 bg-[#F8FAFC] dark:bg-[#21262D] border border-[#CBD5E1] dark:border-[#30363D] text-[#475569] dark:text-[#C9D1D9] hover:bg-[#F1F5F9] hover:text-[#0F172A] text-[11px] font-semibold rounded transition-colors shadow-2xs"
+                  title="Send this tender to archive for record keeping"
+                >
+                  <Archive className="w-3 h-3 text-[#64748B]" />
+                  <span>Send to Archive</span>
+                </button>
+              )}
+
+              {/* Restore button if already ARCHIVED */}
+              {tender.stage === 'ARCHIVED' && (
+                <button
+                  type="button"
+                  onClick={() => restoreTender(tender.id)}
+                  className="flex items-center gap-1.5 px-2.5 py-1 bg-[#2563EB] text-white hover:bg-[#1D4ED8] text-[11px] font-semibold rounded transition-colors shadow-xs"
+                  title="Restore tender from archive"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  <span>Restore Tender</span>
                 </button>
               )}
             </div>

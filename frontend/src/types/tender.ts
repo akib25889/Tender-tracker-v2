@@ -7,7 +7,8 @@ export type TenderStage =
   | 'SUBMITTED'
   | 'AWARDED'
   | 'LOST'
-  | 'DECLINED';
+  | 'DECLINED'
+  | 'ARCHIVED';
 
 export type DecisionStatus = 'PENDING' | 'GO' | 'NO_GO' | 'CONDITIONAL';
 
@@ -214,6 +215,8 @@ export interface Tender {
   submissionProof?: SubmissionProof;
   summary?: TenderExtendedSummary;
   comments?: TenderComment[];
+  archivedFromStage?: TenderStage;
+  archivedAt?: string;
 }
 
 export interface PipelineSummary {

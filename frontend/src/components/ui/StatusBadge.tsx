@@ -62,6 +62,12 @@ const STAGE_CONFIG: Record<TenderStage, { label: string; bg: string; text: strin
     text: 'text-[#64748B]',
     border: 'border-[#E2E8F0]',
   },
+  ARCHIVED: {
+    label: 'Archived (Record)',
+    bg: 'bg-[#F1F5F9]',
+    text: 'text-[#475569]',
+    border: 'border-[#CBD5E1]',
+  },
 };
 
 const DECISION_CONFIG: Record<DecisionStatus, { label: string; bg: string; text: string; border: string }> = {

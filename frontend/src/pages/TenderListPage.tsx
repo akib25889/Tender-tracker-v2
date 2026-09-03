@@ -11,6 +11,8 @@ import {
   Trash2,
   Edit3,
   AlertTriangle,
+  Archive,
+  RotateCcw,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -20,7 +22,7 @@ import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { TenderStage } from '../types/tender';
 
 export const TenderListPage: React.FC = () => {
-  const { tenders, updateTenderStage, deleteTender, deleteMultipleTenders, formatCurrency } = useTenders();
+  const { tenders, updateTenderStage, archiveTender, restoreTender, deleteTender, deleteMultipleTenders, formatCurrency } = useTenders();
   const [searchParams, setSearchParams] = useSearchParams();
   const stageFromUrl = searchParams.get('stage');
 
@@ -57,7 +59,10 @@ export const TenderListPage: React.FC = () => {
       t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.organization.toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.id.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStage = selectedStage === 'ALL' || t.stage === selectedStage;
+    const matchesStage =
+      selectedStage === 'ALL'
+        ? t.stage !== 'ARCHIVED'
+        : t.stage === selectedStage;
     const matchesCategory = selectedCategory === 'ALL' || t.category === selectedCategory;
     return matchesSearch && matchesStage && matchesCategory;
   });
@@ -98,6 +103,7 @@ export const TenderListPage: React.FC = () => {
   const categories = [
     'ALL',
     'IT & Cloud Infrastructure',
+    'Software / IT Related',
     'Healthcare Systems',
     'Cybersecurity & Energy',
     'Identity & Security',
@@ -106,27 +112,22 @@ export const TenderListPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
-            <span>Tenders</span>
-            <span>•</span>
-            <span className="font-semibold text-[#0F172A]">Pipeline Registry</span>
-          </div>
-          <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
-            Tender Registry &amp; Pipeline
+          <h1 className="text-xl font-bold font-display text-[#0F172A] tracking-tight">
+            Pipeline Overview
           </h1>
           <p className="text-xs text-[#64748B] mt-0.5">
-            Manage {tenders.length} active opportunities across discovery, eligibility screening, proposal collation, and statutory submission.
+            Active multi-donor tender operations, technical proposal readiness, and audit trails.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <ExportDropdown tenders={filteredTenders} label="Export Pipeline" />
           <Link
             to="/registry"
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] shadow-sm transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>New Tender Opportunity</span>
@@ -168,7 +169,7 @@ export const TenderListPage: React.FC = () => {
         <div className="flex items-center gap-2 overflow-x-auto pt-2 border-t border-[#F1F5F9]">
           <Filter className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
           <span className="text-xs text-[#64748B] font-medium whitespace-nowrap">Stage:</span>
-          {['ALL', 'DISCOVERED', 'SCREENING', 'UNDER_ANALYSIS', 'PREPARATION', 'INTERNAL_REVIEW', 'SUBMITTED'].map(
+          {['ALL', 'DISCOVERED', 'SCREENING', 'UNDER_ANALYSIS', 'PREPARATION', 'INTERNAL_REVIEW', 'SUBMITTED', 'ARCHIVED'].map(
             (stage) => (
               <button
                 key={stage}
@@ -180,9 +181,11 @@ export const TenderListPage: React.FC = () => {
                 }`}
               >
                 {stage === 'ALL'
-                  ? 'All Stages'
+                  ? 'All Active'
                   : stage === 'DISCOVERED'
                   ? '1. Bid Discovery (New)'
+                  : stage === 'ARCHIVED'
+                  ? 'Archived Records'
                   : stage.replace('_', ' ')}
               </button>
             )
@@ -357,6 +360,34 @@ export const TenderListPage: React.FC = () => {
                         <Edit3 className="w-3.5 h-3.5 text-[#64748B]" />
                         <span>Edit</span>
                       </Link>
+
+                      {tender.stage !== 'SUBMITTED' && tender.stage !== 'ARCHIVED' && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (window.confirm(`Send tender "${tender.title}" (${tender.id}) to Archive for record-keeping?`)) {
+                              archiveTender(tender.id);
+                            }
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#475569] bg-white hover:bg-[#F1F5F9] rounded-lg border border-[#CBD5E1] transition-colors shadow-2xs"
+                          title="Send to Archive for records"
+                        >
+                          <Archive className="w-3.5 h-3.5 text-[#64748B]" />
+                          <span>Archive</span>
+                        </button>
+                      )}
+
+                      {tender.stage === 'ARCHIVED' && (
+                        <button
+                          type="button"
+                          onClick={() => restoreTender(tender.id)}
+                          className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#2563EB] bg-white hover:bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] transition-colors shadow-2xs"
+                          title="Restore tender from archive"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          <span>Restore</span>
+                        </button>
+                      )}
 
                       <button
                         onClick={() => setTenderToDelete({ id: tender.id, title: tender.title })}
