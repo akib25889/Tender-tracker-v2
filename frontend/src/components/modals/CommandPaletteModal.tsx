@@ -438,7 +438,7 @@ export const CommandPaletteModal: React.FC = () => {
 
               return (
                 <div
-                  key={item.id}
+                  key={`${item.id}-${idx}`}
                   data-index={idx}
                   onClick={item.onSelect}
                   onMouseEnter={() => setSelectedIndex(idx)}
