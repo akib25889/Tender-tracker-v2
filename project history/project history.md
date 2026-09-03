@@ -22,7 +22,35 @@
 
 ---
 
-## 2. Chronological Change Log
+### [2026-09-04] — Tender Data Ingestion: ACRI Digital Ratings Platform (PRC0190428) & Dark Mode
+- **Category:** Data Entry, Ingestion & Theming
+- **Summary:**
+  - **Tender Data Ingestion (`PRC0190428`):**
+    - Inputted the complete tender record for **"Development of the African Credit and Investment Risk (ACRI) Digital Ratings Platform"** (UNDP, Reference `PRC0190428`) matching all photographed specifications.
+    - Added full Basic Information table (Country: Ghana & Côte d'Ivoire, Portal: UNDP Quantum, Deadline: 15 Sep 2026, 23:59:59 ET, Estimated Value: unstated).
+    - Added comprehensive Commercial, Technical, Software/Tech stack, and Operational requirements.
+    - Added Key Eligibility criteria, JV/Consortium rules, and statutory Submission Documents (Form C through Form K).
+    - Populated CV / Personnel Requirements table (4 key roles: Project & technical personnel, Software/Platform Experts, Data/AI/ML Experts, Financial/Credit/Investment Risk Experts).
+    - Populated Key Risks / Important Points (with `[Tender Requirement]` and `[Analyst Observation]` badges) and Management Highlights.
+    - Added automatic state synchronization in [`TenderContext.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/context/TenderContext.tsx) to merge the new tender into existing local client storage.
+  - **Tender Summary Document View (`/registry/summary/:id`):**
+    - Implemented a high-fidelity document-style summary page matching the user's printed report photos.
+    - Integrated with [`TenderSummaryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderSummaryPage.tsx) with print stylesheet, clean data tables, bullet points, and quick link to Workspace / Edit entry.
+  - **Dark Theme / Night Mode:**
+    - Implemented full dark mode theme system using CSS variable tokens (`--bg-canvas`, `--bg-surface`, `--text-primary`, `--border-default`).
+    - Added `useTheme` hook with persistence in `localStorage` and system color scheme preference detection.
+    - Added Moon/Sun toggle in the persistent global Header bar.
+- **Relevant Files:**
+  - `frontend/src/mock/tenders.ts`
+  - `frontend/src/types/tender.ts`
+  - `frontend/src/context/TenderContext.tsx`
+  - `frontend/src/pages/TenderSummaryPage.tsx`
+  - `frontend/src/components/layout/Header.tsx`
+  - `frontend/src/components/layout/AppLayout.tsx`
+  - `frontend/src/hooks/useTheme.ts`
+  - `frontend/src/index.css`
+
+---
 
 ### [2026-09-03] — Tender Data Entry: Blank Dates Fallback Removal & Conditional Net Value
 - **Category:** Form Ergonomics & UI Precision
