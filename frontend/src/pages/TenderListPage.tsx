@@ -13,6 +13,7 @@ import {
   AlertTriangle,
   Archive,
   RotateCcw,
+  FileText,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -258,162 +259,308 @@ export const TenderListPage: React.FC = () => {
         </div>
       )}
 
-      {/* Tenders Table */}
-      <div className="bg-white rounded-lg border border-[#E2E8F0] shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
-                <th className="py-3 px-4 w-10">
-                  <button onClick={toggleSelectAll}>
-                    {selectedIds.length === filteredTenders.length && filteredTenders.length > 0 ? (
-                      <CheckSquare className="w-4 h-4 text-[#2563EB]" />
-                    ) : (
-                      <Square className="w-4 h-4 text-[#CBD5E1]" />
-                    )}
-                  </button>
-                </th>
-                <th className="py-3 px-4">Tender ID &amp; SOW Title</th>
-                <th className="py-3 px-4">Issuing Authority</th>
-                <th className="py-3 px-4 whitespace-nowrap">Value</th>
-                <th className="py-3 px-4 whitespace-nowrap">Stage</th>
-                <th className="py-3 px-4 whitespace-nowrap">Decision</th>
-                <th className="py-3 px-4 whitespace-nowrap">Urgency</th>
-                <th className="py-3 px-4 whitespace-nowrap">Readiness</th>
-                <th className="py-3 px-4 text-right whitespace-nowrap">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#F1F5F9] text-xs">
-              {filteredTenders.map((tender, idx) => (
-                <tr
-                  key={`${tender.id}-${idx}`}
-                  className={`hover:bg-[#F8FAFC] transition-colors group ${
-                    selectedIds.includes(tender.id) ? 'bg-[#EFF6FF]/40' : ''
-                  }`}
-                >
-                  <td className="py-3.5 px-4">
-                    <button onClick={() => toggleSelect(tender.id)}>
+      {/* Bid Discovery View: 3-line format per tender */}
+      {selectedStage === 'DISCOVERED' ? (
+        <div className="space-y-3">
+          {filteredTenders.length === 0 ? (
+            <div className="bg-white rounded-lg border border-[#E2E8F0] p-12 text-center text-[#64748B]">
+              <Compass className="w-8 h-8 mx-auto text-[#94A3B8] mb-2" />
+              <p className="font-semibold text-sm text-[#0F172A]">No tenders in Bid Discovery</p>
+              <p className="text-xs text-[#64748B] mt-1">All discovered opportunities have been advanced or screened.</p>
+            </div>
+          ) : (
+            filteredTenders.map((tender, idx) => (
+              <div
+                key={`${tender.id}-${idx}`}
+                className={`bg-white rounded-xl border border-[#E2E8F0] p-4 shadow-xs hover:border-[#CBD5E1] transition-all space-y-3 ${
+                  selectedIds.includes(tender.id) ? 'bg-[#EFF6FF]/40 border-[#BFDBFE]' : ''
+                }`}
+              >
+                {/* Upper Line: Tender ID & Title */}
+                <div className="flex items-start sm:items-center justify-between gap-3 pb-2.5 border-b border-[#F1F5F9]">
+                  <div className="flex items-center gap-2.5 flex-wrap flex-1">
+                    <button type="button" onClick={() => toggleSelect(tender.id)}>
                       {selectedIds.includes(tender.id) ? (
                         <CheckSquare className="w-4 h-4 text-[#2563EB]" />
                       ) : (
                         <Square className="w-4 h-4 text-[#CBD5E1]" />
                       )}
                     </button>
-                  </td>
-
-                  <td className="py-3.5 px-4 max-w-xs">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-mono text-xs font-bold text-[#0F172A]">
-                        {tender.id}
-                      </span>
-                      <span className="text-[10px] text-[#94A3B8] font-mono">
+                    <span className="font-mono text-xs font-bold text-[#0F172A] bg-[#F1F5F9] px-2 py-0.5 rounded border border-[#E2E8F0]">
+                      {tender.id}
+                    </span>
+                    {tender.referenceNo && (
+                      <span className="text-[11px] font-mono text-[#64748B] bg-[#F8FAFC] px-1.5 py-0.5 rounded">
                         {tender.referenceNo}
                       </span>
-                    </div>
+                    )}
                     <Link
                       to={`/tenders/${tender.id}`}
-                      className="font-medium text-[#0F172A] group-hover:text-[#2563EB] line-clamp-1"
+                      className="font-bold text-sm text-[#0F172A] hover:text-[#2563EB] transition-colors"
                     >
                       {tender.title}
                     </Link>
-                  </td>
+                  </div>
+                  <UrgencyBadge
+                    daysRemaining={tender.daysRemaining}
+                    hoursRemaining={tender.hoursRemaining}
+                  />
+                </div>
 
-                  <td className="py-3.5 px-4 text-[#475569]">
-                    <div className="font-medium text-[#0F172A]">
-                      {tender.organization}
-                    </div>
-                    <div className="text-[11px] text-[#94A3B8]">
-                      {tender.country}
-                    </div>
-                  </td>
+                {/* Second Line: Authority, Value, Stage */}
+                <div className="flex items-center justify-between gap-4 py-1 flex-wrap text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#64748B] font-medium">Authority:</span>
+                    <span className="font-semibold text-[#0F172A]">
+                      {tender.organization || 'Not specified'}
+                    </span>
+                    {tender.country && (
+                      <span className="text-[#64748B]">
+                        • {tender.country}
+                      </span>
+                    )}
+                  </div>
 
-                  <td className="py-3.5 px-4 font-mono font-bold text-[#0F172A]">
-                    {formatCurrency(tender.estimatedValue)}
-                  </td>
+                  <div className="flex items-center gap-1.5 font-mono">
+                    <span className="text-[#64748B] font-sans font-medium text-xs">Value:</span>
+                    <span className="font-bold text-[#0F172A]">
+                      {tender.estimatedValue && tender.estimatedValue > 0 ? formatCurrency(tender.estimatedValue) : '— (Not stated)'}
+                    </span>
+                  </div>
 
-                  <td className="py-3.5 px-4 whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#64748B] font-medium">Stage:</span>
                     <StatusBadge stage={tender.stage} />
-                  </td>
+                    {tender.decision && <StatusBadge decision={tender.decision} />}
+                  </div>
+                </div>
 
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    <StatusBadge decision={tender.decision} />
-                  </td>
+                {/* Third Line: Readiness and all the button */}
+                <div className="flex items-center justify-between gap-4 pt-2.5 border-t border-[#F1F5F9] flex-wrap">
+                  <div className="flex items-center gap-3 w-64 max-w-full">
+                    <span className="text-xs text-[#64748B] font-medium shrink-0">Readiness:</span>
+                    <div className="w-full">
+                      <ReadinessBar score={tender.readinessScore} />
+                    </div>
+                  </div>
 
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    <UrgencyBadge
-                      daysRemaining={tender.daysRemaining}
-                      hoursRemaining={tender.hoursRemaining}
-                    />
-                  </td>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <Link
+                      to={`/registry/summary/${tender.id}`}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#475569] bg-white hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] transition-colors shadow-2xs"
+                      title="View Document Summary"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-[#2563EB]" />
+                      <span>Summary</span>
+                    </Link>
 
-                  <td className="py-3.5 px-4 w-36">
-                    <ReadinessBar score={tender.readinessScore} />
-                  </td>
+                    <Link
+                      to={`/registry?id=${tender.id}`}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] bg-white hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] transition-colors shadow-2xs"
+                      title="Edit Tender Specifications"
+                    >
+                      <Edit3 className="w-3.5 h-3.5 text-[#64748B]" />
+                      <span>Edit</span>
+                    </Link>
 
-                  <td className="py-3.5 px-4 text-right whitespace-nowrap">
-                    <div className="flex items-center justify-end gap-1.5">
-                      <Link
-                        to={`/registry?id=${tender.id}`}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] bg-white hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] hover:border-[#CBD5E1] transition-colors shadow-2xs"
-                        title="Edit Tender Specifications"
-                      >
-                        <Edit3 className="w-3.5 h-3.5 text-[#64748B]" />
-                        <span>Edit</span>
-                      </Link>
-
-                      {tender.stage !== 'SUBMITTED' && tender.stage !== 'ARCHIVED' && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (window.confirm(`Send tender "${tender.title}" (${tender.id}) to Archive for record-keeping?`)) {
-                              archiveTender(tender.id);
-                            }
-                          }}
-                          className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#475569] bg-white hover:bg-[#F1F5F9] rounded-lg border border-[#CBD5E1] transition-colors shadow-2xs"
-                          title="Send to Archive for records"
-                        >
-                          <Archive className="w-3.5 h-3.5 text-[#64748B]" />
-                          <span>Archive</span>
-                        </button>
-                      )}
-
-                      {tender.stage === 'ARCHIVED' && (
-                        <button
-                          type="button"
-                          onClick={() => restoreTender(tender.id)}
-                          className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#2563EB] bg-white hover:bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] transition-colors shadow-2xs"
-                          title="Restore tender from archive"
-                        >
-                          <RotateCcw className="w-3.5 h-3.5" />
-                          <span>Restore</span>
-                        </button>
-                      )}
-
+                    {tender.stage !== 'SUBMITTED' && tender.stage !== 'ARCHIVED' && (
                       <button
-                        onClick={() => setTenderToDelete({ id: tender.id, title: tender.title })}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#DC2626] bg-white hover:bg-[#FEF2F2] rounded-lg border border-[#FECACA] hover:border-[#F87171] transition-colors shadow-2xs"
-                        title="Delete Tender"
+                        type="button"
+                        onClick={() => {
+                          if (window.confirm(`Send tender "${tender.title}" (${tender.id}) to Archive for record-keeping?`)) {
+                            archiveTender(tender.id);
+                          }
+                        }}
+                        className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#475569] bg-white hover:bg-[#F1F5F9] rounded-lg border border-[#CBD5E1] transition-colors shadow-2xs"
+                        title="Send to Archive for records"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        <span>Delete</span>
+                        <Archive className="w-3.5 h-3.5 text-[#64748B]" />
+                        <span>Archive</span>
                       </button>
+                    )}
 
+                    <button
+                      type="button"
+                      onClick={() => setTenderToDelete({ id: tender.id, title: tender.title })}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#DC2626] bg-white hover:bg-[#FEF2F2] rounded-lg border border-[#FECACA] hover:border-[#F87171] transition-colors shadow-2xs"
+                      title="Delete Tender"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete</span>
+                    </button>
+
+                    <Link
+                      to={`/tenders/${tender.id}`}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white bg-[#0F172A] hover:bg-[#1E293B] rounded-lg transition-colors shadow-2xs"
+                      title="Open Tender Workspace"
+                    >
+                      <span>Workspace</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      ) : (
+        /* Standard Tenders Table for other stages */
+        <div className="bg-white rounded-lg border border-[#E2E8F0] shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+                  <th className="py-3 px-4 w-10">
+                    <button onClick={toggleSelectAll}>
+                      {selectedIds.length === filteredTenders.length && filteredTenders.length > 0 ? (
+                        <CheckSquare className="w-4 h-4 text-[#2563EB]" />
+                      ) : (
+                        <Square className="w-4 h-4 text-[#CBD5E1]" />
+                      )}
+                    </button>
+                  </th>
+                  <th className="py-3 px-4">Tender ID &amp; SOW Title</th>
+                  <th className="py-3 px-4">Issuing Authority</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Value</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Stage</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Decision</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Urgency</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Readiness</th>
+                  <th className="py-3 px-4 text-right whitespace-nowrap">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#F1F5F9] text-xs">
+                {filteredTenders.map((tender, idx) => (
+                  <tr
+                    key={`${tender.id}-${idx}`}
+                    className={`hover:bg-[#F8FAFC] transition-colors group ${
+                      selectedIds.includes(tender.id) ? 'bg-[#EFF6FF]/40' : ''
+                    }`}
+                  >
+                    <td className="py-3.5 px-4">
+                      <button onClick={() => toggleSelect(tender.id)}>
+                        {selectedIds.includes(tender.id) ? (
+                          <CheckSquare className="w-4 h-4 text-[#2563EB]" />
+                        ) : (
+                          <Square className="w-4 h-4 text-[#CBD5E1]" />
+                        )}
+                      </button>
+                    </td>
+
+                    <td className="py-3.5 px-4 max-w-xs">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-mono text-xs font-bold text-[#0F172A]">
+                          {tender.id}
+                        </span>
+                        <span className="text-[10px] text-[#94A3B8] font-mono">
+                          {tender.referenceNo}
+                        </span>
+                      </div>
                       <Link
                         to={`/tenders/${tender.id}`}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#2563EB] hover:bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] transition-colors shadow-2xs"
-                        title="Open Tender Workspace"
+                        className="font-medium text-[#0F172A] group-hover:text-[#2563EB] line-clamp-1"
                       >
-                        <span>Workspace</span>
-                        <ChevronRight className="w-3 h-3" />
+                        {tender.title}
                       </Link>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    </td>
+
+                    <td className="py-3.5 px-4 text-[#475569]">
+                      <div className="font-medium text-[#0F172A]">
+                        {tender.organization}
+                      </div>
+                      <div className="text-[11px] text-[#94A3B8]">
+                        {tender.country}
+                      </div>
+                    </td>
+
+                    <td className="py-3.5 px-4 font-mono font-bold text-[#0F172A]">
+                      {formatCurrency(tender.estimatedValue)}
+                    </td>
+
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <StatusBadge stage={tender.stage} />
+                    </td>
+
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <StatusBadge decision={tender.decision} />
+                    </td>
+
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <UrgencyBadge
+                        daysRemaining={tender.daysRemaining}
+                        hoursRemaining={tender.hoursRemaining}
+                      />
+                    </td>
+
+                    <td className="py-3.5 px-4 w-36">
+                      <ReadinessBar score={tender.readinessScore} />
+                    </td>
+
+                    <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Link
+                          to={`/registry?id=${tender.id}`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] bg-white hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] hover:border-[#CBD5E1] transition-colors shadow-2xs"
+                          title="Edit Tender Specifications"
+                        >
+                          <Edit3 className="w-3.5 h-3.5 text-[#64748B]" />
+                          <span>Edit</span>
+                        </Link>
+
+                        {tender.stage !== 'SUBMITTED' && tender.stage !== 'ARCHIVED' && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (window.confirm(`Send tender "${tender.title}" (${tender.id}) to Archive for record-keeping?`)) {
+                                archiveTender(tender.id);
+                              }
+                            }}
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#475569] bg-white hover:bg-[#F1F5F9] rounded-lg border border-[#CBD5E1] transition-colors shadow-2xs"
+                            title="Send to Archive for records"
+                          >
+                            <Archive className="w-3.5 h-3.5 text-[#64748B]" />
+                            <span>Archive</span>
+                          </button>
+                        )}
+
+                        {tender.stage === 'ARCHIVED' && (
+                          <button
+                            type="button"
+                            onClick={() => restoreTender(tender.id)}
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#2563EB] bg-white hover:bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] transition-colors shadow-2xs"
+                            title="Restore tender from archive"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                            <span>Restore</span>
+                          </button>
+                        )}
+
+                        <button
+                          onClick={() => setTenderToDelete({ id: tender.id, title: tender.title })}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#DC2626] bg-white hover:bg-[#FEF2F2] rounded-lg border border-[#FECACA] hover:border-[#F87171] transition-colors shadow-2xs"
+                          title="Delete Tender"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Delete</span>
+                        </button>
+
+                        <Link
+                          to={`/tenders/${tender.id}`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#2563EB] hover:bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] transition-colors shadow-2xs"
+                          title="Open Tender Workspace"
+                        >
+                          <span>Workspace</span>
+                          <ChevronRight className="w-3 h-3" />
+                        </Link>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Single Delete Confirmation Dialog */}
       {tenderToDelete && (

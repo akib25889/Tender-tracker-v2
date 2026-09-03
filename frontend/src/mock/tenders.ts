@@ -661,7 +661,7 @@ export const MOCK_TENDERS: Tender[] = [
     country: 'Belgium / EU Wide',
     category: 'Identity & Security',
     estimatedValue: 7800000,
-    stage: 'SCREENING',
+    stage: 'DISCOVERED',
     decision: 'CONDITIONAL',
     priority: 'MEDIUM',
     submissionDeadline: '2026-09-18T16:00:00Z',
