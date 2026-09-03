@@ -5,6 +5,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { TenderListPage } from './pages/TenderListPage';
 import { TenderRegistryPage } from './pages/TenderRegistryPage';
 import { TenderSummaryPage } from './pages/TenderSummaryPage';
+import { ArchivedTendersPage } from './pages/ArchivedTendersPage';
 import { TenderDetailPage } from './pages/TenderDetailPage';
 import { TenderAnalysisTab } from './pages/tender-tabs/TenderAnalysisTab';
 import { TenderRequirementsTab } from './pages/tender-tabs/TenderRequirementsTab';
@@ -44,6 +45,10 @@ export const router = createBrowserRouter([
       {
         path: 'registry/summary/:id',
         element: <TenderSummaryPage />,
+      },
+      {
+        path: 'archive',
+        element: <ArchivedTendersPage />,
       },
       {
         path: 'tenders',

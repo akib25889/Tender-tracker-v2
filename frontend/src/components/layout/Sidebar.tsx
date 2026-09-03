@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ShieldCheck,
+  Archive,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 
@@ -27,6 +28,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
   const location = useLocation();
   const { tenders } = useTenders();
   const newDiscoveredCount = tenders.filter((t) => t.stage === 'DISCOVERED').length;
+  const archivedCount = tenders.filter((t) => t.stage === 'ARCHIVED').length;
 
   const navItems = [
     {
@@ -82,6 +84,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       path: '/reports',
       icon: BarChart3,
       badge: undefined,
+    },
+    {
+      label: 'Archived Records',
+      path: '/archive',
+      icon: Archive,
+      badge: archivedCount > 0 ? `${archivedCount}` : undefined,
     },
   ];
 
