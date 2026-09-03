@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Tender } from '../../types/tender';
 
 interface TenderSummaryDocumentProps {
@@ -99,7 +99,7 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
               value={tender.submissionDeadline ? fmt(tender.submissionDeadline) : null}
             />
             <Row label="Submission Time" value={s?.submissionTime || null} />
-            {tender.estimatedValue && tender.estimatedValue > 0 && (
+            {Boolean(tender.estimatedValue && tender.estimatedValue > 0) && (
               <Row label="Estimated Net Value" value={`$${tender.estimatedValue.toLocaleString()} USD`} />
             )}
           </tbody>
