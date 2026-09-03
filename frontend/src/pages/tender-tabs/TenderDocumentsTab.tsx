@@ -1,8 +1,49 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { useTenders } from '../../context/TenderContext';
-import { Folder, FileText, Download, Upload, FolderPlus, X, Check } from 'lucide-react';
+import { DocumentAccessLevel } from '../../types/tender';
+import {
+  Folder,
+  FileText,
+  Download,
+  Upload,
+  FolderPlus,
+  X,
+  Check,
+  Link as LinkIcon,
+  Lock,
+} from 'lucide-react';
+
+const ACCESS_STYLES: Record<
+  DocumentAccessLevel,
+  { label: string; bg: string; text: string; border: string }
+> = {
+  ALL_TEAM: {
+    label: '🌐 All Team',
+    bg: 'bg-[#F0FDF4]',
+    text: 'text-[#15803D]',
+    border: 'border-[#BBF7D0]',
+  },
+  MANAGEMENT_ONLY: {
+    label: '🛡️ Management',
+    bg: 'bg-[#EFF6FF]',
+    text: 'text-[#1D4ED8]',
+    border: 'border-[#BFDBFE]',
+  },
+  RESTRICTED_FINANCE: {
+    label: '🔒 Finance/Legal',
+    bg: 'bg-[#FFFBEB]',
+    text: 'text-[#B45309]',
+    border: 'border-[#FDE68A]',
+  },
+  EXECUTIVE_ONLY: {
+    label: '👑 Executive',
+    bg: 'bg-[#FEF2F2]',
+    text: 'text-[#B91C1C]',
+    border: 'border-[#FECACA]',
+  },
+};
 
 export const TenderDocumentsTab: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -12,6 +53,11 @@ export const TenderDocumentsTab: React.FC = () => {
     setUploadFolderTarget,
     addFolder,
     moveDocumentFolder,
+    reusableDocuments,
+    linkReusableDocumentToTender,
+    updateTenderDocumentAccess,
+    hasDocumentAccess,
+    currentUser,
   } = useTenders();
 
   const tender = tenders.find((t) => t.id === id) || tenders[0];
@@ -20,6 +66,12 @@ export const TenderDocumentsTab: React.FC = () => {
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
   const [newFolderLabel, setNewFolderLabel] = useState('');
   const [newFolderName, setNewFolderName] = useState('');
+
+  // Modal: Link Reusable Document
+  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+  const [selectedReusableDocId, setSelectedReusableDocId] = useState<string>('');
+  const [linkTargetFolder, setLinkTargetFolder] = useState<string>('02_company_statutory_documents');
+  const [linkFilterCategory, setLinkFilterCategory] = useState<string>('ALL');
 
   const defaultFolders = [
     {
@@ -74,6 +126,15 @@ export const TenderDocumentsTab: React.FC = () => {
     setIsCreateFolderModalOpen(false);
   };
 
+  const handleLinkReusable = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedReusableDocId) return;
+
+    linkReusableDocumentToTender(tender.id, selectedReusableDocId, linkTargetFolder);
+    setSelectedReusableDocId('');
+    setIsLinkModalOpen(false);
+  };
+
   const displayedDocs = tender.documents.filter(
     (d) => activeFolderFilter === 'ALL' || d.folder === activeFolderFilter
   );
@@ -91,7 +152,24 @@ export const TenderDocumentsTab: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Link from Master Library Button */}
+          <button
+            type="button"
+            onClick={() => {
+              if (reusableDocuments.length > 0) {
+                setSelectedReusableDocId(reusableDocuments[0].id);
+              }
+              setIsLinkModalOpen(true);
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#EFF6FF] border border-[#BFDBFE] text-[#1D4ED8] text-xs font-semibold rounded-lg hover:bg-[#DBEAFE] shadow-xs transition-colors"
+            title="Import or reference an existing reusable master document from the company repository"
+          >
+            <LinkIcon className="w-3.5 h-3.5" />
+            <span>Link Master Library File</span>
+          </button>
+
+          {/* Create Folder Button */}
           <button
             type="button"
             onClick={() => setIsCreateFolderModalOpen(true)}
@@ -101,6 +179,7 @@ export const TenderDocumentsTab: React.FC = () => {
             <span>Create Folder</span>
           </button>
 
+          {/* Upload Document Button */}
           <button
             type="button"
             onClick={() => handleOpenUpload(folders[0]?.name || '03_technical_proposal')}
@@ -207,7 +286,8 @@ export const TenderDocumentsTab: React.FC = () => {
             <thead>
               <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
                 <th className="py-2.5 px-3">File Name</th>
-                <th className="py-2.5 px-3 w-64">Target Folder (Move / Assign)</th>
+                <th className="py-2.5 px-3 w-56">Target Folder (Move / Assign)</th>
+                <th className="py-2.5 px-3 w-44">Access Permission Scope</th>
                 <th className="py-2.5 px-3">Size</th>
                 <th className="py-2.5 px-3">Revision</th>
                 <th className="py-2.5 px-3">Uploaded</th>
@@ -217,60 +297,104 @@ export const TenderDocumentsTab: React.FC = () => {
             <tbody className="divide-y divide-[#F1F5F9]">
               {displayedDocs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-xs text-[#94A3B8]">
-                    No files found in this folder. Click <strong>"+ Upload here"</strong> on the folder card above to add files.
+                  <td colSpan={7} className="py-8 text-center text-xs text-[#94A3B8]">
+                    No files found in this folder. Click <strong>"+ Upload here"</strong> or <strong>"Link Master Library File"</strong> above to add files.
                   </td>
                 </tr>
               ) : (
-                displayedDocs.map((doc) => (
-                  <tr key={doc.id} className="hover:bg-[#F8FAFC] transition-colors">
-                    <td className="py-3 px-3 font-medium text-[#0F172A]">
-                      <div className="flex items-center gap-2">
-                        <FileText className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
-                        <span className="font-semibold">{doc.name}</span>
-                      </div>
-                    </td>
+                displayedDocs.map((doc) => {
+                  const docAccess = doc.accessLevel || 'ALL_TEAM';
+                  const hasAccess = hasDocumentAccess(docAccess);
+                  const accessBadge = ACCESS_STYLES[docAccess] || ACCESS_STYLES.ALL_TEAM;
 
-                    <td className="py-3 px-3">
-                      {/* Interactive Folder Reassignment Dropdown */}
-                      <select
-                        value={doc.folder}
-                        onChange={(e) =>
-                          moveDocumentFolder(tender.id, doc.id, e.target.value)
-                        }
-                        className="w-full px-2 py-1 bg-[#F8FAFC] border border-[#CBD5E1] rounded text-xs font-medium text-[#0F172A] hover:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
-                        title="Click to reassign/move this document to another folder"
-                      >
-                        {folders.map((f) => (
-                          <option key={f.name} value={f.name}>
-                            📁 {f.label}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
+                  return (
+                    <tr key={doc.id} className="hover:bg-[#F8FAFC] transition-colors">
+                      <td className="py-3 px-3 font-medium text-[#0F172A] max-w-sm">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <FileText className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
+                          <span className="font-semibold truncate">{doc.name}</span>
+                          {doc.isReusableLink && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE]">
+                              <LinkIcon className="w-2.5 h-2.5" />
+                              <span>Master Link</span>
+                            </span>
+                          )}
+                        </div>
+                      </td>
 
-                    <td className="py-3 px-3 font-mono text-[11px] text-[#64748B]">
-                      {doc.size || '1.8 MB'}
-                    </td>
-                    <td className="py-3 px-3 font-mono font-semibold text-[#0F172A]">
-                      {doc.revision}
-                    </td>
-                    <td className="py-3 px-3 text-[#64748B]">{doc.uploadedAt}</td>
-                    <td className="py-3 px-3 text-right">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          alert(`Simulating secure download for ${doc.name}`)
-                        }
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-[#0F172A] bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg transition-colors shadow-2xs"
-                        title="Download file"
-                      >
-                        <Download className="w-3.5 h-3.5 text-[#64748B]" />
-                        <span>Download</span>
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                      <td className="py-3 px-3">
+                        {/* Interactive Folder Reassignment Dropdown */}
+                        <select
+                          value={doc.folder}
+                          onChange={(e) =>
+                            moveDocumentFolder(tender.id, doc.id, e.target.value)
+                          }
+                          className="w-full px-2 py-1 bg-[#F8FAFC] border border-[#CBD5E1] rounded text-xs font-medium text-[#0F172A] hover:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+                          title="Click to reassign/move this document to another folder"
+                        >
+                          {folders.map((f) => (
+                            <option key={f.name} value={f.name}>
+                              📁 {f.label}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+
+                      <td className="py-3 px-3">
+                        {/* Interactive Document Access Selector */}
+                        <select
+                          value={docAccess}
+                          disabled={currentUser.role === 'TENDER_ANALYST'}
+                          onChange={(e) =>
+                            updateTenderDocumentAccess(
+                              tender.id,
+                              doc.id,
+                              e.target.value as DocumentAccessLevel
+                            )
+                          }
+                          className={`text-[10px] font-bold px-2 py-1 rounded border cursor-pointer focus:outline-none ${accessBadge.bg} ${accessBadge.text} ${accessBadge.border}`}
+                          title="Update who can view and access this document"
+                        >
+                          <option value="ALL_TEAM">🌐 All Team</option>
+                          <option value="MANAGEMENT_ONLY">🛡️ Management</option>
+                          <option value="RESTRICTED_FINANCE">🔒 Finance/Legal</option>
+                          <option value="EXECUTIVE_ONLY">👑 Executive</option>
+                        </select>
+                      </td>
+
+                      <td className="py-3 px-3 font-mono text-[11px] text-[#64748B]">
+                        {doc.size || '1.8 MB'}
+                      </td>
+                      <td className="py-3 px-3 font-mono font-semibold text-[#0F172A]">
+                        {doc.revision}
+                      </td>
+                      <td className="py-3 px-3 text-[#64748B]">{doc.uploadedAt}</td>
+                      <td className="py-3 px-3 text-right">
+                        {hasAccess ? (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              alert(`Simulating secure download for ${doc.name}`)
+                            }
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-[#0F172A] bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg transition-colors shadow-2xs"
+                            title="Download file"
+                          >
+                            <Download className="w-3.5 h-3.5 text-[#64748B]" />
+                            <span>Download</span>
+                          </button>
+                        ) : (
+                          <span
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] rounded-lg cursor-not-allowed"
+                            title="Access Restricted: Requires management clearance"
+                          >
+                            <Lock className="w-3 h-3" />
+                            <span>Restricted</span>
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
@@ -291,7 +415,7 @@ export const TenderDocumentsTab: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsCreateFolderModalOpen(false)}
-                className="p-1 rounded-lg text-[#94A3B8] hover:text-[#0F172A]"
+                className="text-[#94A3B8] hover:text-[#0F172A]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -333,7 +457,7 @@ export const TenderDocumentsTab: React.FC = () => {
               </div>
 
               <div className="p-3 bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] text-[11px] text-[#1D4ED8]">
-                <strong>Folder Routing Note:</strong> Once created, you can immediately upload documents into this folder, or reassign existing documents from the table below.
+                <strong>Folder Routing Note:</strong> Once created, you can immediately upload documents into this folder, link master files, or reassign existing documents from the table below.
               </div>
 
               <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#F1F5F9]">
@@ -350,6 +474,133 @@ export const TenderDocumentsTab: React.FC = () => {
                 >
                   <FolderPlus className="w-3.5 h-3.5" />
                   <span>Create Vault Folder</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Link Master Reusable Document to Project Folder */}
+      {isLinkModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl border border-[#E2E8F0] overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F5F9] bg-[#F8FAFC]">
+              <div className="flex items-center gap-2">
+                <LinkIcon className="w-5 h-5 text-[#2563EB]" />
+                <h3 className="font-display text-base font-bold text-[#0F172A]">
+                  Link Master Library Document to Proposal
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsLinkModalOpen(false)}
+                className="p-1 rounded-lg text-[#94A3B8] hover:text-[#0F172A]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleLinkReusable} className="p-6 space-y-4 text-xs">
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block font-semibold text-[#0F172A]">
+                    Select Master Document to Reference *
+                  </label>
+                  <select
+                    value={linkFilterCategory}
+                    onChange={(e) => setLinkFilterCategory(e.target.value)}
+                    className="text-[10px] bg-[#F1F5F9] border border-[#CBD5E1] rounded px-1.5 py-0.5 text-[#0F172A]"
+                  >
+                    <option value="ALL">All Categories</option>
+                    <option value="Company Statutory">Company Statutory</option>
+                    <option value="Financial & Tax">Financial & Tax</option>
+                    <option value="Certifications & ISO">Certifications & ISO</option>
+                    <option value="Key Personnel CV">Key Personnel CV</option>
+                    <option value="Past Credentials">Past Credentials</option>
+                    <option value="Legal & Governance">Legal & Governance</option>
+                  </select>
+                </div>
+
+                <div className="max-h-48 overflow-y-auto space-y-1.5 border border-[#E2E8F0] rounded-lg p-2 bg-[#F8FAFC]">
+                  {reusableDocuments
+                    .filter(
+                      (d) =>
+                        linkFilterCategory === 'ALL' || d.category === linkFilterCategory
+                    )
+                    .map((d) => {
+                      const isSelected = selectedReusableDocId === d.id;
+                      const hasAccess = hasDocumentAccess(d.accessLevel);
+                      return (
+                        <div
+                          key={d.id}
+                          onClick={() => hasAccess && setSelectedReusableDocId(d.id)}
+                          className={`p-2 rounded-lg border text-left cursor-pointer transition-all flex items-start justify-between gap-2 ${
+                            isSelected
+                              ? 'bg-[#EFF6FF] border-[#2563EB] ring-1 ring-[#2563EB]'
+                              : hasAccess
+                              ? 'bg-white border-[#E2E8F0] hover:border-[#CBD5E1]'
+                              : 'bg-[#F1F5F9] border-[#E2E8F0] opacity-50 cursor-not-allowed'
+                          }`}
+                        >
+                          <div className="min-w-0 flex-1">
+                            <span className="font-semibold text-[#0F172A] block truncate">
+                              {d.name}
+                            </span>
+                            <span className="text-[10px] text-[#64748B] block mt-0.5">
+                              {d.category} • {d.size} • {d.revision}
+                            </span>
+                          </div>
+                          {hasAccess ? (
+                            isSelected && <Check className="w-4 h-4 text-[#2563EB] shrink-0 mt-1" />
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#DC2626] bg-[#FEF2F2] px-1.5 py-0.5 rounded">
+                              <Lock className="w-2.5 h-2.5" />
+                              <span>Restricted</span>
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Destination Proposal Folder *
+                </label>
+                <select
+                  value={linkTargetFolder}
+                  onChange={(e) => setLinkTargetFolder(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs font-semibold text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                >
+                  {folders.map((f) => (
+                    <option key={f.name} value={f.name}>
+                      📁 {f.label} (/{f.name}/)
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="p-3 bg-[#F0FDF4] rounded-lg border border-[#BBF7D0] text-[11px] text-[#15803D]">
+                <strong>Zero-Redundancy Link:</strong> This creates a cryptographic reference to the master file. Any future updates to the master file will automatically stay synced.
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#F1F5F9]">
+                <button
+                  type="button"
+                  onClick={() => setIsLinkModalOpen(false)}
+                  className="px-4 py-2 border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] rounded-lg font-semibold transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!selectedReusableDocId}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[#2563EB] text-white rounded-lg font-semibold hover:bg-[#1D4ED8] disabled:opacity-50 transition-colors shadow-sm"
+                >
+                  <LinkIcon className="w-3.5 h-3.5" />
+                  <span>Link into Folder</span>
                 </button>
               </div>
             </form>

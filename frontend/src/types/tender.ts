@@ -36,6 +36,25 @@ export interface TenderRequirement {
   owner: string;
 }
 
+export type DocumentAccessLevel =
+  | 'ALL_TEAM'
+  | 'MANAGEMENT_ONLY'
+  | 'RESTRICTED_FINANCE'
+  | 'EXECUTIVE_ONLY';
+
+export interface ReusableDocument {
+  id: string;
+  name: string;
+  category: string;
+  uploadedAt: string;
+  expiryDate?: string;
+  size: string;
+  revision: string;
+  accessLevel: DocumentAccessLevel;
+  sha256: string;
+  description?: string;
+}
+
 export interface TenderDocument {
   id: string;
   name: string;
@@ -44,6 +63,9 @@ export interface TenderDocument {
   sha256: string;
   uploadedAt: string;
   size: string;
+  isReusableLink?: boolean;
+  reusableSourceId?: string;
+  accessLevel?: DocumentAccessLevel;
 }
 
 export interface TenderFolder {

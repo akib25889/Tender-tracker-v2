@@ -20,6 +20,7 @@ import { CalendarPage } from './pages/CalendarPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { MasterDocumentVaultPage } from './pages/MasterDocumentVaultPage';
 
 export const router = createBrowserRouter([
   {
@@ -91,6 +92,10 @@ export const router = createBrowserRouter([
       {
         path: 'tasks/my-tasks',
         element: <MyTasksPage />,
+      },
+      {
+        path: 'documents',
+        element: <MasterDocumentVaultPage />,
       },
       {
         path: 'team',

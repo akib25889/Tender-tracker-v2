@@ -69,7 +69,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
     },
     {
       label: 'Document Vault',
-      path: '/tenders/TDR-2026-EU-089/documents',
+      path: '/documents',
       icon: FileCheck,
       badge: undefined,
     },

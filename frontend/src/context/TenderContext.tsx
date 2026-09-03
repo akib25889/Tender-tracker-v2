@@ -12,9 +12,12 @@ import {
   UserRole,
   TenderComment,
   DocumentShareLink,
+  ReusableDocument,
+  DocumentAccessLevel,
 } from '../types/tender';
 import { MOCK_TENDERS } from '../mock/tenders';
 import { TEAM_PROFILES } from '../mock/users';
+import { INITIAL_REUSABLE_DOCUMENTS } from '../mock/reusableDocuments';
 
 export type CurrencyMode = 'USD' | 'BDT';
 
@@ -78,6 +81,20 @@ interface TenderContextType {
   sharedLinks: DocumentShareLink[];
   activeDocForShare: { tenderId: string; doc: TenderDocument } | null;
   setActiveDocForShare: (item: { tenderId: string; doc: TenderDocument } | null) => void;
+  // Reusable Documents & Access Control
+  reusableDocuments: ReusableDocument[];
+  addReusableDocument: (doc: {
+    name: string;
+    category: string;
+    size: string;
+    expiryDate?: string;
+    accessLevel: DocumentAccessLevel;
+    description?: string;
+  }) => void;
+  updateDocumentAccess: (docId: string, newAccess: DocumentAccessLevel) => void;
+  updateTenderDocumentAccess: (tenderId: string, docId: string, newAccess: DocumentAccessLevel) => void;
+  linkReusableDocumentToTender: (tenderId: string, reusableDocId: string, targetFolder: string) => void;
+  hasDocumentAccess: (accessLevel?: DocumentAccessLevel, role?: UserRole) => boolean;
   // Currency switcher
   currency: CurrencyMode;
   setCurrency: (c: CurrencyMode) => void;
@@ -589,6 +606,128 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     doc: TenderDocument;
   } | null>(null);
 
+  // Master Reusable Documents
+  const [reusableDocuments, setReusableDocuments] = useState<ReusableDocument[]>(() => {
+    const saved = localStorage.getItem('tendertracker_reusable_docs');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {
+        console.error('Error loading reusable docs:', e);
+      }
+    }
+    return INITIAL_REUSABLE_DOCUMENTS;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('tendertracker_reusable_docs', JSON.stringify(reusableDocuments));
+  }, [reusableDocuments]);
+
+  const addReusableDocument = (doc: {
+    name: string;
+    category: string;
+    size: string;
+    expiryDate?: string;
+    accessLevel: DocumentAccessLevel;
+    description?: string;
+  }) => {
+    const hex = '0123456789abcdef';
+    let hash = '';
+    for (let i = 0; i < 64; i++) hash += hex[Math.floor(Math.random() * 16)];
+
+    const newDoc: ReusableDocument = {
+      id: `RUD-${Math.floor(100 + Math.random() * 900)}`,
+      name: doc.name,
+      category: doc.category,
+      uploadedAt: new Date().toISOString().split('T')[0],
+      expiryDate: doc.expiryDate,
+      size: doc.size || '2.5 MB',
+      revision: 'v1.0',
+      accessLevel: doc.accessLevel || 'ALL_TEAM',
+      sha256: hash,
+      description: doc.description,
+    };
+    setReusableDocuments((prev) => [newDoc, ...prev]);
+  };
+
+  const updateDocumentAccess = (docId: string, newAccess: DocumentAccessLevel) => {
+    setReusableDocuments((prev) =>
+      prev.map((d) => (d.id === docId ? { ...d, accessLevel: newAccess } : d))
+    );
+  };
+
+  const updateTenderDocumentAccess = (
+    tenderId: string,
+    docId: string,
+    newAccess: DocumentAccessLevel
+  ) => {
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        return {
+          ...t,
+          documents: t.documents.map((d) =>
+            d.id === docId ? { ...d, accessLevel: newAccess } : d
+          ),
+        };
+      })
+    );
+  };
+
+  const linkReusableDocumentToTender = (
+    tenderId: string,
+    reusableDocId: string,
+    targetFolder: string
+  ) => {
+    const masterDoc = reusableDocuments.find((d) => d.id === reusableDocId);
+    if (!masterDoc) return;
+
+    const newDoc: TenderDocument = {
+      id: `DOC-LINK-${Math.floor(100 + Math.random() * 900)}`,
+      name: masterDoc.name,
+      folder: targetFolder,
+      revision: masterDoc.revision,
+      sha256: masterDoc.sha256,
+      uploadedAt: new Date().toISOString().split('T')[0],
+      size: masterDoc.size,
+      isReusableLink: true,
+      reusableSourceId: masterDoc.id,
+      accessLevel: masterDoc.accessLevel,
+    };
+
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        return {
+          ...t,
+          documents: [newDoc, ...t.documents],
+        };
+      })
+    );
+  };
+
+  const hasDocumentAccess = (
+    accessLevel: DocumentAccessLevel = 'ALL_TEAM',
+    role: UserRole = currentUser.role
+  ): boolean => {
+    if (accessLevel === 'ALL_TEAM') return true;
+    if (accessLevel === 'MANAGEMENT_ONLY') {
+      return (
+        role === 'BUSINESS_HEAD' ||
+        role === 'EXECUTIVE_MANAGER' ||
+        role === 'SENIOR_MANAGER'
+      );
+    }
+    if (accessLevel === 'RESTRICTED_FINANCE') {
+      return role === 'BUSINESS_HEAD' || role === 'SENIOR_MANAGER';
+    }
+    if (accessLevel === 'EXECUTIVE_ONLY') {
+      return role === 'BUSINESS_HEAD';
+    }
+    return true;
+  };
+
   const addTeamMember = (member: {
     name: string;
     role: UserRole;
@@ -727,6 +866,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         sharedLinks,
         activeDocForShare,
         setActiveDocForShare,
+        reusableDocuments,
+        addReusableDocument,
+        updateDocumentAccess,
+        updateTenderDocumentAccess,
+        linkReusableDocumentToTender,
+        hasDocumentAccess,
         currency,
         setCurrency,
         formatCurrency,
