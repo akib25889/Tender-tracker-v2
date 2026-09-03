@@ -45,7 +45,7 @@ export const DashboardPage: React.FC = () => {
   });
 
   const stages: { stage: TenderStage; label: string }[] = [
-    { stage: 'DISCOVERED', label: '1. Discovery' },
+    { stage: 'DISCOVERED', label: '1. Bid Discovery' },
     { stage: 'SCREENING', label: '2. Screening' },
     { stage: 'UNDER_ANALYSIS', label: '3. Analysis' },
     { stage: 'PREPARATION', label: '4. Preparation' },
@@ -108,6 +108,12 @@ export const DashboardPage: React.FC = () => {
             <span className="text-[11px] text-[#16A34A] font-medium mt-0.5 block">
               {tenders.filter((t) => t.stage === 'PREPARATION' || t.stage === 'INTERNAL_REVIEW').length} in active drafting
             </span>
+            <Link
+              to="/tenders?stage=DISCOVERED"
+              className="text-[10px] text-[#2563EB] font-bold hover:underline inline-flex items-center gap-0.5 mt-1"
+            >
+              <span>View {tenders.filter((t) => t.stage === 'DISCOVERED').length} Discovered Bids →</span>
+            </Link>
           </div>
           <div className="w-10 h-10 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
             <FolderGit2 className="w-5 h-5" />
@@ -191,22 +197,24 @@ export const DashboardPage: React.FC = () => {
             const pct = tenders.length > 0 ? Math.round((count / tenders.length) * 100) : 0;
 
             return (
-              <div
+              <Link
                 key={s.stage}
-                className="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] space-y-1 hover:border-[#CBD5E1] transition-colors"
+                to={`/tenders?stage=${s.stage}`}
+                className="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] space-y-1 hover:border-[#2563EB] hover:bg-[#EFF6FF]/50 transition-all block group"
+                title={`Click to show all ${s.label} tenders`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-[#0F172A]">
+                  <span className="font-mono text-xs font-bold text-[#0F172A] group-hover:text-[#2563EB] transition-colors">
                     {count} Bids
                   </span>
                   <span className="font-mono text-[10px] text-[#2563EB] font-semibold">
                     {pct}%
                   </span>
                 </div>
-                <span className="text-[11px] font-semibold text-[#64748B] block truncate">
+                <span className="text-[11px] font-semibold text-[#64748B] block truncate group-hover:text-[#0F172A] transition-colors">
                   {s.label}
                 </span>
-              </div>
+              </Link>
             );
           })}
         </div>

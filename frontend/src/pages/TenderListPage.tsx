@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   Search,
   Filter,
@@ -7,6 +7,7 @@ import {
   ChevronRight,
   CheckSquare,
   Square,
+  Compass,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -17,10 +18,34 @@ import { TenderStage } from '../types/tender';
 
 export const TenderListPage: React.FC = () => {
   const { tenders, setIsNewTenderModalOpen, updateTenderStage, formatCurrency } = useTenders();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const stageFromUrl = searchParams.get('stage');
+
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStage, setSelectedStage] = useState<string>('ALL');
+  const [selectedStage, setSelectedStage] = useState<string>(
+    stageFromUrl ? stageFromUrl.toUpperCase() : 'ALL'
+  );
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (stageFromUrl) {
+      setSelectedStage(stageFromUrl.toUpperCase());
+    } else {
+      setSelectedStage('ALL');
+    }
+  }, [stageFromUrl]);
+
+  const handleStageSelect = (stage: string) => {
+    setSelectedStage(stage);
+    const nextParams = new URLSearchParams(searchParams);
+    if (stage === 'ALL') {
+      nextParams.delete('stage');
+    } else {
+      nextParams.set('stage', stage);
+    }
+    setSearchParams(nextParams);
+  };
 
   const filteredTenders = tenders.filter((t) => {
     const matchesSearch =
@@ -128,19 +153,48 @@ export const TenderListPage: React.FC = () => {
             (stage) => (
               <button
                 key={stage}
-                onClick={() => setSelectedStage(stage)}
+                onClick={() => handleStageSelect(stage)}
                 className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
                   selectedStage === stage
                     ? 'bg-[#0F172A] text-white font-semibold'
                     : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A]'
                 }`}
               >
-                {stage === 'ALL' ? 'All Stages' : stage.replace('_', ' ')}
+                {stage === 'ALL'
+                  ? 'All Stages'
+                  : stage === 'DISCOVERED'
+                  ? '1. Bid Discovery (New)'
+                  : stage.replace('_', ' ')}
               </button>
             )
           )}
         </div>
       </div>
+
+      {/* Bid Discovery Active Banner */}
+      {selectedStage === 'DISCOVERED' && (
+        <div className="p-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl flex items-center justify-between shadow-xs animate-fadeIn">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-[#2563EB] text-white flex items-center justify-center shrink-0">
+              <Compass className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-display text-sm font-bold text-[#1E3A8A]">
+                Bid Discovery Queue ({filteredTenders.length} New Tenders)
+              </h3>
+              <p className="text-xs text-[#3B82F6]">
+                Showing all newly discovered tenders awaiting qualification screening and go/no-go assessment.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => handleStageSelect('ALL')}
+            className="text-xs text-[#1D4ED8] bg-white px-3 py-1.5 rounded-lg border border-[#BFDBFE] font-semibold hover:bg-[#F8FAFC] transition-colors"
+          >
+            Show All Pipeline
+          </button>
+        </div>
+      )}
 
       {/* Batch Action Bar if items selected */}
       {selectedIds.length > 0 && (

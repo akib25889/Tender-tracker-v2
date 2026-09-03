@@ -1,7 +1,8 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
+  Compass,
   ClipboardList,
   CheckCircle2,
   FolderGit2,
@@ -15,6 +16,7 @@ import {
   ChevronRight,
   ShieldCheck,
 } from 'lucide-react';
+import { useTenders } from '../../context/TenderContext';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -22,12 +24,22 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
+  const location = useLocation();
+  const { tenders } = useTenders();
+  const newDiscoveredCount = tenders.filter((t) => t.stage === 'DISCOVERED').length;
+
   const navItems = [
     {
       label: 'Dashboard',
       path: '/dashboard',
       icon: LayoutDashboard,
       badge: undefined,
+    },
+    {
+      label: 'Bid Discovery',
+      path: '/tenders?stage=DISCOVERED',
+      icon: Compass,
+      badge: newDiscoveredCount > 0 ? `${newDiscoveredCount} New` : undefined,
     },
     {
       label: 'Tender Registry',
@@ -133,17 +145,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
           <nav className="space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
+              const isMatch = item.path.includes('?')
+                ? location.pathname + location.search === item.path
+                : location.pathname === item.path && !location.search;
+
               return (
                 <NavLink
                   key={item.path}
                   to={item.path}
-                  className={({ isActive }) =>
-                    `flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors group ${
-                      isActive
-                        ? 'bg-[#1E293B] text-white font-semibold'
-                        : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
-                    }`
-                  }
+                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors group ${
+                    isMatch
+                      ? 'bg-[#1E293B] text-white font-semibold'
+                      : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
+                  }`}
                   title={collapsed ? item.label : undefined}
                 >
                   <div className="flex items-center gap-3 truncate">

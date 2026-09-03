@@ -24,6 +24,26 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Bid Discovery Navigation & Filtered Pipeline View
+- **Category:** Navigation & Pipeline Filtering
+- **Summary:**
+  - **Sidebar Bid Discovery Link ([`Sidebar.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/Sidebar.tsx)):**
+    - Added dedicated **"Bid Discovery"** navigation item with a dynamic badge showing the count of new discovered tenders (`{newDiscoveredCount} New`).
+    - Links directly to `/tenders?stage=DISCOVERED` with accurate active state matching.
+  - **Dashboard Quick Access ([`DashboardPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/DashboardPage.tsx)):**
+    - Renamed stage 1 to `"1. Bid Discovery"` in the 6-gate breakdown and made all 6 gate cards clickable links leading directly into the filtered pipeline.
+    - Added a quick action link under KPI 1: *"View Discovered Bids →"*.
+  - **Pipeline Auto-Filter & Discovery Banner ([`TenderListPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderListPage.tsx)):**
+    - Synced `selectedStage` state with the `?stage=` URL query parameter using `useSearchParams`.
+    - Added a **Bid Discovery Queue** header banner with count of new tenders, guidance, and a *"Show All Pipeline"* quick reset button.
+    - Updated stage filter chips so clicking any stage updates the URL and state synchronously.
+- **Relevant Files:**
+  - `frontend/src/components/layout/Sidebar.tsx`
+  - `frontend/src/pages/DashboardPage.tsx`
+  - `frontend/src/pages/TenderListPage.tsx`
+
+---
+
 ### [2026-09-03] — Enterprise Collaboration Suite: RBAC, Task Assign, Document Share & Commenting
 - **Category:** Collaboration, Security & Operational Governance
 - **Summary:**
