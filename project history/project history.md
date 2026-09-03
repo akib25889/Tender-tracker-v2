@@ -33,6 +33,7 @@
   - **Dedicated Tender Registry Page ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx)):**
     - Created a standalone full-page Tender Registry console at `/registry` matching the design and all fields from `tender-dashboard.html`.
     - Features a 2-panel layout: left scrollable entry rail with live search and classification filters; right comprehensive tabbed editor for Basic Info, Scope & Commercial, Eligibility & JV, Staff & Hardware, Dates & Risks, and Notes.
+    - Added search panel minimizer: allows collapsing the left list/search rail with one click (`PanelLeftClose`), expanding the data entry editor to full-width (12 columns), and restoring it via an expand toggle button (`PanelLeftOpen`).
     - Added "+ New Tender Entry", export actions (PDF, DOCX, MD, JSON), and direct link to Proposal Workspace.
     - Added "Tender Registry" link to [`Sidebar.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/Sidebar.tsx) and [`router.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/router.tsx).
   - **Monetary Analysis Removal:**

@@ -11,6 +11,8 @@ import {
   Briefcase,
   AlertTriangle,
   ExternalLink,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import {
@@ -43,6 +45,7 @@ export const TenderRegistryPage: React.FC = () => {
   >('BASIC');
 
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isRailCollapsed, setIsRailCollapsed] = useState(false);
 
   // Form State initialized from currently selected tender
   const selectedTender =
@@ -557,23 +560,38 @@ export const TenderRegistryPage: React.FC = () => {
 
       {/* 2-Column Split Workspace (Rail + Editor) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 min-h-[750px]">
-        {/* Left List Rail (4 Cols) */}
-        <div className="lg:col-span-4 bg-white rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col overflow-hidden">
-          {/* Rail Header & Search */}
-          <div className="p-3.5 border-b border-[#F1F5F9] space-y-2.5 bg-[#F8FAFC]">
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Search by title, ref no. or ID..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-              />
-            </div>
+        {/* Left List Rail (Conditional Minimization) */}
+        {!isRailCollapsed && (
+          <div className="lg:col-span-4 bg-white rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col overflow-hidden transition-all duration-300">
+            {/* Rail Header with Minimizer */}
+            <div className="p-3.5 border-b border-[#F1F5F9] space-y-2.5 bg-[#F8FAFC]">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-bold text-[#0F172A] uppercase tracking-wider">
+                  Tender Explorer ({filteredTenders.length})
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsRailCollapsed(true)}
+                  className="p-1.5 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#E2E8F0] transition-colors"
+                  title="Minimize search & list panel"
+                >
+                  <PanelLeftClose className="w-4 h-4" />
+                </button>
+              </div>
 
-            {/* Classification Filter */}
-            <div className="flex items-center gap-1 overflow-x-auto text-[10px] pb-1">
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search by title, ref no. or ID..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-8 pr-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                />
+              </div>
+
+              {/* Classification Filter */}
+              <div className="flex items-center gap-1 overflow-x-auto text-[10px] pb-1">
               <button
                 onClick={() => setSelectedClassificationFilter('ALL')}
                 className={`px-2 py-0.5 rounded-full font-semibold whitespace-nowrap transition-colors ${
@@ -642,23 +660,42 @@ export const TenderRegistryPage: React.FC = () => {
             )}
           </div>
         </div>
+      )}
 
-        {/* Right Editor Panel (8 Cols) */}
-        <div className="lg:col-span-8 bg-white rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col overflow-hidden">
+        {/* Right Editor Panel (8 or 12 Cols) */}
+        <div
+          className={`${
+            isRailCollapsed ? 'lg:col-span-12' : 'lg:col-span-8'
+          } bg-white rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col overflow-hidden transition-all duration-300`}
+        >
           {/* Editor Header Bar */}
           <div className="px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold text-[#0F172A] bg-white border border-[#CBD5E1] px-2 py-0.5 rounded">
-                  {selectedTender?.id}
-                </span>
-                <span className="text-xs text-[#64748B]">
-                  Ref: {selectedTender?.referenceNo}
-                </span>
+            <div className="flex items-center gap-3">
+              {isRailCollapsed && (
+                <button
+                  type="button"
+                  onClick={() => setIsRailCollapsed(false)}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#0F172A] rounded-lg text-xs font-semibold shadow-xs transition-colors"
+                  title="Expand search & list panel"
+                >
+                  <PanelLeftOpen className="w-4 h-4 text-[#2563EB]" />
+                  <span>Tender List ({filteredTenders.length})</span>
+                </button>
+              )}
+
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-xs font-bold text-[#0F172A] bg-white border border-[#CBD5E1] px-2 py-0.5 rounded">
+                    {selectedTender?.id}
+                  </span>
+                  <span className="text-xs text-[#64748B]">
+                    Ref: {selectedTender?.referenceNo}
+                  </span>
+                </div>
+                <h2 className="font-display text-base font-bold text-[#0F172A] mt-1 line-clamp-1">
+                  {tenderTitle || 'Untitled Tender Entry'}
+                </h2>
               </div>
-              <h2 className="font-display text-base font-bold text-[#0F172A] mt-1 line-clamp-1">
-                {tenderTitle || 'Untitled Tender Entry'}
-              </h2>
             </div>
 
             <div className="flex items-center gap-2">
