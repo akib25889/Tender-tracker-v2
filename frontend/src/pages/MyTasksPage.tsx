@@ -6,7 +6,7 @@ import { CheckCircle2, Filter, Search, ArrowRight, Square } from 'lucide-react';
 import { TaskStatus } from '../types/tender';
 
 export const MyTasksPage: React.FC = () => {
-  const { tenders, moveTask } = useTenders();
+  const { tenders, moveTask, assignTask, teamMembers } = useTenders();
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -155,7 +155,22 @@ export const MyTasksPage: React.FC = () => {
                         </Link>
                       </td>
 
-                      <td className="py-3 px-3 text-[#475569]">{task.assignee}</td>
+                      <td className="py-3 px-3 text-[#475569]">
+                        <select
+                          value={task.assignee}
+                          onChange={(e) =>
+                            assignTask(task.tenderId, task.id, e.target.value)
+                          }
+                          className="bg-transparent text-xs font-medium text-[#0F172A] border border-transparent hover:border-[#CBD5E1] rounded px-1.5 py-0.5 cursor-pointer hover:bg-[#F8FAFC] transition-colors"
+                          title="Click to reassign team member"
+                        >
+                          {teamMembers.map((m) => (
+                            <option key={m.id} value={m.name}>
+                              {m.name}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
 
                       <td className="py-3 px-3">
                         <span
