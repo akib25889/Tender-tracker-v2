@@ -13,6 +13,7 @@ import {
   Check,
   Link as LinkIcon,
   Lock,
+  Trash2,
 } from 'lucide-react';
 
 const ACCESS_STYLES: Record<
@@ -52,6 +53,7 @@ export const TenderDocumentsTab: React.FC = () => {
     setActiveTenderIdForModal,
     setUploadFolderTarget,
     addFolder,
+    deleteFolder,
     moveDocumentFolder,
     reusableDocuments,
     linkReusableDocumentToTender,
@@ -66,6 +68,11 @@ export const TenderDocumentsTab: React.FC = () => {
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
   const [newFolderLabel, setNewFolderLabel] = useState('');
   const [newFolderName, setNewFolderName] = useState('');
+  const [folderToDelete, setFolderToDelete] = useState<{
+    name: string;
+    label: string;
+    fileCount: number;
+  } | null>(null);
 
   // Modal: Link Reusable Document
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
@@ -100,7 +107,9 @@ export const TenderDocumentsTab: React.FC = () => {
     },
   ];
 
-  const folders = [...defaultFolders, ...(tender.customFolders || [])];
+  const folders = [...defaultFolders, ...(tender.customFolders || [])].filter(
+    (f) => !(tender.deletedFolders || []).includes(f.name)
+  );
 
   const handleOpenUpload = (folderName: string) => {
     setActiveTenderIdForModal(tender.id);
@@ -232,12 +241,29 @@ export const TenderDocumentsTab: React.FC = () => {
                     </div>
                   </div>
 
-                  {isSelected && (
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
-                      <Check className="w-3 h-3" />
-                      <span>Active</span>
-                    </span>
-                  )}
+                  <div className="flex items-center gap-1 shrink-0">
+                    {isSelected && (
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
+                        <Check className="w-3 h-3" />
+                        <span>Active</span>
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFolderToDelete({
+                          name: f.name,
+                          label: f.label,
+                          fileCount: folderFiles.length,
+                        });
+                      }}
+                      className="p-1 rounded text-[#94A3B8] hover:text-[#DC2626] hover:bg-[#FEF2F2] transition-colors"
+                      title={`Delete folder "${f.label}"`}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between text-[11px] text-[#64748B] pt-3 mt-3 border-t border-[#F1F5F9]">
@@ -604,6 +630,64 @@ export const TenderDocumentsTab: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Confirm Delete Folder */}
+      {folderToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center gap-3 text-[#DC2626]">
+              <div className="w-10 h-10 rounded-full bg-[#FEF2F2] border border-[#FECACA] flex items-center justify-center shrink-0">
+                <Trash2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-display text-sm font-bold text-[#0F172A]">
+                  Delete Vault Folder
+                </h3>
+                <p className="text-xs text-[#64748B]">Confirm removal from proposal structure</p>
+              </div>
+            </div>
+
+            <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs space-y-1">
+              <span className="font-bold text-[#0F172A] block">
+                Folder: {folderToDelete.label}
+              </span>
+              <span className="font-mono text-[11px] text-[#64748B] block">
+                /{folderToDelete.name}/
+              </span>
+              {folderToDelete.fileCount > 0 ? (
+                <p className="text-[#B45309] font-medium pt-1 text-[11px] leading-relaxed">
+                  ⚠️ This folder contains {folderToDelete.fileCount} file(s). To protect proposal integrity, these files will be safely moved to "Original RFP Notices & Addenda".
+                </p>
+              ) : (
+                <p className="text-[#64748B] pt-1 text-[11px]">This folder is empty.</p>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#F1F5F9] text-xs">
+              <button
+                type="button"
+                onClick={() => setFolderToDelete(null)}
+                className="px-3.5 py-1.5 rounded-lg border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] font-semibold transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  deleteFolder(tender.id, folderToDelete.name);
+                  if (activeFolderFilter === folderToDelete.name) {
+                    setActiveFolderFilter('ALL');
+                  }
+                  setFolderToDelete(null);
+                }}
+                className="px-4 py-1.5 rounded-lg bg-[#DC2626] text-white font-semibold hover:bg-[#B91C1C] shadow-sm transition-colors"
+              >
+                Delete Folder
+              </button>
+            </div>
           </div>
         </div>
       )}

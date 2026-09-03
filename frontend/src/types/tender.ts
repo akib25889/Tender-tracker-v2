@@ -243,6 +243,7 @@ export interface Tender {
   summary?: TenderExtendedSummary;
   comments?: TenderComment[];
   customFolders?: TenderFolder[];
+  deletedFolders?: string[];
   archivedFromStage?: TenderStage;
   archivedAt?: string;
 }
