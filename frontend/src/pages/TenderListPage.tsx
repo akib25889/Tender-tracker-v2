@@ -284,9 +284,9 @@ export const TenderListPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F1F5F9] text-xs">
-              {filteredTenders.map((tender) => (
+              {filteredTenders.map((tender, idx) => (
                 <tr
-                  key={tender.id}
+                  key={`${tender.id}-${idx}`}
                   className={`hover:bg-[#F8FAFC] transition-colors group ${
                     selectedIds.includes(tender.id) ? 'bg-[#EFF6FF]/40' : ''
                   }`}
