@@ -47,10 +47,6 @@ export const Header: React.FC<HeaderProps> = ({
             <span>⌘K</span>
           </div>
         </div>
-
-        <span className="hidden md:inline-flex px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#1D4ED8] text-[10px] font-bold tracking-wider uppercase border border-[#BFDBFE]">
-          Command Center
-        </span>
       </div>
 
       {/* Right Controls */}
