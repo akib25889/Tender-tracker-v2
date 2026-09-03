@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { useTenders } from '../../context/TenderContext';
-import { Folder, FileText, Download, Upload, Share2 } from 'lucide-react';
+import { Folder, FileText, Download, Upload } from 'lucide-react';
 
 export const TenderDocumentsTab: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { tenders, setActiveTenderIdForModal, setUploadFolderTarget, setActiveDocForShare } = useTenders();
+  const { tenders, setActiveTenderIdForModal, setUploadFolderTarget } = useTenders();
   const tender = tenders.find((t) => t.id === id) || tenders[0];
 
   const [activeFolderFilter, setActiveFolderFilter] = useState<string>('ALL');
@@ -172,26 +172,16 @@ export const TenderDocumentsTab: React.FC = () => {
                     </td>
                     <td className="py-3 px-3 text-[#64748B]">{doc.uploadedAt}</td>
                     <td className="py-3 px-3 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          onClick={() =>
-                            setActiveDocForShare({ tenderId: tender.id, doc })
-                          }
-                          className="text-[#2563EB] hover:bg-[#EFF6FF] p-1.5 rounded transition-colors"
-                          title="Share document link"
-                        >
-                          <Share2 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() =>
-                            alert(`Simulating secure download for ${doc.name}`)
-                          }
-                          className="text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] p-1.5 rounded transition-colors"
-                          title="Download file"
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
+                      <button
+                        onClick={() =>
+                          alert(`Simulating secure download for ${doc.name}`)
+                        }
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-[#0F172A] bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg transition-colors shadow-2xs"
+                        title="Download file"
+                      >
+                        <Download className="w-3.5 h-3.5 text-[#64748B]" />
+                        <span>Download</span>
+                      </button>
                     </td>
                   </tr>
                 ))

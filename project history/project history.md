@@ -24,6 +24,19 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Document Vault: Removed Document Sharing Capability
+- **Category:** Governance & UI Simplification
+- **Summary:**
+  - **Removed Share Action ([`TenderDocumentsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx)):**
+    - Removed the "Share" icon button from the Document Vault table rows, retaining a single, direct "Download" button for each file.
+  - **Unmounted Share Modal ([`AppLayout.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/AppLayout.tsx)):**
+    - Removed `ShareDocumentModal` and its state listener from the application layout, reducing JavaScript bundle size and eliminating external sharing workflows.
+- **Relevant Files:**
+  - `frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx`
+  - `frontend/src/components/layout/AppLayout.tsx`
+
+---
+
 ### [2026-09-03] — Document Vault Clean-Up: Removed Folder Paths & Cryptographic Hashes
 - **Category:** UI / UX Simplification
 - **Summary:**

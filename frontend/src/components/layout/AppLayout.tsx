@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { UploadDocumentModal } from '../modals/UploadDocumentModal';
-import { ShareDocumentModal } from '../modals/ShareDocumentModal';
 
 export const AppLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -38,7 +37,6 @@ export const AppLayout: React.FC = () => {
 
       {/* Global Modals */}
       <UploadDocumentModal />
-      <ShareDocumentModal />
     </div>
   );
 };
