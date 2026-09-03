@@ -16,6 +16,7 @@ import {
   ChevronRight,
   ShieldCheck,
   Archive,
+  MessageSquare,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 
@@ -77,6 +78,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       label: 'Team & Workload',
       path: '/team',
       icon: Users,
+      badge: undefined,
+    },
+    {
+      label: 'Chat & Comments',
+      path: '/discussions',
+      icon: MessageSquare,
       badge: undefined,
     },
     {

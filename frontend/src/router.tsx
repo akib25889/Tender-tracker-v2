@@ -21,6 +21,7 @@ import { ReportsPage } from './pages/ReportsPage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { MasterDocumentVaultPage } from './pages/MasterDocumentVaultPage';
+import { ChatDiscussionsPage } from './pages/ChatDiscussionsPage';
 
 export const router = createBrowserRouter([
   {
@@ -100,6 +101,10 @@ export const router = createBrowserRouter([
       {
         path: 'team',
         element: <TeamAllocationPage />,
+      },
+      {
+        path: 'discussions',
+        element: <ChatDiscussionsPage />,
       },
       {
         path: 'calendar',
