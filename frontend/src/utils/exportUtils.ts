@@ -453,3 +453,4 @@ export const exportPipelineAsPDF = (tenders: Tender[]) => {
   `);
   printWindow.document.close();
 };
+

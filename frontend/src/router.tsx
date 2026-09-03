@@ -3,6 +3,7 @@ import { AppLayout } from './components/layout/AppLayout';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { TenderListPage } from './pages/TenderListPage';
+import { TenderRegistryPage } from './pages/TenderRegistryPage';
 import { TenderDetailPage } from './pages/TenderDetailPage';
 import { TenderAnalysisTab } from './pages/tender-tabs/TenderAnalysisTab';
 import { TenderRequirementsTab } from './pages/tender-tabs/TenderRequirementsTab';
@@ -34,6 +35,10 @@ export const router = createBrowserRouter([
       {
         path: 'dashboard',
         element: <DashboardPage />,
+      },
+      {
+        path: 'registry',
+        element: <TenderRegistryPage />,
       },
       {
         path: 'tenders',

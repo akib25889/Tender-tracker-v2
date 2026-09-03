@@ -24,6 +24,33 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Sidebar Minimizer, Dedicated Tender Registry Page & Monetary Analysis Removal
+- **Category:** Core UX & Information Architecture
+- **Summary:**
+  - **Sidebar Minimizer:**
+    - Added a prominent minimizer / collapse chevron button directly on the top branding bar of [`Sidebar.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/Sidebar.tsx) and preserved the bottom toggle.
+    - Added a header minimizer toggle button (`PanelLeftClose` / `PanelLeftOpen`) in [`Header.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/Header.tsx) and wired it cleanly via `AppLayout.tsx`.
+  - **Dedicated Tender Registry Page ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx)):**
+    - Created a standalone full-page Tender Registry console at `/registry` matching the design and all fields from `tender-dashboard.html`.
+    - Features a 2-panel layout: left scrollable entry rail with live search and classification filters; right comprehensive tabbed editor for Basic Info, Scope & Commercial, Eligibility & JV, Staff & Hardware, Dates & Risks, and Notes.
+    - Added "+ New Tender Entry", export actions (PDF, DOCX, MD, JSON), and direct link to Proposal Workspace.
+    - Added "Tender Registry" link to [`Sidebar.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/Sidebar.tsx) and [`router.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/router.tsx).
+  - **Monetary Analysis Removal:**
+    - Removed all dollar figures, currency calculations, and financial metrics from [`DashboardPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/DashboardPage.tsx).
+    - Converted KPI 1 from dollar net pipeline to operational "Active Opportunities" count and active drafting status.
+    - Converted 6-Gate Breakdown to pure bid counts and pipeline percentages.
+    - Replaced monetary values in the Attention Queue table with Category and Priority badges.
+    - Removed the currency switcher from the application header.
+- **Relevant Files:**
+  - `frontend/src/components/layout/Sidebar.tsx`
+  - `frontend/src/components/layout/Header.tsx`
+  - `frontend/src/components/layout/AppLayout.tsx`
+  - `frontend/src/pages/TenderRegistryPage.tsx`
+  - `frontend/src/pages/DashboardPage.tsx`
+  - `frontend/src/router.tsx`
+
+---
+
 ### [2026-09-03] — Multi-Format Export Engine (PDF, DOCX, Markdown, JSON)
 - **Category:** Document Generation & Interoperability
 - **Summary:**

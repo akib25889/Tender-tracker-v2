@@ -27,6 +27,7 @@ export const AppLayout: React.FC = () => {
         {/* Pinned Top Header */}
         <Header
           sidebarCollapsed={sidebarCollapsed}
+          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
           onNewTenderClick={() => setIsNewTenderModalOpen(true)}
         />
 

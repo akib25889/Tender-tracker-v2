@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
+  ClipboardList,
   CheckCircle2,
   FolderGit2,
   CalendarDays,
@@ -29,16 +30,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       badge: undefined,
     },
     {
+      label: 'Tender Registry',
+      path: '/registry',
+      icon: ClipboardList,
+      badge: undefined,
+    },
+    {
+      label: 'Pipeline Overview',
+      path: '/tenders',
+      icon: FolderGit2,
+      badge: undefined,
+    },
+    {
       label: 'My Tasks',
       path: '/tasks/my-tasks',
       icon: CheckCircle2,
       badge: '18',
-    },
-    {
-      label: 'Tenders',
-      path: '/tenders',
-      icon: FolderGit2,
-      badge: '24',
     },
     {
       label: 'Calendar',
@@ -59,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       badge: undefined,
     },
     {
-      label: 'Reports & Win/Loss',
+      label: 'Reports & Status',
       path: '/reports',
       icon: BarChart3,
       badge: undefined,
@@ -87,12 +94,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
         collapsed ? 'w-20' : 'w-64'
       }`}
     >
-      {/* Top Header / Branding */}
+      {/* Top Header / Branding with Minimizer Button */}
       <div className="flex flex-col">
-        <div className="h-14 px-4 flex items-center justify-between border-b border-[#1E293B]">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-9 h-9 rounded-lg bg-[#2563EB] flex items-center justify-center text-white shrink-0 shadow-sm">
-              <ShieldCheck className="w-5 h-5" />
+        <div className="h-14 px-3 flex items-center justify-between border-b border-[#1E293B]">
+          <div className="flex items-center gap-2.5 overflow-hidden min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center text-white shrink-0 shadow-sm">
+              <ShieldCheck className="w-4 h-4" />
             </div>
             {!collapsed && (
               <div className="flex flex-col min-w-0">
@@ -100,16 +107,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
                   TenderTracker
                 </span>
                 <span className="text-[10px] font-semibold text-[#94A3B8] uppercase tracking-wider mt-1 truncate">
-                  Procurement Core
+                  Command Center
                 </span>
               </div>
             )}
           </div>
-          {!collapsed && (
-            <span className="px-1.5 py-0.5 bg-[#1E293B] text-[#93C5FD] font-mono text-[10px] rounded font-semibold tracking-wider">
-              v2.1
-            </span>
-          )}
+
+          {/* Minimizer Button */}
+          <button
+            onClick={onToggle}
+            className="p-1.5 rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#1E293B] transition-colors shrink-0"
+            title={collapsed ? 'Expand sidebar' : 'Minimize sidebar'}
+          >
+            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          </button>
         </div>
 
         {/* Command Navigation */}
@@ -161,13 +172,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
         </div>
       </div>
 
-      {/* Footer Area: Pipeline Health & Settings */}
+      {/* Footer Area: Operational Readiness & System */}
       <div className="p-3 border-t border-[#1E293B]">
         {!collapsed && (
           <div className="p-3 rounded-lg bg-[#1E293B] mb-3">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-[11px] font-medium text-[#94A3B8]">
-                Pipeline Health
+                Operational Readiness
               </span>
               <span className="font-mono text-xs font-bold text-white">84%</span>
             </div>
@@ -207,18 +218,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
           })}
         </nav>
 
-        {/* Sidebar Toggle Button */}
+        {/* Sidebar Minimizer Bar at Bottom */}
         <button
           onClick={onToggle}
           className="w-full flex items-center justify-center py-2 px-3 rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#1E293B] transition-colors"
-          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          title={collapsed ? 'Expand sidebar' : 'Minimize sidebar'}
         >
           {collapsed ? (
             <ChevronRight className="w-4 h-4" />
           ) : (
             <div className="flex items-center gap-2 text-xs">
               <ChevronLeft className="w-4 h-4" />
-              <span>Collapse Sidebar</span>
+              <span>Minimize Sidebar</span>
             </div>
           )}
         </button>
@@ -226,4 +237,3 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
     </aside>
   );
 };
-
