@@ -46,6 +46,11 @@ export interface TenderDocument {
   size: string;
 }
 
+export interface TenderFolder {
+  name: string;
+  label: string;
+}
+
 export type ReviewTierStatus = 'APPROVED' | 'ACTION_REQUIRED' | 'WAITING';
 
 export interface TenderReviewTier {
@@ -215,6 +220,7 @@ export interface Tender {
   submissionProof?: SubmissionProof;
   summary?: TenderExtendedSummary;
   comments?: TenderComment[];
+  customFolders?: TenderFolder[];
   archivedFromStage?: TenderStage;
   archivedAt?: string;
 }

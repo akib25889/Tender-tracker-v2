@@ -38,6 +38,8 @@ interface TenderContextType {
     tenderId: string,
     doc: { name: string; folder: string; size: string }
   ) => void;
+  addFolder: (tenderId: string, folder: { name: string; label: string }) => void;
+  moveDocumentFolder: (tenderId: string, docId: string, targetFolder: string) => void;
   signOffReviewTier: (
     tenderId: string,
     tierNumber: number,
@@ -455,6 +457,38 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
+  const addFolder = (tenderId: string, folder: { name: string; label: string }) => {
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        const currentCustom = t.customFolders || [];
+        if (currentCustom.some((f) => f.name === folder.name)) return t;
+        return {
+          ...t,
+          customFolders: [...currentCustom, folder],
+        };
+      })
+    );
+  };
+
+  const moveDocumentFolder = (
+    tenderId: string,
+    docId: string,
+    targetFolder: string
+  ) => {
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        return {
+          ...t,
+          documents: t.documents.map((d) =>
+            d.id === docId ? { ...d, folder: targetFolder } : d
+          ),
+        };
+      })
+    );
+  };
+
   const signOffReviewTier = (
     tenderId: string,
     tierNumber: number,
@@ -676,6 +710,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         addTask,
         moveTask,
         addDocument,
+        addFolder,
+        moveDocumentFolder,
         signOffReviewTier,
         toggleRequirementStatus,
         submitTenderProof,

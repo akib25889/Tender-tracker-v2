@@ -9,11 +9,26 @@ export const UploadDocumentModal: React.FC = () => {
     activeTenderIdForModal,
     setActiveTenderIdForModal,
     addDocument,
+    tenders,
   } = useTenders();
 
   const [fileName, setFileName] = useState('');
 
   if (!uploadFolderTarget && !activeTenderIdForModal) return null;
+
+  const tender = tenders.find((t) => t.id === activeTenderIdForModal);
+  const defaultFolders = [
+    { name: '01_original_tender_documents', label: 'Original RFP Notices & Addenda' },
+    { name: '02_company_statutory_documents', label: 'Company Statutory Credentials' },
+    { name: '03_technical_proposal', label: 'Technical Proposal & Architecture' },
+    { name: '04_financial_proposal', label: 'Financial Proposal & BOQ Tables' },
+    { name: '05_final_submission_package', label: 'Compiled Sealed Submission Package' },
+    { name: '06_submission_receipts', label: 'Official Portal Receipts & Confirmations' },
+  ];
+  const allFolders = [
+    ...defaultFolders,
+    ...(tender?.customFolders || []),
+  ];
 
   const handleClose = () => {
     setUploadFolderTarget(null);
@@ -55,12 +70,25 @@ export const UploadDocumentModal: React.FC = () => {
         <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs">
           <div>
             <label className="block font-semibold text-[#0F172A] mb-1">
-              Target Vault Directory
+              Target Vault Directory (Which folder to place this file) *
             </label>
-            <div className="flex items-center gap-2 p-2 bg-[#F1F5F9] rounded-lg border border-[#E2E8F0] font-mono text-[11px] text-[#0F172A]">
-              <Folder className="w-4 h-4 text-[#2563EB]" />
-              <span>/{uploadFolderTarget || '03_technical_proposal'}/</span>
+            <div className="relative">
+              <select
+                value={uploadFolderTarget || '03_technical_proposal'}
+                onChange={(e) => setUploadFolderTarget(e.target.value)}
+                className="w-full pl-8 pr-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-medium text-xs text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#2563EB] cursor-pointer"
+              >
+                {allFolders.map((f) => (
+                  <option key={f.name} value={f.name}>
+                    📁 {f.label} (/{f.name}/)
+                  </option>
+                ))}
+              </select>
+              <Folder className="w-4 h-4 text-[#2563EB] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
+            <span className="text-[10px] text-[#64748B] mt-1 block font-mono">
+              Target path: storage/tenders/{tender?.id || '{TDR-ID}'}/{uploadFolderTarget || '03_technical_proposal'}/
+            </span>
           </div>
 
           <div>
