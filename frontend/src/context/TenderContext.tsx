@@ -109,6 +109,8 @@ interface TenderContextType {
   setActiveTenderIdForModal: (id: string | null) => void;
   activeTierForSignOff: number | null;
   setActiveTierForSignOff: (tier: number | null) => void;
+  isCommandPaletteOpen: boolean;
+  setIsCommandPaletteOpen: (open: boolean) => void;
 }
 
 const TenderContext = createContext<TenderContextType | undefined>(undefined);
@@ -184,6 +186,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   const [uploadFolderTarget, setUploadFolderTarget] = useState<string | null>(null);
   const [activeTenderIdForModal, setActiveTenderIdForModal] = useState<string | null>(null);
   const [activeTierForSignOff, setActiveTierForSignOff] = useState<number | null>(null);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tenders));
@@ -914,6 +917,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         setActiveTenderIdForModal,
         activeTierForSignOff,
         setActiveTierForSignOff,
+        isCommandPaletteOpen,
+        setIsCommandPaletteOpen,
       }}
     >
       {children}

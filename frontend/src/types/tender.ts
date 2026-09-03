@@ -115,6 +115,8 @@ export interface UserProfile {
   title: string;
   email: string;
   avatar: string;
+  department?: string;
+  maxCapacity?: number;
 }
 
 export interface TenderComment {

@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { UploadDocumentModal } from '../modals/UploadDocumentModal';
+import { CommandPaletteModal } from '../modals/CommandPaletteModal';
 import { useTheme } from '../../hooks/useTheme';
 
 export const AppLayout: React.FC = () => {
@@ -41,6 +42,7 @@ export const AppLayout: React.FC = () => {
 
       {/* Global Modals */}
       <UploadDocumentModal />
+      <CommandPaletteModal />
     </div>
   );
 };

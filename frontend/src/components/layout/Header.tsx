@@ -2,6 +2,7 @@ import React from 'react';
 import { Search, Plus, Bell, PanelLeftClose, PanelLeftOpen, Moon, Sun } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { UserRoleSwitcher } from '../ui/UserRoleSwitcher';
+import { useTenders } from '../../context/TenderContext';
 
 interface HeaderProps {
   sidebarCollapsed: boolean;
@@ -16,6 +17,8 @@ export const Header: React.FC<HeaderProps> = ({
   theme,
   onToggleTheme,
 }) => {
+  const { setIsCommandPaletteOpen } = useTenders();
+
   return (
     <header
       className={`fixed top-0 right-0 h-14 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] z-40 flex items-center justify-between px-4 sm:px-6 transition-all duration-300 ${
@@ -28,27 +31,29 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={onToggleSidebar}
             className="p-1.5 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors shrink-0"
-            title={sidebarCollapsed ? 'Expand sidebar' : 'Minimize sidebar'}
+            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {sidebarCollapsed ? (
-              <PanelLeftOpen className="w-4 h-4 text-[#2563EB]" />
+              <PanelLeftOpen className="w-4 h-4" />
             ) : (
               <PanelLeftClose className="w-4 h-4" />
             )}
           </button>
         )}
 
-        <div className="relative w-full max-w-lg">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] w-4 h-4" />
-          <input
-            type="text"
-            placeholder="Search RFP, Tender ID, Authority, or Task... (Ctrl + K)"
-            className="w-full pl-9 pr-14 py-1.5 bg-[#F1F5F9] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] border-none focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-          />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-[#94A3B8] font-mono text-[10px] bg-[#E2E8F0] px-1.5 py-0.5 rounded">
+        <button
+          type="button"
+          onClick={() => setIsCommandPaletteOpen(true)}
+          className="relative w-full max-w-lg text-left group cursor-pointer"
+        >
+          <div className="flex items-center w-full pl-9 pr-14 py-1.5 bg-[#F1F5F9] group-hover:bg-[#E2E8F0]/80 rounded-lg text-xs text-[#94A3B8] border border-transparent group-hover:border-[#CBD5E1] transition-all">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] group-hover:text-[#2563EB] w-4 h-4 transition-colors" />
+            <span className="truncate">Search RFP, Tender ID, Authority, or Task...</span>
+          </div>
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-[#64748B] font-mono text-[10px] bg-white border border-[#CBD5E1] px-1.5 py-0.5 rounded shadow-2xs">
             <span>⌘K</span>
           </div>
-        </div>
+        </button>
       </div>
 
       {/* Right Controls */}
