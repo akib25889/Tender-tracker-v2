@@ -1,5 +1,6 @@
 import React from 'react';
-import { Search, Plus, Sparkles, Bell, User } from 'lucide-react';
+import { Search, Plus, Bell, User } from 'lucide-react';
+import { useTenders } from '../../context/TenderContext';
 
 interface HeaderProps {
   sidebarCollapsed: boolean;
@@ -10,6 +11,8 @@ export const Header: React.FC<HeaderProps> = ({
   sidebarCollapsed,
   onNewTenderClick,
 }) => {
+  const { currency, setCurrency } = useTenders();
+
   return (
     <header
       className={`fixed top-0 right-0 h-14 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] z-40 flex items-center justify-between px-6 transition-all duration-300 ${
@@ -36,17 +39,38 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Right Controls */}
       <div className="flex items-center gap-3">
+        {/* Currency Switcher (USD / BDT) */}
+        <div className="flex items-center p-0.5 bg-[#F1F5F9] border border-[#E2E8F0] rounded-lg text-xs">
+          <button
+            onClick={() => setCurrency('USD')}
+            className={`px-2.5 py-1 rounded-md font-mono text-[11px] font-bold transition-colors ${
+              currency === 'USD'
+                ? 'bg-white text-[#0F172A] shadow-sm'
+                : 'text-[#64748B] hover:text-[#0F172A]'
+            }`}
+            title="Switch valuation display to US Dollar ($)"
+          >
+            USD ($)
+          </button>
+          <button
+            onClick={() => setCurrency('BDT')}
+            className={`px-2.5 py-1 rounded-md font-mono text-[11px] font-bold transition-colors ${
+              currency === 'BDT'
+                ? 'bg-white text-[#16A34A] shadow-sm'
+                : 'text-[#64748B] hover:text-[#0F172A]'
+            }`}
+            title="Switch valuation display to Bangladeshi Taka (৳)"
+          >
+            BDT (৳)
+          </button>
+        </div>
+
         <button
           onClick={onNewTenderClick}
           className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>New Tender</span>
-        </button>
-
-        <button className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#EFF6FF] text-[#1D4ED8] rounded-lg text-xs font-semibold hover:bg-[#DBEAFE] transition-colors border border-[#BFDBFE]">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>AI Scope Assist</span>
         </button>
 
         <div className="h-5 w-px bg-[#E2E8F0] mx-1"></div>
@@ -81,4 +105,3 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
-

@@ -7,7 +7,7 @@ import { UrgencyBadge } from '../components/ui/UrgencyBadge';
 import { StatusBadge } from '../components/ui/StatusBadge';
 
 export const CalendarPage: React.FC = () => {
-  const { tenders } = useTenders();
+  const { tenders, formatCurrency } = useTenders();
   const [filterRange, setFilterRange] = useState<'ALL' | '7_DAYS' | '14_DAYS'>('ALL');
 
   const filteredTenders = tenders
@@ -115,7 +115,7 @@ export const CalendarPage: React.FC = () => {
                       <span>{tender.country}</span>
                       <span>•</span>
                       <span className="font-mono font-bold text-[#0F172A]">
-                        ${(tender.estimatedValue / 1000000).toFixed(2)}M
+                        {formatCurrency(tender.estimatedValue)}
                       </span>
                     </div>
                   </div>

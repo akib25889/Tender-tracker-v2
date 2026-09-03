@@ -24,6 +24,23 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Currency Switcher (USD/BDT), AI Button Cleanup & Lifecycle Stage Revert
+- **Category:** UI/UX & Functional Refinements
+- **Summary:**
+  - Implemented global **USD ($) / BDT (৳)** currency toggle in the top header with live conversion rate across all screens, tables, KPIs, and reports (`formatCurrency` helper in `TenderContext`).
+  - Removed "AI Scope Assist" button from the top application header.
+  - Added a **"Back to [Previous Stage]"** option on the Current Lifecycle Stage bar in the Proposal Workspace (`TenderDetailPage.tsx`), enabling bi-directional lifecycle stage navigation.
+- **Relevant Files:**
+  - `frontend/src/context/TenderContext.tsx`
+  - `frontend/src/components/layout/Header.tsx`
+  - `frontend/src/pages/TenderDetailPage.tsx`
+  - `frontend/src/pages/DashboardPage.tsx`
+  - `frontend/src/pages/TenderListPage.tsx`
+  - `frontend/src/pages/CalendarPage.tsx`
+  - `frontend/src/pages/ReportsPage.tsx`
+
+---
+
 ### [2026-09-03] — Milestone 5: Module Implementations (17 Screens) Completed
 - **Category:** Frontend Application Modules & Interactive State
 - **Summary:**

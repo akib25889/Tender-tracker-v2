@@ -11,6 +11,8 @@ import {
 } from '../types/tender';
 import { MOCK_TENDERS } from '../mock/tenders';
 
+export type CurrencyMode = 'USD' | 'BDT';
+
 interface TenderContextType {
   tenders: Tender[];
   addTender: (tenderData: Partial<Tender>) => void;
@@ -37,6 +39,10 @@ interface TenderContextType {
     newStatus: RequirementStatus
   ) => void;
   submitTenderProof: (tenderId: string, portalReference: string) => void;
+  // Currency switcher
+  currency: CurrencyMode;
+  setCurrency: (c: CurrencyMode) => void;
+  formatCurrency: (amountInUSD: number) => string;
   // Modal states
   isNewTenderModalOpen: boolean;
   setIsNewTenderModalOpen: (open: boolean) => void;
@@ -51,6 +57,8 @@ interface TenderContextType {
 const TenderContext = createContext<TenderContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'tendertracker_pipeline_v2';
+const CURRENCY_KEY = 'tendertracker_currency_v2';
+const USD_TO_BDT = 122; // 1 USD ≈ 122 BDT
 
 export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -66,6 +74,34 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     return MOCK_TENDERS;
   });
+
+  const [currency, setCurrencyState] = useState<CurrencyMode>(() => {
+    const saved = localStorage.getItem(CURRENCY_KEY);
+    return saved === 'BDT' ? 'BDT' : 'USD';
+  });
+
+  const setCurrency = (c: CurrencyMode) => {
+    setCurrencyState(c);
+    localStorage.setItem(CURRENCY_KEY, c);
+  };
+
+  const formatCurrency = (amountInUSD: number): string => {
+    if (currency === 'USD') {
+      if (amountInUSD >= 1_000_000) {
+        return `$${(amountInUSD / 1_000_000).toFixed(2)}M`;
+      }
+      return `$${amountInUSD.toLocaleString()}`;
+    } else {
+      const bdt = amountInUSD * USD_TO_BDT;
+      if (bdt >= 10_000_000) {
+        return `৳${(bdt / 10_000_000).toFixed(2)} Cr`;
+      }
+      if (bdt >= 100_000) {
+        return `৳${(bdt / 100_000).toFixed(2)} Lakh`;
+      }
+      return `৳${Math.round(bdt).toLocaleString()}`;
+    }
+  };
 
   // Modal control states
   const [isNewTenderModalOpen, setIsNewTenderModalOpen] = useState(false);
@@ -154,7 +190,6 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
-        // If decision is GO and stage was ANALYSIS, transition to PREPARATION
         const nextStage =
           decision === 'GO' && t.stage === 'UNDER_ANALYSIS'
             ? 'PREPARATION'
@@ -218,7 +253,6 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     tenderId: string,
     doc: { name: string; folder: string; size: string }
   ) => {
-    // Generate simulated SHA-256 string
     const hex = '0123456789abcdef';
     let hash = '';
     for (let i = 0; i < 64; i++) {
@@ -271,14 +305,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
               comments: comments || 'Signed off and verified.',
             };
           }
-          // Unlock next tier if waiting
           if (r.tierNumber === tierNumber + 1 && r.status === 'WAITING') {
             return { ...r, status: 'ACTION_REQUIRED' as const };
           }
           return r;
         });
 
-        // Check if all approved
         const allApproved = updatedReviews.every((r) => r.status === 'APPROVED');
         return {
           ...t,
@@ -344,6 +376,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         signOffReviewTier,
         toggleRequirementStatus,
         submitTenderProof,
+        currency,
+        setCurrency,
+        formatCurrency,
         isNewTenderModalOpen,
         setIsNewTenderModalOpen,
         uploadFolderTarget,
@@ -366,4 +401,3 @@ export const useTenders = () => {
   }
   return context;
 };
-

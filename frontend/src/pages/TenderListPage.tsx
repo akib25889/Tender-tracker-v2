@@ -16,7 +16,7 @@ import { ReadinessBar } from '../components/ui/ReadinessBar';
 import { TenderStage } from '../types/tender';
 
 export const TenderListPage: React.FC = () => {
-  const { tenders, setIsNewTenderModalOpen, updateTenderStage } = useTenders();
+  const { tenders, setIsNewTenderModalOpen, updateTenderStage, formatCurrency } = useTenders();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStage, setSelectedStage] = useState<string>('ALL');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
@@ -259,7 +259,7 @@ export const TenderListPage: React.FC = () => {
                   </td>
 
                   <td className="py-3.5 px-4 font-mono font-bold text-[#0F172A]">
-                    ${(tender.estimatedValue / 1000000).toFixed(2)}M
+                    {formatCurrency(tender.estimatedValue)}
                   </td>
 
                   <td className="py-3.5 px-4">

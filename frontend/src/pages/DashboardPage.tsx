@@ -18,7 +18,7 @@ import { Card } from '../components/ui/Card';
 import { TenderStage } from '../types/tender';
 
 export const DashboardPage: React.FC = () => {
-  const { tenders, setIsNewTenderModalOpen } = useTenders();
+  const { tenders, setIsNewTenderModalOpen, formatCurrency } = useTenders();
   const [filterMode, setFilterMode] = useState<'ALL_URGENT' | 'CLOSING_SOON' | 'BLOCKERS'>('ALL_URGENT');
 
   // Dynamic live metric calculations
@@ -98,7 +98,7 @@ export const DashboardPage: React.FC = () => {
                 {activeTenders.length}
               </span>
               <span className="font-mono text-xs font-bold text-[#2563EB]">
-                ${(totalPipelineValue / 1000000).toFixed(1)}M Net
+                {formatCurrency(totalPipelineValue)} Net
               </span>
             </div>
             <span className="text-[11px] text-[#16A34A] font-medium mt-0.5 block">
@@ -198,7 +198,7 @@ export const DashboardPage: React.FC = () => {
                     {count}
                   </span>
                   <span className="font-mono text-[10px] text-[#2563EB] font-semibold">
-                    ${(stageValue / 1000000).toFixed(1)}M
+                    {formatCurrency(stageValue)}
                   </span>
                 </div>
                 <span className="text-[11px] font-semibold text-[#64748B] block truncate">
@@ -288,7 +288,7 @@ export const DashboardPage: React.FC = () => {
                     <span>{tender.country}</span>
                     <span>•</span>
                     <span className="font-mono font-semibold text-[#0F172A]">
-                      ${(tender.estimatedValue / 1000000).toFixed(2)}M
+                      {formatCurrency(tender.estimatedValue)}
                     </span>
                     <span>•</span>
                     <span>Lead: {tender.leadOwner.name}</span>

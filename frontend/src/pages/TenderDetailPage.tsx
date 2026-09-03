@@ -12,6 +12,7 @@ import {
   Clock,
   User,
   ArrowRight,
+  ArrowLeft,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -23,7 +24,7 @@ import { TenderStage } from '../types/tender';
 export const TenderDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
-  const { tenders, updateTenderStage } = useTenders();
+  const { tenders, updateTenderStage, formatCurrency } = useTenders();
 
   // Find the tender or fallback to the first tender
   const tender = tenders.find((t) => t.id === id) || tenders[0];
@@ -114,7 +115,7 @@ export const TenderDetailPage: React.FC = () => {
                 Estimated Net Value
               </span>
               <span className="font-mono font-bold text-2xl text-[#0F172A] mt-0.5 block">
-                ${(tender.estimatedValue / 1000000).toFixed(2)}M
+                {formatCurrency(tender.estimatedValue)}
               </span>
               <span className="text-[11px] text-[#2563EB] font-medium">
                 SOW Category: {tender.category}
@@ -135,15 +136,24 @@ export const TenderDetailPage: React.FC = () => {
 
         {/* 6-Gate Lifecycle Progression Bar */}
         <div className="mt-6 pt-4 border-t border-[#F1F5F9]">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
             <span className="text-xs font-semibold text-[#0F172A]">
               Current Lifecycle Stage: {tender.stage.replace('_', ' ')}
             </span>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
+              {currentStageIndex > 0 && (
+                <button
+                  onClick={() => updateTenderStage(tender.id, stages[currentStageIndex - 1])}
+                  className="flex items-center gap-1 px-2.5 py-1 bg-white border border-[#E2E8F0] text-[#475569] hover:text-[#0F172A] hover:bg-[#F8FAFC] text-[11px] font-semibold rounded transition-colors shadow-xs"
+                >
+                  <ArrowLeft className="w-3 h-3" />
+                  <span>Back to {stages[currentStageIndex - 1].replace('_', ' ')}</span>
+                </button>
+              )}
               {currentStageIndex < stages.length - 1 && (
                 <button
                   onClick={() => updateTenderStage(tender.id, stages[currentStageIndex + 1])}
-                  className="flex items-center gap-1 px-2.5 py-1 bg-[#0F172A] text-white text-[11px] font-semibold rounded hover:bg-[#1E293B] transition-colors"
+                  className="flex items-center gap-1 px-2.5 py-1 bg-[#0F172A] text-white text-[11px] font-semibold rounded hover:bg-[#1E293B] transition-colors shadow-sm"
                 >
                   <span>Advance to {stages[currentStageIndex + 1].replace('_', ' ')}</span>
                   <ArrowRight className="w-3 h-3" />

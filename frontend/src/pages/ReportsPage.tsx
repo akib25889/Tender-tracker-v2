@@ -4,7 +4,7 @@ import { useTenders } from '../context/TenderContext';
 import { TrendingUp, Award, DollarSign, Download } from 'lucide-react';
 
 export const ReportsPage: React.FC = () => {
-  const { tenders } = useTenders();
+  const { tenders, formatCurrency } = useTenders();
 
   const totalValue = tenders.reduce((acc, t) => acc + t.estimatedValue, 0);
   const awardedBids = tenders.filter((t) => t.stage === 'AWARDED');
@@ -74,7 +74,7 @@ export const ReportsPage: React.FC = () => {
               Tracked Pipeline Total
             </span>
             <span className="font-display text-2xl font-bold text-[#0F172A] mt-1 block">
-              ${(totalValue / 1000000).toFixed(1)}M
+              {formatCurrency(totalValue)}
             </span>
             <span className="text-[11px] text-[#2563EB]">{tenders.length} active opportunities</span>
           </div>
@@ -112,7 +112,7 @@ export const ReportsPage: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <span className="font-mono text-[#64748B]">{cat.count} bids</span>
                   <span className="font-mono font-bold text-[#0F172A]">
-                    ${(cat.value / 1000000).toFixed(2)}M ({cat.share}%)
+                    {formatCurrency(cat.value)} ({cat.share}%)
                   </span>
                 </div>
               </div>
