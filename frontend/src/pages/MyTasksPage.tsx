@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
-import { CheckCircle2, Filter, Search, ArrowRight, Square } from 'lucide-react';
+import { CheckCircle2, Filter, Search, ArrowRight, Square, User, Users } from 'lucide-react';
 import { TaskStatus } from '../types/tender';
 
 export const MyTasksPage: React.FC = () => {
-  const { tenders, moveTask, assignTask, teamMembers } = useTenders();
+  const { tenders, moveTask, assignTask, teamMembers, currentUser } = useTenders();
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
+  const [assigneeFilter, setAssigneeFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Collect all tasks across all tenders with their tender metadata
@@ -20,14 +21,28 @@ export const MyTasksPage: React.FC = () => {
     }))
   );
 
+  const myTasksCount = allTasks.filter(
+    (t) => t.assignee.toLowerCase().includes(currentUser.name.toLowerCase())
+  ).length;
+
   const filteredTasks = allTasks.filter((task) => {
     const matchesStatus =
       filterStatus === 'ALL' || task.status === filterStatus;
+
+    let matchesAssignee = true;
+    if (assigneeFilter === 'ME') {
+      matchesAssignee = task.assignee.toLowerCase().includes(currentUser.name.toLowerCase());
+    } else if (assigneeFilter !== 'ALL') {
+      matchesAssignee = task.assignee.toLowerCase().includes(assigneeFilter.toLowerCase());
+    }
+
     const matchesSearch =
       task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       task.tenderTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.tenderId.toLowerCase().includes(searchQuery.toLowerCase()) ||
       task.assignee.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesSearch;
+
+    return matchesStatus && matchesAssignee && matchesSearch;
   });
 
   const handleToggleDone = (tenderId: string, taskId: string, currentStatus: TaskStatus) => {
@@ -54,6 +69,11 @@ export const MyTasksPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-xs font-medium">
+          <span className="text-[#64748B]">Showing:</span>
+          <span className="font-mono font-bold text-[#2563EB]">
+            {filteredTasks.length} Tasks
+          </span>
+          <span className="text-[#CBD5E1]">|</span>
           <span className="text-[#64748B]">Completed:</span>
           <span className="font-mono font-bold text-[#16A34A]">
             {allTasks.filter((t) => t.status === 'DONE').length} / {allTasks.length}
@@ -62,23 +82,92 @@ export const MyTasksPage: React.FC = () => {
       </div>
 
       {/* Filter & Search */}
-      <div className="bg-white p-3 rounded-lg border border-[#E2E8F0] shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
-        <div className="relative w-full md:w-80">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] w-4 h-4" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search deliverables, assignee..."
-            className="w-full pl-9 pr-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-          />
+      <div className="bg-white p-3.5 rounded-xl border border-[#E2E8F0] shadow-sm space-y-3">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] w-4 h-4" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search deliverables, tender ID, client..."
+              className="w-full pl-9 pr-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
+            {/* Quick Assignee View Buttons */}
+            <div className="flex items-center bg-[#F1F5F9] p-1 rounded-lg gap-1">
+              <button
+                type="button"
+                onClick={() => setAssigneeFilter('ME')}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                  assigneeFilter === 'ME'
+                    ? 'bg-white text-[#2563EB] shadow-xs'
+                    : 'text-[#64748B] hover:text-[#0F172A]'
+                }`}
+                title={`Filter tasks assigned to ${currentUser.name}`}
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>My Tasks ({myTasksCount})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setAssigneeFilter('ALL')}
+                className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                  assigneeFilter === 'ALL'
+                    ? 'bg-white text-[#0F172A] shadow-xs'
+                    : 'text-[#64748B] hover:text-[#0F172A]'
+                }`}
+                title="Show tasks across all team members"
+              >
+                <span>All Tasks ({allTasks.length})</span>
+              </button>
+            </div>
+
+            {/* Filter by Specific Team Member Name */}
+            <div className="flex items-center gap-1.5 bg-[#F8FAFC] border border-[#E2E8F0] px-2.5 py-1 rounded-lg text-xs">
+              <Users className="w-3.5 h-3.5 text-[#64748B]" />
+              <span className="text-[#64748B] font-medium whitespace-nowrap">Filter by Name:</span>
+              <select
+                value={assigneeFilter === 'ME' || assigneeFilter === 'ALL' ? '' : assigneeFilter}
+                onChange={(e) => {
+                  if (e.target.value) {
+                    setAssigneeFilter(e.target.value);
+                  }
+                }}
+                className="bg-transparent text-xs font-semibold text-[#0F172A] border-none focus:outline-none cursor-pointer"
+              >
+                <option value="">Select team member...</option>
+                {teamMembers.map((m) => (
+                  <option key={m.id} value={m.name}>
+                    {m.name} ({m.title || m.role.replace('_', ' ')})
+                  </option>
+                ))}
+              </select>
+              {assigneeFilter !== 'ME' && assigneeFilter !== 'ALL' && (
+                <button
+                  type="button"
+                  onClick={() => setAssigneeFilter('ALL')}
+                  className="text-[#94A3B8] hover:text-[#DC2626] ml-1 text-xs font-bold"
+                  title="Clear name filter"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          </div>
         </div>
 
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto">
+        {/* Status Filter Chips */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pt-2 border-t border-[#F1F5F9]">
           <Filter className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
+          <span className="text-xs text-[#64748B] font-medium mr-1">Status:</span>
           {['ALL', 'TODO', 'IN_PROGRESS', 'REVIEW', 'DONE'].map((s) => (
             <button
               key={s}
+              type="button"
               onClick={() => setFilterStatus(s)}
               className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
                 filterStatus === s
@@ -86,9 +175,16 @@ export const MyTasksPage: React.FC = () => {
                   : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A]'
               }`}
             >
-              {s === 'ALL' ? 'All Deliverables' : s.replace('_', ' ')}
+              {s === 'ALL' ? 'All Statuses' : s.replace('_', ' ')}
             </button>
           ))}
+
+          {/* Active Filter Badge */}
+          {assigneeFilter !== 'ALL' && (
+            <span className="ml-auto text-[11px] font-semibold text-[#2563EB] bg-[#EFF6FF] px-2.5 py-0.5 rounded-full border border-[#BFDBFE] whitespace-nowrap">
+              Filtered: {assigneeFilter === 'ME' ? `My Tasks (${currentUser.name})` : assigneeFilter}
+            </span>
+          )}
         </div>
       </div>
 
