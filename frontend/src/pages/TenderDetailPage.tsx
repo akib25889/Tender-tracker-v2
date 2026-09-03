@@ -153,7 +153,7 @@ export const TenderDetailPage: React.FC = () => {
                   disabled={!canPerformAction('ADVANCE_STAGE')}
                   onClick={() => updateTenderStage(tender.id, stages[currentStageIndex - 1])}
                   className="flex items-center gap-1 px-2.5 py-1 bg-white border border-[#E2E8F0] disabled:opacity-40 text-[#475569] hover:text-[#0F172A] hover:bg-[#F8FAFC] text-[11px] font-semibold rounded transition-colors shadow-xs"
-                  title={!canPerformAction('ADVANCE_STAGE') ? 'Only Bid Director can revert lifecycle stage' : undefined}
+                  title={!canPerformAction('ADVANCE_STAGE') ? 'Only Business Head or Executive Manager can revert lifecycle stage' : undefined}
                 >
                   <ArrowLeft className="w-3 h-3" />
                   <span>Back to {stages[currentStageIndex - 1].replace('_', ' ')}</span>
@@ -164,7 +164,7 @@ export const TenderDetailPage: React.FC = () => {
                   disabled={!canPerformAction('ADVANCE_STAGE')}
                   onClick={() => updateTenderStage(tender.id, stages[currentStageIndex + 1])}
                   className="flex items-center gap-1 px-2.5 py-1 bg-[#0F172A] disabled:bg-[#94A3B8] text-white text-[11px] font-semibold rounded hover:bg-[#1E293B] transition-colors shadow-sm"
-                  title={!canPerformAction('ADVANCE_STAGE') ? 'Only Bid Director can advance lifecycle stage' : undefined}
+                  title={!canPerformAction('ADVANCE_STAGE') ? 'Only Business Head or Executive Manager can advance lifecycle stage' : undefined}
                 >
                   {!canPerformAction('ADVANCE_STAGE') && <Lock className="w-3 h-3 text-amber-300" />}
                   <span>Advance to {stages[currentStageIndex + 1].replace('_', ' ')}</span>

@@ -25,14 +25,14 @@ export const TenderCommentsSection: React.FC<TenderCommentsSectionProps> = ({
 
   const getRoleBadge = (role: string) => {
     switch (role) {
-      case 'BID_DIRECTOR':
+      case 'BUSINESS_HEAD':
         return 'bg-[#F3E8FF] text-[#7E22CE] border-[#D8B4FE]';
-      case 'TECHNICAL_LEAD':
+      case 'EXECUTIVE_MANAGER':
         return 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]';
-      case 'FINANCIAL_ANALYST':
-        return 'bg-[#F0FDF4] text-[#15803D] border-[#BBF7D0]';
-      case 'COMPLIANCE_OFFICER':
+      case 'SENIOR_MANAGER':
         return 'bg-[#FFFBEB] text-[#B45309] border-[#FDE68A]';
+      case 'TENDER_ANALYST':
+        return 'bg-[#F0FDF4] text-[#15803D] border-[#BBF7D0]';
       default:
         return 'bg-[#F1F5F9] text-[#475569] border-[#CBD5E1]';
     }
@@ -95,7 +95,7 @@ export const TenderCommentsSection: React.FC<TenderCommentsSectionProps> = ({
           <div className="divide-y divide-[#F1F5F9] border-t border-[#F1F5F9] pt-2 space-y-3">
             {comments.map((comment) => {
               const isOwn = comment.authorName === currentUser.name;
-              const canDelete = isOwn || currentUser.role === 'BID_DIRECTOR';
+              const canDelete = isOwn || currentUser.role === 'BUSINESS_HEAD';
 
               return (
                 <div key={comment.id} className="pt-3 first:pt-0 group">
@@ -148,3 +148,4 @@ export const TenderCommentsSection: React.FC<TenderCommentsSectionProps> = ({
     </Card>
   );
 };
+

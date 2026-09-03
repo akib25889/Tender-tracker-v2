@@ -28,9 +28,9 @@
 - **Category:** Collaboration, Security & Operational Governance
 - **Summary:**
   - **Role-Based Access Control (RBAC):**
-    - Implemented 5 enterprise roles: `BID_DIRECTOR`, `TECHNICAL_LEAD`, `FINANCIAL_ANALYST`, `COMPLIANCE_OFFICER`, and `VIEWER` ([`tender.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/types/tender.ts), [`users.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/mock/users.ts)).
+    - Configured the 4 requested organizational roles: `BUSINESS_HEAD` ("Business Head"), `EXECUTIVE_MANAGER` ("Executive Manager"), `SENIOR_MANAGER` ("Senior Manager"), and `TENDER_ANALYST` ("Tender Analyst") ([`tender.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/types/tender.ts), [`users.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/mock/users.ts)).
     - Built [`UserRoleSwitcher.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/UserRoleSwitcher.tsx) mounted in the header, allowing instant profile and role switching with color-coded badges.
-    - Wired `canPerformAction()` governance rules: restricted lifecycle stage advancement and reversion to `BID_DIRECTOR`, locking buttons and indicating role requirement.
+    - Wired `canPerformAction()` governance rules: restricted lifecycle stage advancement and reversion to `BUSINESS_HEAD` and `EXECUTIVE_MANAGER`, task assignment to managers, and full administrative deletion to `BUSINESS_HEAD`.
   - **Task Assignment:**
     - Added interactive Assignee selector to task Kanban cards ([`TenderTasksTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderTasksTab.tsx)).
     - Reassigns tasks dynamically across team members with instant state persistence via `assignTask()`.

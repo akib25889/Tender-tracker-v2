@@ -75,11 +75,10 @@ export interface SubmissionProof {
 }
 
 export type UserRole =
-  | 'BID_DIRECTOR'
-  | 'TECHNICAL_LEAD'
-  | 'FINANCIAL_ANALYST'
-  | 'COMPLIANCE_OFFICER'
-  | 'VIEWER';
+  | 'BUSINESS_HEAD'
+  | 'EXECUTIVE_MANAGER'
+  | 'SENIOR_MANAGER'
+  | 'TENDER_ANALYST';
 
 export interface UserProfile {
   id: string;

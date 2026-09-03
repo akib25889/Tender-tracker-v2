@@ -431,15 +431,20 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     switch (action) {
       case 'ADVANCE_STAGE':
       case 'SIGN_OFF_TIER_3':
-      case 'DELETE_TENDER':
-        return currentUser.role === 'BID_DIRECTOR';
-      case 'ASSIGN_TASK':
-        return currentUser.role !== 'VIEWER';
-      case 'EDIT_TECHNICAL':
         return (
-          currentUser.role === 'BID_DIRECTOR' ||
-          currentUser.role === 'TECHNICAL_LEAD'
+          currentUser.role === 'BUSINESS_HEAD' ||
+          currentUser.role === 'EXECUTIVE_MANAGER'
         );
+      case 'DELETE_TENDER':
+        return currentUser.role === 'BUSINESS_HEAD';
+      case 'ASSIGN_TASK':
+        return (
+          currentUser.role === 'BUSINESS_HEAD' ||
+          currentUser.role === 'EXECUTIVE_MANAGER' ||
+          currentUser.role === 'SENIOR_MANAGER'
+        );
+      case 'EDIT_TECHNICAL':
+        return currentUser.role !== 'TENDER_ANALYST';
       default:
         return true;
     }

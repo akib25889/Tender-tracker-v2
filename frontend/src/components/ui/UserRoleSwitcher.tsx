@@ -7,35 +7,29 @@ const ROLE_BADGES: Record<
   UserRole,
   { label: string; bg: string; text: string; border: string }
 > = {
-  BID_DIRECTOR: {
-    label: 'Bid Director',
+  BUSINESS_HEAD: {
+    label: 'Business Head',
     bg: 'bg-[#F3E8FF]',
     text: 'text-[#7E22CE]',
     border: 'border-[#D8B4FE]',
   },
-  TECHNICAL_LEAD: {
-    label: 'Technical Lead',
+  EXECUTIVE_MANAGER: {
+    label: 'Executive Manager',
     bg: 'bg-[#EFF6FF]',
     text: 'text-[#1D4ED8]',
     border: 'border-[#BFDBFE]',
   },
-  FINANCIAL_ANALYST: {
-    label: 'Financial Analyst',
-    bg: 'bg-[#F0FDF4]',
-    text: 'text-[#15803D]',
-    border: 'border-[#BBF7D0]',
-  },
-  COMPLIANCE_OFFICER: {
-    label: 'Compliance Officer',
+  SENIOR_MANAGER: {
+    label: 'Senior Manager',
     bg: 'bg-[#FFFBEB]',
     text: 'text-[#B45309]',
     border: 'border-[#FDE68A]',
   },
-  VIEWER: {
-    label: 'Auditor (Viewer)',
-    bg: 'bg-[#F1F5F9]',
-    text: 'text-[#475569]',
-    border: 'border-[#CBD5E1]',
+  TENDER_ANALYST: {
+    label: 'Tender Analyst',
+    bg: 'bg-[#F0FDF4]',
+    text: 'text-[#15803D]',
+    border: 'border-[#BBF7D0]',
   },
 };
 
