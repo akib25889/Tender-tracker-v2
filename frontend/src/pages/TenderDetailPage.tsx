@@ -11,20 +11,22 @@ import {
   ChevronRight,
   Clock,
   User,
+  ArrowRight,
 } from 'lucide-react';
-import { MOCK_TENDERS } from '../mock/tenders';
+import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { UrgencyBadge } from '../components/ui/UrgencyBadge';
 import { ReadinessBar } from '../components/ui/ReadinessBar';
 import { Card } from '../components/ui/Card';
+import { TenderStage } from '../types/tender';
 
 export const TenderDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
+  const { tenders, updateTenderStage } = useTenders();
 
-  // Find the tender or fallback to the first mock tender
-  const tender =
-    MOCK_TENDERS.find((t) => t.id === id) || MOCK_TENDERS[0];
+  // Find the tender or fallback to the first tender
+  const tender = tenders.find((t) => t.id === id) || tenders[0];
 
   const subNavTabs = [
     { label: 'Overview', path: `/tenders/${tender.id}`, exact: true, icon: FileText },
@@ -38,6 +40,17 @@ export const TenderDetailPage: React.FC = () => {
   ];
 
   const isOverview = location.pathname === `/tenders/${tender.id}`;
+
+  const stages: TenderStage[] = [
+    'DISCOVERED',
+    'SCREENING',
+    'UNDER_ANALYSIS',
+    'PREPARATION',
+    'INTERNAL_REVIEW',
+    'SUBMITTED',
+  ];
+
+  const currentStageIndex = stages.indexOf(tender.stage);
 
   return (
     <div className="space-y-6">
@@ -84,7 +97,7 @@ export const TenderDetailPage: React.FC = () => {
               <span>•</span>
               <span className="flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5 text-[#94A3B8]" />
-                Cutoff: {new Date(tender.submissionDeadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                Cutoff: {new Date(tender.submissionDeadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
               </span>
               <span>•</span>
               <span className="flex items-center gap-1">
@@ -120,8 +133,59 @@ export const TenderDetailPage: React.FC = () => {
           </div>
         </div>
 
+        {/* 6-Gate Lifecycle Progression Bar */}
+        <div className="mt-6 pt-4 border-t border-[#F1F5F9]">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-semibold text-[#0F172A]">
+              Current Lifecycle Stage: {tender.stage.replace('_', ' ')}
+            </span>
+            <div className="flex items-center gap-1">
+              {currentStageIndex < stages.length - 1 && (
+                <button
+                  onClick={() => updateTenderStage(tender.id, stages[currentStageIndex + 1])}
+                  className="flex items-center gap-1 px-2.5 py-1 bg-[#0F172A] text-white text-[11px] font-semibold rounded hover:bg-[#1E293B] transition-colors"
+                >
+                  <span>Advance to {stages[currentStageIndex + 1].replace('_', ' ')}</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-6 gap-1.5">
+            {stages.map((st, idx) => {
+              const isDone = currentStageIndex > idx;
+              const isCurrent = currentStageIndex === idx;
+              return (
+                <div key={st} className="flex flex-col gap-1">
+                  <div
+                    className={`h-1.5 rounded-full transition-colors ${
+                      isDone
+                        ? 'bg-[#16A34A]'
+                        : isCurrent
+                        ? 'bg-[#2563EB]'
+                        : 'bg-[#E2E8F0]'
+                    }`}
+                  />
+                  <span
+                    className={`text-[10px] truncate ${
+                      isCurrent
+                        ? 'font-bold text-[#2563EB]'
+                        : isDone
+                        ? 'text-[#16A34A] font-medium'
+                        : 'text-[#94A3B8]'
+                    }`}
+                  >
+                    {st.replace('_', ' ')}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Sub-Navigation Ribbon */}
-        <div className="flex items-center gap-1 border-t border-[#F1F5F9] mt-6 pt-3 overflow-x-auto">
+        <div className="flex items-center gap-1 border-t border-[#F1F5F9] mt-4 pt-3 overflow-x-auto">
           {subNavTabs.map((tab) => {
             const Icon = tab.icon;
             return (
@@ -182,27 +246,38 @@ export const TenderDetailPage: React.FC = () => {
 
             <Card title="Statutory Requirements Matrix Summary" subtitle="Clause verification status mapped to proof documents">
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-[#16A34A]"></span>
-                    <span className="text-xs font-semibold text-[#0F172A]">Trade License &amp; Incorporation Certificate</span>
+                {tender.requirements.slice(0, 3).map((req) => (
+                  <div
+                    key={req.id}
+                    className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`w-2 h-2 rounded-full ${
+                          req.status === 'VERIFIED'
+                            ? 'bg-[#16A34A]'
+                            : req.status === 'BLOCKER'
+                            ? 'bg-[#DC2626] animate-pulse'
+                            : 'bg-[#D97706]'
+                        }`}
+                      />
+                      <span className="text-xs font-semibold text-[#0F172A]">
+                        {req.title}
+                      </span>
+                    </div>
+                    <span
+                      className={`text-[11px] font-mono font-semibold ${
+                        req.status === 'VERIFIED'
+                          ? 'text-[#16A34A]'
+                          : req.status === 'BLOCKER'
+                          ? 'text-[#DC2626] font-bold'
+                          : 'text-[#D97706]'
+                      }`}
+                    >
+                      {req.status}
+                    </span>
                   </div>
-                  <span className="text-[11px] font-mono text-[#16A34A] font-semibold">VALIDATED</span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-[#16A34A]"></span>
-                    <span className="text-xs font-semibold text-[#0F172A]">Audited Financial Statements (Last 3 Years)</span>
-                  </div>
-                  <span className="text-[11px] font-mono text-[#16A34A] font-semibold">VALIDATED</span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse"></span>
-                    <span className="text-xs font-semibold text-[#0F172A]">Bank Guarantee of Bid Security ($284,000)</span>
-                  </div>
-                  <span className="text-[11px] font-mono text-[#DC2626] font-bold">SOLVENCY SEAL PENDING</span>
-                </div>
+                ))}
               </div>
             </Card>
           </div>
@@ -217,7 +292,7 @@ export const TenderDetailPage: React.FC = () => {
                     {tender.completedTasksCount} / {tender.totalTasksCount}
                   </span>
                 </div>
-                <ReadinessBar score={Math.round((tender.completedTasksCount / tender.totalTasksCount) * 100)} />
+                <ReadinessBar score={tender.readinessScore} />
 
                 <div className="pt-2 border-t border-[#F1F5F9] space-y-2">
                   <NavLink
@@ -268,4 +343,3 @@ export const TenderDetailPage: React.FC = () => {
     </div>
   );
 };
-

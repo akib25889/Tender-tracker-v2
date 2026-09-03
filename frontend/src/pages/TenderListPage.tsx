@@ -6,24 +6,59 @@ import {
   Download,
   Plus,
   ChevronRight,
+  CheckSquare,
+  Square,
 } from 'lucide-react';
-import { MOCK_TENDERS } from '../mock/tenders';
+import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { UrgencyBadge } from '../components/ui/UrgencyBadge';
 import { ReadinessBar } from '../components/ui/ReadinessBar';
+import { TenderStage } from '../types/tender';
 
 export const TenderListPage: React.FC = () => {
+  const { tenders, setIsNewTenderModalOpen, updateTenderStage } = useTenders();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStage, setSelectedStage] = useState<string>('ALL');
+  const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const filteredTenders = MOCK_TENDERS.filter((t) => {
+  const filteredTenders = tenders.filter((t) => {
     const matchesSearch =
       t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.organization.toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.id.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStage = selectedStage === 'ALL' || t.stage === selectedStage;
-    return matchesSearch && matchesStage;
+    const matchesCategory = selectedCategory === 'ALL' || t.category === selectedCategory;
+    return matchesSearch && matchesStage && matchesCategory;
   });
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filteredTenders.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredTenders.map((t) => t.id));
+    }
+  };
+
+  const handleBatchAdvanceStage = (nextStage: TenderStage) => {
+    selectedIds.forEach((id) => updateTenderStage(id, nextStage));
+    setSelectedIds([]);
+  };
+
+  const categories = [
+    'ALL',
+    'IT & Cloud Infrastructure',
+    'Healthcare Systems',
+    'Cybersecurity & Energy',
+    'Identity & Security',
+    'Government Software',
+  ];
 
   return (
     <div className="space-y-6">
@@ -39,16 +74,30 @@ export const TenderListPage: React.FC = () => {
             Tender Registry &amp; Pipeline
           </h1>
           <p className="text-xs text-[#64748B] mt-0.5">
-            Manage {MOCK_TENDERS.length} active opportunities across discovery, eligibility screening, proposal collation, and statutory submission.
+            Manage {tenders.length} active opportunities across discovery, eligibility screening, proposal collation, and statutory submission.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-1.5 px-3.5 py-2 bg-white border border-[#E2E8F0] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-sm">
+          <button
+            onClick={() => {
+              const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(filteredTenders, null, 2));
+              const downloadAnchor = document.createElement('a');
+              downloadAnchor.setAttribute('href', dataStr);
+              downloadAnchor.setAttribute('download', 'tendertracker_pipeline_export.json');
+              document.body.appendChild(downloadAnchor);
+              downloadAnchor.click();
+              downloadAnchor.remove();
+            }}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-white border border-[#E2E8F0] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-sm"
+          >
             <Download className="w-3.5 h-3.5 text-[#64748B]" />
-            <span>Export CSV</span>
+            <span>Export (JSON)</span>
           </button>
-          <button className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm">
+          <button
+            onClick={() => setIsNewTenderModalOpen(true)}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
+          >
             <Plus className="w-3.5 h-3.5" />
             <span>New Tender Opportunity</span>
           </button>
@@ -56,22 +105,40 @@ export const TenderListPage: React.FC = () => {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-white p-3 rounded-lg border border-[#E2E8F0] shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
-        <div className="relative w-full md:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] w-4 h-4" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by tender ID, title, donor..."
-            className="w-full pl-9 pr-4 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-          />
+      <div className="bg-white p-3.5 rounded-lg border border-[#E2E8F0] shadow-sm space-y-3">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+          <div className="relative w-full md:w-96">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] w-4 h-4" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by tender ID, title, donor..."
+              className="w-full pl-9 pr-4 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto">
+            <span className="text-xs text-[#64748B] font-medium whitespace-nowrap">Category:</span>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A]"
+            >
+              {categories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto">
-          <Filter className="w-3.5 h-3.5 text-[#64748B]" />
+        {/* Stage Filter Chips */}
+        <div className="flex items-center gap-2 overflow-x-auto pt-2 border-t border-[#F1F5F9]">
+          <Filter className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
           <span className="text-xs text-[#64748B] font-medium whitespace-nowrap">Stage:</span>
-          {['ALL', 'SCREENING', 'UNDER_ANALYSIS', 'PREPARATION', 'INTERNAL_REVIEW'].map(
+          {['ALL', 'DISCOVERED', 'SCREENING', 'UNDER_ANALYSIS', 'PREPARATION', 'INTERNAL_REVIEW', 'SUBMITTED'].map(
             (stage) => (
               <button
                 key={stage}
@@ -82,12 +149,45 @@ export const TenderListPage: React.FC = () => {
                     : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A]'
                 }`}
               >
-                {stage.replace('_', ' ')}
+                {stage === 'ALL' ? 'All Stages' : stage.replace('_', ' ')}
               </button>
             )
           )}
         </div>
       </div>
+
+      {/* Batch Action Bar if items selected */}
+      {selectedIds.length > 0 && (
+        <div className="p-3 bg-[#0F172A] text-white rounded-lg flex items-center justify-between shadow-lg animate-fadeIn text-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-bold font-mono px-2 py-0.5 bg-[#2563EB] rounded">
+              {selectedIds.length} Selected
+            </span>
+            <span>Bulk actions available:</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleBatchAdvanceStage('PREPARATION')}
+              className="px-3 py-1 bg-[#1E293B] hover:bg-[#334155] rounded text-white font-medium"
+            >
+              Move to Preparation
+            </button>
+            <button
+              onClick={() => handleBatchAdvanceStage('INTERNAL_REVIEW')}
+              className="px-3 py-1 bg-[#1E293B] hover:bg-[#334155] rounded text-white font-medium"
+            >
+              Move to Review
+            </button>
+            <button
+              onClick={() => setSelectedIds([])}
+              className="px-2 py-1 text-[#94A3B8] hover:text-white"
+            >
+              Deselect All
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Tenders Table */}
       <div className="bg-white rounded-lg border border-[#E2E8F0] shadow-sm overflow-hidden">
@@ -95,6 +195,15 @@ export const TenderListPage: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+                <th className="py-3 px-4 w-10">
+                  <button onClick={toggleSelectAll}>
+                    {selectedIds.length === filteredTenders.length && filteredTenders.length > 0 ? (
+                      <CheckSquare className="w-4 h-4 text-[#2563EB]" />
+                    ) : (
+                      <Square className="w-4 h-4 text-[#CBD5E1]" />
+                    )}
+                  </button>
+                </th>
                 <th className="py-3 px-4">Tender ID &amp; SOW Title</th>
                 <th className="py-3 px-4">Issuing Authority</th>
                 <th className="py-3 px-4">Value</th>
@@ -109,8 +218,20 @@ export const TenderListPage: React.FC = () => {
               {filteredTenders.map((tender) => (
                 <tr
                   key={tender.id}
-                  className="hover:bg-[#F8FAFC] transition-colors group"
+                  className={`hover:bg-[#F8FAFC] transition-colors group ${
+                    selectedIds.includes(tender.id) ? 'bg-[#EFF6FF]/40' : ''
+                  }`}
                 >
+                  <td className="py-3.5 px-4">
+                    <button onClick={() => toggleSelect(tender.id)}>
+                      {selectedIds.includes(tender.id) ? (
+                        <CheckSquare className="w-4 h-4 text-[#2563EB]" />
+                      ) : (
+                        <Square className="w-4 h-4 text-[#CBD5E1]" />
+                      )}
+                    </button>
+                  </td>
+
                   <td className="py-3.5 px-4 max-w-xs">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-mono text-xs font-bold text-[#0F172A]">
@@ -178,4 +299,3 @@ export const TenderListPage: React.FC = () => {
     </div>
   );
 };
-

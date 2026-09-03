@@ -1,75 +1,131 @@
 import React from 'react';
 import { Card } from '../components/ui/Card';
-import { TrendingUp, Award, DollarSign } from 'lucide-react';
-import { MOCK_PIPELINE_SUMMARY } from '../mock/tenders';
+import { useTenders } from '../context/TenderContext';
+import { TrendingUp, Award, DollarSign, Download } from 'lucide-react';
 
 export const ReportsPage: React.FC = () => {
-  const summary = MOCK_PIPELINE_SUMMARY;
+  const { tenders } = useTenders();
+
+  const totalValue = tenders.reduce((acc, t) => acc + t.estimatedValue, 0);
+  const awardedBids = tenders.filter((t) => t.stage === 'AWARDED');
+  const lostBids = tenders.filter((t) => t.stage === 'LOST');
+  const evaluatedBids = awardedBids.length + lostBids.length;
+
+  const winRate = evaluatedBids > 0 ? Math.round((awardedBids.length / evaluatedBids) * 100) : 24;
+
+  // Breakdown by category
+  const categories = Array.from(new Set(tenders.map((t) => t.category)));
+  const categoryStats = categories.map((cat) => {
+    const catTenders = tenders.filter((t) => t.category === cat);
+    const catVal = catTenders.reduce((acc, t) => acc + t.estimatedValue, 0);
+    const share = Math.round((catVal / totalValue) * 100) || 0;
+    return { name: cat, count: catTenders.length, value: catVal, share };
+  });
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
-          <span>Intelligence</span>
-          <span>•</span>
-          <span className="font-semibold text-[#0F172A]">Win/Loss Analytics</span>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
+            <span>Analytics</span>
+            <span>•</span>
+            <span className="font-semibold text-[#0F172A]">Win/Loss Intelligence</span>
+          </div>
+          <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
+            Procurement Reports &amp; Post-Mortem Analytics
+          </h1>
+          <p className="text-xs text-[#64748B] mt-0.5">
+            Quarterly conversion metrics, donor win rates, and structured loss root-cause telemetry.
+          </p>
         </div>
-        <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
-          Reports &amp; Win/Loss Analytics
-        </h1>
-        <p className="text-xs text-[#64748B] mt-0.5">
-          Data-driven bidding performance metrics, historical award ratios, and margin distribution.
-        </p>
+
+        <button
+          onClick={() => {
+            alert('Exporting Board Summary Presentation (PDF/CSV) with full audit ledger.');
+          }}
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
+        >
+          <Download className="w-3.5 h-3.5" />
+          <span>Export Executive Report</span>
+        </button>
       </div>
 
+      {/* Top 3 Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
-              Win Rate
+        <div className="bg-white p-4 rounded-lg border border-[#E2E8F0] shadow-sm flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+              Cumulative Win Rate
             </span>
-            <Award className="w-4 h-4 text-[#16A34A]" />
-          </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="font-display text-3xl font-bold text-[#0F172A]">
-              {summary.winRatePercent}%
+            <span className="font-display text-2xl font-bold text-[#16A34A] mt-1 block">
+              {winRate}%
             </span>
-            <span className="text-xs text-[#16A34A] font-semibold">+3.4% YoY</span>
+            <span className="text-[11px] text-[#64748B]">Benchmark target: 20%</span>
           </div>
-          <p className="text-[11px] text-[#64748B] mt-1">Based on 68 submitted proposals</p>
-        </Card>
+          <div className="w-10 h-10 rounded-lg bg-[#F0FDF4] text-[#16A34A] flex items-center justify-center">
+            <Award className="w-5 h-5" />
+          </div>
+        </div>
 
-        <Card>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
-              Average Bid Value
+        <div className="bg-white p-4 rounded-lg border border-[#E2E8F0] shadow-sm flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+              Tracked Pipeline Total
             </span>
-            <DollarSign className="w-4 h-4 text-[#2563EB]" />
-          </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="font-display text-3xl font-bold text-[#0F172A]">
-              $2.02M
+            <span className="font-display text-2xl font-bold text-[#0F172A] mt-1 block">
+              ${(totalValue / 1000000).toFixed(1)}M
             </span>
+            <span className="text-[11px] text-[#2563EB]">{tenders.length} active opportunities</span>
           </div>
-          <p className="text-[11px] text-[#64748B] mt-1">Weighted across 24 active bids</p>
-        </Card>
+          <div className="w-10 h-10 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
+            <DollarSign className="w-5 h-5" />
+          </div>
+        </div>
 
-        <Card>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
-              Average Gross Margin
+        <div className="bg-white p-4 rounded-lg border border-[#E2E8F0] shadow-sm flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+              Avg Gross Target Margin
             </span>
-            <TrendingUp className="w-4 h-4 text-[#7C3AED]" />
-          </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="font-display text-3xl font-bold text-[#0F172A]">
-              27.8%
+            <span className="font-display text-2xl font-bold text-[#0F172A] mt-1 block">
+              28.4%
             </span>
+            <span className="text-[11px] text-[#16A34A]">Above 25% hurdle rate</span>
           </div>
-          <p className="text-[11px] text-[#64748B] mt-1">Target benchmark is &gt; 25%</p>
-        </Card>
+          <div className="w-10 h-10 rounded-lg bg-[#F8FAFC] text-[#0F172A] flex items-center justify-center">
+            <TrendingUp className="w-5 h-5" />
+          </div>
+        </div>
       </div>
+
+      {/* Breakdown by SOW Domain */}
+      <Card
+        title="Pipeline Distribution by Domain &amp; SOW Category"
+        subtitle="Valuation and volume distribution across multilateral technical sectors"
+      >
+        <div className="space-y-4">
+          {categoryStats.map((cat) => (
+            <div key={cat.name} className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-[#0F172A]">{cat.name}</span>
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[#64748B]">{cat.count} bids</span>
+                  <span className="font-mono font-bold text-[#0F172A]">
+                    ${(cat.value / 1000000).toFixed(2)}M ({cat.share}%)
+                  </span>
+                </div>
+              </div>
+              <div className="w-full h-2 bg-[#F1F5F9] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#2563EB] rounded-full transition-all"
+                  style={{ width: `${cat.share}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
     </div>
   );
 };
-

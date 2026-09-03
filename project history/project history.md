@@ -17,12 +17,38 @@
 | **M2** | **Backend Core & Database Schema** | *Pending* | FastAPI application structure, SQLAlchemy models, Alembic migrations, JWT/Argon2id authentication. |
 | **M3** | **Storage Vault & Document Security** | *Pending* | Abstracted local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation. |
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 17-screen routing. |
-| **M5** | **Module Implementations (17 Screens)**| *In Progress* | Dashboard, Kanban, Document Vault, Compliance Checklist, Review Sign-Off, Submission Ledger, Win/Loss Analytics. |
+| **M5** | **Module Implementations (17 Screens)**| **Completed** | Reactive TenderContext, interactive modals (New Tender, Add Task, Upload Vault File, Sign-Off Gatekeeper), and 17 operational screens. |
 | **M6** | **E2E Testing & Production Hardening** | *Pending* | Integration test suite, 3-2-1 backup sentinel, Nginx reverse proxy configuration, production deployment. |
 
 ---
 
 ## 2. Chronological Change Log
+
+### [2026-09-03] — Milestone 5: Module Implementations (17 Screens) Completed
+- **Category:** Frontend Application Modules & Interactive State
+- **Summary:**
+  - Built centralized reactive state store ([`TenderContext.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/context/TenderContext.tsx)) with `localStorage` persistence managing tender lifecycle transitions, weighted Go/No-Go decisions, task movements, vault uploads, and 4-tier approvals.
+  - Implemented 4 native accessible modal dialogs: [`NewTenderModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/NewTenderModal.tsx), [`UploadDocumentModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/UploadDocumentModal.tsx), [`AddTaskModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/AddTaskModal.tsx), and [`SignOffModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/SignOffModal.tsx).
+  - Connected and enhanced all 17 core screens and workspace sub-tabs with live interactivity:
+    - **Dashboard**: Live KPI metrics (\$48.5M active, 7 closing this week, missing documents queue, attention triage).
+    - **Pipeline Registry**: Search, multi-category and stage filters, batch item selection with bulk stage advance, JSON export.
+    - **Proposal Workspace**: 6-gate lifecycle progression bar, scope summary, statutory checklist.
+    - **Analysis & Scope**: Interactive sliders for Technical, Financial, Team, and SLA viability with weighted score calculation and formal Go/No-Go decision recording.
+    - **Requirements Matrix**: Interactive clause status toggles (`VERIFIED` / `PENDING` / `BLOCKER`) with blocker alert banner and evidence attachment triggers.
+    - **Task Kanban**: 4-column board with interactive task progression (`TODO` ➔ `IN_PROGRESS` ➔ `REVIEW` ➔ `DONE`) and task addition.
+    - **Document Vault**: 6-folder hierarchy navigation, direct file upload triggers with automatic SHA-256 hash stamping, and one-click checksum clipboard copying.
+    - **Review & Sign-Off**: Sequential 4-tier gatekeeper approval enforcement (Tier 4 locked until Tiers 1-3 approved) with digital signature audit log modal.
+    - **Submission Ledger**: Electronic portal receipt capture, submission confirmation ID logging, and workspace lock confirmation.
+    - **Result Post-Mortem**: Contract award logger and structured loss root-cause taxonomy recording.
+    - **My Tasks, Team Allocation, Calendar, Reports, Notifications, Settings, Login**: Live cross-tender task completion, team capacity heatmaps, deadline schedules, category margin analytics, and persona switcher.
+  - Production build verified: `npm run build` succeeds cleanly with 0 errors.
+- **Relevant Files:**
+  - `frontend/src/context/TenderContext.tsx`
+  - `frontend/src/components/modals/*`
+  - `frontend/src/pages/*`
+  - `frontend/src/pages/tender-tabs/*`
+
+---
 
 ### [2026-09-03] — Environment Setup & Documentation Archival
 - **Category:** Environment Configuration & Documentation

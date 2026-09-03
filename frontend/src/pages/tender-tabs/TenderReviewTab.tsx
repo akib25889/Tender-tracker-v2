@@ -1,38 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
-import { CheckCircle2, Clock, ShieldAlert } from 'lucide-react';
+import { useTenders } from '../../context/TenderContext';
+import { CheckCircle2, ShieldAlert, PenTool, Lock } from 'lucide-react';
+import { SignOffModal } from '../../components/modals/SignOffModal';
 
 export const TenderReviewTab: React.FC = () => {
-  const reviews = [
-    {
-      tier: 'Tier 1: Technical & Scope Architecture Sign-Off',
-      reviewer: 'Dr. Marcus Vance (Solutions Lead)',
-      status: 'APPROVED',
-      date: 'Sep 02, 2026',
-      comments: 'All 14 technical clauses compliant. High-availability architecture validated against Tier-4 specifications.',
-    },
-    {
-      tier: 'Tier 2: Financial Margin & Pricing Sign-Off',
-      reviewer: 'Tariq Al-Mansoor (Finance Lead)',
-      status: 'APPROVED',
-      date: 'Sep 03, 2026',
-      comments: 'Commercial BOQ verified. Model meets 28% gross target margin with inflation variance buffers.',
-    },
-    {
-      tier: 'Tier 3: Legal & Regulatory Solvency Sign-Off',
-      reviewer: 'Elena Rostova (Compliance Officer)',
-      status: 'ACTION_REQUIRED',
-      date: 'Pending',
-      comments: 'Bank Guarantee original seal must be uploaded before executive sign-off can be granted.',
-    },
-    {
-      tier: 'Tier 4: Executive Board Gatekeeper Sign-Off',
-      reviewer: 'Sarah Jenkins (Bid Operations Director)',
-      status: 'WAITING_PRECEDING',
-      date: 'Pending',
-      comments: 'Awaiting Tier 3 clearance before final portal authorization.',
-    },
-  ];
+  const { id } = useParams<{ id: string }>();
+  const { tenders } = useTenders();
+  const tender = tenders.find((t) => t.id === id) || tenders[0];
+
+  const [activeSignOff, setActiveSignOff] = useState<{
+    tierNumber: number;
+    tierName: string;
+  } | null>(null);
 
   return (
     <div className="space-y-6">
@@ -41,35 +22,64 @@ export const TenderReviewTab: React.FC = () => {
         subtitle="Sequential stage 5 sign-offs enforcing multi-department validation before final submission lock"
       >
         <div className="space-y-4">
-          {reviews.map((r, i) => (
+          {tender.reviews.map((r) => (
             <div
-              key={r.tier}
-              className="p-4 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-2"
+              key={r.tierNumber}
+              className={`p-4 rounded-lg border transition-colors space-y-2 ${
+                r.status === 'APPROVED'
+                  ? 'bg-[#F0FDF4]/30 border-[#BBF7D0]'
+                  : r.status === 'ACTION_REQUIRED'
+                  ? 'bg-[#FEF2F2]/40 border-[#FECACA]'
+                  : 'bg-[#F8FAFC] border-[#E2E8F0] opacity-80'
+              }`}
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-6 h-6 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-mono text-xs font-bold shrink-0">
-                    {i + 1}
+                  <span
+                    className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-xs font-bold shrink-0 ${
+                      r.status === 'APPROVED'
+                        ? 'bg-[#16A34A] text-white'
+                        : r.status === 'ACTION_REQUIRED'
+                        ? 'bg-[#DC2626] text-white'
+                        : 'bg-[#64748B] text-white'
+                    }`}
+                  >
+                    {r.tierNumber}
                   </span>
                   <span className="font-semibold text-xs text-[#0F172A]">
-                    {r.tier}
+                    {r.name}
                   </span>
                 </div>
-                <div>
+
+                <div className="flex items-center gap-2">
                   {r.status === 'APPROVED' ? (
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#15803D] bg-[#F0FDF4] px-2 py-0.5 rounded border border-[#BBF7D0]">
                       <CheckCircle2 className="w-3.5 h-3.5" />
                       APPROVED
                     </span>
                   ) : r.status === 'ACTION_REQUIRED' ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#DC2626] bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FECACA]">
-                      <ShieldAlert className="w-3.5 h-3.5 animate-pulse" />
-                      BLOCKER: SEAL REQUIRED
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#DC2626] bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FECACA]">
+                        <ShieldAlert className="w-3.5 h-3.5 animate-pulse" />
+                        ACTION REQUIRED
+                      </span>
+                      <button
+                        onClick={() =>
+                          setActiveSignOff({
+                            tierNumber: r.tierNumber,
+                            tierName: r.name,
+                          })
+                        }
+                        className="flex items-center gap-1 px-2.5 py-1 bg-[#16A34A] text-white text-[11px] font-semibold rounded hover:bg-[#15803D] transition-colors shadow-sm"
+                      >
+                        <PenTool className="w-3 h-3" />
+                        <span>Sign Off</span>
+                      </button>
+                    </div>
                   ) : (
                     <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded">
-                      <Clock className="w-3.5 h-3.5" />
-                      WAITING PRECEDING GATE
+                      <Lock className="w-3 h-3" />
+                      LOCKED (WAITING PRECEDING)
                     </span>
                   )}
                 </div>
@@ -80,14 +90,23 @@ export const TenderReviewTab: React.FC = () => {
                 <div className="flex items-center gap-4 text-[11px] text-[#94A3B8] mt-1.5">
                   <span>Signer: {r.reviewer}</span>
                   <span>•</span>
-                  <span>Timestamp: {r.date}</span>
+                  <span>Timestamp: {r.date || 'Pending'}</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
       </Card>
+
+      {activeSignOff && (
+        <SignOffModal
+          tenderId={tender.id}
+          tierNumber={activeSignOff.tierNumber}
+          tierName={activeSignOff.tierName}
+          isOpen={true}
+          onClose={() => setActiveSignOff(null)}
+        />
+      )}
     </div>
   );
 };
-

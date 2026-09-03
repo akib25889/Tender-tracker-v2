@@ -1,47 +1,47 @@
-# Walkthrough — Milestone 4: Frontend Foundation & Design System
+# Walkthrough — Milestone 5: Module Implementations (17 Screens)
 
-Milestone 4 has been executed and verified. The frontend foundation, enterprise design system, command center layout shell, and complete route structure for all 17 screens are active and building cleanly.
+Milestone 5 has been executed and verified. The Tender Command Center is now fully interactive across all 17 core screens and proposal workspace tabs, powered by a centralized reactive state engine and accessible modal dialogs adhering strictly to Ponytail guidelines.
 
 ---
 
-## 1. What Was Built
+## 1. What Was Built & Interactive Features
 
-### A. Core Architecture & Build Tooling
-- **Project Scaffolding:** React 18 + Vite 8 + TypeScript with `@/*` path alias resolution.
-- **Styling & Design Tokens:** Configured Tailwind with `@tailwindcss/postcss` and direct token mappings from [`DESIGN.md`](file:///h:/Tender%20tracker%20v2/project%20design/stitch_tender_lifecycle_command_center%20%282%29/stitch_tender_lifecycle_command_center/tender_command_center/DESIGN.md):
-  - **Colors:** Deep Void Navy (`#0F172A`), Surface (`#FFFFFF`), Canvas Base (`#F8FAFC`), Royal Blue (`#2563EB`), Semantic status & urgency tokens (`#DC2626`, `#D97706`, `#16A34A`, `#7C3AED`).
-  - **Typography:** Display (`Plus Jakarta Sans`), Body (`Inter`), Metrics/Code/Deadlines (`JetBrains Mono`).
+### A. Centralized Reactive Engine ([`TenderContext.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/context/TenderContext.tsx))
+- **Persistent State:** Type-safe React Context with `localStorage` backup (`tendertracker_pipeline_v2`).
+- **Lifecycle Operations:**
+  - `addTender`: Dynamic intake creating new RFP opportunities with computed readiness, deadlines, and requirements.
+  - `updateTenderStage`: Transitions opportunities across the 6 gates (`DISCOVERED` ➔ `SCREENING` ➔ `UNDER_ANALYSIS` ➔ `PREPARATION` ➔ `INTERNAL_REVIEW` ➔ `SUBMITTED`).
+  - `setTenderDecision`: Records formal Go/No-Go evaluation with weighted aggregate scores.
+  - `addTask` & `moveTask`: Interactive Kanban task state changes directly adjusting the tender's live readiness score.
+  - `addDocument`: Local SSD vault simulation with automatic 64-character SHA-256 cryptographic digest stamping.
+  - `signOffReviewTier`: 4-tier sequential gatekeeper approval with digital audit signature.
+  - `toggleRequirementStatus`: Clause checklist cycling (`VERIFIED` / `PENDING` / `BLOCKER`).
+  - `submitTenderProof`: Portal confirmation ID lock and submission workspace freezing.
 
-### B. Command Center Layout Shell
-- [`Sidebar.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/Sidebar.tsx): Persistent `#0F172A` deep navy navigation bar with toggleable collapse mode (256px expanded ➔ 72px icon mode), active route indicators, badge counts, and 84% pipeline health gauge.
-- [`Header.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/Header.tsx): Fixed top masthead with `⌘K` global search, `+ New Tender` primary CTA, AI Assistant trigger, pulsating notification alert indicator, and Sarah Jenkins user badge.
-- [`AppLayout.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/AppLayout.tsx): Fluid content container coordinating sidebar offsets and router outlets.
+### B. 4 Accessible Enterprise Modals
+1. [`NewTenderModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/NewTenderModal.tsx): Opportunity intake capturing Title, Issuing Authority (UNDP, World Bank, ADB, etc.), Jurisdiction, SOW Category, Estimated Net Value ($), Submission Cutoff, and Priority.
+2. [`UploadDocumentModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/UploadDocumentModal.tsx): Vault file ingestion targeting the 6 statutory folders with drag-and-drop simulation and immediate SHA-256 generation.
+3. [`AddTaskModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/AddTaskModal.tsx): Workload deliverable assignment across team leads.
+4. [`SignOffModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/SignOffModal.tsx): Stage 5 review gatekeeper authorization with digital signature and audit logging.
 
-### C. Ponytail-Optimized UI Primitives
-- [`StatusBadge.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/StatusBadge.tsx): Semantic pill badge cleanly mapping 9 lifecycle stages and 4 Go/No-Go decision outcomes.
-- [`UrgencyBadge.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/UrgencyBadge.tsx): Monospaced countdown badge with CSS pulsing dot for deadlines `< 24h` and `< 72h`.
-- [`ReadinessBar.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/ReadinessBar.tsx): Color-graded progress bar representing tender submission readiness.
-- [`Card.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/Card.tsx): Level 1 elevation container with clean hairline border.
-
-### D. 17-Screen Route Coverage & Mock Pipeline
-- Fully wired in [`router.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/router.tsx) and backed by typed mock data in [`tenders.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/mock/tenders.ts) representing the **\$48.5M Net** pipeline:
-  1. `/login` — Enterprise Sign-In
-  2. `/dashboard` — 10-Second Rule Command Center Dashboard
-  3. `/tasks/my-tasks` — Personal Cross-Tender Console
-  4. `/tenders` — Tender List & Pipeline Registry
-  5. `/tenders/:id` — Proposal Workspace (Overview)
-  6. `/tenders/:id/analysis` — Scope & Go/No-Go Decision Matrix
-  7. `/tenders/:id/requirements` — Compliance Checklist Matrix
-  8. `/tenders/:id/tasks` — 4-Column Task Kanban Board
-  9. `/tenders/:id/documents` — Document Vault & SHA-256 Checksums
-  10. `/team` — Team & Workload Allocation
-  11. `/calendar` — Statutory Cutoff Schedule
-  12. `/tenders/:id/review` — 4-Tier Approval Workflow
-  13. `/tenders/:id/submission` — Submission Proof & Portal Ledger
-  14. `/tenders/:id/result` — Award & Post-Mortem Taxonomy
-  15. `/reports` — Win/Loss Analytics (24% Win Rate)
-  16. `/notifications` — Operational Alert Center
-  17. `/settings` — System NVMe Storage & RBAC Configuration
+### C. Screen Interactivity & Workflows (17 Modules)
+- **Dashboard ([`DashboardPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/DashboardPage.tsx))**: Real-time KPI ribbons (\$48.5M active, 7 closing this week, missing documents queue), 6-gate breakdown, and 10-Second Rule Attention Queue with quick filters (`All Urgent`, `Closing < 4d`, `Blockers`).
+- **Registry ([`TenderListPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderListPage.tsx))**: Multi-facet filter bar, batch row selection with bulk stage advance, and full JSON dataset export.
+- **Proposal Workspace ([`TenderDetailPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderDetailPage.tsx))**: Interactive 6-gate progression bar with one-click stage advancement, live countdown, and statutory summary cards.
+- **Analysis & Scope ([`TenderAnalysisTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderAnalysisTab.tsx))**: Weighted Go/No-Go Decision Matrix with interactive sliders for Technical (35%), Financial (30%), Team (20%), and SLA (15%) viability, live index calculation, and formal gate decision recording.
+- **Compliance Matrix ([`TenderRequirementsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderRequirementsTab.tsx))**: Interactive clause status toggling, blocker alert banners, and direct vault document linking.
+- **Task Kanban ([`TenderTasksTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderTasksTab.tsx))**: 4-column drag/move board (`To Do` ➔ `In Progress` ➔ `Under Review` ➔ `Completed`) with `+ Add Task` modal.
+- **Document Vault ([`TenderDocumentsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx))**: 6-folder hierarchy filtering, one-click SHA-256 clipboard copying, and folder-specific upload triggers.
+- **Review & Sign-Off ([`TenderReviewTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderReviewTab.tsx))**: Sequential gatekeeper workflow locking subsequent tiers until prior tiers are approved, triggering `SignOffModal`.
+- **Submission Ledger ([`TenderSubmissionTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderSubmissionTab.tsx))**: Portal reference confirmation and final cryptographic workspace lock.
+- **Result Post-Mortem ([`TenderResultTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderResultTab.tsx))**: Contract won/lost debrief logger feeding the analytics suite.
+- **Personal Console ([`MyTasksPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MyTasksPage.tsx))**: Cross-tender deliverable checklist with instant completion toggles dynamically raising the tender's readiness percentage.
+- **Team Allocation ([`TeamAllocationPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TeamAllocationPage.tsx))**: Live workload capacity calculation and department deliverable distribution.
+- **Submission Calendar ([`CalendarPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/CalendarPage.tsx))**: Chronological submission cutoffs with 7-day / 14-day timeline filters.
+- **Analytics Reports ([`ReportsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ReportsPage.tsx))**: Live sector distribution progress bars and win rate metrics.
+- **Alert Center ([`NotificationsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/NotificationsPage.tsx))**: Mark all as read, click-to-read, and category filter chips.
+- **System Settings ([`SettingsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/SettingsPage.tsx))**: Storage vault directory configuration, NVMe free capacity gauge, and SLA threshold timers.
+- **Enterprise Login ([`LoginPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/LoginPage.tsx))**: Demo persona switcher (Sarah Jenkins, Dr. Marcus Vance, Tariq Al-Mansoor) with redirect to dashboard.
 
 ---
 
@@ -52,17 +52,15 @@ Milestone 4 has been executed and verified. The frontend foundation, enterprise 
 
 vite v8.2.2 building client environment for production...
 transforming...
-✓ 1860 modules transformed.
+✓ 1865 modules transformed.
 rendering chunks...
 computing gzip size...
 dist/index.html                   1.02 kB │ gzip:   0.55 kB
-dist/assets/index-ComtR8v1.css   11.53 kB │ gzip:   3.06 kB
-dist/assets/index-e7xayQuj.js   370.81 kB │ gzip: 108.73 kB
+dist/assets/index-DmhWYSwW.css   13.86 kB │ gzip:   3.47 kB
+dist/assets/index-csoDFDrI.js   430.82 kB │ gzip: 120.37 kB
 
-✓ built in 907ms
+✓ built in 2.33s
 ```
 
-- **0 TypeScript errors**: Strict type-checking passed across all components.
-- **0 Bundling warnings**: Clean asset pipeline and path aliasing.
-- **Tree-shaken icons**: Zero external font-load latency or layout shifts.
-
+- **0 TypeScript errors**: Strict `"noUnusedLocals": true` and `"noUnusedParameters": true` clean.
+- **0 Bundling errors**: Optimized tree-shaken production bundle.

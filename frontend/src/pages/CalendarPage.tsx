@@ -1,83 +1,146 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
-import { Clock } from 'lucide-react';
+import { useTenders } from '../context/TenderContext';
+import { ChevronRight } from 'lucide-react';
+import { UrgencyBadge } from '../components/ui/UrgencyBadge';
+import { StatusBadge } from '../components/ui/StatusBadge';
 
 export const CalendarPage: React.FC = () => {
-  const events = [
-    {
-      date: 'Sep 05, 2026',
-      time: '12:00 GMT',
-      tenderId: 'TDR-2026-ADB-215',
-      title: 'ADB Pre-Bid Clarification Meeting & Portal Q&A Lock',
-      type: 'PRE_BID_MEETING',
-    },
-    {
-      date: 'Sep 06, 2026',
-      time: '14:00 GMT',
-      tenderId: 'TDR-2026-EU-089',
-      title: 'UNDP Sovereign Cloud Final Electronic Submission Lock',
-      type: 'SUBMISSION_DEADLINE',
-      critical: true,
-    },
-    {
-      date: 'Sep 08, 2026',
-      time: '18:00 GMT',
-      tenderId: 'TDR-2026-WB-104',
-      title: 'World Bank Telemedicine Network Tender Closes',
-      type: 'SUBMISSION_DEADLINE',
-    },
-  ];
+  const { tenders } = useTenders();
+  const [filterRange, setFilterRange] = useState<'ALL' | '7_DAYS' | '14_DAYS'>('ALL');
+
+  const filteredTenders = tenders
+    .filter((t) => {
+      if (filterRange === '7_DAYS') return t.daysRemaining <= 7;
+      if (filterRange === '14_DAYS') return t.daysRemaining <= 14;
+      return true;
+    })
+    .sort((a, b) => a.daysRemaining - b.daysRemaining);
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
-          <span>Schedule</span>
-          <span>•</span>
-          <span className="font-semibold text-[#0F172A]">Statutory Calendar</span>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
+            <span>Schedule</span>
+            <span>•</span>
+            <span className="font-semibold text-[#0F172A]">Deadlines &amp; Pre-Bid Cutoffs</span>
+          </div>
+          <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
+            Procurement Submission Calendar
+          </h1>
+          <p className="text-xs text-[#64748B] mt-0.5">
+            Strict statutory cutoff dates, clarification windows, and final portal lock timestamps.
+          </p>
         </div>
-        <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
-          Tender Calendar &amp; Deadline Schedule
-        </h1>
-        <p className="text-xs text-[#64748B] mt-0.5">
-          Comprehensive timeline of statutory cutoff locks, pre-bid conferences, and addendum releases.
-        </p>
+
+        <div className="flex items-center gap-1.5 p-0.5 bg-white border border-[#E2E8F0] rounded-lg text-xs shadow-sm">
+          <button
+            onClick={() => setFilterRange('ALL')}
+            className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+              filterRange === 'ALL' ? 'bg-[#0F172A] text-white font-semibold' : 'text-[#64748B]'
+            }`}
+          >
+            All Deadlines ({tenders.length})
+          </button>
+          <button
+            onClick={() => setFilterRange('7_DAYS')}
+            className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+              filterRange === '7_DAYS' ? 'bg-[#0F172A] text-white font-semibold' : 'text-[#64748B]'
+            }`}
+          >
+            Next 7 Days
+          </button>
+          <button
+            onClick={() => setFilterRange('14_DAYS')}
+            className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+              filterRange === '14_DAYS' ? 'bg-[#0F172A] text-white font-semibold' : 'text-[#64748B]'
+            }`}
+          >
+            Next 14 Days
+          </button>
+        </div>
       </div>
 
-      <Card title="Upcoming Cutoff Dates &amp; Mandatory Events">
+      {/* Deadlines Timeline Table */}
+      <Card
+        title="Chronological Submission Deadlines"
+        subtitle="Ordered by closest submission cutoff"
+      >
         <div className="divide-y divide-[#F1F5F9] -mx-5 -my-5">
-          {events.map((evt) => (
-            <div
-              key={evt.title}
-              className="p-4 hover:bg-[#F8FAFC] flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-            >
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-bold text-[#0F172A]">
-                    {evt.tenderId}
-                  </span>
-                  <span
-                    className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded ${
-                      evt.critical
-                        ? 'bg-[#FEF2F2] text-[#B91C1C]'
-                        : 'bg-[#EFF6FF] text-[#1D4ED8]'
-                    }`}
-                  >
-                    {evt.type}
-                  </span>
-                </div>
-                <h4 className="text-xs font-semibold text-[#0F172A]">{evt.title}</h4>
-              </div>
+          {filteredTenders.map((tender) => {
+            const dateObj = new Date(tender.submissionDeadline);
+            const timeStr = dateObj.toLocaleTimeString('en-GB', {
+              hour: '2-digit',
+              minute: '2-digit',
+            });
 
-              <div className="flex items-center gap-2 text-xs font-mono font-semibold text-[#0F172A] bg-[#F1F5F9] px-3 py-1.5 rounded border border-[#E2E8F0] shrink-0">
-                <Clock className="w-3.5 h-3.5 text-[#64748B]" />
-                <span>{evt.date} • {evt.time}</span>
+            return (
+              <div
+                key={tender.id}
+                className="p-4 hover:bg-[#F8FAFC] transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              >
+                <div className="flex items-start sm:items-center gap-4">
+                  <div className="w-14 text-center p-2 bg-[#F1F5F9] rounded-lg border border-[#E2E8F0] shrink-0">
+                    <span className="font-mono text-xs font-bold text-[#DC2626] block uppercase">
+                      {dateObj.toLocaleString('en-GB', { month: 'short' })}
+                    </span>
+                    <span className="font-mono text-lg font-black text-[#0F172A] block leading-none mt-0.5">
+                      {dateObj.getDate()}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-mono text-xs font-bold text-[#0F172A]">
+                        {tender.id}
+                      </span>
+                      <StatusBadge stage={tender.stage} />
+                      <UrgencyBadge
+                        daysRemaining={tender.daysRemaining}
+                        hoursRemaining={tender.hoursRemaining}
+                      />
+                    </div>
+                    <Link
+                      to={`/tenders/${tender.id}`}
+                      className="font-semibold text-xs text-[#0F172A] hover:text-[#2563EB] transition-colors block"
+                    >
+                      {tender.title}
+                    </Link>
+                    <div className="text-[11px] text-[#64748B] flex items-center gap-2">
+                      <span>{tender.organization}</span>
+                      <span>•</span>
+                      <span>{tender.country}</span>
+                      <span>•</span>
+                      <span className="font-mono font-bold text-[#0F172A]">
+                        ${(tender.estimatedValue / 1000000).toFixed(2)}M
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 shrink-0 sm:justify-end">
+                  <div className="text-right">
+                    <span className="font-mono text-xs font-bold text-[#0F172A] block">
+                      {timeStr} GMT
+                    </span>
+                    <span className="text-[10px] text-[#64748B]">Portal Lock Window</span>
+                  </div>
+
+                  <Link
+                    to={`/tenders/${tender.id}`}
+                    className="p-2 text-[#2563EB] hover:bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] transition-colors"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </Card>
     </div>
   );
 };
-
