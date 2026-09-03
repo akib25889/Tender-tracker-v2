@@ -67,27 +67,27 @@ const STAGE_CONFIG: Record<TenderStage, { label: string; bg: string; text: strin
 const DECISION_CONFIG: Record<DecisionStatus, { label: string; bg: string; text: string; border: string }> = {
   GO: {
     label: 'GO',
-    bg: 'bg-[#F0FDF4]',
-    text: 'text-[#15803D]',
-    border: 'border-[#BBF7D0]',
+    bg: 'bg-[#ECFDF5]',
+    text: 'text-[#047857]',
+    border: 'border-[#A7F3D0]',
   },
   NO_GO: {
     label: 'NO-GO',
     bg: 'bg-[#FEF2F2]',
-    text: 'text-[#B91C1C]',
+    text: 'text-[#DC2626]',
     border: 'border-[#FECACA]',
   },
   CONDITIONAL: {
-    label: 'CONDITIONAL',
+    label: 'Conditional',
     bg: 'bg-[#FFFBEB]',
-    text: 'text-[#B45309]',
+    text: 'text-[#D97706]',
     border: 'border-[#FDE68A]',
   },
   PENDING: {
-    label: 'DECISION PENDING',
-    bg: 'bg-[#F1F5F9]',
-    text: 'text-[#475569]',
-    border: 'border-[#CBD5E1]',
+    label: 'Pending',
+    bg: 'bg-[#F8FAFC]',
+    text: 'text-[#64748B]',
+    border: 'border-[#E2E8F0]',
   },
 };
 
@@ -96,7 +96,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ stage, decision, class
     const config = DECISION_CONFIG[decision] || DECISION_CONFIG.PENDING;
     return (
       <span
-        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold tracking-wider uppercase border ${config.bg} ${config.text} ${config.border} ${className}`}
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 border ${config.bg} ${config.text} ${config.border} ${className}`}
       >
         {config.label}
       </span>
@@ -107,7 +107,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ stage, decision, class
     const config = STAGE_CONFIG[stage] || STAGE_CONFIG.DISCOVERED;
     return (
       <span
-        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold tracking-wider uppercase border ${config.bg} ${config.text} ${config.border} ${className}`}
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 border ${config.bg} ${config.text} ${config.border} ${className}`}
       >
         {config.label}
       </span>

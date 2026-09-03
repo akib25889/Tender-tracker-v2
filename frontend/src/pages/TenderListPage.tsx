@@ -246,12 +246,12 @@ export const TenderListPage: React.FC = () => {
                 </th>
                 <th className="py-3 px-4">Tender ID &amp; SOW Title</th>
                 <th className="py-3 px-4">Issuing Authority</th>
-                <th className="py-3 px-4">Value</th>
-                <th className="py-3 px-4">Stage</th>
-                <th className="py-3 px-4">Decision</th>
-                <th className="py-3 px-4">Urgency</th>
-                <th className="py-3 px-4">Readiness</th>
-                <th className="py-3 px-4 text-right">Action</th>
+                <th className="py-3 px-4 whitespace-nowrap">Value</th>
+                <th className="py-3 px-4 whitespace-nowrap">Stage</th>
+                <th className="py-3 px-4 whitespace-nowrap">Decision</th>
+                <th className="py-3 px-4 whitespace-nowrap">Urgency</th>
+                <th className="py-3 px-4 whitespace-nowrap">Readiness</th>
+                <th className="py-3 px-4 text-right whitespace-nowrap">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F1F5F9] text-xs">
@@ -302,15 +302,15 @@ export const TenderListPage: React.FC = () => {
                     {formatCurrency(tender.estimatedValue)}
                   </td>
 
-                  <td className="py-3.5 px-4">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     <StatusBadge stage={tender.stage} />
                   </td>
 
-                  <td className="py-3.5 px-4">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     <StatusBadge decision={tender.decision} />
                   </td>
 
-                  <td className="py-3.5 px-4">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     <UrgencyBadge
                       daysRemaining={tender.daysRemaining}
                       hoursRemaining={tender.hoursRemaining}
