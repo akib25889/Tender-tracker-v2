@@ -1,0 +1,362 @@
+{
+  "nodes": [
+    {
+      "id": "stage:discovered",
+      "name": "Stage 1 - Discovered",
+      "type": "lifecycle_stage",
+      "desc": "Scanner or manual intake with confidence scoring"
+    },
+    {
+      "id": "stage:screening",
+      "name": "Stage 2 - Screening",
+      "type": "lifecycle_stage",
+      "desc": "Entity jurisdiction check, restrictions, threshold screening"
+    },
+    {
+      "id": "stage:analysis",
+      "name": "Stage 3 - Analysis & Go/No-Go",
+      "type": "lifecycle_stage",
+      "desc": "Clause extraction, AI suitability, weighted decision matrix"
+    },
+    {
+      "id": "stage:preparation",
+      "name": "Stage 4 - Preparation",
+      "type": "lifecycle_stage",
+      "desc": "Task kanban, document vault population, requirement checklist"
+    },
+    {
+      "id": "stage:review",
+      "name": "Stage 5 - Review & Approval",
+      "type": "lifecycle_stage",
+      "desc": "4-tier sign-off (Technical, Financial, Legal, Executive)"
+    },
+    {
+      "id": "stage:submission",
+      "name": "Stage 6 - Submission & Post-Award",
+      "type": "lifecycle_stage",
+      "desc": "Portal upload proof, SHA-256 timestamps, win/loss ledger"
+    },
+    {
+      "id": "screen:login",
+      "name": "Login - Enterprise Sign In",
+      "type": "screen",
+      "route": "/login",
+      "module": "auth"
+    },
+    {
+      "id": "screen:dashboard",
+      "name": "Tender Command Center Dashboard",
+      "type": "screen",
+      "route": "/dashboard",
+      "module": "dashboard"
+    },
+    {
+      "id": "screen:my_tasks",
+      "name": "My Tasks - Cross-Tender Console",
+      "type": "screen",
+      "route": "/tasks/my-tasks",
+      "module": "tasks"
+    },
+    {
+      "id": "screen:tenders_list",
+      "name": "Tender List & Pipeline Registry",
+      "type": "screen",
+      "route": "/tenders",
+      "module": "tenders"
+    },
+    {
+      "id": "screen:tender_detail",
+      "name": "Tender Detail & Proposal Workspace",
+      "type": "screen",
+      "route": "/tenders/{id}",
+      "module": "tenders"
+    },
+    {
+      "id": "screen:tender_analysis",
+      "name": "Tender Analysis & Scope Workspace",
+      "type": "screen",
+      "route": "/tenders/{id}/analysis",
+      "module": "analysis"
+    },
+    {
+      "id": "screen:tender_requirements",
+      "name": "Compliance & Requirements Matrix",
+      "type": "screen",
+      "route": "/tenders/{id}/requirements",
+      "module": "compliance"
+    },
+    {
+      "id": "screen:tender_tasks",
+      "name": "Tender Task Management Kanban",
+      "type": "screen",
+      "route": "/tenders/{id}/tasks",
+      "module": "tasks"
+    },
+    {
+      "id": "screen:tender_documents",
+      "name": "Tender Document Vault",
+      "type": "screen",
+      "route": "/tenders/{id}/documents",
+      "module": "documents"
+    },
+    {
+      "id": "screen:team_allocation",
+      "name": "Tender Team & Workload Allocation",
+      "type": "screen",
+      "route": "/team",
+      "module": "team"
+    },
+    {
+      "id": "screen:calendar",
+      "name": "Tender Calendar & Deadline Schedule",
+      "type": "screen",
+      "route": "/calendar",
+      "module": "calendar"
+    },
+    {
+      "id": "screen:tender_review",
+      "name": "Review & Sign-Off Workflow",
+      "type": "screen",
+      "route": "/tenders/{id}/review",
+      "module": "review"
+    },
+    {
+      "id": "screen:tender_submission",
+      "name": "Submission Ledger",
+      "type": "screen",
+      "route": "/tenders/{id}/submission",
+      "module": "submission"
+    },
+    {
+      "id": "screen:tender_result",
+      "name": "Result & Win/Loss Post-Mortem",
+      "type": "screen",
+      "route": "/tenders/{id}/result",
+      "module": "result"
+    },
+    {
+      "id": "screen:reports",
+      "name": "Reports & Win/Loss Analytics",
+      "type": "screen",
+      "route": "/reports",
+      "module": "analytics"
+    },
+    {
+      "id": "screen:notifications",
+      "name": "Notification & Alert Center",
+      "type": "screen",
+      "route": "/notifications",
+      "module": "notifications"
+    },
+    {
+      "id": "screen:settings",
+      "name": "Settings & System Configuration",
+      "type": "screen",
+      "route": "/settings",
+      "module": "settings"
+    },
+    {
+      "id": "entity:users",
+      "name": "users",
+      "type": "db_table",
+      "desc": "Accounts, hashed passwords (Argon2id), roles"
+    },
+    {
+      "id": "entity:tenders",
+      "name": "tenders",
+      "type": "db_table",
+      "desc": "Core tender records, status, stage, valuation, deadlines"
+    },
+    {
+      "id": "entity:tender_decisions",
+      "name": "tender_decisions",
+      "type": "db_table",
+      "desc": "Go/No-Go score matrix and executive rationale"
+    },
+    {
+      "id": "entity:tender_tasks",
+      "name": "tender_tasks",
+      "type": "db_table",
+      "desc": "Individual tasks, assignments, kanban column, due dates"
+    },
+    {
+      "id": "entity:documents",
+      "name": "documents",
+      "type": "db_table",
+      "desc": "Document metadata, categories, relative storage paths"
+    },
+    {
+      "id": "entity:document_versions",
+      "name": "document_versions",
+      "type": "db_table",
+      "desc": "Immutable file revisions with SHA-256 checksums"
+    },
+    {
+      "id": "entity:tender_requirements",
+      "name": "tender_requirements",
+      "type": "db_table",
+      "desc": "Compliance matrix clauses and evidence links"
+    },
+    {
+      "id": "entity:tender_reviews",
+      "name": "tender_reviews",
+      "type": "db_table",
+      "desc": "Multi-tier approval sign-offs and comment audit trail"
+    },
+    {
+      "id": "entity:audit_logs",
+      "name": "audit_logs",
+      "type": "db_table",
+      "desc": "System-wide immutable security and activity log"
+    },
+    {
+      "id": "storage:root",
+      "name": "storage/tenders/{TDR-ID}",
+      "type": "storage_vault",
+      "desc": "Local SSD root per tender"
+    },
+    {
+      "id": "storage:original",
+      "name": "01_original_tender_documents",
+      "type": "storage_folder",
+      "desc": "Official RFP notices and specs"
+    },
+    {
+      "id": "storage:statutory",
+      "name": "02_company_statutory_documents",
+      "type": "storage_folder",
+      "desc": "Trade license, tax clearance, solvency"
+    },
+    {
+      "id": "storage:technical",
+      "name": "03_technical_proposal",
+      "type": "storage_folder",
+      "desc": "Scope, methodology, CVs, credentials"
+    },
+    {
+      "id": "storage:financial",
+      "name": "04_financial_proposal",
+      "type": "storage_folder",
+      "desc": "BOQ, pricing tables, bank guarantees"
+    },
+    {
+      "id": "storage:final",
+      "name": "05_final_submission_package",
+      "type": "storage_folder",
+      "desc": "Compiled and sealed proposal bundles"
+    },
+    {
+      "id": "storage:receipts",
+      "name": "06_submission_receipts",
+      "type": "storage_folder",
+      "desc": "e-GP / UNGM upload receipts & confirmations"
+    }
+  ],
+  "edges": [
+    {
+      "source": "stage:discovered",
+      "target": "stage:screening",
+      "relation": "TRANSITIONS_TO"
+    },
+    {
+      "source": "stage:screening",
+      "target": "stage:analysis",
+      "relation": "TRANSITIONS_TO"
+    },
+    {
+      "source": "stage:analysis",
+      "target": "stage:preparation",
+      "relation": "TRANSITIONS_TO"
+    },
+    {
+      "source": "stage:preparation",
+      "target": "stage:review",
+      "relation": "TRANSITIONS_TO"
+    },
+    {
+      "source": "stage:review",
+      "target": "stage:submission",
+      "relation": "TRANSITIONS_TO"
+    },
+    {
+      "source": "storage:root",
+      "target": "storage:original",
+      "relation": "CONTAINS_FOLDER"
+    },
+    {
+      "source": "storage:root",
+      "target": "storage:statutory",
+      "relation": "CONTAINS_FOLDER"
+    },
+    {
+      "source": "storage:root",
+      "target": "storage:technical",
+      "relation": "CONTAINS_FOLDER"
+    },
+    {
+      "source": "storage:root",
+      "target": "storage:financial",
+      "relation": "CONTAINS_FOLDER"
+    },
+    {
+      "source": "storage:root",
+      "target": "storage:final",
+      "relation": "CONTAINS_FOLDER"
+    },
+    {
+      "source": "storage:root",
+      "target": "storage:receipts",
+      "relation": "CONTAINS_FOLDER"
+    },
+    {
+      "source": "screen:login",
+      "target": "entity:users",
+      "relation": "AUTHENTICATES_AGAINST"
+    },
+    {
+      "source": "screen:dashboard",
+      "target": "entity:tenders",
+      "relation": "AGGREGATES_METRICS"
+    },
+    {
+      "source": "screen:tenders_list",
+      "target": "entity:tenders",
+      "relation": "QUERIES_REGISTRY"
+    },
+    {
+      "source": "screen:tender_tasks",
+      "target": "entity:tender_tasks",
+      "relation": "MANAGES_TASKS"
+    },
+    {
+      "source": "screen:my_tasks",
+      "target": "entity:tender_tasks",
+      "relation": "FILTERS_BY_ASSIGNEE"
+    },
+    {
+      "source": "screen:tender_documents",
+      "target": "entity:documents",
+      "relation": "MANAGES_VAULT"
+    },
+    {
+      "source": "screen:tender_documents",
+      "target": "entity:document_versions",
+      "relation": "TRACKS_VERSIONS"
+    },
+    {
+      "source": "screen:tender_requirements",
+      "target": "entity:tender_requirements",
+      "relation": "VALIDATES_COMPLIANCE"
+    },
+    {
+      "source": "screen:tender_review",
+      "target": "entity:tender_reviews",
+      "relation": "RECORDS_SIGNOFF"
+    },
+    {
+      "source": "screen:tender_analysis",
+      "target": "entity:tender_decisions",
+      "relation": "SCORES_GO_NO_GO"
+    }
+  ]
+}
