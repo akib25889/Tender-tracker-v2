@@ -96,16 +96,22 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (saved) {
       try {
         const parsed: Tender[] = JSON.parse(saved);
-        const acriIndex = parsed.findIndex((t) => t.id === 'TDR-PRC0190428');
+        const sanitized = parsed.map((t) => {
+          if (t.referenceNo && (t.referenceNo === `REF/${t.id}` || t.referenceNo === t.id)) {
+            return { ...t, referenceNo: '' };
+          }
+          return t;
+        });
+        const acriIndex = sanitized.findIndex((t) => t.id === 'TDR-PRC0190428');
         const acriMock = MOCK_TENDERS.find((t) => t.id === 'TDR-PRC0190428');
         if (acriMock) {
           if (acriIndex >= 0) {
-            parsed[acriIndex] = acriMock;
+            sanitized[acriIndex] = acriMock;
           } else {
-            parsed.unshift(acriMock);
+            sanitized.unshift(acriMock);
           }
         }
-        return parsed;
+        return sanitized;
       } catch (e) {
         console.error('Failed to parse cached tenders:', e);
       }
@@ -206,7 +212,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const newTender: Tender = {
       id: newId,
-      referenceNo: tenderData.referenceNo || `REF/${newId}`,
+      referenceNo: tenderData.referenceNo || '',
       title: tenderData.title || tenderData.summary?.projectName || 'Untitled Tender Opportunity',
       organization: tenderData.organization || '',
       country: tenderData.country || '',

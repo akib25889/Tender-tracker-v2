@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   Plus,
@@ -440,7 +440,7 @@ export const TenderRegistryPage: React.FC = () => {
     const newId = `TDR-2026-REG-${Math.floor(100 + Math.random() * 900)}`;
     addTender({
       id: newId,
-      referenceNo: `REF/${newId}`,
+      referenceNo: '',
       title: 'New Tender Entry',
       organization: '',
       country: '',

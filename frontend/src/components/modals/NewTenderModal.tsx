@@ -279,7 +279,7 @@ export const NewTenderModal: React.FC = () => {
 
     addTender({
       id: newTenderId,
-      referenceNo: referenceNo.trim() || `REF/${newTenderId}`,
+      referenceNo: referenceNo.trim() || '',
       title: finalTitle,
       organization: client,
       country,

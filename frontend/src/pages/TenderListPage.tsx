@@ -289,11 +289,15 @@ export const TenderListPage: React.FC = () => {
                     <span className="font-mono text-xs font-bold text-[#0F172A] bg-[#F1F5F9] px-2 py-0.5 rounded border border-[#E2E8F0]">
                       {tender.id}
                     </span>
-                    {tender.referenceNo && (
-                      <span className="text-[11px] font-mono text-[#64748B] bg-[#F8FAFC] px-1.5 py-0.5 rounded">
-                        {tender.referenceNo}
-                      </span>
-                    )}
+                    {tender.referenceNo &&
+                      tender.referenceNo !== tender.id &&
+                      tender.referenceNo !== `REF/${tender.id}` &&
+                      !tender.referenceNo.endsWith(tender.id) && (
+                        <span className="text-[11px] font-mono font-medium text-[#475569] bg-[#F8FAFC] px-1.5 py-0.5 rounded border border-[#E2E8F0]">
+                          <span className="text-[10px] text-[#64748B] font-sans font-medium mr-1">Ref:</span>
+                          {tender.referenceNo}
+                        </span>
+                      )}
                     <Link
                       to={`/tenders/${tender.id}`}
                       className="font-bold text-sm text-[#0F172A] hover:text-[#2563EB] transition-colors"
@@ -452,9 +456,14 @@ export const TenderListPage: React.FC = () => {
                         <span className="font-mono text-xs font-bold text-[#0F172A]">
                           {tender.id}
                         </span>
-                        <span className="text-[10px] text-[#94A3B8] font-mono">
-                          {tender.referenceNo}
-                        </span>
+                        {tender.referenceNo &&
+                          tender.referenceNo !== tender.id &&
+                          tender.referenceNo !== `REF/${tender.id}` &&
+                          !tender.referenceNo.endsWith(tender.id) && (
+                            <span className="text-[10px] text-[#64748B] font-mono bg-[#F8FAFC] px-1.5 py-0.5 rounded">
+                              Ref: {tender.referenceNo}
+                            </span>
+                          )}
                       </div>
                       <Link
                         to={`/tenders/${tender.id}`}
