@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Pencil, ExternalLink, Printer } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
@@ -120,7 +120,7 @@ export const TenderSummaryPage: React.FC = () => {
             Tender Summary
           </h1>
           <p className="text-sm font-semibold" style={{ color: '#2D3A4A' }}>
-            {tender.id} | {tender.title}
+            {s?.tenderIdDisplay || tender.id} | {s?.shortTitle || s?.projectName || tender.title}
           </p>
         </div>
 
@@ -132,7 +132,7 @@ export const TenderSummaryPage: React.FC = () => {
               <Row label="Project Name" value={s?.projectName} />
               <Row label="Tender Title" value={tender.title} />
               <Row label="Reference No." value={tender.referenceNo} />
-              <Row label="Tender ID" value={tender.id} />
+              <Row label="Tender ID" value={s?.tenderIdDisplay || tender.id} />
               <Row label="Client / Organization" value={tender.organization} />
               <Row label="Portal" value={s?.portal} />
               <Row label="Published Date" value={s?.publishedDate || null} />
@@ -164,6 +164,7 @@ export const TenderSummaryPage: React.FC = () => {
                     s.commercial.tenderSecurity ? `Tender security: ${s.commercial.tenderSecurity}.` : null,
                     s.commercial.tenderDocPrice ? `Tender document price: ${s.commercial.tenderDocPrice}.` : null,
                     s.commercial.contractPeriod ? `Contract/service period: ${s.commercial.contractPeriod}.` : null,
+                    s.dates?.contractStart ? `Expected start date: ${s.dates.contractStart}.` : null,
                     s.commercial.performanceSecurity ? `Performance security: ${s.commercial.performanceSecurity}.` : null,
                     tender.submissionDeadline
                       ? `Submission deadline: ${fmt(tender.submissionDeadline)}${s?.submissionTime ? `, ${s.submissionTime}` : ''}.`
@@ -262,12 +263,28 @@ export const TenderSummaryPage: React.FC = () => {
                 s?.dates?.contractStart ? `Expected contract start date: ${s.dates.contractStart}` : null,
                 s?.commercial?.contractPeriod ? `Contract duration: ${s.commercial.contractPeriod}` : null,
                 tender.submissionDeadline
-                  ? `Submission deadline: ${fmt(tender.submissionDeadline)}${s?.submissionTime ? ` (${s.submissionTime})` : ''}`
+                  ? `Submission deadline: ${fmt(tender.submissionDeadline)}${s?.submissionTime ? `, ${s.submissionTime}` : ''}`
                   : null,
                 s?.dates?.clarificationDeadline ? `Clarification deadline: ${s.dates.clarificationDeadline}` : null,
                 s?.dates?.openingDate ? `Bid opening date: ${s.dates.openingDate}` : null,
               ]}
             />
+          </Section>
+        )}
+
+        {/* KEY RISKS / IMPORTANT POINTS */}
+        {(s?.risks?.length ?? 0) > 0 && (
+          <Section title="Key Risks / Important Points">
+            <BulletList
+              items={s!.risks!.map((r) => `[${r.type}] ${r.text}`)}
+            />
+          </Section>
+        )}
+
+        {/* IMPORTANT FOR MANAGEMENT */}
+        {(s?.managementHighlights?.length ?? 0) > 0 && (
+          <Section title="Important for Management">
+            <BulletList items={s!.managementHighlights} />
           </Section>
         )}
 
@@ -283,8 +300,8 @@ export const TenderSummaryPage: React.FC = () => {
           className="mt-10 pt-4 flex items-center justify-between text-[11px]"
           style={{ borderTop: '1px solid #C8D5E2', color: '#9CA3AF' }}
         >
-          <span>Tender Summary | {tender.id}</span>
-          <span>{tender.title}</span>
+          <span>Tender Summary | {s?.tenderIdDisplay || tender.id}</span>
+          <span>{s?.shortTitle || tender.title}</span>
         </div>
       </div>
     </div>

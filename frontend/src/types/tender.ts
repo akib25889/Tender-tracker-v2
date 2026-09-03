@@ -136,6 +136,8 @@ export interface TenderRiskPoint {
 export interface TenderExtendedSummary {
   classification?: TenderClassification;
   projectName?: string;
+  tenderIdDisplay?: string;
+  shortTitle?: string;
   portal?: string;
   publishedDate?: string;
   submissionTime?: string;

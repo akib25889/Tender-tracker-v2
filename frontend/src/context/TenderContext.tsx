@@ -93,7 +93,17 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed: Tender[] = JSON.parse(saved);
+        const acriIndex = parsed.findIndex((t) => t.id === 'TDR-PRC0190428');
+        const acriMock = MOCK_TENDERS.find((t) => t.id === 'TDR-PRC0190428');
+        if (acriMock) {
+          if (acriIndex >= 0) {
+            parsed[acriIndex] = acriMock;
+          } else {
+            parsed.unshift(acriMock);
+          }
+        }
+        return parsed;
       } catch (e) {
         console.error('Failed to parse cached tenders:', e);
       }
