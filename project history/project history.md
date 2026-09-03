@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.1.0  
+**Current Version:** 2.3.0  
 **Stack:** FastAPI (Python 3.12+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local SSD Storage  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -16,8 +16,8 @@
 | **M1** | **Repository & Agent Tooling** | **Completed** | Git repository initialized, linked to GitHub, `.gitignore` & directory scaffolding, Ponytail & Graphify integration. |
 | **M2** | **Backend Core & Database Schema** | *Pending* | FastAPI application structure, SQLAlchemy models, Alembic migrations, JWT/Argon2id authentication. |
 | **M3** | **Storage Vault & Document Security** | *Pending* | Abstracted local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation. |
-| **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 17-screen routing. |
-| **M5** | **Module Implementations (17 Screens)**| **Completed** | Reactive TenderContext, interactive modals (New Tender, Add Task, Upload Vault File, Sign-Off Gatekeeper), and 17 operational screens. |
+| **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 18-screen routing. |
+| **M5** | **Module Implementations (18 Screens)**| **Completed** | Reactive TenderContext with full CRUD (add, edit, delete, bulk delete), two-pane Tender Registry console (`/registry`), Bid Discovery queue, collaboration suite, and 18 operational screens. |
 | **M6** | **E2E Testing & Production Hardening** | *Pending* | Integration test suite, 3-2-1 backup sentinel, Nginx reverse proxy configuration, production deployment. |
 
 ---
@@ -99,6 +99,22 @@
 - **Relevant Files:**
   - `frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx`
   - `frontend/src/components/modals/ShareDocumentModal.tsx`
+
+---
+
+### [2026-09-03] — UI Polishing: Fixed Badge Text Wrapping for Urgency & Decision
+- **Category:** UI / Typography & Layout Fixes
+- **Summary:**
+  - **Single-Line Urgency Badges ([`UrgencyBadge.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/UrgencyBadge.tsx)):**
+    - Resolved awkward two-line text breaking (`37d \n left`, `🔴 2d \n left`) by adding strict `whitespace-nowrap shrink-0` and replacing wide monospace styling with standard typography and consistent padding.
+  - **Streamlined Decision Badges ([`StatusBadge.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/StatusBadge.tsx)):**
+    - Replaced the redundant, wordy `"DECISION PENDING"` label with a concise, modern `"Pending"` badge with `whitespace-nowrap`.
+  - **Table Cell Whitespace Protection ([`TenderListPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderListPage.tsx)):**
+    - Added `whitespace-nowrap` to table headers and data cells for Stage, Decision, Urgency, Value, and Actions to guarantee columns never wrap or squeeze badges.
+- **Relevant Files:**
+  - `frontend/src/components/ui/UrgencyBadge.tsx`
+  - `frontend/src/components/ui/StatusBadge.tsx`
+  - `frontend/src/pages/TenderListPage.tsx`
 
 ---
 
@@ -366,4 +382,41 @@
   *Context:* AI coding agents tend to over-engineer (generation bloat) and perform repetitive file-tree greps (retrieval bloat).  
   *Decision:* Ponytail sets strict generation guardrails; Graphify maintains pre-indexed project knowledge graphs.  
   *Impact:* Halves token usage, speeds up agent navigation, and ensures clean, minimal, maintainable production code.
+
+- **ADR-004: Dedicated Full-Page Tender Registry Console over Popup Modals**  
+  *Context:* Tender intake requires capturing 5 comprehensive tabs of metadata (Classification, SOW, Eligibility, Staffing/Hardware, Dates/Risks). Rendering this in a floating popup modal cluttered the viewport and duplicated navigation.  
+  *Decision:* Replaced modal-based intake with a dedicated full-page console at `/registry` ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx)). Removed the 1,550-line modal from the application root.  
+  *Impact:* Reduced JavaScript bundle by ~47 kB, improved data entry ergonomics, and enabled deep-link editing via `/registry?id={id}`.
+
+- **ADR-005: Universal Operational Collaboration & Clean Procurement Semantics**  
+  *Context:* Strict role lockouts impeded team collaboration, and legacy prototype terms like "Post-Mortem" and "Kanban" caused user confusion.  
+  *Decision:* Mapped 4 organizational titles (`Business Head`, `Executive Manager`, `Senior Manager`, `Tender Analyst`) with universal operational access; replaced "Kanban" with "Task Board"; replaced "Post-Mortem" with "Outcome & Debrief".  
+  *Impact:* Clear, unhindered operational flow with zero permission roadblocks and professional enterprise copy.
+
+---
+
+## 4. Current Application Screen & Route Directory (18 Screens)
+
+| Screen ID | Screen Name | Route | Module |
+| :--- | :--- | :--- | :--- |
+| `screen:login` | Login - Enterprise Sign In | `/login` | `auth` |
+| `screen:dashboard` | Tender Command Center Dashboard | `/dashboard` | `dashboard` |
+| `screen:tender_registry` | Tender Registry & Data Entry | `/registry` | `registry` |
+| `screen:tenders_list` | Tender List & Pipeline Registry | `/tenders` | `tenders` |
+| `screen:bid_discovery` | Bid Discovery Queue (Filtered) | `/tenders?stage=DISCOVERED` | `tenders` |
+| `screen:tender_detail` | Tender Detail & Proposal Workspace | `/tenders/{id}` | `tenders` |
+| `screen:tender_analysis` | Tender Analysis & Scope Workspace | `/tenders/{id}/analysis` | `analysis` |
+| `screen:tender_requirements` | Compliance & Requirements Matrix | `/tenders/{id}/requirements` | `compliance` |
+| `screen:tender_tasks` | Tender Task Board | `/tenders/{id}/tasks` | `tasks` |
+| `screen:tender_documents` | Tender Document Vault | `/tenders/{id}/documents` | `documents` |
+| `screen:tender_review` | Review & Sign-Off Workflow | `/tenders/{id}/review` | `review` |
+| `screen:tender_submission` | Submission Ledger | `/tenders/{id}/submission` | `submission` |
+| `screen:tender_result` | Outcome & Debrief Ledger | `/tenders/{id}/result` | `result` |
+| `screen:my_tasks` | My Tasks - Cross-Tender Console | `/tasks/my-tasks` | `tasks` |
+| `screen:team_allocation` | Tender Team & Workload Allocation | `/team` | `team` |
+| `screen:calendar` | Tender Calendar & Deadline Schedule | `/calendar` | `calendar` |
+| `screen:reports` | Reports & Win/Loss Analytics | `/reports` | `analytics` |
+| `screen:notifications` | Notification & Alert Center | `/notifications` | `notifications` |
+| `screen:settings` | Settings & System Configuration | `/settings` | `settings` |
+
 
