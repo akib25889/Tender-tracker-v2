@@ -39,3 +39,4 @@ To avoid token bloat and excessive full-file re-reads:
 - **The 10-Second Rule**: Dashboards and workspaces must communicate urgent items, missing documents, and approaching deadlines within 10 seconds.
 - **Segregation of Status vs. Go/No-Go**: Operational lifecycle stages (`DISCOVERED`, `PREPARATION`, etc.) must never be conflated with the `GO` / `NO-GO` decision matrix.
 - **Local SSD Storage**: MVP uses local server filesystem under `storage/tenders/{TDR-ID}/...` with SHA-256 versioning. No cloud object storage is needed for MVP.
+

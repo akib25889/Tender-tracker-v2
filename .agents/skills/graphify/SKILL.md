@@ -38,3 +38,4 @@ python "tools/graphify/graphify.py"
 2. **Finding Database Entities**: Check Section 3 for entity names, fields, and descriptions.
 3. **Storage Vault Hierarchy**: Check Section 4 for the 6 subfolder paths required under `storage/tenders/{TDR-ID}/`.
 4. **Relationship Tracing**: Check Section 5 to trace connections (e.g. `screen -> database entity` or `lifecycle_stage -> lifecycle_stage`).
+

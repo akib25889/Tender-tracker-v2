@@ -74,3 +74,4 @@ Before proposing or editing code, verify:
 - [ ] No duplicate logic already present in the repository.
 - [ ] No new dependencies added when standard features suffice.
 - [ ] Clean, self-documenting naming rather than verbose commentary.
+
