@@ -65,9 +65,6 @@ export const DashboardPage: React.FC = () => {
           <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
             Tender Command Center
           </h1>
-          <p className="text-xs text-[#64748B] mt-0.5">
-            Operational triage dashboard adhering to the 10-Second Attention Rule.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">

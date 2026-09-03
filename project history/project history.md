@@ -24,6 +24,15 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — UI Cleanup: Removed Dashboard Attention Rule Subtitle
+- **Category:** Copywriting & Visual Cleanup
+- **Summary:**
+  - Removed the subtitle string *"Operational triage dashboard adhering to the 10-Second Attention Rule."* from the top header of [`DashboardPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/DashboardPage.tsx).
+- **Relevant Files:**
+  - `frontend/src/pages/DashboardPage.tsx`
+
+---
+
 ### [2026-09-03] — Tender Management: Added Direct Edit & Delete Capabilities
 - **Category:** Core Pipeline Operations & CRUD
 - **Summary:**
