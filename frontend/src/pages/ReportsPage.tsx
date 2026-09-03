@@ -34,7 +34,7 @@ export const ReportsPage: React.FC = () => {
             <span className="font-semibold text-[#0F172A]">Win/Loss Intelligence</span>
           </div>
           <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
-            Procurement Reports &amp; Post-Mortem Analytics
+            Procurement Reports &amp; Win/Loss Analytics
           </h1>
           <p className="text-xs text-[#64748B] mt-0.5">
             Quarterly conversion metrics, donor win rates, and structured loss root-cause telemetry.

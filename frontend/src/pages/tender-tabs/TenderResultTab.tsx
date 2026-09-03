@@ -30,7 +30,7 @@ export const TenderResultTab: React.FC = () => {
   return (
     <div className="space-y-6">
       <Card
-        title="Tender Award &amp; Post-Mortem Taxonomy Ledger"
+        title="Tender Outcome &amp; Debrief Ledger"
         subtitle="Formal contract confirmation or structured loss root-cause debrief tracking"
       >
         {saved && (
@@ -123,7 +123,7 @@ export const TenderResultTab: React.FC = () => {
               type="submit"
               className="px-4 py-2 bg-[#0F172A] text-white rounded-lg font-semibold hover:bg-[#1E293B] shadow-sm transition-colors"
             >
-              Record Post-Mortem Evaluation
+              Record Outcome Evaluation
             </button>
           </div>
         </form>

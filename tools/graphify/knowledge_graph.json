@@ -129,7 +129,7 @@
     },
     {
       "id": "screen:tender_result",
-      "name": "Result & Win/Loss Post-Mortem",
+      "name": "Outcome & Win/Loss Debrief",
       "type": "screen",
       "route": "/tenders/{id}/result",
       "module": "result"

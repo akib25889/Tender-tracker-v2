@@ -24,6 +24,24 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Terminology Alignment: Replaced "Post-Mortem" with "Outcome & Debrief"
+- **Category:** Copywriting & Domain Semantics
+- **Summary:**
+  - **Replaced "Post-Mortem" Across App & Tabs:**
+    - Updated the Proposal Workspace tab label from `"Result Post-Mortem"` to **`"Outcome & Debrief"`** ([`TenderDetailPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderDetailPage.tsx)).
+    - Updated the evaluation card header from `"Tender Award & Post-Mortem Taxonomy Ledger"` to **`"Tender Outcome & Debrief Ledger"`** ([`TenderResultTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderResultTab.tsx)).
+    - Updated the evaluation submission button from `"Record Post-Mortem Evaluation"` to **`"Record Outcome Evaluation"`** ([`TenderResultTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderResultTab.tsx)).
+    - Updated reports heading from `"Procurement Reports & Post-Mortem Analytics"` to **`"Procurement Reports & Win/Loss Analytics"`** ([`ReportsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ReportsPage.tsx)).
+  - **Knowledge Graph Synchronization:**
+    - Updated `screen:tender_result` in `tools/graphify/graphify.py` and regenerated [`knowledge_graph.json`](file:///h:/Tender%20tracker%20v2/tools/graphify/knowledge_graph.json) and [`knowledge_graph.md`](file:///h:/Tender%20tracker%20v2/tools/graphify/knowledge_graph.md).
+- **Relevant Files:**
+  - `frontend/src/pages/TenderDetailPage.tsx`
+  - `frontend/src/pages/tender-tabs/TenderResultTab.tsx`
+  - `frontend/src/pages/ReportsPage.tsx`
+  - `tools/graphify/graphify.py`
+
+---
+
 ### [2026-09-03] — Document Vault: Removed Document Sharing Capability
 - **Category:** Governance & UI Simplification
 - **Summary:**

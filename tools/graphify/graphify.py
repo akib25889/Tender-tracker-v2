@@ -51,7 +51,7 @@ def extract_project_nodes():
         {"id": "screen:calendar", "name": "Tender Calendar & Deadline Schedule", "route": "/calendar", "module": "calendar"},
         {"id": "screen:tender_review", "name": "Review & Sign-Off Workflow", "route": "/tenders/{id}/review", "module": "review"},
         {"id": "screen:tender_submission", "name": "Submission Ledger", "route": "/tenders/{id}/submission", "module": "submission"},
-        {"id": "screen:tender_result", "name": "Result & Win/Loss Post-Mortem", "route": "/tenders/{id}/result", "module": "result"},
+        {"id": "screen:tender_result", "name": "Outcome & Win/Loss Debrief", "route": "/tenders/{id}/result", "module": "result"},
         {"id": "screen:reports", "name": "Reports & Win/Loss Analytics", "route": "/reports", "module": "analytics"},
         {"id": "screen:notifications", "name": "Notification & Alert Center", "route": "/notifications", "module": "notifications"},
         {"id": "screen:settings", "name": "Settings & System Configuration", "route": "/settings", "module": "settings"},

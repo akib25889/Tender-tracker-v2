@@ -39,7 +39,7 @@ export const TenderDetailPage: React.FC = () => {
     { label: 'Document Vault', path: `/tenders/${tender.id}/documents`, icon: FolderLock },
     { label: 'Review & Sign-Off', path: `/tenders/${tender.id}/review`, icon: FileCheck2 },
     { label: 'Submission Ledger', path: `/tenders/${tender.id}/submission`, icon: Send },
-    { label: 'Result Post-Mortem', path: `/tenders/${tender.id}/result`, icon: Award },
+    { label: 'Outcome & Debrief', path: `/tenders/${tender.id}/result`, icon: Award },
   ];
 
   const isOverview = location.pathname === `/tenders/${tender.id}`;
