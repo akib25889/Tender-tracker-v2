@@ -15,14 +15,15 @@ import {
   ArrowLeft,
   Trash2,
   Edit3,
+  Printer,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { UrgencyBadge } from '../components/ui/UrgencyBadge';
 import { ReadinessBar } from '../components/ui/ReadinessBar';
-import { Card } from '../components/ui/Card';
 import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { TenderCommentsSection } from '../components/ui/TenderCommentsSection';
+import { TenderSummaryDocument } from '../components/ui/TenderSummaryDocument';
 import { TenderStage } from '../types/tender';
 
 export const TenderDetailPage: React.FC = () => {
@@ -266,202 +267,46 @@ export const TenderDetailPage: React.FC = () => {
 
       {/* Overview Tab Content or Nested Sub-Route Outlet */}
       {isOverview ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main 2 Cols: Scope Overview & Gatekeeper QA */}
-          <div className="lg:col-span-2 space-y-6">
-            <Card
-              title="Tender Summary &amp; Stated Concept"
-              subtitle="Stated specifications, commercial requirements, and scope objectives"
-              headerAction={
-                tender.summary?.classification && (
-                  <span className="px-2.5 py-1 rounded-full bg-[#0F172A] text-white text-[10px] font-bold tracking-wider">
-                    {tender.summary.classification}
-                  </span>
-                )
-              }
-            >
-              <div className="space-y-4 text-xs text-[#334155] leading-relaxed">
-                <div>
-                  <span className="font-bold text-[#0F172A] block mb-1">
-                    Main Concept &amp; Deliverables:
-                  </span>
-                  <p className="p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] text-[#334155]">
-                    {tender.summary?.mainIdea ||
-                      'This bid addresses sovereign requirements for deploying a secure, high-availability ERP and data infrastructure across multilateral regional nodes. The scope requires compliance with tier-4 security certifications, zero-trust cloud orchestration, and 24/7 technical operations SLA.'}
-                  </p>
-                </div>
-
-                {tender.summary?.commercial && (
-                  <div>
-                    <span className="font-bold text-[#0F172A] block mb-1.5">
-                      Commercial Terms &amp; Financial Securities:
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-                      <div className="p-2.5 bg-[#F8FAFC] rounded border border-[#E2E8F0]">
-                        <span className="text-[#64748B] block font-medium">Tender Security</span>
-                        <span className="font-mono font-bold text-[#0F172A]">
-                          {tender.summary.commercial.tenderSecurity || 'Bank Guarantee Required'}
-                        </span>
-                      </div>
-                      <div className="p-2.5 bg-[#F8FAFC] rounded border border-[#E2E8F0]">
-                        <span className="text-[#64748B] block font-medium">Contract / Service Period</span>
-                        <span className="font-semibold text-[#0F172A]">
-                          {tender.summary.commercial.contractPeriod || '12 Months + 24 Months O&M'}
-                        </span>
-                      </div>
-                      <div className="p-2.5 bg-[#F8FAFC] rounded border border-[#E2E8F0]">
-                        <span className="text-[#64748B] block font-medium">Document Price</span>
-                        <span className="font-mono text-[#0F172A]">
-                          {tender.summary.commercial.tenderDocPrice || 'Free on Portal'}
-                        </span>
-                      </div>
-                      <div className="p-2.5 bg-[#F8FAFC] rounded border border-[#E2E8F0]">
-                        <span className="text-[#64748B] block font-medium">Performance Security</span>
-                        <span className="font-mono font-bold text-[#16A34A]">
-                          {tender.summary.commercial.performanceSecurity || '10% of Contract Value'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {tender.summary?.personnel && tender.summary.personnel.length > 0 && (
-                  <div>
-                    <span className="font-bold text-[#0F172A] block mb-1.5">
-                      CV &amp; Key Personnel Mandates:
-                    </span>
-                    <div className="overflow-x-auto border border-[#E2E8F0] rounded-lg">
-                      <table className="w-full text-left text-[11px]">
-                        <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B]">
-                          <tr>
-                            <th className="p-2">Position Title</th>
-                            <th className="p-2">Min. Qualification</th>
-                            <th className="p-2">Required Experience</th>
-                            <th className="p-2 text-center w-12">Qty</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#F1F5F9]">
-                          {tender.summary.personnel.map((p, idx) => (
-                            <tr key={idx}>
-                              <td className="p-2 font-semibold text-[#0F172A]">{p.position}</td>
-                              <td className="p-2 text-[#64748B]">{p.qualification}</td>
-                              <td className="p-2 text-[#64748B]">{p.experience}</td>
-                              <td className="p-2 text-center font-mono font-bold text-[#0F172A]">{p.qty}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
-                {tender.summary?.risks && tender.summary.risks.length > 0 && (
-                  <div>
-                    <span className="font-bold text-[#0F172A] block mb-1.5">
-                      Key Risks &amp; Analyst Observations:
-                    </span>
-                    <div className="space-y-1.5">
-                      {tender.summary.risks.map((r, idx) => (
-                        <div
-                          key={idx}
-                          className="p-2.5 bg-[#FEF2F2]/60 rounded border border-[#FECACA] flex items-start gap-2 text-xs"
-                        >
-                          <span
-                            className={`px-1.5 py-0.5 rounded text-[10px] font-bold font-mono shrink-0 ${
-                              r.type === 'Tender Requirement'
-                                ? 'bg-[#DC2626] text-white'
-                                : 'bg-[#D97706] text-white'
-                            }`}
-                          >
-                            {r.type}
-                          </span>
-                          <span className="text-[#991B1B] font-medium">{r.text}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </Card>
-
-            <Card title="Statutory Requirements Matrix Summary" subtitle="Clause verification status mapped to proof documents">
-              <div className="space-y-3">
-                {tender.requirements.slice(0, 3).map((req) => (
-                  <div
-                    key={req.id}
-                    className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          req.status === 'VERIFIED'
-                            ? 'bg-[#16A34A]'
-                            : req.status === 'BLOCKER'
-                            ? 'bg-[#DC2626] animate-pulse'
-                            : 'bg-[#D97706]'
-                        }`}
-                      />
-                      <span className="text-xs font-semibold text-[#0F172A]">
-                        {req.title}
-                      </span>
-                    </div>
-                    <span
-                      className={`text-[11px] font-mono font-semibold ${
-                        req.status === 'VERIFIED'
-                          ? 'text-[#16A34A]'
-                          : req.status === 'BLOCKER'
-                          ? 'text-[#DC2626] font-bold'
-                          : 'text-[#D97706]'
-                      }`}
-                    >
-                      {req.status}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </Card>
-
-            {/* Proposal Comments & Team Remarks */}
-            <TenderCommentsSection tender={tender} />
+        <div className="space-y-6 animate-fadeIn">
+          {/* Top Quick Actions Bar for Overview Document */}
+          <div className="flex items-center justify-between bg-white dark:bg-[#161B22] p-3 px-4 rounded-xl border border-[#E2E8F0] shadow-xs max-w-4xl mx-auto w-full">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider">
+                Tender Summary Document
+              </span>
+              {tender.summary?.classification && (
+                <span className="px-2.5 py-0.5 rounded-full bg-[#0F172A] text-white text-[10px] font-bold tracking-wider">
+                  {tender.summary.classification}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[#21262D] border border-[#E2E8F0] hover:bg-[#F8FAFC] dark:hover:bg-[#30363D] text-[#0F172A] dark:text-white rounded-lg text-xs font-semibold shadow-2xs transition-colors"
+                title="Print or save as PDF"
+              >
+                <Printer className="w-3.5 h-3.5 text-[#64748B]" />
+                <span>Print / PDF</span>
+              </button>
+              <Link
+                to={`/registry?id=${tender.id}`}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[#21262D] border border-[#E2E8F0] hover:bg-[#F8FAFC] dark:hover:bg-[#30363D] text-[#0F172A] dark:text-white rounded-lg text-xs font-semibold shadow-2xs transition-colors"
+                title="Edit this tender in Registry"
+              >
+                <Edit3 className="w-3.5 h-3.5 text-[#2563EB]" />
+                <span>Edit in Registry</span>
+              </Link>
+            </div>
           </div>
 
-          {/* Right Col: Task Progress & Quick Actions */}
-          <div className="space-y-6">
-            <Card title="Task Execution Progress" subtitle="Cross-department completion status">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#64748B]">Completed Tasks</span>
-                  <span className="font-mono font-bold text-[#0F172A]">
-                    {tender.completedTasksCount} / {tender.totalTasksCount}
-                  </span>
-                </div>
-                <ReadinessBar score={tender.readinessScore} />
+          {/* Render Full Tender Summary Report Document matching photographed specifications */}
+          <TenderSummaryDocument tender={tender} />
 
-                <div className="pt-2 border-t border-[#F1F5F9] space-y-2">
-                  <NavLink
-                    to={`/tenders/${tender.id}/tasks`}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] transition-colors text-xs font-semibold text-[#0F172A]"
-                  >
-                    <span>Open Task Board</span>
-                    <ChevronRight className="w-4 h-4 text-[#64748B]" />
-                  </NavLink>
-                  <NavLink
-                    to={`/tenders/${tender.id}/documents`}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] transition-colors text-xs font-semibold text-[#0F172A]"
-                  >
-                    <span>Open Document Vault</span>
-                    <ChevronRight className="w-4 h-4 text-[#64748B]" />
-                  </NavLink>
-                  <NavLink
-                    to={`/tenders/${tender.id}/review`}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] transition-colors text-xs font-semibold text-[#0F172A]"
-                  >
-                    <span>Sign-Off Gatekeeper Approvals</span>
-                    <ChevronRight className="w-4 h-4 text-[#64748B]" />
-                  </NavLink>
-                </div>
-              </div>
-            </Card>
+          {/* Proposal Comments & Team Remarks */}
+          <div className="max-w-4xl mx-auto w-full">
+            <TenderCommentsSection tender={tender} />
           </div>
         </div>
       ) : (
