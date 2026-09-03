@@ -38,7 +38,7 @@ export const TenderTasksTab: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-display text-lg font-bold text-[#0F172A]">
-            Tender Task Board (Kanban)
+            Tender Task Board
           </h2>
           <p className="text-xs text-[#64748B]">
             Interactive cross-department workload tracking for bid proposal completion

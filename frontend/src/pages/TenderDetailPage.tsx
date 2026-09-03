@@ -35,7 +35,7 @@ export const TenderDetailPage: React.FC = () => {
     { label: 'Overview', path: `/tenders/${tender.id}`, exact: true, icon: FileText },
     { label: 'Analysis & Scope', path: `/tenders/${tender.id}/analysis`, icon: FileText },
     { label: 'Compliance Matrix', path: `/tenders/${tender.id}/requirements`, icon: CheckSquare },
-    { label: 'Task Kanban', path: `/tenders/${tender.id}/tasks`, icon: Kanban },
+    { label: 'Task Board', path: `/tenders/${tender.id}/tasks`, icon: Kanban },
     { label: 'Document Vault', path: `/tenders/${tender.id}/documents`, icon: FolderLock },
     { label: 'Review & Sign-Off', path: `/tenders/${tender.id}/review`, icon: FileCheck2 },
     { label: 'Submission Ledger', path: `/tenders/${tender.id}/submission`, icon: Send },
@@ -403,7 +403,7 @@ export const TenderDetailPage: React.FC = () => {
                     to={`/tenders/${tender.id}/tasks`}
                     className="flex items-center justify-between p-2.5 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] transition-colors text-xs font-semibold text-[#0F172A]"
                   >
-                    <span>Open Task Kanban Board</span>
+                    <span>Open Task Board</span>
                     <ChevronRight className="w-4 h-4 text-[#64748B]" />
                   </NavLink>
                   <NavLink
