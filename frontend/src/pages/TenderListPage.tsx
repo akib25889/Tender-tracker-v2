@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import {
   Search,
   Filter,
-  Download,
   Plus,
   ChevronRight,
   CheckSquare,
@@ -13,6 +12,7 @@ import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { UrgencyBadge } from '../components/ui/UrgencyBadge';
 import { ReadinessBar } from '../components/ui/ReadinessBar';
+import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { TenderStage } from '../types/tender';
 
 export const TenderListPage: React.FC = () => {
@@ -79,21 +79,7 @@ export const TenderListPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => {
-              const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(filteredTenders, null, 2));
-              const downloadAnchor = document.createElement('a');
-              downloadAnchor.setAttribute('href', dataStr);
-              downloadAnchor.setAttribute('download', 'tendertracker_pipeline_export.json');
-              document.body.appendChild(downloadAnchor);
-              downloadAnchor.click();
-              downloadAnchor.remove();
-            }}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-white border border-[#E2E8F0] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-sm"
-          >
-            <Download className="w-3.5 h-3.5 text-[#64748B]" />
-            <span>Export (JSON)</span>
-          </button>
+          <ExportDropdown tenders={filteredTenders} label="Export Pipeline" />
           <button
             onClick={() => setIsNewTenderModalOpen(true)}
             className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"

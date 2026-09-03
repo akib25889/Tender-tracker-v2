@@ -19,6 +19,7 @@ import { StatusBadge } from '../components/ui/StatusBadge';
 import { UrgencyBadge } from '../components/ui/UrgencyBadge';
 import { ReadinessBar } from '../components/ui/ReadinessBar';
 import { Card } from '../components/ui/Card';
+import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { TenderStage } from '../types/tender';
 
 export const TenderDetailPage: React.FC = () => {
@@ -55,16 +56,20 @@ export const TenderDetailPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Breadcrumb Navigation */}
-      <nav className="flex items-center gap-2 text-xs text-[#64748B]">
-        <NavLink to="/tenders" className="hover:text-[#2563EB] transition-colors">
-          Tenders
-        </NavLink>
-        <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
-        <span className="font-mono font-bold text-[#0F172A]">{tender.id}</span>
-        <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
-        <span className="font-semibold text-[#0F172A]">Proposal Workspace</span>
-      </nav>
+      {/* Breadcrumb Navigation & Action */}
+      <div className="flex items-center justify-between gap-3">
+        <nav className="flex items-center gap-2 text-xs text-[#64748B]">
+          <NavLink to="/tenders" className="hover:text-[#2563EB] transition-colors">
+            Tenders
+          </NavLink>
+          <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+          <span className="font-mono font-bold text-[#0F172A]">{tender.id}</span>
+          <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+          <span className="font-semibold text-[#0F172A]">Proposal Workspace</span>
+        </nav>
+
+        <ExportDropdown tender={tender} label="Export Brief" />
+      </div>
 
       {/* Master Tender Header Banner */}
       <div className="bg-white p-6 rounded-lg border border-[#E2E8F0] shadow-sm">

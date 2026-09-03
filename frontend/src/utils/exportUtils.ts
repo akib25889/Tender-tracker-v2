@@ -1,0 +1,455 @@
+import { Tender } from '../types/tender';
+
+const downloadFile = (content: string, filename: string, mimeType: string) => {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+// ==========================================
+// 1. SINGLE TENDER EXPORTERS
+// ==========================================
+
+export const exportTenderAsJSON = (tender: Tender) => {
+  const content = JSON.stringify(tender, null, 2);
+  downloadFile(content, `${tender.id}_summary.json`, 'application/json');
+};
+
+export const exportTenderAsMarkdown = (tender: Tender) => {
+  const s = tender.summary;
+  const md = `# Tender Brief: ${tender.title}
+**Tender ID:** \`${tender.id}\` | **Reference No:** \`${tender.referenceNo}\`  
+**Issuing Authority:** ${tender.organization}  
+**Jurisdiction:** ${tender.country} | **Portal:** ${s?.portal || 'e-Tendering Portal'}  
+**Category:** ${tender.category}  
+**Estimated Net Value:** $${(tender.estimatedValue / 1000000).toFixed(2)}M USD (≈ ৳${((tender.estimatedValue * 122) / 10000000).toFixed(2)} Cr BDT)  
+**Lifecycle Stage:** ${tender.stage.replace('_', ' ')} | **Decision Matrix:** ${tender.decision}  
+**Submission Cutoff:** ${new Date(tender.submissionDeadline).toLocaleString('en-GB')}  
+**Operational Priority:** ${tender.priority} | **Lead Owner:** ${tender.leadOwner.name} (${tender.leadOwner.role})
+
+---
+
+## 1. Executive Summary & Concept
+${s?.mainIdea || 'Proposal for enterprise infrastructure modernization and technical support.'}
+
+${s?.classification ? `> **Classification:** \`${s.classification}\`` : ''}
+
+---
+
+## 2. Commercial Requirements & Securities
+| Parameter | Value |
+| :--- | :--- |
+| **Tender Security (EMD)** | ${s?.commercial?.tenderSecurity || 'Bank Guarantee Required'} |
+| **Contract / Service Period** | ${s?.commercial?.contractPeriod || '12 Months + 24 Months O&M'} |
+| **Tender Document Fee** | ${s?.commercial?.tenderDocPrice || 'Free on Portal'} |
+| **Performance Security** | ${s?.commercial?.performanceSecurity || '10% of Contract Value'} |
+
+---
+
+## 3. Technical Requirements
+${
+  s?.technicalReqs && s.technicalReqs.length > 0
+    ? s.technicalReqs.map((r) => `- ${r}`).join('\n')
+    : tender.tasks.map((t) => `- ${t.title}`).join('\n')
+}
+
+### Software & Technologies Mentioned:
+${
+  s?.technologyMentioned && s.technologyMentioned.length > 0
+    ? s.technologyMentioned.map((t) => `- ${t}`).join('\n')
+    : '- Modern Microservices, PostgreSQL, Enterprise Cloud Stack'
+}
+
+### Operational & SLA Parameters:
+${
+  s?.operationalReqs && s.operationalReqs.length > 0
+    ? s.operationalReqs.map((o) => `- ${o}`).join('\n')
+    : '- 24/7 technical incident resolution and 99.95% system availability.'
+}
+
+---
+
+## 4. Key Eligibility & Joint Venture Guidelines
+- **General Experience:** ${s?.eligibility?.generalExperience || '5+ years commercial experience'}
+- **Similar Experience:** ${s?.eligibility?.similarExperience || 'At least 2 completed contracts of similar complexity'}
+- **Minimum Contract Value:** ${s?.eligibility?.similarProjectValue || 'Single contract benchmark'}
+- **Annual Turnover:** ${s?.eligibility?.avgTurnover || 'Audited turnover average'}
+- **Financial Resources:** ${s?.eligibility?.financialResources || 'Liquid assets or bank credit line'}
+- **Certifications:** ${s?.eligibility?.certification || 'ISO 9001, ISO 27001'}
+- **Local Presence:** ${s?.eligibility?.localPresence || 'Local branch or registered support center'}
+
+**Joint Venture (JV) Rules:**
+- Participation: ${s?.jv?.participation || 'Allowed per tender instructions'}
+- Lead Member: ${s?.jv?.leadMember || 'Must meet majority financial criteria'}
+- Member Rules: ${s?.jv?.memberRules || 'Qualifications shared proportionally'}
+
+---
+
+## 5. Personnel & Staffing Mandates
+| Position | Min. Qualification | Experience | Qty |
+| :--- | :--- | :--- | :---: |
+${
+  s?.personnel && s.personnel.length > 0
+    ? s.personnel.map((p) => `| ${p.position} | ${p.qualification} | ${p.experience} | ${p.qty} |`).join('\n')
+    : '| Senior Solutions Architect | B.Sc. in Computer Engineering | 8+ Years | 1 |'
+}
+
+---
+
+## 6. Hardware & Appliance Specifications
+| Equipment | Functional Purpose |
+| :--- | :--- |
+${
+  s?.hardware && s.hardware.length > 0
+    ? s.hardware.map((h) => `| ${h.equipment} | ${h.purpose} |`).join('\n')
+    : '| Enterprise Rackmount Servers | Application cluster hypervisors |'
+}
+
+---
+
+## 7. Key Risks & Management Highlights
+${
+  s?.risks && s.risks.length > 0
+    ? s.risks.map((r) => `- **[${r.type}]** ${r.text}`).join('\n')
+    : '- **[Tender Requirement]** Mandatory bank solvency confirmation.'
+}
+
+### Management Notes:
+${s?.notes || 'Internal remarks and post-bid debrief notes logged in command center.'}
+
+---
+*Generated by TenderTracker Command Center on ${new Date().toLocaleDateString('en-GB')}*
+`;
+
+  downloadFile(md, `${tender.id}_summary.md`, 'text/markdown');
+};
+
+export const exportTenderAsWord = (tender: Tender) => {
+  const s = tender.summary;
+  const html = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset='utf-8'><title>${tender.title}</title>
+<style>
+  body { font-family: 'Calibri', 'Segoe UI', sans-serif; font-size: 11pt; color: #1E293B; line-height: 1.5; }
+  h1 { color: #0F172A; font-size: 20pt; border-bottom: 2px solid #2563EB; padding-bottom: 6px; }
+  h2 { color: #1E293B; font-size: 14pt; border-bottom: 1px solid #CBD5E1; padding-bottom: 4px; margin-top: 18pt; }
+  h3 { color: #2563EB; font-size: 12pt; margin-top: 12pt; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8pt; margin-bottom: 12pt; }
+  th { background-color: #F1F5F9; color: #0F172A; font-weight: bold; text-align: left; padding: 6pt; border: 1px solid #CBD5E1; }
+  td { padding: 6pt; border: 1px solid #CBD5E1; }
+  .badge { background-color: #EFF6FF; color: #1D4ED8; padding: 2pt 6pt; font-weight: bold; border-radius: 3pt; }
+  .meta-box { background-color: #F8FAFC; border: 1px solid #E2E8F0; padding: 10pt; margin-bottom: 15pt; }
+</style>
+</head>
+<body>
+  <h1>Tender Specification Brief: ${tender.title}</h1>
+  <div class="meta-box">
+    <p><strong>Tender ID:</strong> ${tender.id} &nbsp;|&nbsp; <strong>Reference:</strong> ${tender.referenceNo}</p>
+    <p><strong>Authority / Client:</strong> ${tender.organization} (${tender.country})</p>
+    <p><strong>Estimated Value:</strong> $${(tender.estimatedValue / 1000000).toFixed(2)}M USD &nbsp;|&nbsp; <strong>Stage:</strong> ${tender.stage} &nbsp;|&nbsp; <strong>Decision:</strong> ${tender.decision}</p>
+    <p><strong>Submission Cutoff:</strong> ${new Date(tender.submissionDeadline).toLocaleString('en-GB')}</p>
+    <p><strong>Lead Bid Director:</strong> ${tender.leadOwner.name}</p>
+  </div>
+
+  <h2>1. Executive Concept & Scope of Work</h2>
+  <p>${s?.mainIdea || 'Proposal for deploying enterprise software systems and cloud infrastructure.'}</p>
+
+  <h2>2. Commercial Securities & Guarantees</h2>
+  <table>
+    <tr><th>Requirement</th><th>Specification</th></tr>
+    <tr><td>Tender Security</td><td>${s?.commercial?.tenderSecurity || 'Bank Guarantee Required'}</td></tr>
+    <tr><td>Contract / Service Period</td><td>${s?.commercial?.contractPeriod || '12 Months + 24 Months O&M'}</td></tr>
+    <tr><td>Tender Document Price</td><td>${s?.commercial?.tenderDocPrice || 'Free on Portal'}</td></tr>
+    <tr><td>Performance Security</td><td>${s?.commercial?.performanceSecurity || '10% of Contract Value'}</td></tr>
+  </table>
+
+  <h2>3. Key Eligibility & Qualification Criteria</h2>
+  <ul>
+    <li><strong>General Experience:</strong> ${s?.eligibility?.generalExperience || '5+ Years'}</li>
+    <li><strong>Similar Experience:</strong> ${s?.eligibility?.similarExperience || 'At least 2 similar contracts'}</li>
+    <li><strong>Minimum Value:</strong> ${s?.eligibility?.similarProjectValue || 'Single contract benchmark'}</li>
+    <li><strong>Annual Turnover:</strong> ${s?.eligibility?.avgTurnover || 'Audited turnover average'}</li>
+    <li><strong>Certifications:</strong> ${s?.eligibility?.certification || 'ISO 9001, ISO 27001'}</li>
+    <li><strong>Local Presence:</strong> ${s?.eligibility?.localPresence || 'Registered local support branch'}</li>
+  </ul>
+
+  <h2>4. Key Personnel Mandates</h2>
+  <table>
+    <tr><th>Position</th><th>Min. Qualification</th><th>Required Experience</th><th>Qty</th></tr>
+    ${
+      s?.personnel && s.personnel.length > 0
+        ? s.personnel.map((p) => `<tr><td><strong>${p.position}</strong></td><td>${p.qualification}</td><td>${p.experience}</td><td>${p.qty}</td></tr>`).join('')
+        : '<tr><td>Solutions Architect</td><td>B.Sc. in Computer Engineering</td><td>8+ Years</td><td>1</td></tr>'
+    }
+  </table>
+
+  <h2>5. Key Risks & Management Highlights</h2>
+  <ul>
+    ${
+      s?.risks && s.risks.length > 0
+        ? s.risks.map((r) => `<li><strong>[${r.type}]</strong> ${r.text}</li>`).join('')
+        : '<li>Standard operational risk clearance underway.</li>'
+    }
+  </ul>
+
+  <p style="margin-top: 30pt; font-size: 9pt; color: #64748B;">
+    Document generated by TenderTracker Command Center on ${new Date().toLocaleDateString('en-GB')}.
+  </p>
+</body>
+</html>
+`;
+
+  downloadFile(html, `${tender.id}_summary.doc`, 'application/msword');
+};
+
+export const exportTenderAsPDF = (tender: Tender) => {
+  const s = tender.summary;
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('Please allow popups to generate the PDF print preview.');
+    return;
+  }
+
+  printWindow.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+  <title>${tender.id} - ${tender.title}</title>
+  <style>
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10pt; color: #0F172A; padding: 25px; line-height: 1.4; }
+    .header { border-bottom: 2px solid #0F172A; padding-bottom: 12px; margin-bottom: 15px; }
+    .title { font-size: 18pt; font-weight: bold; margin: 0 0 5px; color: #0F172A; }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px; border-radius: 6px; margin-bottom: 18px; font-size: 9pt; }
+    h2 { font-size: 12pt; border-bottom: 1px solid #CBD5E1; padding-bottom: 4px; margin-top: 15px; color: #1E293B; }
+    table { width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 12px; font-size: 8.5pt; }
+    th { background: #F1F5F9; border: 1px solid #CBD5E1; padding: 6px; text-align: left; }
+    td { border: 1px solid #CBD5E1; padding: 6px; }
+    .badge { font-weight: bold; color: #2563EB; }
+    @media print {
+      body { padding: 0; }
+      button { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div style="font-size: 8pt; text-transform: uppercase; letter-spacing: 1px; color: #64748B; font-weight: bold;">
+      TenderTracker Command Center &bull; Executive Brief
+    </div>
+    <div class="title">${tender.title}</div>
+    <div style="font-family: monospace; font-size: 9pt; color: #2563EB;">
+      Tender ID: ${tender.id} &bull; Ref: ${tender.referenceNo} &bull; Portal: ${s?.portal || 'e-GP / UNGM'}
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div><strong>Client:</strong> ${tender.organization}</div>
+    <div><strong>Jurisdiction:</strong> ${tender.country}</div>
+    <div><strong>Estimated Net Value:</strong> $${(tender.estimatedValue / 1000000).toFixed(2)}M USD (≈ ৳${((tender.estimatedValue * 122) / 10000000).toFixed(2)} Cr BDT)</div>
+    <div><strong>Submission Cutoff:</strong> ${new Date(tender.submissionDeadline).toLocaleString('en-GB')}</div>
+    <div><strong>Lifecycle Stage:</strong> ${tender.stage}</div>
+    <div><strong>Go/No-Go Decision:</strong> ${tender.decision}</div>
+  </div>
+
+  <h2>1. Scope Objectives & Concept</h2>
+  <p>${s?.mainIdea || 'Enterprise proposal addressing sovereign procurement requirements.'}</p>
+
+  <h2>2. Commercial Terms & Guarantees</h2>
+  <table>
+    <tr><th>Requirement</th><th>Specification</th></tr>
+    <tr><td>Tender Security</td><td>${s?.commercial?.tenderSecurity || 'Bank Guarantee Required'}</td></tr>
+    <tr><td>Contract Period</td><td>${s?.commercial?.contractPeriod || '12 Months + 24 Months O&M'}</td></tr>
+    <tr><td>Document Price</td><td>${s?.commercial?.tenderDocPrice || 'Free'}</td></tr>
+    <tr><td>Performance Security</td><td>${s?.commercial?.performanceSecurity || '10% of Contract Value'}</td></tr>
+  </table>
+
+  <h2>3. CV & Personnel Mandates</h2>
+  <table>
+    <tr><th>Position</th><th>Min. Qualification</th><th>Experience</th><th>Qty</th></tr>
+    ${
+      s?.personnel && s.personnel.length > 0
+        ? s.personnel.map((p) => `<tr><td><strong>${p.position}</strong></td><td>${p.qualification}</td><td>${p.experience}</td><td>${p.qty}</td></tr>`).join('')
+        : '<tr><td>Solutions Architect</td><td>B.Sc. in Computer Engineering</td><td>8+ Years</td><td>1</td></tr>'
+    }
+  </table>
+
+  <h2>4. Key Risks & Points</h2>
+  <ul>
+    ${
+      s?.risks && s.risks.length > 0
+        ? s.risks.map((r) => `<li><strong>[${r.type}]</strong> ${r.text}</li>`).join('')
+        : '<li>Standard operational risk clearance logged.</li>'
+    }
+  </ul>
+
+  <script>
+    window.onload = function() { window.print(); }
+  </script>
+</body>
+</html>
+  `);
+  printWindow.document.close();
+};
+
+// ==========================================
+// 2. PIPELINE REGISTRY EXPORTERS
+// ==========================================
+
+export const exportPipelineAsJSON = (tenders: Tender[]) => {
+  const content = JSON.stringify(tenders, null, 2);
+  downloadFile(content, 'tendertracker_pipeline_export.json', 'application/json');
+};
+
+export const exportPipelineAsMarkdown = (tenders: Tender[]) => {
+  const totalVal = tenders.reduce((acc, t) => acc + t.estimatedValue, 0);
+
+  const md = `# TenderTracker Pipeline Registry Export
+**Generated:** ${new Date().toLocaleDateString('en-GB')}  
+**Total Opportunities:** ${tenders.length} | **Total Value:** $${(totalVal / 1000000).toFixed(2)}M USD (≈ ৳${((totalVal * 122) / 10000000).toFixed(2)} Cr BDT)
+
+---
+
+## Active Tender Opportunities
+| ID | SOW Title | Authority | Value (USD) | Stage | Decision | Deadline | Readiness |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
+${tenders
+  .map(
+    (t) =>
+      `| \`${t.id}\` | ${t.title} | ${t.organization} | $${(t.estimatedValue / 1000000).toFixed(2)}M | ${t.stage} | ${t.decision} | ${new Date(t.submissionDeadline).toLocaleDateString('en-GB')} | ${t.readinessScore}% |`
+  )
+  .join('\n')}
+
+---
+*Report exported from TenderTracker Command Center*
+`;
+
+  downloadFile(md, 'tendertracker_pipeline_export.md', 'text/markdown');
+};
+
+export const exportPipelineAsWord = (tenders: Tender[]) => {
+  const totalVal = tenders.reduce((acc, t) => acc + t.estimatedValue, 0);
+
+  const html = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset='utf-8'><title>TenderTracker Pipeline</title>
+<style>
+  body { font-family: 'Calibri', 'Segoe UI', sans-serif; font-size: 10pt; color: #1E293B; }
+  h1 { color: #0F172A; font-size: 18pt; border-bottom: 2px solid #2563EB; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10pt; font-size: 9.5pt; }
+  th { background-color: #F1F5F9; font-weight: bold; border: 1px solid #CBD5E1; padding: 5pt; text-align: left; }
+  td { border: 1px solid #CBD5E1; padding: 5pt; }
+</style>
+</head>
+<body>
+  <h1>Tender Pipeline Registry Export</h1>
+  <p><strong>Generated Date:</strong> ${new Date().toLocaleDateString('en-GB')} &bull; <strong>Total Opportunities:</strong> ${tenders.length} &bull; <strong>Total Valuation:</strong> $${(totalVal / 1000000).toFixed(2)}M USD</p>
+  <table>
+    <tr>
+      <th>Tender ID</th>
+      <th>Title & SOW</th>
+      <th>Authority</th>
+      <th>Value</th>
+      <th>Stage</th>
+      <th>Decision</th>
+      <th>Deadline</th>
+      <th>Readiness</th>
+    </tr>
+    ${tenders
+      .map(
+        (t) => `
+      <tr>
+        <td><strong>${t.id}</strong></td>
+        <td>${t.title}</td>
+        <td>${t.organization}</td>
+        <td>$${(t.estimatedValue / 1000000).toFixed(2)}M</td>
+        <td>${t.stage}</td>
+        <td>${t.decision}</td>
+        <td>${new Date(t.submissionDeadline).toLocaleDateString('en-GB')}</td>
+        <td>${t.readinessScore}%</td>
+      </tr>`
+      )
+      .join('')}
+  </table>
+</body>
+</html>
+`;
+
+  downloadFile(html, 'tendertracker_pipeline_export.doc', 'application/msword');
+};
+
+export const exportPipelineAsPDF = (tenders: Tender[]) => {
+  const totalVal = tenders.reduce((acc, t) => acc + t.estimatedValue, 0);
+
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('Please allow popups to open the PDF preview.');
+    return;
+  }
+
+  printWindow.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TenderTracker Pipeline Registry</title>
+  <style>
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; color: #0F172A; padding: 20px; }
+    h1 { font-size: 16pt; margin: 0 0 5px; color: #0F172A; }
+    .sub { font-size: 9pt; color: #64748B; margin-bottom: 15px; }
+    table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-top: 10px; }
+    th { background: #F1F5F9; border: 1px solid #CBD5E1; padding: 6px; text-align: left; }
+    td { border: 1px solid #CBD5E1; padding: 6px; }
+    @media print {
+      body { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Tender Pipeline Registry</h1>
+  <div class="sub">
+    Generated on ${new Date().toLocaleDateString('en-GB')} &bull; ${tenders.length} Opportunities &bull; Total Value: $${(totalVal / 1000000).toFixed(2)}M USD
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Authority</th>
+        <th>Value</th>
+        <th>Stage</th>
+        <th>Decision</th>
+        <th>Deadline</th>
+        <th>Readiness</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${tenders
+        .map(
+          (t) => `
+        <tr>
+          <td><strong>${t.id}</strong></td>
+          <td>${t.title}</td>
+          <td>${t.organization}</td>
+          <td>$${(t.estimatedValue / 1000000).toFixed(2)}M</td>
+          <td>${t.stage}</td>
+          <td>${t.decision}</td>
+          <td>${new Date(t.submissionDeadline).toLocaleDateString('en-GB')}</td>
+          <td>${t.readinessScore}%</td>
+        </tr>`
+        )
+        .join('')}
+    </tbody>
+  </table>
+  <script>
+    window.onload = function() { window.print(); }
+  </script>
+</body>
+</html>
+  `);
+  printWindow.document.close();
+};

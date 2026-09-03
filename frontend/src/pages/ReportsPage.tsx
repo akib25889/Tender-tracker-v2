@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
-import { TrendingUp, Award, DollarSign, Download } from 'lucide-react';
+import { TrendingUp, Award, DollarSign } from 'lucide-react';
+import { ExportDropdown } from '../components/ui/ExportDropdown';
 
 export const ReportsPage: React.FC = () => {
   const { tenders, formatCurrency } = useTenders();
@@ -40,15 +41,7 @@ export const ReportsPage: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            alert('Exporting Board Summary Presentation (PDF/CSV) with full audit ledger.');
-          }}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
-        >
-          <Download className="w-3.5 h-3.5" />
-          <span>Export Executive Report</span>
-        </button>
+        <ExportDropdown tenders={tenders} label="Export Executive Report" />
       </div>
 
       {/* Top 3 Summary Cards */}

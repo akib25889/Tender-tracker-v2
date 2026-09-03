@@ -24,6 +24,28 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Multi-Format Export Engine (PDF, DOCX, Markdown, JSON)
+- **Category:** Document Generation & Interoperability
+- **Summary:**
+  - Built comprehensive multi-format export utilities ([`exportUtils.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/utils/exportUtils.ts)) supporting:
+    - **PDF (`.pdf`):** Clean print-ready HTML stylesheet triggering browser PDF rendering with metadata badges, statutory tables, and signature fields.
+    - **Word Document (`.docx` / `.doc`):** WordprocessingML XML/HTML format rendering styled tables, headings, and tender summaries compatible with Microsoft Word and Google Docs.
+    - **Markdown Brief (`.md`):** Formatted GitHub-flavored markdown documents with tables, bulleted technical scopes, and financial breakdowns.
+    - **Raw Data (`.json`):** Formatted JSON payload containing all tender domain models, tasks, checklists, and summary dictionaries.
+  - Implemented reusable [`ExportDropdown.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/ExportDropdown.tsx) component with format icons, file extensions, and click-outside dismissal.
+  - Deployed export actions across:
+    - **Pipeline Registry ([`TenderListPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderListPage.tsx)):** Bulk exports filtered active opportunities.
+    - **Proposal Workspace ([`TenderDetailPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderDetailPage.tsx)):** Exports individual tender specification briefs.
+    - **Analytics Reports ([`ReportsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ReportsPage.tsx)):** Exports pipeline board executive reports.
+- **Relevant Files:**
+  - `frontend/src/utils/exportUtils.ts`
+  - `frontend/src/components/ui/ExportDropdown.tsx`
+  - `frontend/src/pages/TenderListPage.tsx`
+  - `frontend/src/pages/TenderDetailPage.tsx`
+  - `frontend/src/pages/ReportsPage.tsx`
+
+---
+
 ### [2026-09-03] — Comprehensive Tender Registration Fields from Tender-Dashboard Template
 - **Category:** Domain Model Expansion & Opportunity Intake
 - **Summary:**
