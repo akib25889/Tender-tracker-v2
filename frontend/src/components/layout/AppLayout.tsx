@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
-import { useTenders } from '../../context/TenderContext';
-import { NewTenderModal } from '../modals/NewTenderModal';
 import { UploadDocumentModal } from '../modals/UploadDocumentModal';
 import { ShareDocumentModal } from '../modals/ShareDocumentModal';
 
 export const AppLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { setIsNewTenderModalOpen } = useTenders();
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -29,7 +26,6 @@ export const AppLayout: React.FC = () => {
         <Header
           sidebarCollapsed={sidebarCollapsed}
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-          onNewTenderClick={() => setIsNewTenderModalOpen(true)}
         />
 
         {/* Viewport Content */}
@@ -41,7 +37,6 @@ export const AppLayout: React.FC = () => {
       </div>
 
       {/* Global Modals */}
-      <NewTenderModal />
       <UploadDocumentModal />
       <ShareDocumentModal />
     </div>

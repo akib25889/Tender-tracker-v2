@@ -17,7 +17,7 @@ import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { TenderStage } from '../types/tender';
 
 export const TenderListPage: React.FC = () => {
-  const { tenders, setIsNewTenderModalOpen, updateTenderStage, formatCurrency } = useTenders();
+  const { tenders, updateTenderStage, formatCurrency } = useTenders();
   const [searchParams, setSearchParams] = useSearchParams();
   const stageFromUrl = searchParams.get('stage');
 
@@ -105,13 +105,13 @@ export const TenderListPage: React.FC = () => {
 
         <div className="flex items-center gap-2">
           <ExportDropdown tenders={filteredTenders} label="Export Pipeline" />
-          <button
-            onClick={() => setIsNewTenderModalOpen(true)}
+          <Link
+            to="/registry"
             className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>New Tender Opportunity</span>
-          </button>
+          </Link>
         </div>
       </div>
 

@@ -6,13 +6,11 @@ import { UserRoleSwitcher } from '../ui/UserRoleSwitcher';
 interface HeaderProps {
   sidebarCollapsed: boolean;
   onToggleSidebar?: () => void;
-  onNewTenderClick?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   sidebarCollapsed,
   onToggleSidebar,
-  onNewTenderClick,
 }) => {
   return (
     <header
@@ -53,20 +51,11 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex items-center gap-3">
         <Link
           to="/registry"
-          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-sm"
+          className="flex items-center gap-1 px-3 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
         >
-          <span>Registry</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">New Opportunity</span>
         </Link>
-
-        {onNewTenderClick && (
-          <button
-            onClick={onNewTenderClick}
-            className="flex items-center gap-1 px-3 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">New Opportunity</span>
-          </button>
-        )}
 
         {/* System Alert Bell */}
         <Link

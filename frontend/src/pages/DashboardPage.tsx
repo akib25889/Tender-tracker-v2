@@ -6,7 +6,6 @@ import {
   AlertTriangle,
   Activity,
   Plus,
-  ChevronRight,
   FileWarning,
   ExternalLink,
 } from 'lucide-react';
@@ -18,7 +17,7 @@ import { Card } from '../components/ui/Card';
 import { TenderStage } from '../types/tender';
 
 export const DashboardPage: React.FC = () => {
-  const { tenders, setIsNewTenderModalOpen } = useTenders();
+  const { tenders } = useTenders();
   const [filterMode, setFilterMode] = useState<'ALL_URGENT' | 'CLOSING_SOON' | 'BLOCKERS'>('ALL_URGENT');
 
   // Dynamic live operational metric calculations
@@ -74,18 +73,11 @@ export const DashboardPage: React.FC = () => {
         <div className="flex items-center gap-2">
           <Link
             to="/registry"
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-white border border-[#E2E8F0] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-sm"
-          >
-            <span>Tender Registry</span>
-            <ChevronRight className="w-3.5 h-3.5 text-[#64748B]" />
-          </Link>
-          <button
-            onClick={() => setIsNewTenderModalOpen(true)}
             className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>New Opportunity</span>
-          </button>
+            <span>Tender Registry &amp; Data Entry</span>
+          </Link>
         </div>
       </div>
 

@@ -24,6 +24,24 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Header Streamlining & Consolidation to Dedicated Registry Page
+- **Category:** Architecture & UX Simplification
+- **Summary:**
+  - **Header Cleanup ([`Header.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/Header.tsx)):**
+    - Removed the redundant "Registry" button from the top header controls.
+    - Updated the "+ New Opportunity" button to navigate directly to `/registry` via React Router `<Link>`.
+  - **Removed Redundant Intake Modal ([`AppLayout.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/AppLayout.tsx)):**
+    - Unmounted and removed `NewTenderModal` from global layout; all intake, metadata editing, and specification entry now flow exclusively through the dedicated full-page console at `/registry` ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx)).
+  - **Unified Action Links ([`DashboardPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/DashboardPage.tsx), [`TenderListPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderListPage.tsx)):**
+    - Replaced all modal trigger buttons with direct links to `/registry`.
+- **Relevant Files:**
+  - `frontend/src/components/layout/Header.tsx`
+  - `frontend/src/components/layout/AppLayout.tsx`
+  - `frontend/src/pages/DashboardPage.tsx`
+  - `frontend/src/pages/TenderListPage.tsx`
+
+---
+
 ### [2026-09-03] — Bid Discovery Navigation & Filtered Pipeline View
 - **Category:** Navigation & Pipeline Filtering
 - **Summary:**
