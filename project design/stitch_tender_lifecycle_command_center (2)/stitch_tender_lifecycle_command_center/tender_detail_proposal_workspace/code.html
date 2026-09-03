@@ -1,0 +1,826 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary-fixed": "#dae2fd", "error-container": "#ffdad6", "on-primary-fixed-variant": "#3f465c", "surface-container-low": "#eff4ff", "on-surface": "#0b1c30", "tertiary": "#000000", "secondary": "#0051d5", "tertiary-fixed": "#eaddff", "surface": "#f8f9ff", "outline-variant": "#c6c6cd", "on-secondary": "#ffffff", "on-primary-fixed": "#131b2e", "surface-container-highest": "#d3e4fe", "background": "#f8f9ff", "on-tertiary": "#ffffff", "on-background": "#0b1c30", "inverse-surface": "#213145", "surface-container-high": "#dce9ff", "surface-container-lowest": "#ffffff", "surface-dim": "#cbdbf5", "on-tertiary-fixed": "#25005a", "primary-fixed-dim": "#bec6e0", "tertiary-container": "#25005a", "secondary-fixed-dim": "#b4c5ff", "inverse-primary": "#bec6e0", "on-error": "#ffffff", "on-primary-container": "#7c839b", "secondary-container": "#316bf3", "on-secondary-fixed": "#00174b", "on-primary": "#ffffff", "surface-variant": "#d3e4fe", "on-surface-variant": "#45464d", "on-tertiary-container": "#9863ff", "on-error-container": "#93000a", "tertiary-fixed-dim": "#d2bbff", "on-secondary-fixed-variant": "#003ea8", "primary-container": "#131b2e", "surface-tint": "#565e74", "on-secondary-container": "#fefcff", "on-tertiary-fixed-variant": "#5a00c6", "secondary-fixed": "#dbe1ff", "primary": "#000000", "outline": "#76777d", "inverse-on-surface": "#eaf1ff", "surface-bright": "#f8f9ff", "surface-container": "#e5eeff", "error": "#ba1a1a" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "sidebar-collapsed": "4.5rem", "gutter-xl": "1.5rem", "gutter-lg": "1rem", "gutter-md": "0.75rem", "sidebar-expanded": "16rem", "header-height": "3.5rem", "gutter-sm": "0.5rem", "row-gap-dense": "0.375rem", "container-padding-desktop": "1.5rem", "container-padding-mobile": "1rem", "gutter-xs": "0.25rem" }, "fontFamily": { "code-md": [ "JetBrains Mono" ], "body-sm": [ "Inter" ], "display-lg": [ "Plus Jakarta Sans" ], "label-md": [ "Inter" ], "headline-sm": [ "Plus Jakarta Sans" ], "headline-md": [ "Plus Jakarta Sans" ], "code-sm": [ "JetBrains Mono" ], "headline-lg": [ "Plus Jakarta Sans" ], "body-lg": [ "Inter" ], "title-md": [ "Inter" ], "display-lg-mobile": [ "Plus Jakarta Sans" ], "label-sm": [ "Inter" ], "body-md": [ "Inter" ] }, "fontSize": { "code-md": [ "13px", { "lineHeight": "18px", "fontWeight": "500" } ], "body-sm": [ "12px", { "lineHeight": "16px", "fontWeight": "400" } ], "display-lg": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" } ], "headline-sm": [ "16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" } ], "headline-md": [ "20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "code-sm": [ "11px", { "lineHeight": "14px", "fontWeight": "500" } ], "headline-lg": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "body-lg": [ "14px", { "lineHeight": "20px", "fontWeight": "400" } ], "title-md": [ "15px", { "lineHeight": "22px", "fontWeight": "600" } ], "display-lg-mobile": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "600" } ], "body-md": [ "13px", { "lineHeight": "18px", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-sidebar-expanded bg-[#0F172A] z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-header-height px-gutter-lg flex items-center justify-between border-b border-[#1E293B]"><div class="flex items-center gap-gutter-sm"><img alt="TenderTracker Emblem" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UFdRrwTpA7yfBlQcwn56dg-2iDPdAkp3SdfJr8ig2PALUS6n36txhkQkdYUAqzs95o9tiBbJbaVzwtYhgeGXXU46Kkmekf0w_C-KT18o0IAz4tR60Ob7jgR4JnCc8070h9klyZZqxJAN026r-FGrXIyYi4t3P6UL8mNCCsgRDJJ4KHuQFlJv0CjnJHKgAGFgfXR_PHHRD_qzBlG0NNNKiRM6jF47ndJRfOUC2RXO4K6VVioxuy7Yf0lg"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-[#FFFFFF] tracking-tight leading-none">TenderTracker</span><span class="font-label-sm text-label-sm text-[#94A3B8] uppercase mt-0.5 tracking-wider">Procurement Core</span></div></div><span class="px-1.5 py-0.5 bg-[#1E293B] text-[#93C5FD] font-label-sm text-[10px] rounded-lg font-semibold tracking-wider">v4.2</span></div><div class="px-gutter-md py-gutter-md"><div class="px-gutter-sm pb-gutter-xs text-[10px] font-label-sm font-semibold tracking-wider uppercase text-[#64748B]">Command Navigation</div><nav class="space-y-0.5" data-active-classes="bg-[#1E293B] text-[#FFFFFF] font-semibold"><a aria-current="page" class="flex items-center justify-between px-gutter-sm py-2 rounded-lg transition-colors bg-[#1E293B] text-[#FFFFFF] font-semibold" data-path="dashboard" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">dashboard</span><span class="font-body-md text-body-md">Dashboard</span></div><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span></a><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="my-tasks" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">check_circle</span><span class="font-body-md text-body-md">My Tasks</span></div><span class="px-1.5 py-0.2 rounded-full bg-[#1E293B] text-[#F8FAFC] font-code-sm text-code-sm font-semibold">18</span></a><div><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="all-tenders" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">folder_managed</span><span class="font-body-md text-body-md">Tenders</span></div><span class="material-symbols-outlined text-[16px]">expand_more</span></a><div class="pl-7 pr-gutter-xs py-1 space-y-0.5"><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="all-tenders" href="#"><span>All Tenders</span><span class="font-code-sm text-[11px] text-[#64748B]">142</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="active-tenders" href="#"><span>Active Pipeline</span><span class="font-code-sm text-[11px] text-secondary">24</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="due-soon-tenders" href="#"><span>Due Soon</span><span class="px-1.5 py-0.2 rounded-full bg-error-container text-on-error-container font-code-sm text-[10px] font-semibold">5</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="submitted-tenders" href="#"><span>Submitted</span><span class="font-code-sm text-[11px] text-[#64748B]">68</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="completed-tenders" href="#"><span>Completed</span><span class="font-code-sm text-[11px] text-[#64748B]">45</span></a></div></div><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="calendar" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">calendar_month</span><span class="font-body-md text-body-md">Calendar</span></div><div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-error animate-ping"></span><span class="font-code-sm text-code-sm text-error">3 Due</span></div></a><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="documents" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">fact_check</span><span class="font-body-md text-body-md">Documents</span></div><span class="px-1.5 py-0.2 rounded-full bg-surface-container-high text-on-surface font-code-sm text-[10px]">Compliance</span></a><a class="flex items-center px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="team" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">groups</span><span class="font-body-md text-body-md">Team &amp; Workload</span></div></a><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="reports" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">query_stats</span><span class="font-body-md text-body-md">Reports &amp; Win/Loss</span></div></a></nav></div></div><div class="px-gutter-md pb-gutter-lg"><div class="p-gutter-sm rounded-xl bg-[#1E293B] mb-gutter-sm"><div class="flex items-center justify-between mb-1.5"><span class="font-label-sm text-label-sm text-[#94A3B8]">Pipeline Health</span><span class="font-code-sm text-code-sm text-[#F8FAFC]">84%</span></div><div class="w-full bg-[#0F172A] h-1.5 rounded-full overflow-hidden"><div class="bg-secondary h-full rounded-full w-4/5"></div></div></div><nav class="space-y-0.5" data-active-classes="bg-[#1E293B] text-[#FFFFFF]"><a class="flex items-center gap-gutter-sm px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-[18px]">settings</span><span class="font-body-md text-body-md">Settings</span></a></nav></div></aside><div class="pl-sidebar-expanded"><header class="fixed top-0 left-sidebar-expanded right-0 h-header-height bg-surface-container-lowest/95 backdrop-blur-xl border-b border-outline-variant/30 z-40 flex items-center justify-between px-gutter-xl"><div class="flex items-center gap-gutter-lg flex-1 max-w-2xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span><input class="w-full pl-10 pr-16 py-1.5 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline border-none focus:outline-none focus:ring-1 focus:ring-secondary" placeholder="Search RFP, Tender ID, Organization, or Team member... (Ctrl + K)" type="text"><div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-outline font-code-sm text-[10px] bg-surface-container px-1.5 py-0.5 rounded"><kbd>⌘</kbd><kbd>K</kbd></div></div><span class="px-2.5 py-1 rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm font-semibold tracking-wider whitespace-nowrap">ENTERPRISE</span></div><div class="flex items-center gap-gutter-md"><button class="flex items-center gap-1.5 px-gutter-md py-1.5 bg-secondary text-on-secondary rounded-lg font-title-md text-body-sm hover:bg-secondary-container transition-colors shadow-sm"><span class="material-symbols-outlined text-[18px]">add</span><span>New Tender</span></button><button class="flex items-center gap-1.5 px-gutter-sm py-1.5 bg-surface-container rounded-lg text-on-surface font-title-md text-body-sm hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-secondary text-[18px]">auto_awesome</span><span class="font-label-md text-label-md">AI Assistant</span></button><div class="h-5 w-px bg-outline-variant/50 mx-gutter-xs"></div><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" title="8 new alerts"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-error"></span></span></button><div class="flex items-center gap-gutter-sm pl-gutter-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-surface-container" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvO9pEUYMDIH04_VDYu4hkNa8H2FyGPJH4xzNCSHH-CWmTWgqeLqyq4GNvtg8AgqMrpYLn6bisnAQoDKUILXXpVWvNuW0FOPBEieaGt1ug3D4s7NLAGKR8uFMOExPiT6RdyWBYNdyjONydDVELp2RxpTGWxabDd2hy7LW_ED5m1vR_rKmzX8lg9eaBqYjDPLRRT3IxNo9kr-TZRGZp8v6ktQgTBmxkIcTb2FxaVisN1eTLKnCmvp8"><div class="flex flex-col text-left"><span class="font-title-md text-body-sm text-on-surface font-semibold leading-tight">Sarah Jenkins</span><span class="font-label-sm text-[11px] text-on-surface-variant leading-tight">Head of Bidding &amp; Ops</span></div></div></div></header><main class="relative pt-header-height min-h-screen bg-surface"><div class="flex flex-col w-full">
+<!-- Command Header & Breadcrumb Strip -->
+<div class="px-gutter-xl pt-gutter-lg pb-gutter-md bg-surface-container-lowest shadow-sm">
+<div class="max-w-[1720px] mx-auto flex flex-col gap-gutter-md">
+<!-- Breadcrumb + System Nav -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-gutter-xs font-body-sm text-body-sm text-on-surface-variant">
+<a class="flex items-center gap-1 hover:text-secondary transition-colors font-medium" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+<span>Back to Pipeline Registry</span>
+</a>
+<span class="text-outline-variant font-code-sm">/</span>
+<span class="hover:text-secondary transition-colors cursor-pointer">Tenders</span>
+<span class="text-outline-variant font-code-sm">/</span>
+<span class="hover:text-secondary transition-colors cursor-pointer">Active Pipeline</span>
+<span class="text-outline-variant font-code-sm">/</span>
+<span class="font-code-sm text-code-sm font-semibold text-secondary bg-surface-container-low px-2 py-0.5 rounded">TND-2026-089</span>
+</div>
+<div class="flex items-center gap-gutter-sm">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container font-code-sm text-code-sm text-on-surface">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+            Portal ID: <strong class="text-on-surface">WB-BD-9021</strong>
+</span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-low text-secondary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">cloud_sync</span>
+            UNGM Auto-Synced 4m ago
+          </span>
+</div>
+</div>
+<!-- Main Tender Title & Operational Summary Bar -->
+<div class="flex flex-col lg:flex-row lg:items-start justify-between gap-gutter-lg">
+<div class="flex flex-col gap-1.5 max-w-4xl">
+<div class="flex flex-wrap items-center gap-gutter-xs">
+<span class="font-code-md text-code-md font-semibold text-secondary bg-secondary-fixed/50 px-2.5 py-0.5 rounded">TND-2026-089</span>
+<span class="font-code-sm text-code-sm text-outline px-1.5 py-0.5 bg-surface-container rounded">RFP-2026-001</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-secondary-fixed-variant font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              PREPARATION IN PROGRESS
+            </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></span>
+              CRITICAL PRIORITY
+            </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px] text-secondary">verified_user</span>
+              Gate 3 Passed
+            </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight mt-1">
+            Enterprise Cloud ERP Modernization &amp; Financial System Integration
+          </h1>
+<!-- Procuring Entity & Core Specs Strip -->
+<div class="flex flex-wrap items-center gap-y-2 gap-x-gutter-lg pt-1 font-body-sm text-body-sm text-on-surface-variant">
+<div class="flex items-center gap-1.5 bg-surface-container-low px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[16px] text-secondary">public</span>
+<span class="font-title-md text-body-sm text-on-surface">UNDP Bangladesh Country Office</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-outline">account_tree</span>
+<span>Category:</span>
+<span class="font-medium text-on-surface">Cloud Infrastructure &amp; Bespoke ERP</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-outline">payments</span>
+<span>Total Ceiling:</span>
+<span class="font-code-sm text-code-sm font-semibold text-on-surface">$18,450,000 USD</span>
+<span class="text-label-sm text-[11px] text-outline">(Fixed + 3Y Mnt)</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-outline">cloud_upload</span>
+<span>Submission Gate:</span>
+<span class="font-medium text-on-surface">UNGM Electronic e-Gate</span>
+</div>
+</div>
+</div>
+<!-- High-Impact Urgency Countdown & Action Stack -->
+<div class="flex flex-col sm:flex-row lg:flex-col items-end gap-gutter-sm shrink-0">
+<div class="flex items-center gap-gutter-sm bg-error-container/40 p-2.5 rounded-xl">
+<div class="flex items-center justify-center w-8 h-8 rounded-lg bg-error text-on-error">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm font-bold text-on-error-container uppercase tracking-wider">Submission Deadline</span>
+<span class="flex h-2 w-2 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-error"></span>
+</span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-code-md text-code-md font-bold text-error">7d 04h 18m</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">• 10 Sep 2026, 15:00 BST</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-gutter-xs">
+<button class="flex items-center gap-1.5 px-gutter-sm py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-md text-body-sm transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+<span>Quick Actions</span>
+<span class="material-symbols-outlined text-[16px] text-outline">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-1.5 px-gutter-sm py-2 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-secondary font-title-md text-body-sm transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+<span>Run AI Audit</span>
+</button>
+<button class="flex items-center gap-1.5 px-gutter-md py-2 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-title-md text-body-sm transition-colors shadow-md">
+<span class="material-symbols-outlined text-[18px]">shield</span>
+<span>Submit for Internal Review</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Horizontal Module Navigation Tabs -->
+<div class="flex items-center gap-1 overflow-x-auto pt-2 text-body-sm">
+<a class="flex items-center gap-2 px-gutter-md py-2.5 rounded-lg bg-primary-container text-on-primary font-title-md text-body-sm shadow-sm whitespace-nowrap" href="#overview">
+<span class="material-symbols-outlined text-[18px] text-secondary-fixed">overview</span>
+<span>1. Overview &amp; AI Analysis</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
+</a>
+<a class="flex items-center gap-2 px-gutter-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors whitespace-nowrap" href="#decision-matrix">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span>2. Go/No-Go Matrix</span>
+<span class="font-code-sm text-[10px] px-1.5 py-0.5 rounded-full bg-surface-container font-semibold text-secondary">88% GO</span>
+</a>
+<a class="flex items-center gap-2 px-gutter-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors whitespace-nowrap" href="#sow-matrix">
+<span class="material-symbols-outlined text-[18px]">checklist</span>
+<span>3. SOW &amp; Clauses</span>
+<span class="font-code-sm text-[10px] px-1.5 py-0.5 rounded-full bg-surface-container font-semibold">22/24</span>
+</a>
+<a class="flex items-center gap-2 px-gutter-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors whitespace-nowrap" href="#task-board">
+<span class="material-symbols-outlined text-[18px]">view_kanban</span>
+<span>4. Task Board</span>
+<span class="font-code-sm text-[10px] px-1.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-semibold">17/20</span>
+</a>
+<a class="flex items-center gap-2 px-gutter-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors whitespace-nowrap" href="#vault">
+<span class="material-symbols-outlined text-[18px]">folder_special</span>
+<span>5. Document Vault</span>
+<span class="font-code-sm text-[10px] px-1.5 py-0.5 rounded-full bg-error-container text-on-error-container font-semibold">1 Blocker</span>
+</a>
+<a class="flex items-center gap-2 px-gutter-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors whitespace-nowrap" href="#team">
+<span class="material-symbols-outlined text-[18px]">group</span>
+<span>6. Team &amp; Capacity</span>
+<span class="font-code-sm text-[10px] px-1.5 py-0.5 rounded-full bg-surface-container font-semibold">6</span>
+</a>
+<a class="flex items-center gap-2 px-gutter-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors whitespace-nowrap" href="#approvals">
+<span class="material-symbols-outlined text-[18px]">fact_check</span>
+<span>7. Multi-Gate Approval</span>
+<span class="font-code-sm text-[10px] px-1.5 py-0.5 rounded-full bg-surface-container-low text-secondary font-semibold">Gate 3/5</span>
+</a>
+<a class="flex items-center gap-2 px-gutter-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors whitespace-nowrap" href="#audit">
+<span class="material-symbols-outlined text-[18px]">history</span>
+<span>8. Audit Trail</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Workspace Canvas (Split Layout) -->
+<div class="px-gutter-xl py-gutter-lg max-w-[1720px] mx-auto w-full">
+<div class="grid grid-cols-12 gap-gutter-lg items-start">
+<!-- LEFT COLUMN: Operations, SOW, Breakdown (Col Span 8) -->
+<div class="col-span-12 xl:col-span-8 flex flex-col gap-gutter-lg">
+<!-- 1. Submission Readiness & Gate Progress Bar Card -->
+<div class="bg-surface-container-lowest p-gutter-lg rounded-xl shadow-sm flex flex-col gap-gutter-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-gutter-sm pb-1">
+<div class="flex items-center gap-gutter-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">published_with_changes</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">Aggregate Submission Readiness</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Combined readiness index based on required bid annexures &amp; gated compliance checklists</span>
+</div>
+</div>
+<div class="flex items-center gap-gutter-md">
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-secondary leading-none">85%</span>
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Overall</span>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container font-code-sm text-code-sm text-on-surface font-semibold">17 of 20 Tasks Done</span>
+</div>
+</div>
+<!-- Multi-Segment Visual Progress Bar -->
+<div class="flex flex-col gap-2">
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden flex">
+<div class="bg-secondary h-full transition-all" style="width: 38%;" title="Technical Proposal (95%)"></div>
+<div class="bg-secondary-container h-full transition-all" style="width: 25%;" title="Financial Matrix (80%)"></div>
+<div class="bg-error h-full transition-all" style="width: 12%;" title="Statutory Docs (1 Blocker)"></div>
+<div class="bg-primary-container h-full transition-all" style="width: 10%;" title="Legal &amp; Compliance (100%)"></div>
+</div>
+<!-- Segment Legend & Micro Scores -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-gutter-sm pt-1">
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> Technical SOW
+                  </span>
+<span class="font-code-sm text-code-sm font-semibold text-secondary">95%</span>
+</div>
+<span class="font-body-sm text-[11px] text-outline mt-0.5">Architecture &amp; Migration draft</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span> Financial Matrix
+                  </span>
+<span class="font-code-sm text-code-sm font-semibold text-secondary">80%</span>
+</div>
+<span class="font-body-sm text-[11px] text-outline mt-0.5">BOQ Table awaiting CFO review</span>
+</div>
+<div class="p-2.5 rounded-lg bg-error-container/20 flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-[11px] text-error font-semibold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-error animate-ping"></span> Statutory Annex
+                  </span>
+<span class="font-code-sm text-code-sm font-semibold text-error">88%</span>
+</div>
+<span class="font-body-sm text-[11px] text-error font-medium mt-0.5">1 Mandatory Blocker</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span> Legal Terms
+                  </span>
+<span class="font-code-sm text-code-sm font-semibold text-on-surface">100%</span>
+</div>
+<span class="font-body-sm text-[11px] text-outline mt-0.5">NDA &amp; UN Integrity Charter ✓</span>
+</div>
+</div>
+</div>
+<!-- URGENT BLOCKER BANNER -->
+<div class="p-gutter-md rounded-xl bg-error-container/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-gutter-md">
+<div class="flex items-start gap-gutter-sm">
+<div class="p-2 rounded-lg bg-error text-on-error shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-body-sm font-bold text-on-error-container">Critical RFP Disqualification Risk</span>
+<span class="px-2 py-0.5 rounded-full bg-error text-on-error font-code-sm text-[10px] font-bold">REJECT IF ABSENT</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-0.5">
+                  1 Mandatory Document Missing: <strong>3-Year Audited Balance Sheet &amp; Turnover Statement</strong> certified by Top-10 Global Audit Firm. Missing Deloitte Final Partner Seal &amp; Sign-off.
+                </p>
+</div>
+</div>
+<div class="flex items-center gap-gutter-xs shrink-0 self-end sm:self-auto">
+<button class="px-gutter-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container font-title-md text-body-sm transition-colors shadow-sm">
+                Request Finance Lead
+              </button>
+<button class="px-gutter-sm py-1.5 rounded-lg bg-error text-on-error hover:bg-on-error-container font-title-md text-body-sm transition-colors shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">upload_file</span>
+<span>Upload Now</span>
+</button>
+</div>
+</div>
+</div>
+<!-- 2. AI RFP Analysis & Scope Intelligence -->
+<div class="bg-surface-container-lowest p-gutter-lg rounded-xl shadow-sm flex flex-col gap-gutter-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-gutter-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">psychology</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">AI Scope &amp; Technical Extraction Model</h2>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Synthesized from 328 pages across RFP Section IV, Technical Annex B &amp; Addendum 2</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-1 rounded bg-surface-container font-code-sm text-code-sm text-on-surface-variant">Model: RFP-Analyst-v4</span>
+<button class="p-1.5 rounded text-outline hover:text-on-surface hover:bg-surface-container transition-colors" title="Re-run AI extraction">
+<span class="material-symbols-outlined text-[18px]">sync</span>
+</button>
+</div>
+</div>
+<!-- Scope Deliverables Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-md">
+<!-- Deliverable 1 -->
+<div class="p-gutter-md rounded-xl bg-surface-container-low flex flex-col justify-between">
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-secondary uppercase tracking-wider">Core Pillar 01</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-code-sm text-[11px]">Priority: High</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">Core Ledger &amp; Sub-Ledger Migration</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Zero data loss automated migration of 14 fiscal years of legacy ERP records (approx. 42M journal vouchers) with dual-entry audit reconciliation and automated integrity verification.
+                </p>
+</div>
+<div class="flex items-center justify-between mt-3 pt-2 text-on-surface-variant font-code-sm text-code-sm">
+<span>Clause Ref: §4.2.1</span>
+<span class="text-secondary font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Scope Mapped
+                </span>
+</div>
+</div>
+<!-- Deliverable 2 -->
+<div class="p-gutter-md rounded-xl bg-surface-container-low flex flex-col justify-between">
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-secondary uppercase tracking-wider">Core Pillar 02</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-code-sm text-[11px]">Statutory</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">Automated Tax &amp; National Regulatory Compliance</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Direct API orchestration with Bangladesh National Board of Revenue (NBR) electronic VAT &amp; withholding tax filing system, generating verifiable QR-stamped invoice manifests.
+                </p>
+</div>
+<div class="flex items-center justify-between mt-3 pt-2 text-on-surface-variant font-code-sm text-code-sm">
+<span>Clause Ref: §6.1.4</span>
+<span class="text-secondary font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Architecture Verified
+                </span>
+</div>
+</div>
+<!-- Deliverable 3 -->
+<div class="p-gutter-md rounded-xl bg-surface-container-low flex flex-col justify-between">
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-secondary uppercase tracking-wider">Core Pillar 03</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-code-sm text-[11px]">Financial</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">Multi-Currency Treasury &amp; Forex Hedge Module</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Dynamic multi-tier rate synchronization with Bangladesh Bank daily published SWIFT fixings with automated real-time conversion into base currency for project reporting.
+                </p>
+</div>
+<div class="flex items-center justify-between mt-3 pt-2 text-on-surface-variant font-code-sm text-code-sm">
+<span>Clause Ref: §8.4.9</span>
+<span class="text-secondary font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Addressed in Fin. Matrix
+                </span>
+</div>
+</div>
+<!-- Deliverable 4 -->
+<div class="p-gutter-md rounded-xl bg-surface-container-low flex flex-col justify-between">
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-secondary uppercase tracking-wider">Core Pillar 04</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-code-sm text-[11px]">Mission-Critical</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">99.95% High Availability SLA &amp; Disaster Recovery</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Dual-active geographic redundancy with RPO &lt; 5 minutes, RTO &lt; 15 minutes. Automated failover validation simulated on quarterly operational cycles.
+                </p>
+</div>
+<div class="flex items-center justify-between mt-3 pt-2 text-on-surface-variant font-code-sm text-code-sm">
+<span>Clause Ref: §12.3.0</span>
+<span class="text-secondary font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> SLA Compliant
+                </span>
+</div>
+</div>
+</div>
+<!-- Specialized Compliance & Architecture Card -->
+<div class="p-gutter-md rounded-xl bg-surface-container flex flex-col gap-gutter-sm">
+<div class="flex items-center justify-between">
+<span class="font-title-md text-body-sm font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[18px]">security</span>
+                Mandatory Architecture &amp; Governance Constraints
+              </span>
+<span class="font-code-sm text-code-sm text-outline">3 Passed / 0 Breaches</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter-sm">
+<div class="p-2.5 rounded-lg bg-surface-container-lowest flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-title-md text-body-sm text-on-surface font-medium">Container Platform</span>
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant mt-1">
+                  Kubernetes (CNCF Certified) microservices deployment topology with Istio service mesh.
+                </p>
+<span class="mt-2 font-code-sm text-[10px] text-secondary font-semibold">Matched: OpenShift 4.14</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-lowest flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-title-md text-body-sm text-on-surface font-medium">Data Sovereignty</span>
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant mt-1">
+                  Tier-3 National Data Center (NDC) Kaliakair co-location strictly required. No offshore storage.
+                </p>
+<span class="mt-2 font-code-sm text-[10px] text-secondary font-semibold">Partner: NDC Local Host</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-lowest flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-title-md text-body-sm text-on-surface font-medium">Security Accreditations</span>
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant mt-1">
+                  Mandatory ISO/IEC 27001:2022 &amp; SOC-2 Type II audit certificate valid through project tenure.
+                </p>
+<span class="mt-2 font-code-sm text-[10px] text-secondary font-semibold">Verified: Cert #BSI-29091</span>
+</div>
+</div>
+<!-- Penalties & Liquidated Damages Callout -->
+<div class="p-2.5 rounded-lg bg-surface-container-high flex items-center justify-between text-body-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[18px]">gavel</span>
+<span class="font-medium text-on-surface">Liquidated Damages (LD) Threshold:</span>
+<span class="text-on-surface-variant">0.1% of contract price per calendar day delay; capped at maximum 10% contract value.</span>
+</div>
+<span class="font-code-sm text-code-sm font-semibold text-error px-2 py-0.5 rounded bg-surface-container-lowest">Max Exposure: $1.845M USD</span>
+</div>
+</div>
+</div>
+<!-- 3. Key Milestones & Critical Path Timeline -->
+<div class="bg-surface-container-lowest p-gutter-lg rounded-xl shadow-sm flex flex-col gap-gutter-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-gutter-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">route</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Critical Path &amp; Gated Countdown Timeline</h2>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sequential prerequisite steps leading to UNGM SHA-256 sealed envelope upload</span>
+</div>
+</div>
+<button class="text-secondary font-title-md text-body-sm flex items-center gap-1 hover:underline">
+<span>View Full Gantt</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+<!-- Timeline Stepper -->
+<div class="relative flex flex-col gap-gutter-md pt-2">
+<!-- Step 1 (Completed) -->
+<div class="flex items-start gap-gutter-md relative">
+<div class="flex flex-col items-center">
+<div class="w-7 h-7 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<div class="w-0.5 h-12 bg-secondary mt-1"></div>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 flex-1 pb-3">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-body-sm font-semibold text-on-surface">Pre-Bid Conference &amp; Formal Queries Cutoff</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-sm text-[10px] text-secondary font-bold">COMPLETED</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">14 Clarification inquiries formally lodged to Procurement Committee via UNGM e-portal.</span>
+</div>
+<span class="font-code-sm text-code-sm text-outline shrink-0">Aug 28, 2026</span>
+</div>
+</div>
+<!-- Step 2 (Completed) -->
+<div class="flex items-start gap-gutter-md relative -mt-3">
+<div class="flex flex-col items-center">
+<div class="w-7 h-7 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<div class="w-0.5 h-12 bg-secondary mt-1"></div>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 flex-1 pb-3">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-body-sm font-semibold text-on-surface">Formal Addendum #02 &amp; Q&amp;A Clarifications Published</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-sm text-[10px] text-secondary font-bold">COMPLETED</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">UNDP revised requirement on database licensing model (allowing BYOL). Integrated into BOQ.</span>
+</div>
+<span class="font-code-sm text-code-sm text-outline shrink-0">Sep 01, 2026</span>
+</div>
+</div>
+<!-- Step 3 (Active / Tomorrow) -->
+<div class="flex items-start gap-gutter-md relative -mt-3">
+<div class="flex flex-col items-center">
+<div class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center ring-4 ring-secondary/20 shadow-sm animate-pulse">
+<span class="material-symbols-outlined text-[16px]">hourglass_top</span>
+</div>
+<div class="w-0.5 h-12 bg-surface-container-high mt-1"></div>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 flex-1 pb-3 p-2 rounded-lg bg-surface-container-low">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-body-sm font-bold text-on-surface">Gate 4: Internal Executive Technical Review</span>
+<span class="px-2 py-0.5 rounded bg-secondary text-on-secondary font-code-sm text-[10px] font-bold">DUE TOMORROW</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Lead Architect Tariq M. to defend Solution Blueprint and SLA commitments before Review Board.</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="font-code-sm text-code-sm text-secondary font-semibold">Sep 05, 2026 (10:00 BST)</span>
+<button class="px-2.5 py-1 rounded bg-secondary text-on-secondary font-title-md text-[12px] hover:bg-secondary-container transition-colors">Join Board</button>
+</div>
+</div>
+</div>
+<!-- Step 4 (Upcoming) -->
+<div class="flex items-start gap-gutter-md relative -mt-1">
+<div class="flex flex-col items-center">
+<div class="w-7 h-7 rounded-full bg-surface-container text-outline flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">account_balance</span>
+</div>
+<div class="w-0.5 h-12 bg-surface-container-high mt-1"></div>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 flex-1 pb-3">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-body-sm font-semibold text-on-surface">CFO Financial Authorization &amp; Bank Guarantee Issuance</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-sm text-[10px] text-outline font-semibold">PENDING</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Physical courier delivery of $370,000 Bank Guarantee issued by Standard Chartered to UNDP treasury.</span>
+</div>
+<span class="font-code-sm text-code-sm text-outline shrink-0">Sep 07, 2026</span>
+</div>
+</div>
+<!-- Step 5 (Target Deadline) -->
+<div class="flex items-start gap-gutter-md relative -mt-1">
+<div class="flex flex-col items-center">
+<div class="w-7 h-7 rounded-full bg-surface-container text-outline flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 flex-1">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-body-sm font-semibold text-on-surface">Final UNGM Portal Submission &amp; SHA-256 Digital Signature</span>
+<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-code-sm text-[10px] font-bold">HARD CUTOFF</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Dual-key encryption packet locked and validated. Receipt token generated.</span>
+</div>
+<span class="font-code-sm text-code-sm text-error font-bold shrink-0">Sep 10, 2026 15:00 BST</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. Visual Evidence / Architectural Topology Section -->
+<div class="bg-surface-container-lowest p-gutter-lg rounded-xl shadow-sm flex flex-col gap-gutter-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-gutter-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">hub</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Proposed Hybrid Infrastructure Architecture</h2>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Technical Blueprint mapped directly to UNDP Annex C Deployment Mandate</span>
+</div>
+</div>
+<span class="font-code-sm text-code-sm text-outline">Attachment: Fig-4.1.png</span>
+</div>
+<div class="relative w-full h-56 rounded-xl overflow-hidden bg-surface-container flex items-center justify-center group">
+<img class="w-full h-full object-cover" data-alt="A clean, high-precision technical cloud architecture schematic illustrating an enterprise hybrid ERP migration to a certified Tier-3 National Data Center. Deep slate background with crisp electric blue and indigo connecting data streams, Kubernetes container clusters, dual-zone disaster recovery nodes, and secure API gateways in a modern, data-dense enterprise layout." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLeBx8WQAXCO7wC--W4WnAR5bIj6nD5FAH-Qotl9b2X-oP0d7RM_O8kD96XwCepApKbWHJF_elY7u3b47SSf9m6wTqq9Yr6VhPllWtYtWQtrIoDD9aSLXUhhYBm7rXlDLzUNKc7cQ7piTaiyXCpIycSTz060S0wCaE_z0E1I9VAFT1vjqRB53eqaZir2dP0rXgDUE4i8-POLhBKsaqznBBZI7SrqA6IcX7DXp1PKBblhjH607t3YU">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent flex items-end p-gutter-md">
+<div class="flex items-center justify-between w-full text-on-primary">
+<div class="flex items-center gap-2 font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span>Validated by Enterprise Cloud Review Committee (Sep 02, 2026)</span>
+</div>
+<button class="px-2.5 py-1 rounded bg-surface-container-lowest/20 hover:bg-surface-container-lowest/30 backdrop-blur-md text-on-primary font-label-sm text-label-sm font-semibold transition-colors">
+                  Expand Full Topology
+                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Vital Stats, Financials, Squad, Competitors (Col Span 4) -->
+<div class="col-span-12 xl:col-span-4 flex flex-col gap-gutter-lg">
+<!-- 1. Tender Vital Stats & Financial Instruments -->
+<div class="bg-surface-container-lowest p-gutter-lg rounded-xl shadow-sm flex flex-col gap-gutter-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">account_balance_wallet</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Financial Instruments</h2>
+</div>
+<span class="font-code-sm text-[10px] px-2 py-0.5 rounded bg-surface-container text-on-surface font-semibold">SOX Compliant</span>
+</div>
+<div class="flex flex-col gap-gutter-sm">
+<!-- Tender Fee -->
+<div class="p-3 rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Tender Dossier Fee</span>
+<span class="font-code-md text-code-md font-bold text-on-surface">$2,500 USD</span>
+</div>
+<span class="flex items-center gap-1 font-label-sm text-label-sm font-semibold text-secondary bg-surface-container-highest px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px]">check</span> Paid &amp; Verified
+              </span>
+</div>
+<!-- Bid Bond / Security -->
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline">Bid Security / Bank Guarantee (2%)</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-secondary font-code-sm text-[10px] font-semibold">IN PROGRESS</span>
+</div>
+<div class="flex items-baseline justify-between">
+<span class="font-code-md text-code-md font-bold text-on-surface">$370,000 USD</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">StanChart Reference: SCB-BG-901</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-secondary h-full rounded-full" style="width: 75%;"></div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-outline font-body-sm pt-0.5">
+<span>Issuance stage: Legal Stamp</span>
+<span>Ready Sep 07</span>
+</div>
+</div>
+<!-- Performance Guarantee -->
+<div class="p-3 rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Performance Security (On Award)</span>
+<span class="font-code-md text-code-md font-bold text-on-surface">$1,845,000 USD <span class="font-normal text-body-sm text-outline">(10%)</span></span>
+</div>
+<span class="material-symbols-outlined text-outline text-[20px]" title="Required within 14 days of award">info</span>
+</div>
+<!-- Settlement & Forex Parameters -->
+<div class="p-3 rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Settlement Currencies</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">Dual-Currency: 70% USD / 30% BDT</span>
+</div>
+<span class="font-code-sm text-code-sm text-outline">Peg: BB Fix</span>
+</div>
+</div>
+</div>
+<!-- 2. AI Bid Win Probability & Intelligence Gauge -->
+<div class="bg-surface-container-lowest p-gutter-lg rounded-xl shadow-sm flex flex-col gap-gutter-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">insights</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Win Probability &amp; Intel</h2>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container-highest text-secondary font-bold">High Confidence</span>
+</div>
+<!-- Circular Score & Match Breakdown -->
+<div class="flex items-center gap-gutter-md p-3 rounded-xl bg-surface-container-low">
+<div class="relative flex items-center justify-center shrink-0">
+<svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
+<path class="text-surface-container" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-secondary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="78, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<div class="absolute flex flex-col items-center justify-center text-center">
+<span class="font-headline-md text-headline-md font-bold text-on-surface leading-none">78%</span>
+<span class="font-label-sm text-[9px] uppercase tracking-wider text-outline">Win Ratio</span>
+</div>
+</div>
+<div class="flex flex-col gap-1.5 flex-1">
+<div>
+<div class="flex justify-between text-[11px] font-label-sm font-semibold mb-0.5">
+<span class="text-on-surface">Technical Fit</span>
+<span class="font-code-sm text-secondary">92%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 92%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[11px] font-label-sm font-semibold mb-0.5">
+<span class="text-on-surface">Experience Match</span>
+<span class="font-code-sm text-secondary">86%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 86%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[11px] font-label-sm font-semibold mb-0.5">
+<span class="text-on-surface">Pricing Viability</span>
+<span class="font-code-sm text-secondary">74%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 74%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Identified Competitors -->
+<div class="flex flex-col gap-2">
+<span class="font-label-sm text-label-sm font-bold text-outline uppercase tracking-wider">Identified Rivals in Tender</span>
+<div class="flex flex-col gap-1.5 font-body-sm text-body-sm">
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="font-medium text-on-surface">PwC Global Tech Consulting</span>
+</div>
+<span class="font-code-sm text-[11px] text-outline">High Threat • High Price</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="font-medium text-on-surface">Wipro Solutions Ltd</span>
+</div>
+<span class="font-code-sm text-[11px] text-outline">Med Threat • Offshore model</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="font-medium text-on-surface">Local Consortium (Spectrum ICT)</span>
+</div>
+<span class="font-code-sm text-[11px] text-outline">Low Tech Match • Low Price</span>
+</div>
+</div>
+</div>
+<!-- AI Tactical Strategy Tip -->
+<div class="p-3 rounded-lg bg-surface-container-high flex items-start gap-2.5">
+<span class="material-symbols-outlined text-secondary text-[20px] shrink-0 mt-0.5">tips_and_updates</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Strategic Bid Recommendation</span>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5 leading-relaxed">
+                Counter PwC and Wipro's offshore models by strongly emphasizing our verified in-country Tier-3 hosting and zero-latency local operational support.
+              </p>
+</div>
+</div>
+</div>
+<!-- 3. Assigned Bid Squad & Capacity -->
+<div class="bg-surface-container-lowest p-gutter-lg rounded-xl shadow-sm flex flex-col gap-gutter-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">groups</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Bid Core Team</h2>
+</div>
+<button class="font-label-sm text-label-sm text-secondary font-semibold hover:underline">Manage (6)</button>
+</div>
+<div class="flex flex-col gap-gutter-sm">
+<!-- Member 1 -->
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-2.5">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Corporate headshot of Sarah Jenkins, Bid Director, wearing professional navy blazer, studio lighting against neutral executive backdrop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMa5AA32NlPTtnmRTwq55T9lcI1PmXQMCO42SkNrhlNYmdLSKQO_YGT9px4eyGCdLpDOjAbmDQMUUVCb6YRqFG8wnZjGyHj5mUWRS1QISujHvTOvtxOOG7jDJGiCnpjeNz0gWV2zNcK_S8FC21OsrkR6YdrQaiWMQzgfJgeovCqok-qv5mcLckK8yUQVAJt0StJcB3r0rt5shZjwiT78xmQhJh6LfVWObS5CuDzdhDqWHSlNS3xYE">
+<div class="flex flex-col">
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Sarah Jenkins</span>
+<span class="font-body-sm text-[11px] text-outline">Bid Director &amp; Sign-off</span>
+</div>
+</div>
+<span class="font-code-sm text-[10px] px-2 py-0.5 rounded bg-surface-container text-secondary font-semibold">Primary</span>
+</div>
+<!-- Member 2 -->
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-2.5">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Portrait of Tariq Mansoor, Lead Solutions Architect, wearing modern tech company apparel with warm studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcyyUQltnT74FCwm4hgONiDgFjykIdjGr7RiIR_hkwy2UU5vgk7gfJFIikwU32nSxa6GUTfrrB-2_eiR0cC6n_NP8bdbGgTjMZ_JuMDXx_Er4hHliT22wtVAVn9efCaQGuWsDa9lcj0PMRTqgvaIXqucCioBwGjG7MxuOJxQAm85JTZ8XhjoDzVhaiO_aG1_ZBBzHwFqglNxnAwuqB2vai44pkTYn3KHEg9ieSU0pGtAFP5IxBLew">
+<div class="flex flex-col">
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Tariq Mansoor</span>
+<span class="font-body-sm text-[11px] text-outline">Lead Enterprise Architect</span>
+</div>
+</div>
+<span class="font-code-sm text-[10px] px-2 py-0.5 rounded bg-surface-container text-on-surface font-semibold">85% Workload</span>
+</div>
+<!-- Member 3 -->
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-secondary font-title-md text-body-sm font-bold flex items-center justify-center">
+                  ER
+                </div>
+<div class="flex flex-col">
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Elena Rostova</span>
+<span class="font-body-sm text-[11px] text-outline">Pricing &amp; BOQ Lead</span>
+</div>
+</div>
+<span class="font-code-sm text-[10px] px-2 py-0.5 rounded bg-surface-container text-on-surface font-semibold">60% Workload</span>
+</div>
+<!-- Member 4 -->
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface font-title-md text-body-sm font-bold flex items-center justify-center">
+                  RA
+                </div>
+<div class="flex flex-col">
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Rahim Ahmed</span>
+<span class="font-body-sm text-[11px] text-outline">Sr. DevOps &amp; Security</span>
+</div>
+</div>
+<span class="font-code-sm text-[10px] px-2 py-0.5 rounded bg-surface-container text-on-surface font-semibold">40% Workload</span>
+</div>
+</div>
+</div>
+<!-- 4. Quick Document Status Drawer -->
+<div class="bg-surface-container-lowest p-gutter-lg rounded-xl shadow-sm flex flex-col gap-gutter-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">folder_zip</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Document Checklist</h2>
+</div>
+<span class="font-code-sm text-code-sm text-secondary font-semibold">18 / 19 Valid</span>
+</div>
+<div class="flex flex-col gap-2">
+<!-- Doc 1 -->
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-secondary text-[18px] shrink-0">description</span>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-body-sm text-on-surface font-medium truncate">Technical_Proposal_v2.4.docx</span>
+<span class="font-code-sm text-[10px] text-outline">142 pages • 18.4 MB</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+</div>
+<!-- Doc 2 -->
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-secondary-container text-[18px] shrink-0">table_chart</span>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-body-sm text-on-surface font-medium truncate">Costing_Matrix_BOQ_Final.xlsx</span>
+<span class="font-code-sm text-[10px] text-outline">Under review by Elena R.</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-[18px]">pending</span>
+</div>
+<!-- Doc 3 (Blocker) -->
+<div class="p-2.5 rounded-lg bg-error-container/30 flex items-center justify-between">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-error text-[18px] shrink-0">error</span>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-body-sm text-error font-semibold truncate">Audited_Financials_3Yr.pdf</span>
+<span class="font-code-sm text-[10px] text-error">Missing Deloitte Sign-off</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-error text-[18px]">priority_high</span>
+</div>
+<!-- Doc 4 -->
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-secondary text-[18px] shrink-0">verified_user</span>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-body-sm text-on-surface font-medium truncate">ISO_27001_Certification.pdf</span>
+<span class="font-code-sm text-[10px] text-outline">Valid until Dec 2027</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+</div>
+</div>
+<button class="w-full py-2 rounded-lg bg-surface-container text-on-surface font-title-md text-body-sm hover:bg-surface-container-high transition-colors flex items-center justify-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">folder_open</span>
+<span>Open Full Document Vault</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div></main></div></body></html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary-fixed": "#dae2fd", "error-container": "#ffdad6", "on-primary-fixed-variant": "#3f465c", "surface-container-low": "#eff4ff", "on-surface": "#0b1c30", "tertiary": "#000000", "secondary": "#0051d5", "tertiary-fixed": "#eaddff", "surface": "#f8f9ff", "outline-variant": "#c6c6cd", "on-secondary": "#ffffff", "on-primary-fixed": "#131b2e", "surface-container-highest": "#d3e4fe", "background": "#f8f9ff", "on-tertiary": "#ffffff", "on-background": "#0b1c30", "inverse-surface": "#213145", "surface-container-high": "#dce9ff", "surface-container-lowest": "#ffffff", "surface-dim": "#cbdbf5", "on-tertiary-fixed": "#25005a", "primary-fixed-dim": "#bec6e0", "tertiary-container": "#25005a", "secondary-fixed-dim": "#b4c5ff", "inverse-primary": "#bec6e0", "on-error": "#ffffff", "on-primary-container": "#7c839b", "secondary-container": "#316bf3", "on-secondary-fixed": "#00174b", "on-primary": "#ffffff", "surface-variant": "#d3e4fe", "on-surface-variant": "#45464d", "on-tertiary-container": "#9863ff", "on-error-container": "#93000a", "tertiary-fixed-dim": "#d2bbff", "on-secondary-fixed-variant": "#003ea8", "primary-container": "#131b2e", "surface-tint": "#565e74", "on-secondary-container": "#fefcff", "on-tertiary-fixed-variant": "#5a00c6", "secondary-fixed": "#dbe1ff", "primary": "#000000", "outline": "#76777d", "inverse-on-surface": "#eaf1ff", "surface-bright": "#f8f9ff", "surface-container": "#e5eeff", "error": "#ba1a1a" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "sidebar-collapsed": "4.5rem", "gutter-xl": "1.5rem", "gutter-lg": "1rem", "gutter-md": "0.75rem", "sidebar-expanded": "16rem", "header-height": "3.5rem", "gutter-sm": "0.5rem", "row-gap-dense": "0.375rem", "container-padding-desktop": "1.5rem", "container-padding-mobile": "1rem", "gutter-xs": "0.25rem" }, "fontFamily": { "code-md": [ "JetBrains Mono" ], "body-sm": [ "Inter" ], "display-lg": [ "Plus Jakarta Sans" ], "label-md": [ "Inter" ], "headline-sm": [ "Plus Jakarta Sans" ], "headline-md": [ "Plus Jakarta Sans" ], "code-sm": [ "JetBrains Mono" ], "headline-lg": [ "Plus Jakarta Sans" ], "body-lg": [ "Inter" ], "title-md": [ "Inter" ], "display-lg-mobile": [ "Plus Jakarta Sans" ], "label-sm": [ "Inter" ], "body-md": [ "Inter" ] }, "fontSize": { "code-md": [ "13px", { "lineHeight": "18px", "fontWeight": "500" } ], "body-sm": [ "12px", { "lineHeight": "16px", "fontWeight": "400" } ], "display-lg": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" } ], "headline-sm": [ "16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" } ], "headline-md": [ "20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "code-sm": [ "11px", { "lineHeight": "14px", "fontWeight": "500" } ], "headline-lg": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "body-lg": [ "14px", { "lineHeight": "20px", "fontWeight": "400" } ], "title-md": [ "15px", { "lineHeight": "22px", "fontWeight": "600" } ], "display-lg-mobile": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "600" } ], "body-md": [ "13px", { "lineHeight": "18px", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-sidebar-expanded bg-[#0F172A] z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-header-height px-gutter-lg flex items-center justify-between border-b border-[#1E293B]"><div class="flex items-center gap-gutter-sm"><img alt="TenderTracker Emblem" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UFdRrwTpA7yfBlQcwn56dg-2iDPdAkp3SdfJr8ig2PALUS6n36txhkQkdYUAqzs95o9tiBbJbaVzwtYhgeGXXU46Kkmekf0w_C-KT18o0IAz4tR60Ob7jgR4JnCc8070h9klyZZqxJAN026r-FGrXIyYi4t3P6UL8mNCCsgRDJJ4KHuQFlJv0CjnJHKgAGFgfXR_PHHRD_qzBlG0NNNKiRM6jF47ndJRfOUC2RXO4K6VVioxuy7Yf0lg"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-[#FFFFFF] tracking-tight leading-none">TenderTracker</span><span class="font-label-sm text-label-sm text-[#94A3B8] uppercase mt-0.5 tracking-wider">Procurement Core</span></div></div><span class="px-1.5 py-0.5 bg-[#1E293B] text-[#93C5FD] font-label-sm text-[10px] rounded-lg font-semibold tracking-wider">v4.2</span></div><div class="px-gutter-md py-gutter-md"><div class="px-gutter-sm pb-gutter-xs text-[10px] font-label-sm font-semibold tracking-wider uppercase text-[#64748B]">Command Navigation</div><nav class="space-y-0.5" data-active-classes="bg-[#1E293B] text-[#FFFFFF] font-semibold"><a aria-current="page" class="flex items-center justify-between px-gutter-sm py-2 rounded-lg transition-colors bg-[#1E293B] text-[#FFFFFF] font-semibold" data-path="dashboard" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">dashboard</span><span class="font-body-md text-body-md">Dashboard</span></div><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span></a><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="my-tasks" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">check_circle</span><span class="font-body-md text-body-md">My Tasks</span></div><span class="px-1.5 py-0.2 rounded-full bg-[#1E293B] text-[#F8FAFC] font-code-sm text-code-sm font-semibold">18</span></a><div><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="all-tenders" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">folder_managed</span><span class="font-body-md text-body-md">Tenders</span></div><span class="material-symbols-outlined text-[16px]">expand_more</span></a><div class="pl-7 pr-gutter-xs py-1 space-y-0.5"><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="all-tenders" href="#"><span>All Tenders</span><span class="font-code-sm text-[11px] text-[#64748B]">142</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="active-tenders" href="#"><span>Active Pipeline</span><span class="font-code-sm text-[11px] text-secondary">24</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="due-soon-tenders" href="#"><span>Due Soon</span><span class="px-1.5 py-0.2 rounded-full bg-error-container text-on-error-container font-code-sm text-[10px] font-semibold">5</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="submitted-tenders" href="#"><span>Submitted</span><span class="font-code-sm text-[11px] text-[#64748B]">68</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="completed-tenders" href="#"><span>Completed</span><span class="font-code-sm text-[11px] text-[#64748B]">45</span></a></div></div><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="calendar" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">calendar_month</span><span class="font-body-md text-body-md">Calendar</span></div><div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-error animate-ping"></span><span class="font-code-sm text-code-sm text-error">3 Due</span></div></a><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="documents" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">fact_check</span><span class="font-body-md text-body-md">Documents</span></div><span class="px-1.5 py-0.2 rounded-full bg-surface-container-high text-on-surface font-code-sm text-[10px]">Compliance</span></a><a class="flex items-center px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="team" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">groups</span><span class="font-body-md text-body-md">Team &amp; Workload</span></div></a><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="reports" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">query_stats</span><span class="font-body-md text-body-md">Reports &amp; Win/Loss</span></div></a></nav></div></div><div class="px-gutter-md pb-gutter-lg"><div class="p-gutter-sm rounded-xl bg-[#1E293B] mb-gutter-sm"><div class="flex items-center justify-between mb-1.5"><span class="font-label-sm text-label-sm text-[#94A3B8]">Pipeline Health</span><span class="font-code-sm text-code-sm text-[#F8FAFC]">84%</span></div><div class="w-full bg-[#0F172A] h-1.5 rounded-full overflow-hidden"><div class="bg-secondary h-full rounded-full w-4/5"></div></div></div><nav class="space-y-0.5" data-active-classes="bg-[#1E293B] text-[#FFFFFF]"><a class="flex items-center gap-gutter-sm px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-[18px]">settings</span><span class="font-body-md text-body-md">Settings</span></a></nav></div></aside><div class="pl-sidebar-expanded"><header class="fixed top-0 left-sidebar-expanded right-0 h-header-height bg-surface-container-lowest/95 backdrop-blur-xl border-b border-outline-variant/30 z-40 flex items-center justify-between px-gutter-xl"><div class="flex items-center gap-gutter-lg flex-1 max-w-2xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span><input class="w-full pl-10 pr-16 py-1.5 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline border-none focus:outline-none focus:ring-1 focus:ring-secondary" placeholder="Search RFP, Tender ID, Organization, or Team member... (Ctrl + K)" type="text"><div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-outline font-code-sm text-[10px] bg-surface-container px-1.5 py-0.5 rounded"><kbd>⌘</kbd><kbd>K</kbd></div></div><span class="px-2.5 py-1 rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm font-semibold tracking-wider whitespace-nowrap">ENTERPRISE</span></div><div class="flex items-center gap-gutter-md"><button class="flex items-center gap-1.5 px-gutter-md py-1.5 bg-secondary text-on-secondary rounded-lg font-title-md text-body-sm hover:bg-secondary-container transition-colors shadow-sm"><span class="material-symbols-outlined text-[18px]">add</span><span>New Tender</span></button><button class="flex items-center gap-1.5 px-gutter-sm py-1.5 bg-surface-container rounded-lg text-on-surface font-title-md text-body-sm hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-secondary text-[18px]">auto_awesome</span><span class="font-label-md text-label-md">AI Assistant</span></button><div class="h-5 w-px bg-outline-variant/50 mx-gutter-xs"></div><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" title="8 new alerts"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-error"></span></span></button><div class="flex items-center gap-gutter-sm pl-gutter-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-surface-container" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvO9pEUYMDIH04_VDYu4hkNa8H2FyGPJH4xzNCSHH-CWmTWgqeLqyq4GNvtg8AgqMrpYLn6bisnAQoDKUILXXpVWvNuW0FOPBEieaGt1ug3D4s7NLAGKR8uFMOExPiT6RdyWBYNdyjONydDVELp2RxpTGWxabDd2hy7LW_ED5m1vR_rKmzX8lg9eaBqYjDPLRRT3IxNo9kr-TZRGZp8v6ktQgTBmxkIcTb2FxaVisN1eTLKnCmvp8"><div class="flex flex-col text-left"><span class="font-title-md text-body-sm text-on-surface font-semibold leading-tight">Sarah Jenkins</span><span class="font-label-sm text-[11px] text-on-surface-variant leading-tight">Head of Bidding &amp; Ops</span></div></div></div></header><main class="relative pt-header-height min-h-screen bg-surface"><div class="flex flex-col w-full">
+<!-- Command Header & Breadcrumb Ribbon -->
+<div class="px-gutter-xl pt-gutter-lg pb-gutter-md flex flex-col gap-gutter-sm">
+<div class="flex flex-wrap items-center justify-between gap-gutter-md">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Command</span>
+<span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold uppercase tracking-wider">Calendar &amp; Deadlines</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-code-sm text-code-sm font-semibold ml-2">Section 39/83 Compliance</span>
+</div>
+<div class="flex items-baseline gap-3 mt-1">
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">Tender Lifecycle Schedule</h1>
+<span class="font-code-sm text-code-sm text-on-surface-variant bg-surface-container-low px-2 py-0.5 rounded-md">BST (UTC+6) Sovereign Lock</span>
+</div>
+</div>
+<!-- Action Bar Controls -->
+<div class="flex flex-wrap items-center gap-gutter-sm">
+<div class="flex items-center bg-surface-container-low p-0.5 rounded-lg shadow-sm">
+<button class="px-3 py-1.5 rounded-lg text-on-surface font-label-md text-label-md hover:bg-surface-container-highest transition-colors">Today</button>
+<div class="w-px h-4 bg-outline-variant/40 mx-0.5"></div>
+<div class="flex items-center p-0.5 bg-surface-container-lowest rounded shadow-inner">
+<button class="px-3 py-1 rounded bg-secondary text-on-secondary font-label-md text-label-md font-medium shadow-sm">Month</button>
+<button class="px-3 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors">Week</button>
+<button class="px-3 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors">Agenda</button>
+</div>
+</div>
+<!-- Filter Dropdown Trigger -->
+<div class="relative">
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-lowest text-on-surface rounded-lg font-body-sm text-body-sm hover:bg-surface-container-low shadow-sm transition-all" id="filterMenuButton">
+<span class="material-symbols-outlined text-[18px] text-secondary">tune</span>
+<span class="font-title-md text-body-sm">All Bids &amp; Pipeline</span>
+<span class="material-symbols-outlined text-[16px] text-outline">expand_more</span>
+</button>
+</div>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-lowest text-on-surface rounded-lg font-body-sm text-body-sm hover:bg-surface-container-low shadow-sm transition-colors">
+<span class="material-symbols-outlined text-[18px] text-[#0051d5]">sync</span>
+<span class="font-label-md text-label-md">Sync Outlook/Google</span>
+</button>
+<button class="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#0F172A] text-[#FFFFFF] rounded-lg font-title-md text-body-sm hover:bg-[#1E293B] shadow-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span class="font-label-md text-label-md font-semibold">New Calendar Event</span>
+</button>
+</div>
+</div>
+<!-- Mini Summary Ribbon Metrics Bar -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter-md mt-gutter-xs">
+<div class="flex items-center gap-3.5 p-3 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+<div class="w-10 h-10 rounded-xl bg-error-container/60 text-error flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">timer</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Submission Deadlines (This Month)</span>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-sm text-headline-sm text-error font-bold font-code-md">6 Tenders</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant font-semibold">($34.2M)</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3.5 p-3 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+<div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">help_center</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Clarification Inquiries Closing</span>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold font-code-md">4 Cutoffs</span>
+<span class="font-label-sm text-label-sm text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded font-medium">Next 10 Days</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3.5 p-3 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">video_camera_front</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Pre-Bid Meetings / Conferences</span>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold font-code-md">3 Scheduled</span>
+<span class="font-label-sm text-label-sm text-secondary bg-surface-container px-1.5 py-0.2 rounded font-medium">Mandatory Attendance</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3.5 p-3 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+<div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-900 flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">verified</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Executive Gate Reviews</span>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold font-code-md">5 Board Sign-offs</span>
+<span class="font-label-sm text-label-sm text-purple-800 bg-purple-50 px-1.5 py-0.2 rounded font-medium">Gate 3 &amp; 4</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Main 2-Column Enterprise Command Grid -->
+<div class="px-gutter-xl pb-gutter-xl grid grid-cols-1 xl:grid-cols-12 gap-gutter-lg items-start">
+<!-- LEFT COLUMN: Calendar Month View (approx 70% / 8.5 Cols) -->
+<div class="xl:col-span-8 flex flex-col gap-gutter-md">
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-gutter-md flex flex-col gap-gutter-md">
+<!-- Month Navigator & Timezone Strip -->
+<div class="flex flex-wrap items-center justify-between gap-gutter-md pb-gutter-xs bg-surface-container-low/50 p-3 rounded-lg">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container-highest shadow-sm transition-colors" title="Previous Month">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-lowest rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-secondary">calendar_today</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">September 2026</span>
+</div>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container-highest shadow-sm transition-colors" title="Next Month">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+<div class="hidden sm:flex items-center gap-2 pl-2">
+<span class="inline-flex w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Standard Bidding Cycle Active</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container rounded-md">
+<span class="material-symbols-outlined text-[15px] text-secondary">schedule</span>
+<span class="font-code-sm text-code-sm font-semibold text-on-surface">BST (UTC+6)</span>
+<span class="text-[11px] text-on-surface-variant font-body-sm">Official Bidding Timezone</span>
+</div>
+<button class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant" title="Grid Preferences">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Legend Categorization Ribbon -->
+<div class="flex flex-wrap items-center gap-gutter-sm text-body-sm">
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-50 text-red-700">
+<span class="w-2 h-2 rounded-full bg-red-600"></span>
+<span class="font-label-sm text-[11px] font-semibold">Critical Bid Lodgment (Red)</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-50 text-amber-800">
+<span class="w-2 h-2 rounded-full bg-amber-600"></span>
+<span class="font-label-sm text-[11px] font-semibold">Clarification &amp; Pre-Bid (Amber)</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+<span class="w-2 h-2 rounded-full bg-blue-600"></span>
+<span class="font-label-sm text-[11px] font-semibold">Internal Review &amp; Gate (Blue)</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800">
+<span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+<span class="font-label-sm text-[11px] font-semibold">Opening &amp; Award Session (Green)</span>
+</div>
+</div>
+<!-- Calendar Month High-Density Grid (Mon to Sun) -->
+<div class="w-full overflow-x-auto">
+<div class="min-w-[760px]">
+<!-- Day of Week Headers -->
+<div class="grid grid-cols-7 gap-1 pb-2">
+<div class="py-1.5 text-center font-label-sm text-label-sm font-semibold text-on-surface-variant bg-surface-container-low rounded">MON</div>
+<div class="py-1.5 text-center font-label-sm text-label-sm font-semibold text-on-surface-variant bg-surface-container-low rounded">TUE</div>
+<div class="py-1.5 text-center font-label-sm text-label-sm font-semibold text-on-surface-variant bg-surface-container-low rounded">WED</div>
+<div class="py-1.5 text-center font-label-sm text-label-sm font-semibold text-on-surface-variant bg-surface-container-low rounded">THU</div>
+<div class="py-1.5 text-center font-label-sm text-label-sm font-semibold text-on-surface-variant bg-surface-container-low rounded">FRI</div>
+<div class="py-1.5 text-center font-label-sm text-label-sm font-semibold text-[#64748B] bg-surface-container-low/70 rounded">SAT</div>
+<div class="py-1.5 text-center font-label-sm text-label-sm font-semibold text-[#64748B] bg-surface-container-low/70 rounded">SUN</div>
+</div>
+<!-- Calendar Cells Container (5 Weeks for Sept 2026) -->
+<div class="grid grid-cols-7 gap-1.5">
+<!-- Week 1: Aug 31 - Sep 6 -->
+<!-- Aug 31 (Prev month) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-low/40 flex flex-col gap-1 opacity-60">
+<span class="font-code-sm text-code-sm text-outline font-medium">31</span>
+</div>
+<!-- Sep 01 -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">01</span>
+</div>
+<!-- Sep 02 (Public Bid Opening Awarded) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">02</span>
+<div class="p-1 rounded bg-emerald-50 text-emerald-800 text-[11px] font-body-sm leading-tight flex flex-col gap-0.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-[10px] font-bold uppercase text-emerald-900 tracking-wider">Opening Session</span>
+<span class="material-symbols-outlined text-[12px] text-emerald-700">verified</span>
+</div>
+<span class="font-medium text-emerald-950 truncate">MoH EMR Bid Opening</span>
+<span class="font-code-sm text-[10px] text-emerald-700 font-semibold">Awarded ✓</span>
+</div>
+</div>
+<!-- Sep 03 (TODAY) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-secondary/5 shadow-md flex flex-col gap-1 ring-2 ring-secondary/50 relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-code-sm text-code-sm text-secondary font-bold">03</span>
+<span class="px-1.5 py-0.2 rounded-full bg-secondary text-on-secondary font-label-sm text-[9px] font-bold uppercase tracking-wider">Today</span>
+</div>
+<div class="p-1 rounded bg-surface-container-lowest text-on-surface text-[11px] font-body-sm shadow-sm flex flex-col gap-0.5">
+<span class="font-label-sm text-[10px] text-secondary font-semibold">Pre-Bid Dry Run</span>
+<span class="text-on-surface text-[10px] leading-tight">ICT Div Cyber Security prep sync</span>
+</div>
+</div>
+<!-- Sep 04 (Pre-bid ICT) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">04</span>
+<div class="p-1 rounded bg-amber-50 text-amber-900 text-[11px] font-body-sm leading-tight flex flex-col gap-0.5">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-amber-700">groups</span>
+<span class="font-code-sm text-[10px] font-semibold text-amber-800">11:00 BST</span>
+</div>
+<span class="font-medium truncate text-amber-950">ICT Cyber Security Pre-Bid Virtual</span>
+</div>
+</div>
+<!-- Sep 05 (Gate 4 Sign-Off) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">05</span>
+<div class="p-1 rounded bg-blue-50 text-blue-900 text-[11px] font-body-sm leading-tight flex flex-col gap-0.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-[10px] font-bold text-blue-800">GATE 4 SIGN-OFF</span>
+<span class="font-code-sm text-[10px] text-blue-700">15:00</span>
+</div>
+<span class="font-medium text-blue-950 truncate">Board: UNDP ERP Submission</span>
+<span class="font-code-sm text-[9px] text-blue-600">S. Jenkins / T. Mansoor</span>
+</div>
+</div>
+<!-- Sep 06 (Weekend) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-low/30 flex flex-col gap-1">
+<span class="font-code-sm text-code-sm text-outline font-medium">06</span>
+</div>
+<!-- Week 2: Sep 7 - Sep 13 -->
+<!-- Sep 07 -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">07</span>
+<div class="p-1 rounded bg-surface-container-low text-on-surface text-[10px] font-body-sm">
+<span class="font-medium text-on-surface-variant">Cost Model Final Polish</span>
+</div>
+</div>
+<!-- Sep 08 (Clarification Cutoff) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">08</span>
+<div class="p-1 rounded bg-amber-50 text-amber-900 text-[11px] font-body-sm leading-tight flex flex-col gap-0.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-[9px] font-bold text-amber-800 uppercase">Q&amp;A Cutoff</span>
+<span class="font-code-sm text-[10px] text-amber-700">23:59</span>
+</div>
+<span class="font-medium text-amber-950 truncate">UNDP ERP Clarification Portal</span>
+</div>
+</div>
+<!-- Sep 09 (Swift BG Verification) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">09</span>
+<div class="p-1 rounded bg-blue-50 text-blue-900 text-[11px] font-body-sm leading-tight flex flex-col gap-0.5">
+<span class="font-label-sm text-[9px] font-bold text-blue-800 uppercase">Legal &amp; Guarantee</span>
+<span class="font-medium text-blue-950 truncate">Swift Guarantee Lock</span>
+<span class="font-code-sm text-[9px] text-blue-600">Elena Rostova</span>
+</div>
+</div>
+<!-- Sep 10 (CRITICAL SUBMISSION - UNDP) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-red-50/70 shadow-sm flex flex-col gap-1 ring-1 ring-red-300 hover:bg-red-50 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-code-sm text-code-sm text-error font-bold">10</span>
+<span class="flex h-2 w-2 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-error"></span>
+</span>
+</div>
+<div class="p-1.5 rounded bg-error text-on-error text-[11px] font-body-sm leading-tight flex flex-col gap-0.5 shadow-sm">
+<div class="flex items-center justify-between font-code-sm text-[10px]">
+<span class="font-bold">17:00 BST</span>
+<span class="bg-red-900/60 px-1 rounded text-[9px] font-bold">HIGH</span>
+</div>
+<span class="font-bold text-white truncate text-[11px]">TND-2026-089 UNDP ERP</span>
+<span class="font-code-sm text-[10px] text-red-100">$18.45M Submission</span>
+</div>
+</div>
+<!-- Sep 11 -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">11</span>
+<div class="p-1 rounded bg-surface-container-low text-on-surface text-[10px]">
+<span>Post-Bid Audit Archival</span>
+</div>
+</div>
+<!-- Sep 12 (ADB Clarifications) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">12</span>
+<div class="p-1 rounded bg-amber-50 text-amber-900 text-[11px] font-body-sm leading-tight flex flex-col gap-0.5">
+<span class="font-label-sm text-[9px] font-bold text-amber-800">ADB SMART HIGHWAY</span>
+<span class="text-amber-950 font-medium truncate">Clarification Close</span>
+</div>
+</div>
+<!-- Sep 13 (Weekend) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-low/30 flex flex-col gap-1">
+<span class="font-code-sm text-code-sm text-outline font-medium">13</span>
+</div>
+<!-- Week 3: Sep 14 - Sep 20 -->
+<!-- Sep 14 -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">14</span>
+<div class="p-1 rounded bg-surface-container-low text-on-surface text-[10px]">
+<span>WB Enclosure Assembly</span>
+</div>
+</div>
+<!-- Sep 15 (WB-2026-042 Submission) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-red-50/70 shadow-sm flex flex-col gap-1 ring-1 ring-red-300 hover:bg-red-50 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-code-sm text-code-sm text-error font-bold">15</span>
+<span class="material-symbols-outlined text-[14px] text-error">priority_high</span>
+</div>
+<div class="p-1.5 rounded bg-error text-on-error text-[11px] font-body-sm leading-tight flex flex-col gap-0.5 shadow-sm">
+<div class="flex items-center justify-between font-code-sm text-[10px]">
+<span class="font-bold">14:00 BST</span>
+<span class="bg-red-900/60 px-1 rounded text-[9px] font-bold">WB</span>
+</div>
+<span class="font-bold text-white truncate text-[11px]">WB-2026-042 Financial Inclusion</span>
+<span class="font-code-sm text-[10px] text-red-100">$9.2M Due</span>
+</div>
+</div>
+<!-- Sep 16 -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">16</span>
+</div>
+<!-- Sep 17 -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">17</span>
+</div>
+<!-- Sep 18 (Gate 3 Decision) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">18</span>
+<div class="p-1 rounded bg-blue-50 text-blue-900 text-[11px] font-body-sm leading-tight flex flex-col gap-0.5">
+<span class="font-label-sm text-[9px] font-bold text-blue-800 uppercase">Gate 3 Go/No-Go</span>
+<span class="font-medium text-blue-950 truncate">National ID Expansion</span>
+<span class="font-code-sm text-[9px] text-blue-600">Committee Panel</span>
+</div>
+</div>
+<!-- Sep 19 (Weekend) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-low/30 flex flex-col gap-1">
+<span class="font-code-sm text-code-sm text-outline font-medium">19</span>
+</div>
+<!-- Sep 20 (Weekend) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-low/30 flex flex-col gap-1">
+<span class="font-code-sm text-code-sm text-outline font-medium">20</span>
+</div>
+<!-- Week 4: Sep 21 - Sep 27 -->
+<!-- Sep 21 -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">21</span>
+</div>
+<!-- Sep 22 -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">22</span>
+</div>
+<!-- Sep 23 -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">23</span>
+<div class="p-1 rounded bg-surface-container-low text-on-surface text-[10px]">
+<span>BB Bank Bid Bond Check</span>
+</div>
+</div>
+<!-- Sep 24 (BB-2026-015 Submission) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-red-50/70 shadow-sm flex flex-col gap-1 ring-1 ring-red-300 hover:bg-red-50 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-code-sm text-code-sm text-error font-bold">24</span>
+<span class="material-symbols-outlined text-[14px] text-error">notification_important</span>
+</div>
+<div class="p-1.5 rounded bg-error text-on-error text-[11px] font-body-sm leading-tight flex flex-col gap-0.5 shadow-sm">
+<div class="flex items-center justify-between font-code-sm text-[10px]">
+<span class="font-bold">15:30 BST</span>
+<span class="bg-red-900/60 px-1 rounded text-[9px] font-bold">CRITICAL</span>
+</div>
+<span class="font-bold text-white truncate text-[11px]">BB-2026-015 Bangladesh Bank</span>
+<span class="font-code-sm text-[10px] text-red-100">Core Banking ($12.0M)</span>
+</div>
+</div>
+<!-- Sep 25 -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">25</span>
+</div>
+<!-- Sep 26 (Weekend) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-low/30 flex flex-col gap-1">
+<span class="font-code-sm text-code-sm text-outline font-medium">26</span>
+</div>
+<!-- Sep 27 (Weekend) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-low/30 flex flex-col gap-1">
+<span class="font-code-sm text-code-sm text-outline font-medium">27</span>
+</div>
+<!-- Week 5: Sep 28 - Oct 04 -->
+<!-- Sep 28 -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">28</span>
+</div>
+<!-- Sep 29 (Roads & Highways Technical Proposal Opening) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">29</span>
+<div class="p-1 rounded bg-emerald-50 text-emerald-800 text-[11px] font-body-sm leading-tight flex flex-col gap-0.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-[9px] font-bold uppercase text-emerald-900">Bid Opening</span>
+<span class="font-code-sm text-[9px] text-emerald-700">11:30</span>
+</div>
+<span class="font-medium text-emerald-950 truncate">Technical Opening: Roads &amp; Hwy</span>
+<span class="font-code-sm text-[9px] text-emerald-700">Physical Protocol Room 4</span>
+</div>
+</div>
+<!-- Sep 30 -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-1 hover:bg-surface-container-low/30 transition-colors">
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">30</span>
+<div class="p-1 rounded bg-surface-container-low text-on-surface text-[10px]">
+<span>Quarterly Bidding Close</span>
+</div>
+</div>
+<!-- Oct 01 (Next Month) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-low/40 flex flex-col gap-1 opacity-60">
+<span class="font-code-sm text-code-sm text-outline font-medium">01</span>
+</div>
+<!-- Oct 02 (Next Month) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-low/40 flex flex-col gap-1 opacity-60">
+<span class="font-code-sm text-code-sm text-outline font-medium">02</span>
+</div>
+<!-- Oct 03 (Next Month) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-low/40 flex flex-col gap-1 opacity-60">
+<span class="font-code-sm text-code-sm text-outline font-medium">03</span>
+</div>
+<!-- Oct 04 (Next Month) -->
+<div class="min-h-[105px] p-1.5 rounded-lg bg-surface-container-low/40 flex flex-col gap-1 opacity-60">
+<span class="font-code-sm text-code-sm text-outline font-medium">04</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Summary Footer Info -->
+<div class="flex flex-wrap items-center justify-between text-body-sm text-on-surface-variant pt-2 border-t border-surface-container-low">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary">info</span>
+<span class="text-[12px]">Deadlines lock strictly at portal server clocks. Auto-syncing with central procurement repositories.</span>
+</div>
+<span class="font-code-sm text-[11px] text-outline">Last calendar synchronization: 4 mins ago</span>
+</div>
+</div>
+<!-- Historical Velocity & Submission Load Bar Chart (Section 83 Visual) -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-gutter-md flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">equalizer</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Q3/Q4 Lodgment Workload Distribution</h3>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Tenders by Critical Lodgment Week</span>
+</div>
+<!-- Inline SVG Multi-Bar Load Chart -->
+<div class="w-full h-32 flex items-end justify-between gap-3 pt-4 px-2">
+<div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+<div class="text-[11px] font-code-sm font-semibold text-on-surface-variant">2 Bids</div>
+<div class="w-full bg-surface-container-high rounded-t hover:bg-secondary transition-colors" style="height: 35%;"></div>
+<span class="font-code-sm text-[10px] text-outline">W1 (Sep 1-6)</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+<div class="text-[11px] font-code-sm font-bold text-error">4 Bids</div>
+<div class="w-full bg-error rounded-t hover:opacity-90 transition-opacity" style="height: 75%;"></div>
+<span class="font-code-sm text-[10px] text-on-surface font-semibold">W2 (Sep 7-13)</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+<div class="text-[11px] font-code-sm font-semibold text-secondary">3 Bids</div>
+<div class="w-full bg-secondary-container rounded-t hover:bg-secondary transition-colors" style="height: 55%;"></div>
+<span class="font-code-sm text-[10px] text-outline">W3 (Sep 14-20)</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+<div class="text-[11px] font-code-sm font-semibold text-on-surface-variant">2 Bids</div>
+<div class="w-full bg-surface-container-high rounded-t hover:bg-secondary transition-colors" style="height: 38%;"></div>
+<span class="font-code-sm text-[10px] text-outline">W4 (Sep 21-27)</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+<div class="text-[11px] font-code-sm font-semibold text-on-surface-variant">1 Bid</div>
+<div class="w-full bg-surface-container-high rounded-t hover:bg-secondary transition-colors" style="height: 20%;"></div>
+<span class="font-code-sm text-[10px] text-outline">W5 (Sep 28-30)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Upcoming Deadlines & Operational Agenda (approx 30% / 3.5-4 Cols) -->
+<div class="xl:col-span-4 flex flex-col gap-gutter-md">
+<!-- 1. Critical Submission Countdown Spotlight Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-md p-gutter-md flex flex-col gap-4 relative overflow-hidden ring-1 ring-error/30">
+<div class="absolute top-0 right-0 w-32 h-32 bg-error/5 rounded-bl-full pointer-events-none"></div>
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>
+            Critical Countdown
+          </span>
+<span class="font-code-sm text-code-sm text-error font-bold">Priority #1</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-code-md text-code-md font-bold text-on-surface">TND-2026-089</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-[10px]">UNDP</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold mt-0.5">Enterprise ERP System Implementation</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Final Submission Deadline: Sep 10, 2026 at 17:00 BST</p>
+</div>
+<!-- Real-time Dials Display -->
+<div class="grid grid-cols-3 gap-2 text-center py-1">
+<div class="p-2.5 rounded-xl bg-surface-container-low flex flex-col items-center">
+<span class="font-display-lg text-display-lg text-error font-bold leading-none">07</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant uppercase mt-1 tracking-wider font-semibold">Days</span>
+</div>
+<div class="p-2.5 rounded-xl bg-surface-container-low flex flex-col items-center">
+<span class="font-display-lg text-display-lg text-error font-bold leading-none">04</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant uppercase mt-1 tracking-wider font-semibold">Hours</span>
+</div>
+<div class="p-2.5 rounded-xl bg-surface-container-low flex flex-col items-center">
+<span class="font-display-lg text-display-lg text-error font-bold leading-none">28</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant uppercase mt-1 tracking-wider font-semibold">Mins</span>
+</div>
+</div>
+<!-- Progress Elapsed Bar -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-[11px] font-label-sm">
+<span class="text-on-surface-variant font-medium">Bidding Window Elapsed</span>
+<span class="font-code-sm font-bold text-error">75% (21/28 Days)</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-error h-full rounded-full w-3/4"></div>
+</div>
+</div>
+<!-- Action Links -->
+<div class="flex items-center gap-2 pt-1">
+<a class="flex-1 py-2 px-3 text-center rounded-lg bg-secondary text-on-secondary font-title-md text-body-sm font-semibold hover:bg-secondary-container transition-colors shadow-sm" href="#">
+            Submission Workspace
+          </a>
+<a class="py-2 px-3 rounded-lg bg-surface-container-low text-on-surface font-title-md text-body-sm font-medium hover:bg-surface-container-highest transition-colors flex items-center justify-center" href="#" title="Pre-Submission Checklist">
+<span class="material-symbols-outlined text-[18px]">checklist</span>
+</a>
+</div>
+</div>
+<!-- 2. Upcoming Schedule (Next 7 Days) Agenda Stream -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-gutter-md flex flex-col gap-3">
+<div class="flex items-center justify-between border-b border-surface-container pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">event_upcoming</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Upcoming Schedule</h3>
+</div>
+<span class="font-label-sm text-[11px] text-secondary font-semibold bg-secondary/10 px-2 py-0.5 rounded-full">Next 7 Days</span>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Event 1: Tomorrow Sep 04 -->
+<div class="p-3 rounded-xl bg-surface-container-low/60 hover:bg-surface-container-low transition-colors flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-code-sm text-[11px] font-bold">Tomorrow, Sep 04</span>
+<span class="font-code-sm text-[11px] text-amber-800 font-semibold">11:00 BST</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-body-md text-on-surface font-semibold">Pre-Bid Conference (Virtual)</span>
+<span class="text-[12px] text-on-surface-variant">ICT Division Cyber Security Platform</span>
+</div>
+<div class="flex items-center gap-3 text-[11px] text-on-surface-variant font-label-sm pt-1">
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[14px]">videocam</span>
+<span>Zoom Room #912</span>
+</div>
+<span class="text-outline">•</span>
+<span>14 Questions Logged</span>
+</div>
+</div>
+<!-- Event 2: Sep 05 -->
+<div class="p-3 rounded-xl bg-surface-container-low/60 hover:bg-surface-container-low transition-colors flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-md bg-blue-100 text-blue-900 font-code-sm text-[11px] font-bold">Sat, Sep 05</span>
+<span class="font-code-sm text-[11px] text-blue-800 font-semibold">15:00 BST</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-body-md text-on-surface font-semibold">Executive Board Review Sign-Off</span>
+<span class="text-[12px] text-on-surface-variant">Gate 4 Final Pricing Clearance</span>
+</div>
+<div class="flex items-center gap-3 text-[11px] text-on-surface-variant font-label-sm pt-1">
+<span class="text-blue-800 font-medium">Boardroom A &amp; MS Teams</span>
+<span class="text-outline">•</span>
+<span class="font-medium">Sarah J. &amp; CFO Presenting</span>
+</div>
+</div>
+<!-- Event 3: Sep 08 -->
+<div class="p-3 rounded-xl bg-surface-container-low/60 hover:bg-surface-container-low transition-colors flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-code-sm text-[11px] font-bold">Tue, Sep 08</span>
+<span class="font-code-sm text-[11px] text-amber-800 font-semibold">23:59 BST</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-body-md text-on-surface font-semibold">Clarification Cutoff (UNGM Portal)</span>
+<span class="text-[12px] text-on-surface-variant">TND-2026-089 (UNDP ERP)</span>
+</div>
+<div class="flex items-center gap-3 text-[11px] text-on-surface-variant font-label-sm pt-1">
+<span class="text-amber-800 font-medium">18 Inquiries Lodged</span>
+<span class="text-outline">•</span>
+<span>Portal Closes Electronically</span>
+</div>
+</div>
+<!-- Event 4: Sep 10 -->
+<div class="p-3 rounded-xl bg-error-container/30 hover:bg-error-container/50 transition-colors flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-md bg-error text-on-error font-code-sm text-[11px] font-bold">Thu, Sep 10</span>
+<span class="font-code-sm text-[11px] text-error font-bold">17:00 BST</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-body-md text-on-surface font-bold">Final Portal Lodgment (UNDP BD)</span>
+<span class="text-[12px] text-on-surface-variant">Encrypted Technical &amp; Financial Packets</span>
+</div>
+<div class="flex items-center gap-3 text-[11px] text-on-surface-variant font-label-sm pt-1">
+<span class="text-error font-semibold">Owner: Sarah Jenkins</span>
+<span class="text-outline">•</span>
+<span class="text-on-surface">Dual-Sign Swift Required</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. Calendar Feed Subscriptions & Enterprise Integration -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-gutter-md flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">rss_feed</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Calendar Feed Subscriptions</h3>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">lock</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Export an encrypted WebCal / iCal token to sync real-time bidding events directly into Outlook, Apple Calendar, or Google Workspace.
+        </p>
+<!-- Feed URL with Copy Action -->
+<div class="flex items-center gap-1.5 p-1.5 bg-surface-container-low rounded-lg">
+<span class="material-symbols-outlined text-[16px] text-outline ml-1">link</span>
+<input class="w-full bg-transparent border-none text-[11px] font-code-sm text-on-surface focus:outline-none select-all" id="webcalUrlInput" readonly="" type="text" value="webcal://app.tendertracker.int/v4/feeds/cal-s83-9a4f21e0.ics">
+<button class="px-2.5 py-1 bg-surface-container-lowest text-on-surface hover:bg-surface-container-highest rounded text-[11px] font-label-sm font-semibold transition-colors shadow-sm flex items-center gap-1" id="copyUrlBtn">
+<span class="material-symbols-outlined text-[13px]">content_copy</span>
+<span id="copyText">Copy</span>
+</button>
+</div>
+<!-- Selective Filter Checkboxes -->
+<div class="flex flex-col gap-2 pt-1">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase font-semibold">Feed Event Inclusions:</span>
+<label class="flex items-center gap-2.5 cursor-pointer text-body-sm">
+<input checked="" class="rounded border-outline text-secondary focus:ring-secondary w-4 h-4" type="checkbox">
+<span class="text-on-surface font-medium">Submission Deadlines (Strict Lodgment)</span>
+</label>
+<label class="flex items-center gap-2.5 cursor-pointer text-body-sm">
+<input checked="" class="rounded border-outline text-secondary focus:ring-secondary w-4 h-4" type="checkbox">
+<span class="text-on-surface font-medium">Internal Review Gates (Gate 1 to 4)</span>
+</label>
+<label class="flex items-center gap-2.5 cursor-pointer text-body-sm">
+<input checked="" class="rounded border-outline text-secondary focus:ring-secondary w-4 h-4" type="checkbox">
+<span class="text-on-surface font-medium">Pre-Bid Meetings &amp; Clarifications</span>
+</label>
+<label class="flex items-center gap-2.5 cursor-pointer text-body-sm">
+<input checked="" class="rounded border-outline text-secondary focus:ring-secondary w-4 h-4" type="checkbox">
+<span class="text-on-surface font-medium">EMD / Bank Guarantee Expiries</span>
+</label>
+</div>
+<!-- Statutory Time-zone Protection Notice -->
+<div class="p-2.5 rounded-lg bg-amber-50 text-amber-950 flex items-start gap-2 text-[11px] font-body-sm mt-1">
+<span class="material-symbols-outlined text-amber-700 text-[16px] shrink-0 mt-0.5">shield</span>
+<div class="flex flex-col leading-snug">
+<span class="font-bold text-amber-900">Statutory Timezone Protection Active</span>
+<span class="text-amber-800">Tenders auto-convert portal publication time (UNGM UTC vs Dhaka BST +06:00) with daylight saving offset safety.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple interactive script for copying feed URL and toggle states
+  document.getElementById('copyUrlBtn')?.addEventListener('click', function() {
+    const input = document.getElementById('webcalUrlInput');
+    const copyText = document.getElementById('copyText');
+    if (input) {
+      input.select();
+      navigator.clipboard.writeText(input.value).then(() => {
+        if (copyText) {
+          copyText.innerText = 'Copied!';
+          setTimeout(() => {
+            copyText.innerText = 'Copy';
+          }, 2000);
+        }
+      });
+    }
+  });
+</script></main></div></body></html>

@@ -1,0 +1,734 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary-fixed": "#dae2fd", "error-container": "#ffdad6", "on-primary-fixed-variant": "#3f465c", "surface-container-low": "#eff4ff", "on-surface": "#0b1c30", "tertiary": "#000000", "secondary": "#0051d5", "tertiary-fixed": "#eaddff", "surface": "#f8f9ff", "outline-variant": "#c6c6cd", "on-secondary": "#ffffff", "on-primary-fixed": "#131b2e", "surface-container-highest": "#d3e4fe", "background": "#f8f9ff", "on-tertiary": "#ffffff", "on-background": "#0b1c30", "inverse-surface": "#213145", "surface-container-high": "#dce9ff", "surface-container-lowest": "#ffffff", "surface-dim": "#cbdbf5", "on-tertiary-fixed": "#25005a", "primary-fixed-dim": "#bec6e0", "tertiary-container": "#25005a", "secondary-fixed-dim": "#b4c5ff", "inverse-primary": "#bec6e0", "on-error": "#ffffff", "on-primary-container": "#7c839b", "secondary-container": "#316bf3", "on-secondary-fixed": "#00174b", "on-primary": "#ffffff", "surface-variant": "#d3e4fe", "on-surface-variant": "#45464d", "on-tertiary-container": "#9863ff", "on-error-container": "#93000a", "tertiary-fixed-dim": "#d2bbff", "on-secondary-fixed-variant": "#003ea8", "primary-container": "#131b2e", "surface-tint": "#565e74", "on-secondary-container": "#fefcff", "on-tertiary-fixed-variant": "#5a00c6", "secondary-fixed": "#dbe1ff", "primary": "#000000", "outline": "#76777d", "inverse-on-surface": "#eaf1ff", "surface-bright": "#f8f9ff", "surface-container": "#e5eeff", "error": "#ba1a1a" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "sidebar-collapsed": "4.5rem", "gutter-xl": "1.5rem", "gutter-lg": "1rem", "gutter-md": "0.75rem", "sidebar-expanded": "16rem", "header-height": "3.5rem", "gutter-sm": "0.5rem", "row-gap-dense": "0.375rem", "container-padding-desktop": "1.5rem", "container-padding-mobile": "1rem", "gutter-xs": "0.25rem" }, "fontFamily": { "code-md": [ "JetBrains Mono" ], "body-sm": [ "Inter" ], "display-lg": [ "Plus Jakarta Sans" ], "label-md": [ "Inter" ], "headline-sm": [ "Plus Jakarta Sans" ], "headline-md": [ "Plus Jakarta Sans" ], "code-sm": [ "JetBrains Mono" ], "headline-lg": [ "Plus Jakarta Sans" ], "body-lg": [ "Inter" ], "title-md": [ "Inter" ], "display-lg-mobile": [ "Plus Jakarta Sans" ], "label-sm": [ "Inter" ], "body-md": [ "Inter" ] }, "fontSize": { "code-md": [ "13px", { "lineHeight": "18px", "fontWeight": "500" } ], "body-sm": [ "12px", { "lineHeight": "16px", "fontWeight": "400" } ], "display-lg": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" } ], "headline-sm": [ "16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" } ], "headline-md": [ "20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "code-sm": [ "11px", { "lineHeight": "14px", "fontWeight": "500" } ], "headline-lg": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "body-lg": [ "14px", { "lineHeight": "20px", "fontWeight": "400" } ], "title-md": [ "15px", { "lineHeight": "22px", "fontWeight": "600" } ], "display-lg-mobile": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "600" } ], "body-md": [ "13px", { "lineHeight": "18px", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-sidebar-expanded bg-[#0F172A] z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-header-height px-gutter-lg flex items-center justify-between border-b border-[#1E293B]"><div class="flex items-center gap-gutter-sm"><img alt="TenderTracker Emblem" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UFdRrwTpA7yfBlQcwn56dg-2iDPdAkp3SdfJr8ig2PALUS6n36txhkQkdYUAqzs95o9tiBbJbaVzwtYhgeGXXU46Kkmekf0w_C-KT18o0IAz4tR60Ob7jgR4JnCc8070h9klyZZqxJAN026r-FGrXIyYi4t3P6UL8mNCCsgRDJJ4KHuQFlJv0CjnJHKgAGFgfXR_PHHRD_qzBlG0NNNKiRM6jF47ndJRfOUC2RXO4K6VVioxuy7Yf0lg"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-[#FFFFFF] tracking-tight leading-none">TenderTracker</span><span class="font-label-sm text-label-sm text-[#94A3B8] uppercase mt-0.5 tracking-wider">Procurement Core</span></div></div><span class="px-1.5 py-0.5 bg-[#1E293B] text-[#93C5FD] font-label-sm text-[10px] rounded-lg font-semibold tracking-wider">v4.2</span></div><div class="px-gutter-md py-gutter-md"><div class="px-gutter-sm pb-gutter-xs text-[10px] font-label-sm font-semibold tracking-wider uppercase text-[#64748B]">Command Navigation</div><nav class="space-y-0.5" data-active-classes="bg-[#1E293B] text-[#FFFFFF] font-semibold"><a aria-current="page" class="flex items-center justify-between px-gutter-sm py-2 rounded-lg transition-colors bg-[#1E293B] text-[#FFFFFF] font-semibold" data-path="dashboard" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">dashboard</span><span class="font-body-md text-body-md">Dashboard</span></div><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span></a><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="my-tasks" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">check_circle</span><span class="font-body-md text-body-md">My Tasks</span></div><span class="px-1.5 py-0.2 rounded-full bg-[#1E293B] text-[#F8FAFC] font-code-sm text-code-sm font-semibold">18</span></a><div><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="all-tenders" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">folder_managed</span><span class="font-body-md text-body-md">Tenders</span></div><span class="material-symbols-outlined text-[16px]">expand_more</span></a><div class="pl-7 pr-gutter-xs py-1 space-y-0.5"><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="all-tenders" href="#"><span>All Tenders</span><span class="font-code-sm text-[11px] text-[#64748B]">142</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="active-tenders" href="#"><span>Active Pipeline</span><span class="font-code-sm text-[11px] text-secondary">24</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="due-soon-tenders" href="#"><span>Due Soon</span><span class="px-1.5 py-0.2 rounded-full bg-error-container text-on-error-container font-code-sm text-[10px] font-semibold">5</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="submitted-tenders" href="#"><span>Submitted</span><span class="font-code-sm text-[11px] text-[#64748B]">68</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="completed-tenders" href="#"><span>Completed</span><span class="font-code-sm text-[11px] text-[#64748B]">45</span></a></div></div><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="calendar" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">calendar_month</span><span class="font-body-md text-body-md">Calendar</span></div><div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-error animate-ping"></span><span class="font-code-sm text-code-sm text-error">3 Due</span></div></a><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="documents" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">fact_check</span><span class="font-body-md text-body-md">Documents</span></div><span class="px-1.5 py-0.2 rounded-full bg-surface-container-high text-on-surface font-code-sm text-[10px]">Compliance</span></a><a class="flex items-center px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="team" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">groups</span><span class="font-body-md text-body-md">Team &amp; Workload</span></div></a><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="reports" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">query_stats</span><span class="font-body-md text-body-md">Reports &amp; Win/Loss</span></div></a></nav></div></div><div class="px-gutter-md pb-gutter-lg"><div class="p-gutter-sm rounded-xl bg-[#1E293B] mb-gutter-sm"><div class="flex items-center justify-between mb-1.5"><span class="font-label-sm text-label-sm text-[#94A3B8]">Pipeline Health</span><span class="font-code-sm text-code-sm text-[#F8FAFC]">84%</span></div><div class="w-full bg-[#0F172A] h-1.5 rounded-full overflow-hidden"><div class="bg-secondary h-full rounded-full w-4/5"></div></div></div><nav class="space-y-0.5" data-active-classes="bg-[#1E293B] text-[#FFFFFF]"><a class="flex items-center gap-gutter-sm px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-[18px]">settings</span><span class="font-body-md text-body-md">Settings</span></a></nav></div></aside><div class="pl-sidebar-expanded"><header class="fixed top-0 left-sidebar-expanded right-0 h-header-height bg-surface-container-lowest/95 backdrop-blur-xl border-b border-outline-variant/30 z-40 flex items-center justify-between px-gutter-xl"><div class="flex items-center gap-gutter-lg flex-1 max-w-2xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span><input class="w-full pl-10 pr-16 py-1.5 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline border-none focus:outline-none focus:ring-1 focus:ring-secondary" placeholder="Search RFP, Tender ID, Organization, or Team member... (Ctrl + K)" type="text"><div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-outline font-code-sm text-[10px] bg-surface-container px-1.5 py-0.5 rounded"><kbd>⌘</kbd><kbd>K</kbd></div></div><span class="px-2.5 py-1 rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm font-semibold tracking-wider whitespace-nowrap">ENTERPRISE</span></div><div class="flex items-center gap-gutter-md"><button class="flex items-center gap-1.5 px-gutter-md py-1.5 bg-secondary text-on-secondary rounded-lg font-title-md text-body-sm hover:bg-secondary-container transition-colors shadow-sm"><span class="material-symbols-outlined text-[18px]">add</span><span>New Tender</span></button><button class="flex items-center gap-1.5 px-gutter-sm py-1.5 bg-surface-container rounded-lg text-on-surface font-title-md text-body-sm hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-secondary text-[18px]">auto_awesome</span><span class="font-label-md text-label-md">AI Assistant</span></button><div class="h-5 w-px bg-outline-variant/50 mx-gutter-xs"></div><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" title="8 new alerts"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-error"></span></span></button><div class="flex items-center gap-gutter-sm pl-gutter-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-surface-container" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvO9pEUYMDIH04_VDYu4hkNa8H2FyGPJH4xzNCSHH-CWmTWgqeLqyq4GNvtg8AgqMrpYLn6bisnAQoDKUILXXpVWvNuW0FOPBEieaGt1ug3D4s7NLAGKR8uFMOExPiT6RdyWBYNdyjONydDVELp2RxpTGWxabDd2hy7LW_ED5m1vR_rKmzX8lg9eaBqYjDPLRRT3IxNo9kr-TZRGZp8v6ktQgTBmxkIcTb2FxaVisN1eTLKnCmvp8"><div class="flex flex-col text-left"><span class="font-title-md text-body-sm text-on-surface font-semibold leading-tight">Sarah Jenkins</span><span class="font-label-sm text-[11px] text-on-surface-variant leading-tight">Head of Bidding &amp; Ops</span></div></div></div></header><main class="relative pt-header-height min-h-screen bg-surface"><div class="flex flex-col w-full">
+<!-- 1. Header & Breadcrumb Context -->
+<div class="px-gutter-xl pt-gutter-lg pb-gutter-md bg-surface-container-lowest shadow-sm flex flex-col gap-3">
+<!-- Top breadcrumb & external portal sync pill -->
+<div class="flex flex-wrap items-center justify-between gap-3">
+<nav class="flex items-center gap-2 font-body-sm text-body-sm text-outline">
+<a class="hover:text-secondary transition-colors" href="#">Pipeline Registry</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<a class="hover:text-secondary transition-colors" href="#">Tenders</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<a class="hover:text-secondary transition-colors" href="#">Active Pipeline</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="font-code-md text-code-md font-semibold text-on-surface bg-surface-container-high px-2 py-0.5 rounded-md">TND-2026-089</span>
+</nav>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-code-sm text-code-sm">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span>Portal ID: <strong class="text-on-surface font-semibold">WB-BD-9021</strong></span>
+<span class="text-outline">|</span>
+<span class="text-outline">UNGM Auto-Synced 4m ago</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-error-container text-on-error-container font-code-sm text-code-sm shadow-sm">
+<span class="material-symbols-outlined text-[16px]">alarm</span>
+<span class="font-semibold">⏰ 7d 04h 18m</span>
+<span class="opacity-80">(10 Sep 2026, 15:00 BST)</span>
+</div>
+</div>
+</div>
+<!-- Title, Badges, Context Tags & Quick Action CTAs -->
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pt-1">
+<div class="flex flex-col gap-1.5 max-w-4xl">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-code-sm text-code-sm font-semibold">RFP-2026-001</span>
+<span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-label-sm text-label-sm font-semibold">PREPARATION IN PROGRESS</span>
+<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span>
+            CRITICAL PRIORITY
+          </span>
+<span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+            Gate 3 Passed
+          </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">
+          Enterprise Cloud ERP Modernization &amp; Financial System Integration
+        </h1>
+<div class="flex flex-wrap items-center gap-3 font-body-sm text-body-sm text-on-surface-variant">
+<span class="flex items-center gap-1 font-semibold text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">domain</span>
+            UNDP Bangladesh Country Office
+          </span>
+<span class="text-outline-variant">•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-outline">dns</span>
+            Cloud Infrastructure &amp; Bespoke ERP
+          </span>
+<span class="text-outline-variant">•</span>
+<span class="font-code-md text-code-md font-semibold text-secondary-container px-2 py-0.5 bg-secondary-fixed/50 rounded">
+            Ceiling: $18,450,000 USD
+          </span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-wrap items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-2 bg-primary text-on-primary rounded-lg font-title-md text-body-sm hover:bg-slate-800 transition shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add_task</span>
+<span>New Task</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-2 bg-surface-container rounded-lg text-on-surface font-title-md text-body-sm hover:bg-surface-container-high transition">
+<span class="material-symbols-outlined text-[18px]">auto_fix_high</span>
+<span>Run AI Sprint Audit</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-2 bg-surface-container rounded-lg text-on-surface font-title-md text-body-sm hover:bg-surface-container-high transition">
+<span class="material-symbols-outlined text-[18px]">ios_share</span>
+<span>Export</span>
+</button>
+</div>
+</div>
+<!-- 2. Tender Workspace Sub-Navigation Tabs -->
+<div class="flex items-center gap-1 overflow-x-auto pt-3 border-b-0">
+<a class="flex items-center gap-2 px-3.5 py-2 rounded-lg font-title-md text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors whitespace-nowrap" href="#">
+<span>1. Overview &amp; AI Analysis</span>
+</a>
+<a class="flex items-center gap-2 px-3.5 py-2 rounded-lg font-title-md text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors whitespace-nowrap" href="#">
+<span>2. Go/No-Go Matrix</span>
+<span class="font-code-sm text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">88% GO</span>
+</a>
+<a class="flex items-center gap-2 px-3.5 py-2 rounded-lg font-title-md text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors whitespace-nowrap" href="#">
+<span>3. Requirements Matrix</span>
+<span class="font-code-sm text-[10px] px-1.5 py-0.5 rounded-full bg-surface-container text-on-surface">22/24</span>
+</a>
+<a class="flex items-center gap-2 px-3.5 py-2 rounded-lg font-title-md text-body-sm bg-primary text-on-primary font-semibold shadow-sm whitespace-nowrap" href="#">
+<span class="material-symbols-outlined text-[16px]">view_kanban</span>
+<span>4. Task Management Board</span>
+<span class="font-code-sm text-[11px] px-2 py-0.5 rounded-full bg-secondary text-on-secondary font-bold">17/20 Done (85%)</span>
+</a>
+<a class="flex items-center gap-2 px-3.5 py-2 rounded-lg font-title-md text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors whitespace-nowrap" href="#">
+<span>5. Document Vault</span>
+<span class="font-code-sm text-[10px] px-1.5 py-0.5 rounded-full bg-error-container text-on-error-container font-semibold">1 Blocker</span>
+</a>
+</div>
+</div>
+<!-- 3. Kanban Control Bar & Sprint Metrics Ribbon -->
+<div class="px-gutter-xl py-gutter-md flex flex-col gap-4">
+<!-- Sprint KPI Ribbon -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter-md">
+<!-- Total Tasks & Progress -->
+<div class="p-4 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Sprint Scope &amp; Burn</span>
+<span class="font-code-md text-code-md font-bold text-secondary">85% Complete</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg font-bold text-on-surface">17</span>
+<span class="font-headline-md text-headline-md text-outline">/ 20 Tasks</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full w-[85%] transition-all duration-500"></div>
+</div>
+</div>
+<!-- Critical Path Health -->
+<div class="p-4 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Critical Path Items</span>
+<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-code-sm text-code-sm font-semibold">1 At Risk</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg font-bold text-on-surface">4</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Gate-critical dependencies</span>
+</div>
+<div class="flex items-center gap-1.5 font-body-sm text-body-sm text-outline">
+<span class="material-symbols-outlined text-amber-600 text-[16px]">warning</span>
+<span>Statutory balance sheet pending seal</span>
+</div>
+</div>
+<!-- Statutory Blocker Alert -->
+<div class="p-4 bg-rose-50 rounded-xl shadow-sm flex flex-col justify-between gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-rose-800 uppercase tracking-wider font-semibold">Blocker Alert</span>
+<span class="w-2.5 h-2.5 rounded-full bg-rose-600 animate-ping"></span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg font-bold text-rose-900">1</span>
+<span class="font-headline-sm text-headline-sm text-rose-900 font-semibold">Mandatory Gate Stop</span>
+</div>
+<p class="font-body-sm text-body-sm text-rose-800 line-clamp-1">
+          Deloitte 3-Year Audited Statement sign-off
+        </p>
+</div>
+<!-- Sprint Velocity & Estimated Clearance -->
+<div class="p-4 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Sprint Velocity</span>
+<span class="font-code-sm text-code-sm text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded">Optimal</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg font-bold text-on-surface">4.8</span>
+<span class="font-body-md text-body-md text-on-surface-variant">tasks / day</span>
+</div>
+<div class="flex items-center gap-1 font-code-sm text-code-sm text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+<span>Target Clearance: <strong class="font-semibold">Sep 08 (48h Buffer)</strong></span>
+</div>
+</div>
+</div>
+<!-- Filter, Team Selector, and View Mode Strip -->
+<div class="p-3 bg-surface-container-lowest rounded-xl shadow-sm flex flex-wrap items-center justify-between gap-3">
+<!-- Search & Workstream Pills -->
+<div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-[320px]">
+<div class="relative flex-1 min-w-[240px] max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">filter_list</span>
+<input class="w-full pl-9 pr-4 py-1.5 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest transition-colors" placeholder="Filter tasks by title, clause §, assignee, or tag... (Ctrl + K)" type="text">
+</div>
+<div class="h-6 w-px bg-surface-container-highest"></div>
+<!-- Priority Select -->
+<select class="bg-surface-container-low font-body-sm text-body-sm text-on-surface px-2.5 py-1.5 rounded-lg border-0 focus:outline-none font-medium cursor-pointer">
+<option>All Priorities (20)</option>
+<option>🔴 Critical Blockers Only (1)</option>
+<option>High Priority (4)</option>
+<option>Medium / Low (15)</option>
+</select>
+<!-- Workstream Select -->
+<div class="hidden xl:flex items-center gap-1">
+<button class="px-2.5 py-1 rounded-md bg-secondary text-on-secondary font-label-sm text-label-sm font-semibold">All Workstreams</button>
+<button class="px-2.5 py-1 rounded-md bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-sm text-label-sm transition">Technical SOW</button>
+<button class="px-2.5 py-1 rounded-md bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-sm text-label-sm transition">Financial &amp; Pricing</button>
+<button class="px-2.5 py-1 rounded-md bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-sm text-label-sm transition">Legal &amp; Statutory</button>
+</div>
+</div>
+<!-- Assignee Filter Avatars & View Switcher -->
+<div class="flex items-center gap-4">
+<!-- Assignee Avatars Quick Filter -->
+<div class="flex items-center -space-x-1.5" title="Filter by Assignee">
+<button class="w-7 h-7 rounded-full bg-slate-900 text-white font-code-sm text-[10px] font-bold flex items-center justify-center hover:scale-105 transition ring-2 ring-white">ALL</button>
+<img class="w-7 h-7 rounded-full object-cover ring-2 ring-white hover:scale-110 transition cursor-pointer" data-alt="Headshot of Sarah Jenkins in professional navy blazer with crisp studio lighting for procurement ops" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdIjM6kWSoRN8uoO5D-PmNCdagSLTnmMYo3wy9LfdW9W3BT904o42Ku3FtoYXjYeU5Ff6pbEQsDFAHmIhd0FCQu3iEA8fbK2ZcEIMm0xwL7HD1JtyVrKZEyb6QO8BGx3pAKCxfmk9Yf9yZlVxGvIChypd_kmXq9r9nVT3e3J-40DcSpCiKlBJ_Xia6aV1NLj8TqAxUNWAtQ52abUb-C3eHfQPGIhPIqBtmnpWaHRZltfYKT7puKXk" title="Sarah Jenkins (Bid Ops Lead)">
+<img class="w-7 h-7 rounded-full object-cover ring-2 ring-white hover:scale-110 transition cursor-pointer" data-alt="Portrait of Tariq Mansoor enterprise cloud solutions architect in modern office interior with subtle blue hue" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRRjrE3JLZ98459yx4r2KDuYk2iYQ5V8ZzRZfuNtBk9wHSFqM8u6s8QxjrvXy82fw7Ibm5t8w8sIzbQlqfxtOnpNDllHtUtMVryKFWLrFO1_zIiLavMooeSussgMNqqCBqFm57Q_uKbk9322zUwErw63ZePQIWGuhPmsfiEuP_ENAgIMDyTPbD7RFMnrcWfKHnKeDmNZgFWx4JzvbQ_2W08zw0roF2uiPPyIGZaMOF84iCsKGP9Gs" title="Tariq Mansoor (Lead Architect)">
+<img class="w-7 h-7 rounded-full object-cover ring-2 ring-white hover:scale-110 transition cursor-pointer" data-alt="Professional portrait of Elena Rostova financial analyst and procurement pricing lead in high contrast corporate setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBX8z0MNcuLutafi2NjyPB6SZvigtOOH0IWCtKydQSA4_0ZuX0zTVM4w4kC0-xWjGV2-x6TlaPgBRGpt4Koc4vcpoYnsxiwXpgKQLOQARmSJ7x1fTgoUCVi7B3mGKB2VL9ar_14OKE60MYvfZGuMrqF1cNAebwqcVVMHImPkj1EnEeA0WoegoB1QtJ7OsgGF6JcZ8B4f16QAD5WQE11kwooZrE0Dk4ra1Jr5qhwqAvZYwxb-HQhII4" title="Elena Rostova (Pricing &amp; BOQ Lead)">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface font-code-sm text-[11px] font-semibold flex items-center justify-center ring-2 ring-white cursor-pointer">+2</div>
+</div>
+<div class="h-6 w-px bg-surface-container-highest"></div>
+<!-- View Switcher -->
+<div class="flex items-center bg-surface-container-low p-0.5 rounded-lg">
+<button class="p-1.5 rounded-md bg-surface-container-lowest text-on-surface shadow-sm font-semibold" title="Kanban Board View">
+<span class="material-symbols-outlined text-[18px]">view_kanban</span>
+</button>
+<button class="p-1.5 rounded-md text-outline hover:text-on-surface transition" title="List View">
+<span class="material-symbols-outlined text-[18px]">format_list_bulleted</span>
+</button>
+<button class="p-1.5 rounded-md text-outline hover:text-on-surface transition" title="Gantt Timeline View">
+<span class="material-symbols-outlined text-[18px]">calendar_view_week</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. Main 12-Column Command Workspace: Kanban Board + Capacity Rail -->
+<div class="px-gutter-xl pb-gutter-xl grid grid-cols-12 gap-gutter-md">
+<!-- Left 9-Columns: 4-Column High-Density Kanban Board -->
+<div class="col-span-12 xl:col-span-9 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-gutter-md items-start">
+<!-- COLUMN 1: TO DO / BACKLOG (2 Tasks) -->
+<div class="flex flex-col gap-3 bg-surface-container-low p-3 rounded-xl min-h-[640px]">
+<!-- Column Header -->
+<div class="flex items-center justify-between pb-2 border-b-0">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">To Do / Backlog</span>
+<span class="px-2 py-0.2 rounded-full bg-surface-container-high font-code-sm text-code-sm font-bold text-on-surface">2</span>
+</div>
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface transition" title="Add task to backlog">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+<!-- Task Card 1 -->
+<div class="p-3.5 bg-surface-container-lowest rounded-lg shadow-sm hover:shadow-md transition cursor-pointer flex flex-col gap-2.5 group">
+<div class="flex items-center justify-between gap-1">
+<span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-label-sm text-label-sm font-semibold">Security &amp; SLA</span>
+<span class="font-code-sm text-[10px] text-outline font-semibold">§12.3.0 (Vol III)</span>
+</div>
+<h3 class="font-title-md text-body-md font-semibold text-on-surface group-hover:text-secondary transition-colors">
+            Draft Disaster Recovery &amp; BTRC Geo-Redundancy Addendum Exemption Note
+          </h3>
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-code-sm text-[10px]">SLA Deviation</span>
+<span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 font-label-sm text-[10px] font-semibold">Medium Priority</span>
+</div>
+<div class="pt-1 flex items-center justify-between text-outline font-body-sm text-body-sm">
+<div class="flex items-center gap-2">
+<span class="flex items-center gap-0.5 text-on-surface-variant font-code-sm text-[11px]">
+<span class="material-symbols-outlined text-[14px] text-secondary">check_box</span>
+                1/3
+              </span>
+<span class="flex items-center gap-0.5 text-on-surface-variant font-code-sm text-[11px]">
+<span class="material-symbols-outlined text-[14px]">attachment</span>
+                1 draft
+              </span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="font-code-sm text-[11px] text-amber-700 font-medium">Due Sep 06</span>
+<div class="w-6 h-6 rounded-full bg-slate-800 text-white font-code-sm text-[10px] flex items-center justify-center" title="Rahim Ahmed (DevOps/Sec)">RA</div>
+</div>
+</div>
+</div>
+<!-- Task Card 2 -->
+<div class="p-3.5 bg-surface-container-lowest rounded-lg shadow-sm hover:shadow-md transition cursor-pointer flex flex-col gap-2.5 group">
+<div class="flex items-center justify-between gap-1">
+<span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-label-sm text-label-sm font-semibold">Bid Presentation</span>
+<span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-label-sm text-[10px] font-semibold">Low</span>
+</div>
+<h3 class="font-title-md text-body-md font-semibold text-on-surface group-hover:text-secondary transition-colors">
+            Compile Executive Pitch Deck &amp; UN Country Director Briefing Document
+          </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+            Visual slide deck summarizing total cost of ownership, migration phases, and local empowerment roadmap.
+          </p>
+<div class="pt-1 flex items-center justify-between text-outline font-body-sm text-body-sm">
+<div class="flex items-center gap-2">
+<span class="flex items-center gap-0.5 text-outline font-code-sm text-[11px]">
+<span class="material-symbols-outlined text-[14px]">check_box_outline_blank</span>
+                0/4
+              </span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="font-code-sm text-[11px] text-outline">Due Sep 08</span>
+<img class="w-6 h-6 rounded-full object-cover" data-alt="Small thumbnail avatar of Sarah Jenkins professional bid director" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDErILWsxaIJLsLr9hWoH7ji4R87Rr0a1k1UP8eeWCw159dLxlPH8N8j7fQkK-3E4TtFIk8UnuL8Hlc9ZlAYtr0hq4XnVXsSkzBCKMc44GM2TVoB6LS9KtNZWTqlfcszSu-pZTq58TuTjOLlt2jRQHA8iqxa0It07055NxojT6sltA_zPmyC7S9h23jwppAj4rUisJuqkWJcHBHQvPcwnpruFFcAN52IW-t8dBVcKb6mDXlzoVagqQ" title="Sarah Jenkins">
+</div>
+</div>
+</div>
+<!-- Quick Add placeholder -->
+<button class="py-2 px-3 rounded-lg bg-surface-container/50 hover:bg-surface-container text-outline hover:text-on-surface font-body-sm text-body-sm flex items-center justify-center gap-1.5 transition">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>Add Task</span>
+</button>
+</div>
+<!-- COLUMN 2: IN PROGRESS / SPRINT ACTIVE (3 Tasks) -->
+<div class="flex flex-col gap-3 bg-surface-container-low p-3 rounded-xl min-h-[640px]">
+<!-- Column Header -->
+<div class="flex items-center justify-between pb-2">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">In Progress</span>
+<span class="px-2 py-0.2 rounded-full bg-secondary-fixed text-on-secondary-fixed font-code-sm text-code-sm font-bold">3</span>
+</div>
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface transition">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+<!-- Task Card 3 (CRITICAL GATE BLOCKER) -->
+<div class="p-3.5 bg-rose-50/70 rounded-lg shadow-md flex flex-col gap-2.5 relative overflow-hidden group">
+<!-- Blocker Accent Stripe -->
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-rose-600"></div>
+<div class="flex items-center justify-between pl-1">
+<span class="px-2 py-0.5 rounded-full bg-rose-600 text-white font-code-sm text-[10px] font-bold flex items-center gap-1 tracking-wider">
+<span class="material-symbols-outlined text-[12px]">emergency_home</span>
+              GATE BLOCKER - §7.1.0
+            </span>
+<span class="font-code-sm text-code-sm font-bold text-rose-700">24h Left</span>
+</div>
+<h3 class="font-title-md text-body-md font-bold text-rose-950 pl-1 leading-snug">
+            Procure Top-10 Audit Firm Deloitte Stamped 3-Year Audited Balance Sheet &amp; Turnover Statement
+          </h3>
+<div class="pl-1 flex flex-col gap-1">
+<div class="flex items-center justify-between font-code-sm text-[11px] text-rose-900 font-semibold">
+<span>Awaiting Managing Partner Seal</span>
+<span>3/4 Subtasks</span>
+</div>
+<div class="w-full bg-rose-200 h-1.5 rounded-full overflow-hidden">
+<div class="bg-rose-600 h-full rounded-full w-3/4"></div>
+</div>
+</div>
+<!-- Quick Actions on Blocker Card -->
+<div class="pl-1 pt-1 flex items-center gap-2">
+<button class="flex-1 py-1 px-2 bg-rose-600 hover:bg-rose-700 text-white rounded font-label-sm text-[11px] font-semibold flex items-center justify-center gap-1 shadow-sm transition">
+<span class="material-symbols-outlined text-[14px]">send</span>
+<span>Send Reminder</span>
+</button>
+<button class="py-1 px-2 bg-rose-100 hover:bg-rose-200 text-rose-900 rounded font-label-sm text-[11px] font-semibold flex items-center justify-center transition">
+<span>Upload Draft</span>
+</button>
+</div>
+<div class="pl-1 pt-1 flex items-center justify-between text-rose-900 font-body-sm text-body-sm">
+<span class="font-code-sm text-[10px] font-bold">Hard Stop: Gate 3</span>
+<div class="flex items-center -space-x-1">
+<img class="w-6 h-6 rounded-full object-cover ring-1 ring-white" data-alt="Elena Rostova portrait avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQHXwpG_VbDVUFes5VjZnSyCtOxifdHuW8V-pLU98zGDCZ3FE7b28aAp_e-pdrgkttJKWbbcOXLkdu0ebnCTcRFwPayUxxaCohrfE95qXv0xAQrIqNKF-zyXIOEOSl7h-M8QQ9enmW7fKpBf2NcuW-Yds3Pf5um7lHi7HaSXy6ODrUTiXJk3ILV8nDnrq1AUn13OaIpxNYD3MbfFlervZNgKo3Ot7zM6LITBNmLQYPMRr_hRtqCUM" title="Elena Rostova">
+<div class="w-6 h-6 rounded-full bg-rose-700 text-white font-code-sm text-[9px] flex items-center justify-center ring-1 ring-white" title="External Partner (Deloitte BD)">DL</div>
+</div>
+</div>
+</div>
+<!-- Task Card 4 -->
+<div class="p-3.5 bg-surface-container-lowest rounded-lg shadow-sm hover:shadow-md transition cursor-pointer flex flex-col gap-2.5 group">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 font-label-sm text-label-sm font-semibold">Technical Architecture</span>
+<span class="font-code-sm text-[10px] text-outline font-semibold">§3.1.2 &amp; §10.2.1</span>
+</div>
+<h3 class="font-title-md text-body-md font-semibold text-on-surface group-hover:text-secondary transition-colors">
+            Finalize OpenShift 4.14 Microservices Multi-AZ Cluster Topology Diagram
+          </h3>
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-code-sm text-[10px]">Tier-3 NDC Colocation</span>
+<span class="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 font-label-sm text-[10px] font-semibold">High Priority</span>
+</div>
+<div class="pt-1 flex items-center justify-between font-body-sm text-body-sm">
+<div class="flex items-center gap-2.5 text-on-surface-variant font-code-sm text-[11px]">
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px] text-secondary">check_circle</span>
+                4/5
+              </span>
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">chat</span>
+                8
+              </span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="font-code-sm text-[11px] text-secondary font-bold">Tomorrow</span>
+<img class="w-6 h-6 rounded-full object-cover" data-alt="Tariq Mansoor Lead Technical Architect avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDw8Z9Y3v7qFgnHvoS_HDiB7CzCv_BMAZCx9BxMRr4wVNrTzUDgSO8qoL--y93gaMUby8BakH88kauT7svujNiXnoh0cPuJu2qGrznZjibO9pCfS8NDrcZXRsySDChBQQLBC4smeSmqoP3oO7-zlMhRWs8lCOOh6fOD7bQRg5Hfx7KwGXNdl9Q7AFri2yFZFbIL_hBctCZR6r9LSo-pVqNVl_4gxviL-v29OJ4YS0zZPE2Z9mZms_Q" title="Tariq Mansoor">
+</div>
+</div>
+</div>
+<!-- Task Card 5 -->
+<div class="p-3.5 bg-surface-container-lowest rounded-lg shadow-sm hover:shadow-md transition cursor-pointer flex flex-col gap-2.5 group">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 font-label-sm text-label-sm font-semibold">Commercial &amp; Pricing</span>
+<span class="font-code-sm text-[10px] text-outline font-semibold">Clause §8.4.9</span>
+</div>
+<h3 class="font-title-md text-body-md font-semibold text-on-surface group-hover:text-secondary transition-colors">
+            Dual-Currency BOQ Rate Card Calibration (70% USD / 30% BDT Hedging Model)
+          </h3>
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-code-sm text-[10px]">Treasury MT940 Alignment</span>
+</div>
+<div class="pt-1 flex items-center justify-between font-body-sm text-body-sm">
+<div class="flex items-center gap-2 text-on-surface-variant font-code-sm text-[11px]">
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px] text-secondary">check_circle</span>
+                2/3
+              </span>
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">table_chart</span>
+                2 xlsx
+              </span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="font-code-sm text-[11px] text-outline font-semibold">Sep 07</span>
+<img class="w-6 h-6 rounded-full object-cover" data-alt="Elena Rostova financial head portrait thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAflX8CWuev9bJHcImmYQcMQtedVDuVojgXQbgJnXUS4QL0obVF8r0UmZ-ptHdt2NsBSUAUmhPg3ne_j6Qw99Q_I23dYxBgmITm9D-5C2sVg4WOf1YQqvSIboE7bm-QGuVVmqSw-4h6HzBItiQd8EYdPRw7ptvvZ9pY1VwAAwt4UcQ9eI_wyTa2S5Q0Czk0BkAtNB0zoP3DvA6082bxZbx9e80XKzwiddcz9FDUQWmCdWPcZ9CXl-Q" title="Elena Rostova">
+</div>
+</div>
+</div>
+</div>
+<!-- COLUMN 3: IN INTERNAL REVIEW & GATE QA (3 Tasks) -->
+<div class="flex flex-col gap-3 bg-surface-container-low p-3 rounded-xl min-h-[640px]">
+<!-- Column Header -->
+<div class="flex items-center justify-between pb-2">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Review &amp; QA</span>
+<span class="px-2 py-0.2 rounded-full bg-amber-100 text-amber-800 font-code-sm text-code-sm font-bold">3</span>
+</div>
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface transition">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+<!-- Task Card 6 -->
+<div class="p-3.5 bg-surface-container-lowest rounded-lg shadow-sm hover:shadow-md transition cursor-pointer flex flex-col gap-2.5 group">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-label-sm text-label-sm font-semibold">Legal &amp; Integrity</span>
+<span class="font-code-sm text-[10px] text-amber-800 font-semibold bg-amber-50 px-1 rounded">Mandatory §4.2.1</span>
+</div>
+<h3 class="font-title-md text-body-md font-semibold text-on-surface group-hover:text-secondary transition-colors">
+            UN Supplier Code of Conduct &amp; Anti-Corruption Integrity Declaration
+          </h3>
+<div class="p-2 rounded bg-surface-container font-body-sm text-body-sm text-on-surface-variant flex items-center justify-between">
+<span>Awaiting Gate 3 Sign-off</span>
+<span class="font-code-sm text-[10px] text-emerald-700 font-semibold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">verified</span>
+              Cert Attached
+            </span>
+</div>
+<div class="pt-1 flex items-center justify-between font-body-sm text-body-sm">
+<div class="flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant">
+<span class="font-code-sm text-[10px]">Reviewer:</span>
+<span class="font-semibold text-on-surface">Sarah J.</span>
+</div>
+<div class="flex items-center gap-1.5">
+<div class="w-6 h-6 rounded-full bg-slate-700 text-white font-code-sm text-[10px] flex items-center justify-center" title="Farhan K. (Legal Counsel)">FK</div>
+</div>
+</div>
+</div>
+<!-- Task Card 7 -->
+<div class="p-3.5 bg-surface-container-lowest rounded-lg shadow-sm hover:shadow-md transition cursor-pointer flex flex-col gap-2.5 group">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-label-sm text-label-sm font-semibold">Security &amp; Compliance</span>
+<span class="font-code-sm text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">auto_awesome</span>
+              AI Verified ✓
+            </span>
+</div>
+<h3 class="font-title-md text-body-md font-semibold text-on-surface group-hover:text-secondary transition-colors">
+            ISO/IEC 27001:2022 &amp; SOC-2 Type II In-Country Audit Attestation Package
+          </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+            Clause §5.8.3 verified with 98% semantic clause alignment by Copilot.
+          </p>
+<div class="pt-1 flex items-center justify-between font-body-sm text-body-sm">
+<span class="font-code-sm text-[11px] text-rose-700 font-bold">Due Today</span>
+<img class="w-6 h-6 rounded-full object-cover" data-alt="Tariq Mansoor technical avatar thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVeS6EoEyoX4-8iKb77pl_1ODhQa0DC92BJUzOMFV-whkz4o1FgJ8s82uWL7XJDkOquO1_LNiR6QbxPXli-kW78GhD_Q7WRWQt6x7EfFTUEDoldIaptvQEM5lcAx21mBAYl-clLvYLtj_aNn_7-Q5JeodqQQtafkplLxkuOiUzCkx2i86QW-L1kOYuLqNIAUjnU2_ShLgm-Iol4QVayiTRqZJqCOG5-j0wt_fYCSsm8NnBSKyUoSA" title="Tariq Mansoor">
+</div>
+</div>
+<!-- Task Card 8 -->
+<div class="p-3.5 bg-surface-container-lowest rounded-lg shadow-sm hover:shadow-md transition cursor-pointer flex flex-col gap-2.5 group">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 font-label-sm text-label-sm font-semibold">Banking &amp; Treasury</span>
+<span class="font-code-sm text-[10px] text-outline font-semibold">§14.1.2 Vol I</span>
+</div>
+<h3 class="font-title-md text-body-md font-semibold text-on-surface group-hover:text-secondary transition-colors">
+            Standard Chartered $370,000 USD Irrevocable Bid Bond Guarantee Verification
+          </h3>
+<div class="p-2 rounded bg-amber-50 text-amber-900 font-code-sm text-[11px] flex items-center justify-between">
+<span>Bank Draft under CFO Review</span>
+<span class="material-symbols-outlined text-[14px]">local_shipping</span>
+</div>
+<div class="pt-1 flex items-center justify-between font-body-sm text-body-sm">
+<span class="font-code-sm text-[11px] text-outline">Courier Active</span>
+<img class="w-6 h-6 rounded-full object-cover" data-alt="Elena Rostova avatar photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZVhtIV8ZRWcoOnBbzdYuely2SvSHX_PUl9BBK2JtbVd3inGYgC4SKdQAqDp9eIcmvVciLBIoMf7f-vA1W-3ESMyzYtuc12Ktg0EuKRnurZcIWH9zN2l7J1jdFvUl_JUvJ-xtzQEfbW5MjHLfGUuEBqp3egyxj081m9FzjPyyr0ESzBV4mH4VJ3aHbwKhs8BgfcBpsYJX3jVe_Gu2oxqPRm4YccUry9YSFpLv5RK0xeCkppF-ecsM" title="Elena Rostova">
+</div>
+</div>
+</div>
+<!-- COLUMN 4: COMPLETED & GATE APPROVED (12 Tasks) -->
+<div class="flex flex-col gap-3 bg-surface-container-low p-3 rounded-xl min-h-[640px]">
+<!-- Column Header -->
+<div class="flex items-center justify-between pb-2">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Done / Cleared</span>
+<span class="px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-900 font-code-sm text-code-sm font-bold">12</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-emerald-600">done_all</span>
+</div>
+<!-- Task Card 9 -->
+<div class="p-3 bg-surface-container-lowest/80 rounded-lg shadow-sm flex flex-col gap-1.5 opacity-90 hover:opacity-100 transition">
+<div class="flex items-center justify-between">
+<span class="font-code-sm text-[10px] text-emerald-700 font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+              Done Aug 30
+            </span>
+<span class="font-code-sm text-[10px] text-outline">Vol I Admin</span>
+</div>
+<h4 class="font-title-md text-body-sm font-medium text-on-surface line-through opacity-75">
+            Pre-Bid Conference Clarification Form &amp; Addendum #02 Ingestion
+          </h4>
+<div class="flex items-center justify-between text-outline font-body-sm text-[11px]">
+<span>Sarah Jenkins</span>
+<span class="font-code-sm text-[10px]">Signed off</span>
+</div>
+</div>
+<!-- Task Card 10 -->
+<div class="p-3 bg-surface-container-lowest/80 rounded-lg shadow-sm flex flex-col gap-1.5 opacity-90 hover:opacity-100 transition">
+<div class="flex items-center justify-between">
+<span class="font-code-sm text-[10px] text-emerald-700 font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+              Done Sep 02
+            </span>
+<span class="font-code-sm text-[10px] text-outline">Tier-3 NDC</span>
+</div>
+<h4 class="font-title-md text-body-sm font-medium text-on-surface line-through opacity-75">
+            Tier-3 National Data Center (NDC) Kaliakair Colocation MoU
+          </h4>
+<div class="flex items-center justify-between text-outline font-body-sm text-[11px]">
+<span>Tariq Mansoor</span>
+<span class="font-code-sm text-[10px]">MoU Stamped</span>
+</div>
+</div>
+<!-- Task Card 11 -->
+<div class="p-3 bg-surface-container-lowest/80 rounded-lg shadow-sm flex flex-col gap-1.5 opacity-90 hover:opacity-100 transition">
+<div class="flex items-center justify-between">
+<span class="font-code-sm text-[10px] text-emerald-700 font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+              Done Sep 03
+            </span>
+<span class="font-code-sm text-[10px] text-outline">NBR Integration</span>
+</div>
+<h4 class="font-title-md text-body-sm font-medium text-on-surface line-through opacity-75">
+            NBR Direct API e-Tax Invoicing Sandbox Architecture Proof
+          </h4>
+<div class="flex items-center justify-between text-outline font-body-sm text-[11px]">
+<span>Rahim Ahmed</span>
+<span class="font-code-sm text-[10px]">Sandbox 200 OK</span>
+</div>
+</div>
+<!-- Task Card 12 -->
+<div class="p-3 bg-surface-container-lowest/80 rounded-lg shadow-sm flex flex-col gap-1.5 opacity-90 hover:opacity-100 transition">
+<div class="flex items-center justify-between">
+<span class="font-code-sm text-[10px] text-emerald-700 font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+              Done Aug 28
+            </span>
+<span class="font-code-sm text-[10px] text-outline">$2,500 Fee</span>
+</div>
+<h4 class="font-title-md text-body-sm font-medium text-on-surface line-through opacity-75">
+            Tender Dossier Non-Refundable Fee $2,500 USD Receipt Verification
+          </h4>
+<div class="flex items-center justify-between text-outline font-body-sm text-[11px]">
+<span>Elena Rostova</span>
+<span class="font-code-sm text-[10px]">Receipt Ingested</span>
+</div>
+</div>
+<!-- Collapsed Badge Footer -->
+<div class="p-3 bg-emerald-50 text-emerald-900 rounded-lg text-center font-body-sm text-body-sm font-semibold flex items-center justify-center gap-2 cursor-pointer hover:bg-emerald-100 transition">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+<span>+ 8 more completed tasks</span>
+</div>
+</div>
+</div>
+<!-- Right 3-Columns: Capacity, Sprint Velocity & AI Copilot Rail -->
+<div class="col-span-12 xl:col-span-3 flex flex-col gap-gutter-md">
+<!-- Sprint Burndown & Velocity Mini Graph -->
+<div class="p-4 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">trending_down</span>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Sprint Burndown</h3>
+</div>
+<span class="font-code-sm text-[11px] text-outline">Sprint #3</span>
+</div>
+<!-- Inline SVG Sparkline / Burndown Graph -->
+<div class="h-28 w-full relative flex items-center">
+<svg class="w-full h-full overflow-visible" fill="none" viewBox="0 0 280 90">
+<!-- Ideal burndown guideline -->
+<path class="text-slate-300" d="M 10 15 L 270 80" stroke="currentColor" stroke-dasharray="4 4" stroke-width="2"></path>
+<!-- Actual burndown trajectory -->
+<path class="text-secondary" d="M 10 15 Q 70 30, 130 35 T 210 65 T 270 78" fill="none" stroke="currentColor" stroke-width="3"></path>
+<!-- Data markers -->
+<circle class="fill-secondary" cx="10" cy="15" r="4"></circle>
+<circle class="fill-secondary" cx="130" cy="35" r="4"></circle>
+<circle class="fill-rose-600 ring-2 ring-white" cx="210" cy="65" r="5"></circle>
+<circle class="fill-emerald-500" cx="270" cy="78" r="4"></circle>
+</svg>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-code-sm text-[11px] pt-1 border-t border-surface-container">
+<span>Day 1 (20 tasks)</span>
+<span class="text-rose-700 font-bold">Today (3 remaining)</span>
+<span class="text-emerald-700">Target: Sep 08</span>
+</div>
+</div>
+<!-- Team Workload Allocation in Current Sprint -->
+<div class="p-4 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">group</span>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Team Capacity</h3>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Active Sprint</span>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Sarah Jenkins -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-body-sm text-body-sm">
+<span class="font-semibold text-on-surface">Sarah Jenkins (Lead)</span>
+<span class="font-code-sm text-code-sm font-bold text-on-surface">3 tasks (85%)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full w-[85%]"></div>
+</div>
+</div>
+<!-- Tariq Mansoor -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-body-sm text-body-sm">
+<span class="font-semibold text-on-surface">Tariq Mansoor (Arch)</span>
+<span class="font-code-sm text-code-sm font-bold text-amber-700">4 tasks (90%)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full rounded-full w-[90%]"></div>
+</div>
+</div>
+<!-- Elena Rostova -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-body-sm text-body-sm">
+<span class="font-semibold text-on-surface flex items-center gap-1">
+                Elena Rostova
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span>
+</span>
+<span class="font-code-sm text-code-sm font-bold text-rose-700">4 tasks (95%)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-rose-600 h-full rounded-full w-[95%]"></div>
+</div>
+</div>
+<!-- Rahim Ahmed -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-body-sm text-body-sm">
+<span class="font-semibold text-on-surface">Rahim Ahmed (DevOps)</span>
+<span class="font-code-sm text-code-sm font-semibold text-emerald-700">2 tasks (40%)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full rounded-full w-[40%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Automated AI Task Assistant / Copilot Suggestion -->
+<div class="p-4 bg-gradient-to-br from-indigo-50/70 via-blue-50/50 to-surface-container-lowest rounded-xl shadow-sm flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">auto_awesome</span>
+<span class="font-title-md text-body-md font-bold text-on-surface">AI Sprint Copilot</span>
+</div>
+<span class="font-label-sm text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed">LIVE RULE</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+<strong>Recommended Workflow Optimization:</strong> Auto-assign SLA Exception Memo review to <em>Legal Counsel (Farhan K.)</em> the instant Rahim Ahmed uploads draft memo to Task §12.3.0.
+        </p>
+<div class="flex items-center gap-2 pt-1">
+<button class="flex-1 py-1.5 px-3 bg-secondary text-on-secondary rounded-lg font-title-md text-body-sm hover:bg-secondary-container transition flex items-center justify-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+<span>Apply Automation</span>
+</button>
+<button class="p-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-outline hover:text-on-surface transition" title="Dismiss">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+</div>
+<!-- Real-Time Activity & Audit Feed -->
+<div class="p-4 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[18px]">history</span>
+<h3 class="font-title-md text-body-md font-bold text-on-surface">Sprint Activity Audit</h3>
+</div>
+<span class="font-code-sm text-[10px] text-outline">Real-Time</span>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Feed Item 1 -->
+<div class="flex items-start gap-2.5">
+<div class="w-2 h-2 rounded-full bg-secondary mt-1.5 flex-shrink-0"></div>
+<div class="flex flex-col font-body-sm text-body-sm">
+<span><strong>Tariq Mansoor</strong> uploaded <code class="text-secondary font-code-sm">OpenShift_Topology_v2.pdf</code></span>
+<span class="text-outline font-code-sm text-[10px]">12 mins ago • Clause §3.1.2</span>
+</div>
+</div>
+<!-- Feed Item 2 -->
+<div class="flex items-start gap-2.5">
+<div class="w-2 h-2 rounded-full bg-rose-600 mt-1.5 flex-shrink-0"></div>
+<div class="flex flex-col font-body-sm text-body-sm">
+<span><strong>Elena Rostova</strong> flagged <strong>Deloitte Audit</strong> as Gate Blocker</span>
+<span class="text-outline font-code-sm text-[10px]">45 mins ago • Critical Statutory</span>
+</div>
+</div>
+<!-- Feed Item 3 -->
+<div class="flex items-start gap-2.5">
+<div class="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0"></div>
+<div class="flex flex-col font-body-sm text-body-sm">
+<span><strong>Sarah Jenkins</strong> moved <strong>Pre-Bid Clarification</strong> to Done</span>
+<span class="text-outline font-code-sm text-[10px]">2 hours ago • Gate 2 Cleared</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple interactive micro-state toggle for view switcher buttons
+  document.querySelectorAll('[title="Kanban Board View"], [title="List View"], [title="Gantt Timeline View"]').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const parent = this.parentElement;
+      parent.querySelectorAll('button').forEach(b => {
+        b.classList.remove('bg-surface-container-lowest', 'text-on-surface', 'shadow-sm', 'font-semibold');
+        b.classList.add('text-outline');
+      });
+      this.classList.remove('text-outline');
+      this.classList.add('bg-surface-container-lowest', 'text-on-surface', 'shadow-sm', 'font-semibold');
+    });
+  });
+</script></main></div></body></html>

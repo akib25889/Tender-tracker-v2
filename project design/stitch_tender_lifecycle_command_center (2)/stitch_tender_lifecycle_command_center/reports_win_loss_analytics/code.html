@@ -1,0 +1,900 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary-fixed": "#dae2fd", "error-container": "#ffdad6", "on-primary-fixed-variant": "#3f465c", "surface-container-low": "#eff4ff", "on-surface": "#0b1c30", "tertiary": "#000000", "secondary": "#0051d5", "tertiary-fixed": "#eaddff", "surface": "#f8f9ff", "outline-variant": "#c6c6cd", "on-secondary": "#ffffff", "on-primary-fixed": "#131b2e", "surface-container-highest": "#d3e4fe", "background": "#f8f9ff", "on-tertiary": "#ffffff", "on-background": "#0b1c30", "inverse-surface": "#213145", "surface-container-high": "#dce9ff", "surface-container-lowest": "#ffffff", "surface-dim": "#cbdbf5", "on-tertiary-fixed": "#25005a", "primary-fixed-dim": "#bec6e0", "tertiary-container": "#25005a", "secondary-fixed-dim": "#b4c5ff", "inverse-primary": "#bec6e0", "on-error": "#ffffff", "on-primary-container": "#7c839b", "secondary-container": "#316bf3", "on-secondary-fixed": "#00174b", "on-primary": "#ffffff", "surface-variant": "#d3e4fe", "on-surface-variant": "#45464d", "on-tertiary-container": "#9863ff", "on-error-container": "#93000a", "tertiary-fixed-dim": "#d2bbff", "on-secondary-fixed-variant": "#003ea8", "primary-container": "#131b2e", "surface-tint": "#565e74", "on-secondary-container": "#fefcff", "on-tertiary-fixed-variant": "#5a00c6", "secondary-fixed": "#dbe1ff", "primary": "#000000", "outline": "#76777d", "inverse-on-surface": "#eaf1ff", "surface-bright": "#f8f9ff", "surface-container": "#e5eeff", "error": "#ba1a1a" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "sidebar-collapsed": "4.5rem", "gutter-xl": "1.5rem", "gutter-lg": "1rem", "gutter-md": "0.75rem", "sidebar-expanded": "16rem", "header-height": "3.5rem", "gutter-sm": "0.5rem", "row-gap-dense": "0.375rem", "container-padding-desktop": "1.5rem", "container-padding-mobile": "1rem", "gutter-xs": "0.25rem" }, "fontFamily": { "code-md": [ "JetBrains Mono" ], "body-sm": [ "Inter" ], "display-lg": [ "Plus Jakarta Sans" ], "label-md": [ "Inter" ], "headline-sm": [ "Plus Jakarta Sans" ], "headline-md": [ "Plus Jakarta Sans" ], "code-sm": [ "JetBrains Mono" ], "headline-lg": [ "Plus Jakarta Sans" ], "body-lg": [ "Inter" ], "title-md": [ "Inter" ], "display-lg-mobile": [ "Plus Jakarta Sans" ], "label-sm": [ "Inter" ], "body-md": [ "Inter" ] }, "fontSize": { "code-md": [ "13px", { "lineHeight": "18px", "fontWeight": "500" } ], "body-sm": [ "12px", { "lineHeight": "16px", "fontWeight": "400" } ], "display-lg": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" } ], "headline-sm": [ "16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" } ], "headline-md": [ "20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "code-sm": [ "11px", { "lineHeight": "14px", "fontWeight": "500" } ], "headline-lg": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "body-lg": [ "14px", { "lineHeight": "20px", "fontWeight": "400" } ], "title-md": [ "15px", { "lineHeight": "22px", "fontWeight": "600" } ], "display-lg-mobile": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "600" } ], "body-md": [ "13px", { "lineHeight": "18px", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-sidebar-expanded bg-[#0F172A] z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-header-height px-gutter-lg flex items-center justify-between border-b border-[#1E293B]"><div class="flex items-center gap-gutter-sm"><img alt="TenderTracker Emblem" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UFdRrwTpA7yfBlQcwn56dg-2iDPdAkp3SdfJr8ig2PALUS6n36txhkQkdYUAqzs95o9tiBbJbaVzwtYhgeGXXU46Kkmekf0w_C-KT18o0IAz4tR60Ob7jgR4JnCc8070h9klyZZqxJAN026r-FGrXIyYi4t3P6UL8mNCCsgRDJJ4KHuQFlJv0CjnJHKgAGFgfXR_PHHRD_qzBlG0NNNKiRM6jF47ndJRfOUC2RXO4K6VVioxuy7Yf0lg"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-[#FFFFFF] tracking-tight leading-none">TenderTracker</span><span class="font-label-sm text-label-sm text-[#94A3B8] uppercase mt-0.5 tracking-wider">Procurement Core</span></div></div><span class="px-1.5 py-0.5 bg-[#1E293B] text-[#93C5FD] font-label-sm text-[10px] rounded-lg font-semibold tracking-wider">v4.2</span></div><div class="px-gutter-md py-gutter-md"><div class="px-gutter-sm pb-gutter-xs text-[10px] font-label-sm font-semibold tracking-wider uppercase text-[#64748B]">Command Navigation</div><nav class="space-y-0.5" data-active-classes="bg-[#1E293B] text-[#FFFFFF] font-semibold"><a aria-current="page" class="flex items-center justify-between px-gutter-sm py-2 rounded-lg transition-colors bg-[#1E293B] text-[#FFFFFF] font-semibold" data-path="dashboard" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">dashboard</span><span class="font-body-md text-body-md">Dashboard</span></div><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span></a><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="my-tasks" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">check_circle</span><span class="font-body-md text-body-md">My Tasks</span></div><span class="px-1.5 py-0.2 rounded-full bg-[#1E293B] text-[#F8FAFC] font-code-sm text-code-sm font-semibold">18</span></a><div><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="all-tenders" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">folder_managed</span><span class="font-body-md text-body-md">Tenders</span></div><span class="material-symbols-outlined text-[16px]">expand_more</span></a><div class="pl-7 pr-gutter-xs py-1 space-y-0.5"><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="all-tenders" href="#"><span>All Tenders</span><span class="font-code-sm text-[11px] text-[#64748B]">142</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="active-tenders" href="#"><span>Active Pipeline</span><span class="font-code-sm text-[11px] text-secondary">24</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="due-soon-tenders" href="#"><span>Due Soon</span><span class="px-1.5 py-0.2 rounded-full bg-error-container text-on-error-container font-code-sm text-[10px] font-semibold">5</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="submitted-tenders" href="#"><span>Submitted</span><span class="font-code-sm text-[11px] text-[#64748B]">68</span></a><a class="flex items-center justify-between py-1.5 px-2 rounded text-[#94A3B8] hover:text-[#FFFFFF] font-body-sm text-body-sm transition-colors" data-path="completed-tenders" href="#"><span>Completed</span><span class="font-code-sm text-[11px] text-[#64748B]">45</span></a></div></div><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="calendar" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">calendar_month</span><span class="font-body-md text-body-md">Calendar</span></div><div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-error animate-ping"></span><span class="font-code-sm text-code-sm text-error">3 Due</span></div></a><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="documents" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">fact_check</span><span class="font-body-md text-body-md">Documents</span></div><span class="px-1.5 py-0.2 rounded-full bg-surface-container-high text-on-surface font-code-sm text-[10px]">Compliance</span></a><a class="flex items-center px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="team" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">groups</span><span class="font-body-md text-body-md">Team &amp; Workload</span></div></a><a class="flex items-center justify-between px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="reports" href="#"><div class="flex items-center gap-gutter-sm"><span class="material-symbols-outlined text-[18px]">query_stats</span><span class="font-body-md text-body-md">Reports &amp; Win/Loss</span></div></a></nav></div></div><div class="px-gutter-md pb-gutter-lg"><div class="p-gutter-sm rounded-xl bg-[#1E293B] mb-gutter-sm"><div class="flex items-center justify-between mb-1.5"><span class="font-label-sm text-label-sm text-[#94A3B8]">Pipeline Health</span><span class="font-code-sm text-code-sm text-[#F8FAFC]">84%</span></div><div class="w-full bg-[#0F172A] h-1.5 rounded-full overflow-hidden"><div class="bg-secondary h-full rounded-full w-4/5"></div></div></div><nav class="space-y-0.5" data-active-classes="bg-[#1E293B] text-[#FFFFFF]"><a class="flex items-center gap-gutter-sm px-gutter-sm py-2 rounded-lg text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#FFFFFF] transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-[18px]">settings</span><span class="font-body-md text-body-md">Settings</span></a></nav></div></aside><div class="pl-sidebar-expanded"><header class="fixed top-0 left-sidebar-expanded right-0 h-header-height bg-surface-container-lowest/95 backdrop-blur-xl border-b border-outline-variant/30 z-40 flex items-center justify-between px-gutter-xl"><div class="flex items-center gap-gutter-lg flex-1 max-w-2xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span><input class="w-full pl-10 pr-16 py-1.5 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline border-none focus:outline-none focus:ring-1 focus:ring-secondary" placeholder="Search RFP, Tender ID, Organization, or Team member... (Ctrl + K)" type="text"><div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-outline font-code-sm text-[10px] bg-surface-container px-1.5 py-0.5 rounded"><kbd>⌘</kbd><kbd>K</kbd></div></div><span class="px-2.5 py-1 rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm font-semibold tracking-wider whitespace-nowrap">ENTERPRISE</span></div><div class="flex items-center gap-gutter-md"><button class="flex items-center gap-1.5 px-gutter-md py-1.5 bg-secondary text-on-secondary rounded-lg font-title-md text-body-sm hover:bg-secondary-container transition-colors shadow-sm"><span class="material-symbols-outlined text-[18px]">add</span><span>New Tender</span></button><button class="flex items-center gap-1.5 px-gutter-sm py-1.5 bg-surface-container rounded-lg text-on-surface font-title-md text-body-sm hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-secondary text-[18px]">auto_awesome</span><span class="font-label-md text-label-md">AI Assistant</span></button><div class="h-5 w-px bg-outline-variant/50 mx-gutter-xs"></div><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" title="8 new alerts"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-error"></span></span></button><div class="flex items-center gap-gutter-sm pl-gutter-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-surface-container" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvO9pEUYMDIH04_VDYu4hkNa8H2FyGPJH4xzNCSHH-CWmTWgqeLqyq4GNvtg8AgqMrpYLn6bisnAQoDKUILXXpVWvNuW0FOPBEieaGt1ug3D4s7NLAGKR8uFMOExPiT6RdyWBYNdyjONydDVELp2RxpTGWxabDd2hy7LW_ED5m1vR_rKmzX8lg9eaBqYjDPLRRT3IxNo9kr-TZRGZp8v6ktQgTBmxkIcTb2FxaVisN1eTLKnCmvp8"><div class="flex flex-col text-left"><span class="font-title-md text-body-sm text-on-surface font-semibold leading-tight">Sarah Jenkins</span><span class="font-label-sm text-[11px] text-on-surface-variant leading-tight">Head of Bidding &amp; Ops</span></div></div></div></header><main class="relative pt-header-height min-h-screen bg-surface"><div class="flex flex-col w-full">
+<!-- Sub-Header Command Ribbon / Scope & Period Selectors -->
+<section class="w-full bg-surface-container-lowest px-gutter-xl py-4 shadow-sm flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+<div class="flex flex-col gap-1">
+<nav class="flex items-center gap-2 font-code-sm text-code-sm text-on-surface-variant">
+<span>Procurement Analytics</span>
+<span class="material-symbols-outlined text-[13px] text-outline">chevron_right</span>
+<span>Executive Intelligence</span>
+<span class="material-symbols-outlined text-[13px] text-outline">chevron_right</span>
+<span class="text-secondary font-semibold">Win-Loss Performance Ledger</span>
+</nav>
+<div class="flex items-center gap-3">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Bid Evaluation &amp; Win/Loss Analytics</h1>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-low text-secondary font-code-sm text-code-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+          Telemetry Engine 4.2v
+        </span>
+</div>
+</div>
+<!-- Filter Pills & Export Operations -->
+<div class="flex flex-wrap items-center gap-2">
+<!-- Date Scope Dropdown Pill -->
+<div class="inline-flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-lg text-on-surface font-title-md text-body-sm shadow-sm cursor-pointer hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[16px] text-secondary">date_range</span>
+<span>FY 2025–2026 (YTD)</span>
+<span class="material-symbols-outlined text-[14px] text-outline">expand_more</span>
+</div>
+<!-- Sector Filter -->
+<div class="inline-flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-lg text-on-surface font-title-md text-body-sm shadow-sm cursor-pointer hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[16px] text-outline">category</span>
+<span>Sectors: <strong class="font-semibold text-on-surface">All (Multilateral, Gov ICT, Fin)</strong></span>
+<span class="material-symbols-outlined text-[14px] text-outline">expand_more</span>
+</div>
+<!-- Value Bracket Tier -->
+<div class="inline-flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-lg text-on-surface font-title-md text-body-sm shadow-sm cursor-pointer hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[16px] text-outline">payments</span>
+<span>Tier: <strong class="font-semibold text-on-surface">$1M - $25M+</strong></span>
+<span class="material-symbols-outlined text-[14px] text-outline">expand_more</span>
+</div>
+<div class="h-6 w-px bg-surface-container-high mx-1 hidden sm:block"></div>
+<!-- Quick Action Buttons -->
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-title-md text-body-sm transition-colors shadow-sm" title="Re-run Monte Carlo simulation">
+<span class="material-symbols-outlined text-[16px] text-secondary">model_training</span>
+<span>Monte Carlo</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-title-md text-body-sm transition-colors shadow-sm" title="Export CSV dataset">
+<span class="material-symbols-outlined text-[16px]">csv</span>
+<span>Raw CSV</span>
+</button>
+<button class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-primary text-on-primary font-title-md text-body-sm shadow-md hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-[17px]">picture_as_pdf</span>
+<span>Executive Deck (PDF)</span>
+</button>
+</div>
+</section>
+<!-- Main Canvas -->
+<div class="px-gutter-xl py-6 flex flex-col gap-6">
+<!-- MODULE 1: The 10-Second Executive Win/Loss KPI Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+<!-- KPI 1: Win Rate -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Win Rate (Trailing 12M)</span>
+<span class="inline-flex items-center gap-0.5 text-[#15803D] bg-[#F0FDF4] px-1.5 py-0.5 rounded font-code-sm text-code-sm font-semibold">
+<span class="material-symbols-outlined text-[13px]">arrow_upward</span> +4.2%
+          </span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-on-surface">34.8%</span>
+<span class="font-code-sm text-code-sm text-outline">vs 30.6% base</span>
+</div>
+<div class="mt-3 pt-2 bg-surface-container-low/60 -mx-4 -mb-4 px-4 py-2 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">UN / World Bank Segment</span>
+<span class="font-code-sm text-code-sm text-secondary font-semibold">42.1%</span>
+</div>
+</div>
+<!-- KPI 2: Pipeline Decided -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Total Pipeline Decided</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">38 Bids</span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-on-surface">$86.4M</span>
+<span class="font-code-sm text-code-sm text-outline">USD</span>
+</div>
+<div class="mt-3">
+<div class="flex items-center justify-between font-code-sm text-[10px] text-outline mb-1">
+<span class="text-[#15803D] font-semibold">Won $32.8M (38%)</span>
+<span class="text-[#B91C1C] font-semibold">Lost $41.2M</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden flex">
+<div class="bg-[#15803D] h-full" style="width: 38%"></div>
+<div class="bg-[#B91C1C] h-full" style="width: 48%"></div>
+<div class="bg-secondary h-full" style="width: 14%"></div>
+</div>
+</div>
+</div>
+<!-- KPI 3: Avg Deal Won -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Avg Deal Size (Won)</span>
+<span class="material-symbols-outlined text-[18px] text-secondary">verified</span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-on-surface">$4.68M</span>
+<span class="font-code-sm text-code-sm text-outline">USD</span>
+</div>
+<div class="mt-3 pt-2 bg-surface-container-low/60 -mx-4 -mb-4 px-4 py-2 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Ceiling Capture Ratio</span>
+<span class="font-code-sm text-code-sm text-[#15803D] font-semibold">94.2%</span>
+</div>
+</div>
+<!-- KPI 4: Bid Cycle Duration -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Avg Bid Cycle Time</span>
+<span class="inline-flex items-center gap-0.5 text-[#15803D] bg-[#F0FDF4] px-1.5 py-0.5 rounded font-code-sm text-code-sm font-semibold">
+            -8.0 Days
+          </span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-on-surface">46.5</span>
+<span class="font-code-sm text-code-sm text-outline">Days Avg</span>
+</div>
+<div class="mt-3 pt-2 bg-surface-container-low/60 -mx-4 -mb-4 px-4 py-2 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">AI Co-Author Impact</span>
+<span class="font-code-sm text-code-sm text-secondary font-semibold">+31% Velocity</span>
+</div>
+</div>
+<!-- KPI 5: Commercial Margin Realized -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Commercial Net EBITDA</span>
+<span class="material-symbols-outlined text-[18px] text-[#15803D]">trending_up</span>
+</div>
+<div class="mt-3 flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-[#15803D]">27.4%</span>
+<span class="font-code-sm text-code-sm text-outline">Realized</span>
+</div>
+<div class="mt-3 pt-2 bg-surface-container-low/60 -mx-4 -mb-4 px-4 py-2 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Target Variance</span>
+<span class="font-code-sm text-code-sm text-[#15803D] font-semibold">+2.4% above floor</span>
+</div>
+</div>
+</section>
+<!-- MODULE 2: Decision Driver Decomposition (Why We Win vs Why We Lose) -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left: Why We Win (6 Cols) -->
+<div class="lg:col-span-6 bg-surface-container-lowest rounded-xl p-5 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#15803D] text-[22px]">thumb_up</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Why We Win: Primary Decision Drivers</h2>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#15803D] font-code-sm text-code-sm font-semibold">14 Wins Evaluated</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">
+            Decomposed based on public debrief scores, client procurement criteria, and post-award reviews.
+          </p>
+<div class="space-y-4">
+<!-- Win Driver 1 -->
+<div class="bg-surface-container-low p-3.5 rounded-xl">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#15803D]"></span>
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Technical Score Superiority</span>
+</div>
+<span class="font-code-md text-code-md font-semibold text-[#15803D]">38% of wins</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-2 pl-4.5">
+                In-country Tier-3 data residency certs, local OpenShift/K8s certified architects, zero statutory deviations.
+              </p>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#15803D] h-full rounded-full" style="width: 78%"></div>
+</div>
+</div>
+<!-- Win Driver 2 -->
+<div class="bg-surface-container-low p-3.5 rounded-xl">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#15803D]"></span>
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Strategic Teaming &amp; Local Consortium</span>
+</div>
+<span class="font-code-md text-code-md font-semibold text-[#15803D]">27% of wins</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-2 pl-4.5">
+                Local partnership with Spectrum ICT in Dhaka delivered maximum domestic content points in multilateral scoring.
+              </p>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#15803D] h-full rounded-full" style="width: 58%"></div>
+</div>
+</div>
+<!-- Win Driver 3 -->
+<div class="bg-surface-container-low p-3.5 rounded-xl">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#15803D]"></span>
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Bid Governance &amp; Compliance Velocity</span>
+</div>
+<span class="font-code-md text-code-md font-semibold text-[#15803D]">21% of wins</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-2 pl-4.5">
+                Zero formal disqualifications; 100% bank guarantee and legal clearances locked 48 hours before official cutoff.
+              </p>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#15803D] h-full rounded-full" style="width: 44%"></div>
+</div>
+</div>
+<!-- Win Driver 4 -->
+<div class="bg-surface-container-low p-3.5 rounded-xl">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#15803D]"></span>
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Price-to-Win Calibration</span>
+</div>
+<span class="font-code-md text-code-md font-semibold text-[#15803D]">14% of wins</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-2 pl-4.5">
+                Calibrated within 3-5% under the agency ceiling with foreign exchange contingency indexing.
+              </p>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#15803D] h-full rounded-full" style="width: 32%"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Highest technical win delta: <strong class="text-on-surface">+8.4 pts vs #2</strong></span>
+<button class="text-secondary hover:underline flex items-center gap-0.5">Explore win matrix <span class="material-symbols-outlined text-[14px]">arrow_forward</span></button>
+</div>
+</div>
+<!-- Right: Why We Lost (6 Cols) -->
+<div class="lg:col-span-6 bg-surface-container-lowest rounded-xl p-5 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#B91C1C] text-[22px]">thumb_down</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Why We Lost: Root Cause Vulnerabilities</h2>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-[#FEF2F2] text-[#B91C1C] font-code-sm text-code-sm font-semibold">19 Losses Evaluated</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">
+            Aggregated post-bid debrief notes, FOIA records, and competitor price delta analyses.
+          </p>
+<div class="space-y-4">
+<!-- Loss Driver 1 -->
+<div class="bg-surface-container-low p-3.5 rounded-xl">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#B91C1C]"></span>
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Price Undercut by Offshore Tier-2</span>
+</div>
+<span class="font-code-md text-code-md font-semibold text-[#B91C1C]">46% of losses</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-2 pl-4.5">
+                Competitors (e.g. Wipro / regional offshore vendors) discounting 15–20% on baseline engineering day rates.
+              </p>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#B91C1C] h-full rounded-full" style="width: 86%"></div>
+</div>
+</div>
+<!-- Loss Driver 2 -->
+<div class="bg-surface-container-low p-3.5 rounded-xl">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#B91C1C]"></span>
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Pre-Qualification Spec Lock</span>
+</div>
+<span class="font-code-md text-code-md font-semibold text-[#B91C1C]">28% of losses</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-2 pl-4.5">
+                Competitor-influenced proprietary hardware specs baked into preliminary pre-RFP advisory stages.
+              </p>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#B91C1C] h-full rounded-full" style="width: 52%"></div>
+</div>
+</div>
+<!-- Loss Driver 3 -->
+<div class="bg-surface-container-low p-3.5 rounded-xl">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#B91C1C]"></span>
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Subcontractor SLA Dependencies</span>
+</div>
+<span class="font-code-md text-code-md font-semibold text-[#B91C1C]">16% of losses</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-2 pl-4.5">
+                Third-party cloud infrastructure liability caps caused customer compliance deductions in scoring rubric.
+              </p>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#B91C1C] h-full rounded-full" style="width: 34%"></div>
+</div>
+</div>
+<!-- Loss Driver 4 -->
+<div class="bg-surface-container-low p-3.5 rounded-xl">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#B91C1C]"></span>
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Delayed Gate 1 Go/No-Go Decision</span>
+</div>
+<span class="font-code-md text-code-md font-semibold text-[#B91C1C]">10% of losses</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-2 pl-4.5">
+                Tender qualification delayed past 5 business days, compressing executive narrative and red team review cycles.
+              </p>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#B91C1C] h-full rounded-full" style="width: 22%"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Average price penalty deficit: <strong class="text-[#B91C1C]">-14.2%</strong></span>
+<button class="text-[#B91C1C] hover:underline flex items-center gap-0.5">Audit loss prevention <span class="material-symbols-outlined text-[14px]">arrow_forward</span></button>
+</div>
+</div>
+</section>
+<!-- MODULE 3: Competitor Head-to-Head Telemetry & Win Probabilities -->
+<section class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Head-to-Head Competitor Intelligence</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Realized competitive advantage across multi-bid rival encounters.</p>
+</div>
+<div class="flex items-center gap-2 font-code-sm text-code-sm">
+<span class="px-2 py-1 rounded bg-[#F0FDF4] text-[#15803D] font-semibold">3 Rivals Account for 64% of Bids</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Competitor 1: PwC Global Tech -->
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center font-headline-sm text-headline-sm text-on-surface">
+                  P
+                </div>
+<div>
+<h3 class="font-title-md text-body-sm text-on-surface font-semibold">PwC Global Tech Consulting</h3>
+<span class="font-code-sm text-[10px] text-outline">Tier-1 Multinational</span>
+</div>
+</div>
+<span class="font-code-md text-code-md font-semibold text-[#15803D]">3W - 2L</span>
+</div>
+<div class="my-3 py-2 bg-surface-container-lowest/80 rounded-lg px-3">
+<div class="flex justify-between font-code-sm text-code-sm mb-1">
+<span class="text-on-surface-variant">Our Win Rate</span>
+<span class="text-[#15803D] font-bold">60.0%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden flex">
+<div class="bg-[#15803D] h-full" style="width: 60%"></div>
+<div class="bg-[#B91C1C] h-full" style="width: 40%"></div>
+</div>
+</div>
+<div class="space-y-2 mt-2 font-body-sm text-body-sm">
+<div class="flex items-start gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-[#15803D] shrink-0">check_circle</span>
+<span class="text-on-surface"><strong class="font-semibold">Our Edge:</strong> Direct local engineering hub &amp; agile pricing (-8% BOQ delta).</span>
+</div>
+<div class="flex items-start gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-[#B91C1C] shrink-0">cancel</span>
+<span class="text-on-surface-variant"><strong class="font-semibold">Rival Edge:</strong> Global brand equity in executive procurement committees.</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-2 flex items-center justify-between text-[11px] font-code-sm text-outline">
+<span>5 Contests ($22.4M)</span>
+<span class="text-secondary font-semibold">Next match: WB-2026-BD</span>
+</div>
+</div>
+<!-- Competitor 2: Wipro Solutions -->
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center font-headline-sm text-headline-sm text-on-surface">
+                  W
+                </div>
+<div>
+<h3 class="font-title-md text-body-sm text-on-surface font-semibold">Wipro Enterprise Solutions</h3>
+<span class="font-code-sm text-[10px] text-outline">Offshore Systems Integrator</span>
+</div>
+</div>
+<span class="font-code-md text-code-md font-semibold text-secondary">2W - 2L</span>
+</div>
+<div class="my-3 py-2 bg-surface-container-lowest/80 rounded-lg px-3">
+<div class="flex justify-between font-code-sm text-code-sm mb-1">
+<span class="text-on-surface-variant">Our Win Rate</span>
+<span class="text-secondary font-bold">50.0%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden flex">
+<div class="bg-[#15803D] h-full" style="width: 50%"></div>
+<div class="bg-[#B91C1C] h-full" style="width: 50%"></div>
+</div>
+</div>
+<div class="space-y-2 mt-2 font-body-sm text-body-sm">
+<div class="flex items-start gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-[#15803D] shrink-0">check_circle</span>
+<span class="text-on-surface"><strong class="font-semibold">Our Edge:</strong> In-country SLA latency guarantee &amp; 100% compliance.</span>
+</div>
+<div class="flex items-start gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-[#B91C1C] shrink-0">cancel</span>
+<span class="text-on-surface-variant"><strong class="font-semibold">Rival Edge:</strong> Aggressive offshore blended rate undercutting (-18%).</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-2 flex items-center justify-between text-[11px] font-code-sm text-outline">
+<span>4 Contests ($18.8M)</span>
+<span class="text-secondary font-semibold">High threat on cost bids</span>
+</div>
+</div>
+<!-- Competitor 3: Dimension Data / NTT -->
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center font-headline-sm text-headline-sm text-on-surface">
+                  D
+                </div>
+<div>
+<h3 class="font-title-md text-body-sm text-on-surface font-semibold">Dimension Data / NTT Core</h3>
+<span class="font-code-sm text-[10px] text-outline">Hardware &amp; Network OEM</span>
+</div>
+</div>
+<span class="font-code-md text-code-md font-semibold text-[#15803D]">2W - 1L</span>
+</div>
+<div class="my-3 py-2 bg-surface-container-lowest/80 rounded-lg px-3">
+<div class="flex justify-between font-code-sm text-code-sm mb-1">
+<span class="text-on-surface-variant">Our Win Rate</span>
+<span class="text-[#15803D] font-bold">66.7%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden flex">
+<div class="bg-[#15803D] h-full" style="width: 67%"></div>
+<div class="bg-[#B91C1C] h-full" style="width: 33%"></div>
+</div>
+</div>
+<div class="space-y-2 mt-2 font-body-sm text-body-sm">
+<div class="flex items-start gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-[#15803D] shrink-0">check_circle</span>
+<span class="text-on-surface"><strong class="font-semibold">Our Edge:</strong> Cloud-native software architecture over legacy box racking.</span>
+</div>
+<div class="flex items-start gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-[#B91C1C] shrink-0">cancel</span>
+<span class="text-on-surface-variant"><strong class="font-semibold">Rival Edge:</strong> Direct OEM line hardware manufacturer subsidies.</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-2 flex items-center justify-between text-[11px] font-code-sm text-outline">
+<span>3 Contests ($14.1M)</span>
+<span class="text-[#15803D] font-semibold">High technical superiority</span>
+</div>
+</div>
+</div>
+</section>
+<!-- MODULE 4: AI Tender Intelligence & Continuous Improvement Prescriptions -->
+<section class="bg-gradient-to-r from-surface-container-low via-surface-container-lowest to-surface-container-low p-5 rounded-xl shadow-sm relative overflow-hidden">
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[24px]">auto_awesome</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-headline-md text-headline-md text-on-surface">AI Tender Intelligence &amp; Prescriptive Recommendations</h2>
+<span class="px-2 py-0.5 rounded-full bg-secondary text-on-secondary font-code-sm text-[10px] font-semibold">PROACTIVE AI</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">3 High-confidence calibrations derived from multi-variable regressions on past 38 tenders.</p>
+</div>
+</div>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-lowest text-secondary font-title-md text-body-sm shadow-sm hover:bg-surface transition-colors">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+<span>Adjust Optimization Engine</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-1">
+<!-- Recommendation 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#EFF6FF] text-[#1D4ED8] font-code-sm text-code-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">price_change</span>
+                Pricing Calibration
+              </span>
+<span class="font-code-sm text-code-sm text-[#15803D] font-bold">+2.2% Margin</span>
+</div>
+<h3 class="font-title-md text-body-sm text-on-surface font-semibold mb-1.5">Raise BOQ Margins on UNGM Multilateral RFPs</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Historical price elasticity demonstrates multilateral win rate remains steady at 81% up to $17.9M. You can safely increase margin by 2.2% without degrading win probability.
+            </p>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between">
+<span class="font-code-sm text-[11px] text-outline">Confidence: 93.4%</span>
+<button class="text-secondary font-title-md text-body-sm hover:underline">Apply to active drafts</button>
+</div>
+</div>
+<!-- Recommendation 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#FFFBEB] text-[#B45309] font-code-sm text-code-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">speed</span>
+                Process Governance
+              </span>
+<span class="font-code-sm text-code-sm text-[#15803D] font-bold">+18% Win Lift</span>
+</div>
+<h3 class="font-title-md text-body-sm text-on-surface font-semibold mb-1.5">Enforce 48h Gate 1 Go/No-Go Decision SLA</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Tenders qualified within 48 hours show an 18% higher win rate. Delayed executive triage compresses red team reviews from 6.2 days down to 1.8 days.
+            </p>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between">
+<span class="font-code-sm text-[11px] text-outline">Confidence: 89.1%</span>
+<button class="text-secondary font-title-md text-body-sm hover:underline">Automate triage rule</button>
+</div>
+</div>
+<!-- Recommendation 3 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#FEF2F2] text-[#B91C1C] font-code-sm text-code-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">security</span>
+                Rival Countermeasure
+              </span>
+<span class="font-code-sm text-code-sm text-secondary font-bold">Spec Defense</span>
+</div>
+<h3 class="font-title-md text-body-sm text-on-surface font-semibold mb-1.5">Mandate In-Country Sovereignty in Clarifications</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              To neutralize offshore labor discounting (Wipro / BPO rivals), actively query data sovereignty specs in official pre-bid question rounds to disqualify foreign data centers.
+            </p>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between">
+<span class="font-code-sm text-[11px] text-outline">Confidence: 96.8%</span>
+<button class="text-secondary font-title-md text-body-sm hover:underline">Load clarification template</button>
+</div>
+</div>
+</div>
+</section>
+<!-- MODULE 5: Comparative Intelligence by Procuring Entity Matrix -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Procuring Entity Performance Matrix</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Conversion rates, competitive density, and audit posture across top buyers.</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[18px] text-outline">filter_alt</span>
+<input class="bg-surface-container-low pl-8 pr-3 py-1.5 rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline border-none focus:outline-none focus:ring-1 focus:ring-secondary" placeholder="Filter entities..." type="text">
+</div>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-low text-outline hover:text-on-surface transition-colors" title="Table Options">
+<span class="material-symbols-outlined text-[20px]">view_column</span>
+</button>
+</div>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left font-body-sm text-body-sm">
+<thead class="bg-surface-container-low text-on-surface-variant uppercase font-code-sm text-[11px] tracking-wider">
+<tr>
+<th class="py-3 px-4">Procuring Entity</th>
+<th class="py-3 px-4">Submitted / Decided</th>
+<th class="py-3 px-4">Win Ratio</th>
+<th class="py-3 px-4">Total Realized Value</th>
+<th class="py-3 px-4">Primary Decisive Factor</th>
+<th class="py-3 px-4">Key Rival Encountered</th>
+<th class="py-3 px-4">Audit Status</th>
+<th class="py-3 px-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container/60">
+<!-- Row 1: UNDP -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded bg-[#EFF6FF] text-secondary flex items-center justify-center font-code-sm text-code-sm font-bold">
+                    UN
+                  </div>
+<div>
+<span class="font-title-md text-body-sm text-on-surface font-semibold">UNDP Regional Hub</span>
+<span class="block font-code-sm text-[10px] text-outline">Geneva / Dhaka Bureau</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-code-sm text-code-sm">
+<span class="font-semibold text-on-surface">11</span> bids / <span class="text-on-surface">9 decided</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm font-semibold text-[#15803D]">55.6%</span>
+<div class="w-16 bg-surface-container h-1.5 rounded-full overflow-hidden flex">
+<div class="bg-[#15803D] h-full" style="width: 56%"></div>
+<div class="bg-[#B91C1C] h-full" style="width: 44%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-code-md text-code-md font-semibold text-on-surface">
+                $14.2M <span class="font-code-sm text-outline font-normal">USD</span>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 text-[#15803D] font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[14px]">verified</span> Data Residency (+4.8 pts)
+                </span>
+</td>
+<td class="py-3 px-4 font-body-sm text-on-surface-variant">
+                PwC Global Tech
+              </td>
+<td class="py-3 px-4">
+<span class="px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#15803D] font-code-sm text-[10px] font-semibold">
+                  Debrief Logged
+                </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface" title="Inspect debrief memo">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: World Bank -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded bg-surface-container text-on-surface flex items-center justify-center font-code-sm text-code-sm font-bold">
+                    WB
+                  </div>
+<div>
+<span class="font-title-md text-body-sm text-on-surface font-semibold">World Bank Digitization Unit</span>
+<span class="block font-code-sm text-[10px] text-outline">Washington DC / SAR</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-code-sm text-code-sm">
+<span class="font-semibold text-on-surface">8</span> bids / <span class="text-on-surface">7 decided</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm font-semibold text-[#15803D]">42.8%</span>
+<div class="w-16 bg-surface-container h-1.5 rounded-full overflow-hidden flex">
+<div class="bg-[#15803D] h-full" style="width: 43%"></div>
+<div class="bg-[#B91C1C] h-full" style="width: 57%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-code-md text-code-md font-semibold text-on-surface">
+                $11.8M <span class="font-code-sm text-outline font-normal">USD</span>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 text-[#15803D] font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[14px]">groups</span> Consortium Weight (+6.1)
+                </span>
+</td>
+<td class="py-3 px-4 font-body-sm text-on-surface-variant">
+                Dimension Data
+              </td>
+<td class="py-3 px-4">
+<span class="px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#15803D] font-code-sm text-[10px] font-semibold">
+                  Debrief Logged
+                </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Bangladesh Bank -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded bg-[#FFFBEB] text-[#B45309] flex items-center justify-center font-code-sm text-code-sm font-bold">
+                    BB
+                  </div>
+<div>
+<span class="font-title-md text-body-sm text-on-surface font-semibold">Bangladesh Bank (Central)</span>
+<span class="block font-code-sm text-[10px] text-outline">Motijheel Financial Core</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-code-sm text-code-sm">
+<span class="font-semibold text-on-surface">6</span> bids / <span class="text-on-surface">6 decided</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm font-semibold text-[#B91C1C]">16.7%</span>
+<div class="w-16 bg-surface-container h-1.5 rounded-full overflow-hidden flex">
+<div class="bg-[#15803D] h-full" style="width: 17%"></div>
+<div class="bg-[#B91C1C] h-full" style="width: 83%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-code-md text-code-md font-semibold text-on-surface">
+                $2.4M <span class="font-code-sm text-outline font-normal">USD</span>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 text-[#B91C1C] font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[14px]">trending_down</span> Price Undercut (-14%)
+                </span>
+</td>
+<td class="py-3 px-4 font-body-sm text-on-surface-variant">
+                Wipro Solutions
+              </td>
+<td class="py-3 px-4">
+<span class="px-2 py-0.5 rounded-full bg-[#FFFBEB] text-[#B45309] font-code-sm text-[10px] font-semibold">
+                  FOIA Filed
+                </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: ICT Division -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded bg-surface-container text-on-surface flex items-center justify-center font-code-sm text-code-sm font-bold">
+                    ICT
+                  </div>
+<div>
+<span class="font-title-md text-body-sm text-on-surface font-semibold">ICT Division Gov Bangladesh</span>
+<span class="block font-code-sm text-[10px] text-outline">Agargaon National Complex</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-code-sm text-code-sm">
+<span class="font-semibold text-on-surface">7</span> bids / <span class="text-on-surface">5 decided</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm font-semibold text-secondary">40.0%</span>
+<div class="w-16 bg-surface-container h-1.5 rounded-full overflow-hidden flex">
+<div class="bg-[#15803D] h-full" style="width: 40%"></div>
+<div class="bg-[#B91C1C] h-full" style="width: 60%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-code-md text-code-md font-semibold text-on-surface">
+                $4.4M <span class="font-code-sm text-outline font-normal">USD</span>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 text-[#15803D] font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[14px]">verified</span> Local Support Network
+                </span>
+</td>
+<td class="py-3 px-4 font-body-sm text-on-surface-variant">
+                Local Tier-1 Consortia
+              </td>
+<td class="py-3 px-4">
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-code-sm text-[10px] font-semibold">
+                  Under Audit
+                </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- MODULE 6: Recent Bid Post-Mortems & Debrief Ledger -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-5">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Recent Post-Mortem Debriefs</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Closed submissions with forensic evaluation reports and scoring differentials.</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-title-md text-body-sm transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[16px]">file_download</span>
+<span>Export Debrief Log</span>
+</button>
+</div>
+</div>
+<div class="space-y-3">
+<!-- Post-Mortem Item 1: WON -->
+<div class="bg-surface-container-low/70 hover:bg-surface-container-low rounded-xl p-4 transition-colors">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+<div class="flex items-start gap-3">
+<span class="px-2.5 py-1 rounded-full bg-[#F0FDF4] text-[#15803D] font-code-sm text-code-sm font-semibold mt-0.5">
+                WON
+              </span>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-title-md text-body-sm text-on-surface font-semibold">
+                    UNGM-2025-0988: Digital Beneficiary Identity &amp; Payments Infrastructure
+                  </h3>
+<span class="font-code-sm text-code-sm text-outline">UNDP Bangladesh</span>
+</div>
+<div class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 font-body-sm text-body-sm text-on-surface-variant">
+<span>Award Value: <strong class="text-on-surface font-semibold">$6,450,000 USD</strong></span>
+<span>Runner-up: <strong class="text-on-surface">PwC ($6,980,000 USD)</strong></span>
+<span>Tech Score: <strong class="text-[#15803D] font-semibold">94.2 vs 88.6 (+5.6 pts)</strong></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 lg:self-center">
+<div class="text-right hidden sm:block">
+<span class="block font-label-sm text-label-sm text-outline uppercase">Decisive Margin</span>
+<span class="font-code-sm text-code-sm text-[#15803D] font-semibold">Local Datacenter Hosting</span>
+</div>
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container-lowest text-secondary hover:bg-surface-container-high font-title-md text-body-sm shadow-sm transition-colors">
+<span>View Full Audit</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="mt-3 pt-2 bg-surface-container-lowest/60 rounded-lg p-2.5 flex items-start gap-2 font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-[#15803D] shrink-0 mt-0.5">lightbulb</span>
+<p class="text-on-surface">
+<strong>Key Debrief Takeaway:</strong> Procuring entity flagged our in-country biometric security architecture and local deployment velocity as the primary differentiator over PwC's outsourced architecture.
+            </p>
+</div>
+</div>
+<!-- Post-Mortem Item 2: LOST -->
+<div class="bg-surface-container-low/70 hover:bg-surface-container-low rounded-xl p-4 transition-colors">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+<div class="flex items-start gap-3">
+<span class="px-2.5 py-1 rounded-full bg-[#FEF2F2] text-[#B91C1C] font-code-sm text-code-sm font-semibold mt-0.5">
+                LOST
+              </span>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-title-md text-body-sm text-on-surface font-semibold">
+                    BB-FINTECH-84: Core Banking API Integration &amp; Clearing Gateway
+                  </h3>
+<span class="font-code-sm text-code-sm text-outline">Bangladesh Bank</span>
+</div>
+<div class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 font-body-sm text-body-sm text-on-surface-variant">
+<span>Our Bid: <strong class="text-on-surface font-semibold">$3,840,000 USD</strong></span>
+<span>Winning Bidder: <strong class="text-[#B91C1C]">Wipro Solutions ($3,150,000 USD)</strong></span>
+<span>Tech Score: <strong class="text-on-surface font-semibold">91.4 vs 89.8 (+1.6 pts)</strong></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 lg:self-center">
+<div class="text-right hidden sm:block">
+<span class="block font-label-sm text-label-sm text-outline uppercase">Loss Variance</span>
+<span class="font-code-sm text-code-sm text-[#B91C1C] font-semibold">18% Price Deficit</span>
+</div>
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container-lowest text-secondary hover:bg-surface-container-high font-title-md text-body-sm shadow-sm transition-colors">
+<span>View Full Audit</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="mt-3 pt-2 bg-surface-container-lowest/60 rounded-lg p-2.5 flex items-start gap-2 font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-[#B91C1C] shrink-0 mt-0.5">error_outline</span>
+<p class="text-on-surface">
+<strong>Key Debrief Takeaway:</strong> Evaluator weighted financial score at 40% vs technical 60%. Despite our higher technical compliance mark, Wipro's offshore rate undercut erased our 1.6 pt technical cushion.
+            </p>
+</div>
+</div>
+<!-- Post-Mortem Item 3: UNDER REVIEW / ADJUDICATION -->
+<div class="bg-surface-container-low/70 hover:bg-surface-container-low rounded-xl p-4 transition-colors">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+<div class="flex items-start gap-3">
+<span class="px-2.5 py-1 rounded-full bg-[#EFF6FF] text-secondary font-code-sm text-code-sm font-semibold mt-0.5">
+                REVIEW
+              </span>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-title-md text-body-sm text-on-surface font-semibold">
+                    WB-SAR-2025-014: National Health Analytics &amp; Tele-medicine Exchange
+                  </h3>
+<span class="font-code-sm text-code-sm text-outline">World Bank / Ministry of Health</span>
+</div>
+<div class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 font-body-sm text-body-sm text-on-surface-variant">
+<span>Bid Ceiling: <strong class="text-on-surface font-semibold">$12,400,000 USD</strong></span>
+<span>Our Bid: <strong class="text-secondary font-semibold">$11,850,000 USD</strong></span>
+<span>Status: <strong class="text-on-surface">Stage 2 Technical Evaluation</strong></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 lg:self-center">
+<div class="text-right hidden sm:block">
+<span class="block font-label-sm text-label-sm text-outline uppercase">Win Probability</span>
+<span class="font-code-sm text-code-sm text-secondary font-semibold">78.4% (Monte Carlo)</span>
+</div>
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container-lowest text-secondary hover:bg-surface-container-high font-title-md text-body-sm shadow-sm transition-colors">
+<span>View Real-time Ticker</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="mt-3 pt-2 bg-surface-container-lowest/60 rounded-lg p-2.5 flex items-start gap-2 font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary shrink-0 mt-0.5">timer</span>
+<p class="text-on-surface">
+<strong>Adjudication Telemetry:</strong> Financial envelopes opened yesterday. Our consortium with Spectrum ICT ranks #1 in preliminary technical matrix prior to final compliance clearance.
+            </p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div></main></div></body></html>
