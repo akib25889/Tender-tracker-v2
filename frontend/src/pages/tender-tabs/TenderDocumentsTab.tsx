@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { useTenders } from '../../context/TenderContext';
-import { Folder, FileText, Download, Upload, Copy, Check, Share2 } from 'lucide-react';
+import { Folder, FileText, Download, Upload, Share2 } from 'lucide-react';
 
 export const TenderDocumentsTab: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -10,7 +10,6 @@ export const TenderDocumentsTab: React.FC = () => {
   const tender = tenders.find((t) => t.id === id) || tenders[0];
 
   const [activeFolderFilter, setActiveFolderFilter] = useState<string>('ALL');
-  const [copiedHash, setCopiedHash] = useState<string | null>(null);
 
   const folders = [
     {
@@ -44,12 +43,6 @@ export const TenderDocumentsTab: React.FC = () => {
     setUploadFolderTarget(folderName);
   };
 
-  const handleCopyChecksum = (sha: string) => {
-    navigator.clipboard.writeText(sha);
-    setCopiedHash(sha);
-    setTimeout(() => setCopiedHash(null), 2000);
-  };
-
   const displayedDocs = tender.documents.filter(
     (d) => activeFolderFilter === 'ALL' || d.folder === activeFolderFilter
   );
@@ -59,10 +52,10 @@ export const TenderDocumentsTab: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="font-display text-lg font-bold text-[#0F172A]">
-            Tender Document Vault &amp; Statutory Repository
+            Tender Document Vault
           </h2>
           <p className="text-xs text-[#64748B]">
-            Local SSD storage vault with immutable SHA-256 cryptographic revision tracking
+            Centralized repository for RFP notices, statutory credentials, and proposal files
           </p>
         </div>
         <button
@@ -101,8 +94,8 @@ export const TenderDocumentsTab: React.FC = () => {
                       <h4 className="text-xs font-bold text-[#0F172A] leading-tight">
                         {f.label}
                       </h4>
-                      <span className="font-mono text-[10px] text-[#94A3B8] block mt-0.5">
-                        /{f.name}/
+                      <span className="text-[10px] text-[#64748B] block mt-0.5">
+                        {folderFiles.length} file(s) uploaded
                       </span>
                     </div>
                   </div>
@@ -126,17 +119,17 @@ export const TenderDocumentsTab: React.FC = () => {
         })}
       </div>
 
-      {/* Recent Files Table with SHA-256 */}
+      {/* Document Vault Table */}
       <Card
-        title="Vault Uploads &amp; Cryptographic Checksums"
-        subtitle={`Showing ${displayedDocs.length} file(s) ${activeFolderFilter !== 'ALL' ? `in /${activeFolderFilter}/` : 'across all folders'}`}
+        title="Document Vault Files"
+        subtitle={`Showing ${displayedDocs.length} document(s) ${activeFolderFilter !== 'ALL' ? `in ${folders.find((f) => f.name === activeFolderFilter)?.label || activeFolderFilter}` : 'across all categories'}`}
         headerAction={
           activeFolderFilter !== 'ALL' && (
             <button
               onClick={() => setActiveFolderFilter('ALL')}
               className="text-xs text-[#2563EB] font-semibold hover:underline"
             >
-              Clear Folder Filter
+              Clear Filter
             </button>
           )
         }
@@ -146,9 +139,9 @@ export const TenderDocumentsTab: React.FC = () => {
             <thead>
               <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
                 <th className="py-2.5 px-3">File Name</th>
-                <th className="py-2.5 px-3">Folder Path</th>
+                <th className="py-2.5 px-3">Category</th>
+                <th className="py-2.5 px-3">Size</th>
                 <th className="py-2.5 px-3">Revision</th>
-                <th className="py-2.5 px-3">SHA-256 Checksum</th>
                 <th className="py-2.5 px-3">Uploaded</th>
                 <th className="py-2.5 px-3 text-right">Action</th>
               </tr>
@@ -157,7 +150,7 @@ export const TenderDocumentsTab: React.FC = () => {
               {displayedDocs.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-6 text-center text-xs text-[#94A3B8]">
-                    No files found in this directory. Click "Upload Document" to add files.
+                    No files found in this category. Click "Upload Document" to add files.
                   </td>
                 </tr>
               ) : (
@@ -165,27 +158,17 @@ export const TenderDocumentsTab: React.FC = () => {
                   <tr key={doc.id} className="hover:bg-[#F8FAFC]">
                     <td className="py-3 px-3 font-medium text-[#0F172A] flex items-center gap-2">
                       <FileText className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
-                      <span>{doc.name}</span>
+                      <span className="font-semibold">{doc.name}</span>
+                    </td>
+                    <td className="py-3 px-3 text-[#475569]">
+                      {folders.find((f) => f.name === doc.folder)?.label ||
+                        doc.folder.replace(/^[0-9]+_/, '').replace(/_/g, ' ')}
                     </td>
                     <td className="py-3 px-3 font-mono text-[11px] text-[#64748B]">
-                      /{doc.folder}/
+                      {doc.size || '1.8 MB'}
                     </td>
-                    <td className="py-3 px-3 font-mono font-semibold">
+                    <td className="py-3 px-3 font-mono font-semibold text-[#0F172A]">
                       {doc.revision}
-                    </td>
-                    <td className="py-3 px-3 font-mono text-[10px] text-[#475569] max-w-xs truncate">
-                      <button
-                        onClick={() => handleCopyChecksum(doc.sha256)}
-                        className="flex items-center gap-1 hover:text-[#2563EB] group text-left truncate"
-                        title="Click to copy full SHA-256"
-                      >
-                        <span className="truncate">{doc.sha256}</span>
-                        {copiedHash === doc.sha256 ? (
-                          <Check className="w-3 h-3 text-[#16A34A] shrink-0" />
-                        ) : (
-                          <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 shrink-0" />
-                        )}
-                      </button>
                     </td>
                     <td className="py-3 px-3 text-[#64748B]">{doc.uploadedAt}</td>
                     <td className="py-3 px-3 text-right">

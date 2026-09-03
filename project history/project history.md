@@ -24,6 +24,21 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Document Vault Clean-Up: Removed Folder Paths & Cryptographic Hashes
+- **Category:** UI / UX Simplification
+- **Summary:**
+  - **Removed Technical Noise ([`TenderDocumentsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx)):**
+    - Removed `Folder Path` column and raw `/{doc.folder}/` directories from both the document table and repository cards.
+    - Removed `SHA-256 Checksum` column and copy hash interactions from the table, replacing them with clear, business-friendly columns: `Category` and human-readable `Size`.
+    - Simplified section title and subtitle to *"Tender Document Vault"* and *"Centralized repository for RFP notices, statutory credentials, and proposal files"*.
+  - **Security Modal Clean-Up ([`ShareDocumentModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/ShareDocumentModal.tsx)):**
+    - Updated audit footer to plain English *"Verified Audit Trail Active"*.
+- **Relevant Files:**
+  - `frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx`
+  - `frontend/src/components/modals/ShareDocumentModal.tsx`
+
+---
+
 ### [2026-09-03] — Header Streamlining & Consolidation to Dedicated Registry Page
 - **Category:** Architecture & UX Simplification
 - **Summary:**

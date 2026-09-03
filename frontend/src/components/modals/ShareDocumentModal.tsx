@@ -195,7 +195,7 @@ export const ShareDocumentModal: React.FC = () => {
 
           <div className="pt-2 text-[10px] text-[#94A3B8] flex items-center justify-between">
             <span>Author: {currentUser.name} ({currentUser.role})</span>
-            <span>SHA-256 Audit Trail Active</span>
+            <span>Verified Audit Trail Active</span>
           </div>
         </form>
       </div>
