@@ -1,125 +1,125 @@
-# Implementation Plan — Milestone 4: Frontend Foundation & Design System
+# Implementation Plan — Milestone 5: Module Implementations (17 Screens)
 
-Scaffold the frontend application using React 18, Vite, TypeScript, and Tailwind CSS. Implement the enterprise design system specified in `DESIGN.md`, the collapsible command center shell, complete route hierarchy for all 17 core screens, and shared foundational UI primitives adhering to Ponytail guidelines (no bloat, high reuse).
+Milestone 5 elevates the frontend from structural scaffolding to a fully interactive, feature-complete enterprise Tender Command Center across all 17 core screens. It introduces a centralized reactive store ([`TenderContext.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/context/TenderContext.tsx)) to orchestrate stage transitions, task execution, compliance validation, document vault uploads with SHA-256 generation, 4-tier approval sign-offs, and multi-filter pipelines.
 
 ---
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Icons Strategy**: The prototype HTML files utilize Google Material Symbols via web font. In a React/Vite production setup, using `lucide-react` provides tree-shaken, zero-runtime SVG icons that avoid layout shifts and webfont dependencies. We will use `lucide-react` for standard icons while preserving the exact layout, sizes, and styling defined in `DESIGN.md`.
+> **State Management Strategy (Ponytail-Compliant)**: Rather than adding heavy third-party state managers (Redux, MobX, Zustand), we implement a clean, type-safe React Context (`TenderContext`) with `localStorage` persistence. This provides full interactivity across all 17 screens with zero external dependencies and instant reactivity.
 
 > [!NOTE]
-> **Mock Data Engine**: Since Backend (M2/M3) will be built next, M4 will introduce a typed mock data layer (`src/mock/tenders.ts`) reflecting the active \$48.5M pipeline (UNDP, World Bank, ADB, Sovereign) so every screen renders with realistic data immediately.
+> **Modal Architecture**: Native accessible modal dialogs (`New Tender`, `Add Task`, `Upload Document`, `Sign-Off Approval`, `Tender Decision`) will be implemented using Tailwind overlays, keyboard esc-listeners, and focus trapping.
 
 ---
 
 ## Proposed Changes
 
-### 1. Frontend Scaffolding & Configuration
+### 1. State Management & Lifecycle Engine
 
-#### [NEW] [`frontend/package.json`](file:///h:/Tender%20tracker%20v2/frontend/package.json)
-- Vite + React + TypeScript baseline.
-- Minimal, essential dependencies: `react`, `react-dom`, `react-router-dom`, `lucide-react`, `clsx`, `tailwind-merge`.
-- Dev dependencies: `vite`, `typescript`, `@types/react`, `@types/react-dom`, `tailwindcss`, `postcss`, `autoprefixer`.
-
-#### [NEW] [`frontend/vite.config.ts`](file:///h:/Tender%20tracker%20v2/frontend/vite.config.ts)
-- Vite configuration with `@vitejs/plugin-react` and path aliases (`@/` -> `src/`).
-
-#### [NEW] [`frontend/tailwind.config.js`](file:///h:/Tender%20tracker%20v2/frontend/tailwind.config.js)
-- Direct mapping of `DESIGN.md` color tokens, typography scales, spacing variables, and border radiuses:
-  - **Colors**: Canvas Base (`#F8FAFC`), Surface (`#FFFFFF`), Shell Navy (`#0F172A`), Shell Elevated (`#1E293B`), Secondary Blue (`#2563EB`), Error/Urgent (`#DC2626`, `#BA1A1A`), Success/Won (`#16A34A`), Warning (`#D97706`).
-  - **Typography**: Display (`Plus Jakarta Sans`), Body (`Inter`), Monospace (`JetBrains Mono`).
-  - **Spacing**: `w-sidebar-expanded` (16rem), `w-sidebar-collapsed` (4.5rem), `h-header-height` (3.5rem).
-
-#### [NEW] [`frontend/src/index.css`](file:///h:/Tender%20tracker%20v2/frontend/src/index.css)
-- Tailwind directives (`@tailwind base; @tailwind components; @tailwind utilities;`).
-- Font imports (`Plus Jakarta Sans`, `Inter`, `JetBrains Mono`).
-- Custom utility classes for badge pills, monospaced countdown timers, and custom scrollbar styles.
+#### [NEW] [`frontend/src/context/TenderContext.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/context/TenderContext.tsx)
+- Provides full operational state and reactive handlers:
+  - `tenders`: List of all tenders with persistent CRUD.
+  - `addTender(newTender)`: Creates new tender opportunities.
+  - `updateTenderStage(id, stage)`: Transitions tenders through the 6-gate lifecycle (`DISCOVERED` ➔ `SCREENING` ➔ `ANALYSIS` ➔ `PREPARATION` ➔ `REVIEW` ➔ `SUBMISSION`).
+  - `setTenderDecision(id, decision, score)`: Records formal Go/No-Go evaluation.
+  - `toggleTask(tenderId, taskId)` / `addTask(tenderId, task)`: Manages cross-department tasks.
+  - `addDocument(tenderId, doc)`: Simulates vault uploads with automated SHA-256 hash generation.
+  - `signOffReview(tenderId, tierNumber, comments)`: Advances sequential review gates.
+  - `notifications`: Reactive alerts system with unread tracking.
 
 ---
 
-### 2. App Shell & Layout Components
+### 2. Interactive Modals & Dialog Primitives
 
-#### [NEW] [`frontend/src/components/layout/AppLayout.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/AppLayout.tsx)
-- Main layout wrapper containing the fixed collapsible sidebar, top navigation header, and fluid content viewport.
+#### [NEW] [`frontend/src/components/modals/NewTenderModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/NewTenderModal.tsx)
+- Form modal capturing Tender Title, Issuing Authority (UNDP, World Bank, ADB, Sovereign), Category, Estimated Valuation ($), Submission Deadline, and Priority.
 
-#### [NEW] [`frontend/src/components/layout/Sidebar.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/Sidebar.tsx)
-- Persistent dark navy sidebar (`#0F172A`) supporting expanded (256px) and collapsed (72px) states.
-- Branding header with TenderTracker emblem and version badge (`v2.1`).
-- Navigation links organized into Command Navigation (Dashboard, My Tasks, Tenders, Calendar, Documents, Team, Reports) and System (Settings).
-- Bottom pipeline health gauge (84% health widget) and collapse toggle.
+#### [NEW] [`frontend/src/components/modals/UploadDocumentModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/UploadDocumentModal.tsx)
+- Drag-and-drop file upload dialog targeting specific vault folders (`01` through `06`) with mock SHA-256 checksum generation.
 
-#### [NEW] [`frontend/src/components/layout/Header.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/Header.tsx)
-- Fixed top masthead (`#FFFFFF` with backdrop blur, height `3.5rem`).
-- Global search input with `Ctrl + K` / `⌘K` badge.
-- "+ New Tender" primary CTA (`#0F172A`), "AI Assistant" trigger, notification indicator badge (with pulse animation), and user profile avatar (`Sarah Jenkins`, Senior Bid Operations Director).
+#### [NEW] [`frontend/src/components/modals/AddTaskModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/AddTaskModal.tsx)
+- Task creation dialog specifying title, assignee (Sarah Jenkins, Dr. Marcus Vance, Elena Rostova, Tariq Al-Mansoor), column, and priority.
+
+#### [NEW] [`frontend/src/components/modals/SignOffModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/SignOffModal.tsx)
+- Review sign-off dialog with digital signature confirmation and gatekeeper audit comment logging.
 
 ---
 
-### 3. Shared UI Primitives (Ponytail-Optimized)
+### 3. Screen Enhancements (17 Modules)
 
-#### [NEW] [`frontend/src/components/ui/StatusBadge.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/StatusBadge.tsx)
-- Semantic pill badge with strict lifecycle token mapping:
-  - `DISCOVERED` (Blue tint)
-  - `SCREENING` (Indigo tint)
-  - `UNDER_ANALYSIS` (Purple tint)
-  - `PREPARATION` (Amber tint)
-  - `INTERNAL_REVIEW` (Orange tint)
-  - `SUBMITTED` (Slate tint)
-  - `AWARDED` / `WON` (Green tint)
-  - `DECLINED` / `LOST` (Red tint)
+#### [MODIFY] [`frontend/src/pages/DashboardPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/DashboardPage.tsx)
+- Dynamic KPI metrics calculated from live `TenderContext`.
+- Attention queue filters (Closing soon, Blockers, Pending Decisions).
+- Interactive "Quick Stage Transition" and "Add Tender" modal hookup.
 
-#### [NEW] [`frontend/src/components/ui/UrgencyBadge.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/UrgencyBadge.tsx)
-- JetBrains Mono monospaced countdown badge with pulsing red dot indicator for deadlines `< 24h` / `< 72h`.
+#### [MODIFY] [`frontend/src/pages/TenderListPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderListPage.tsx)
+- Multi-filter toolbar (Stage, Category, Donor, Urgency).
+- Batch action toolbar (export selected, bulk stage change).
+- Modal trigger for creating new opportunities.
 
-#### [NEW] [`frontend/src/components/ui/ReadinessBar.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/ReadinessBar.tsx)
-- Dynamic submission readiness score progress bar with stage-paired color grading.
+#### [MODIFY] [`frontend/src/pages/tender-tabs/TenderAnalysisTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderAnalysisTab.tsx)
+- Interactive Go/No-Go decision matrix scoring sliders (Technical, Financial, Team, SLA).
+- Live calculation of weighted aggregate score.
+- Formal "Record Go/No-Go Decision" action.
 
-#### [NEW] [`frontend/src/components/ui/Card.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/Card.tsx)
-- Elevation Level 1 card wrapper with clean hairline border (`#E2E8F0`) and standard padding.
+#### [MODIFY] [`frontend/src/pages/tender-tabs/TenderRequirementsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderRequirementsTab.tsx)
+- Interactive checklist status toggle (Verified / Pending / Blocker).
+- Link requirements directly to uploaded evidence files in the vault.
 
----
+#### [MODIFY] [`frontend/src/pages/tender-tabs/TenderTasksTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderTasksTab.tsx)
+- Interactive task movement between columns (To Do ➔ In Progress ➔ Review ➔ Completed).
+- "Add Task" button triggering `AddTaskModal`.
 
-### 4. Router & 17 Screen Stubs
+#### [MODIFY] [`frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx)
+- Interactive folder browsing across the 6 vault categories.
+- File upload trigger activating `UploadDocumentModal`.
+- Version history audit popover with simulated SHA-256 download verification.
 
-#### [NEW] [`frontend/src/router.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/router.tsx)
-- React Router DOM configuration mapping all 17 routes defined in `knowledge_graph.md`:
-  - `/` -> Redirect to `/dashboard`
-  - `/login` -> Standalone auth screen (outside AppLayout)
-  - `/dashboard` -> `DashboardPage`
-  - `/tasks/my-tasks` -> `MyTasksPage`
-  - `/tenders` -> `TenderListPage`
-  - `/tenders/:id` -> `TenderDetailPage` (with nested tab layout)
-  - `/tenders/:id/analysis` -> `TenderAnalysisPage`
-  - `/tenders/:id/requirements` -> `TenderRequirementsPage`
-  - `/tenders/:id/tasks` -> `TenderTasksPage`
-  - `/tenders/:id/documents` -> `TenderDocumentsPage`
-  - `/tenders/:id/review` -> `TenderReviewPage`
-  - `/tenders/:id/submission` -> `TenderSubmissionPage`
-  - `/tenders/:id/result` -> `TenderResultPage`
-  - `/team` -> `TeamAllocationPage`
-  - `/calendar` -> `CalendarPage`
-  - `/reports` -> `ReportsPage`
-  - `/notifications` -> `NotificationsPage`
-  - `/settings` -> `SettingsPage`
+#### [MODIFY] [`frontend/src/pages/tender-tabs/TenderReviewTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderReviewTab.tsx)
+- Sequential gate unlocking (Tier 4 locked until Tiers 1-3 are verified).
+- "Sign Off Tier" action with `SignOffModal`.
 
-#### [NEW] [`frontend/src/mock/tenders.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/mock/tenders.ts)
-- Type definitions and baseline dataset representing real active bids ($48.5M active pipeline, urgent closing bids, blocker counts, compliance scores).
+#### [MODIFY] [`frontend/src/pages/tender-tabs/TenderSubmissionTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderSubmissionTab.tsx)
+- Portal receipt capture action with immutable lock timestamping.
+- Submission countdown lock state.
+
+#### [MODIFY] [`frontend/src/pages/tender-tabs/TenderResultTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderResultTab.tsx)
+- Form to log contract award details or record loss post-mortem taxonomy.
+
+#### [MODIFY] [`frontend/src/pages/MyTasksPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MyTasksPage.tsx)
+- Interactive task completion checkmarks updating global pipeline readiness.
+
+#### [MODIFY] [`frontend/src/pages/TeamAllocationPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TeamAllocationPage.tsx)
+- Dynamic workload calculations based on active tasks and bids per member.
+
+#### [MODIFY] [`frontend/src/pages/CalendarPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/CalendarPage.tsx)
+- Timeline view of all active tender cutoff dates generated dynamically from state.
+
+#### [MODIFY] [`frontend/src/pages/ReportsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ReportsPage.tsx)
+- Dynamic win rate, pipeline valuation by donor category, and board export summary view.
+
+#### [MODIFY] [`frontend/src/pages/NotificationsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/NotificationsPage.tsx)
+- "Mark All as Read" and filter by alert type (Deadline Urgent, Compliance Blocker, Gate Passed).
+
+#### [MODIFY] [`frontend/src/pages/SettingsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/SettingsPage.tsx)
+- Configurable alert threshold settings and RBAC permission viewer.
+
+#### [MODIFY] [`frontend/src/pages/LoginPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/LoginPage.tsx)
+- Role switcher (Super Admin, Technical Lead, Finance Officer) enabling testing across user personas.
 
 ---
 
 ## Verification Plan
 
 ### Automated Verification
-- Run `npm run build` in `frontend/` to confirm zero TypeScript compile errors, valid imports, and successful Vite bundling.
-- Run `npm run lint` (if configured) or TypeScript check (`npx tsc --noEmit`).
+- Run `npm run build` in `frontend/` to confirm zero TypeScript compile errors and successful Vite production bundling.
+- Verify that `dist/` builds with 0 warnings.
 
 ### Manual & Interactive Verification
-- Launch local development server (`npm run dev`) on `http://localhost:5173`.
-- Verify:
-  1. Collapsible sidebar expands (256px) and collapses (72px) cleanly.
-  2. Top search bar, quick action button, and user header render accurately.
-  3. Navigation through all 17 routes loads corresponding page shells with correct titles, breadcrumbs, and layout without 404s.
-  4. Design tokens match `DESIGN.md` (colors, fonts, radii, spacing).
-
+- Test creating a new tender via the `+ New Tender` header action.
+- Test moving tasks across Kanban columns.
+- Test uploading a document to the Document Vault and verifying the generated SHA-256 hash.
+- Test signing off a review tier in the 4-tier approval flow.
+- Test completing a task in `My Tasks` and observing the readiness score increase.
