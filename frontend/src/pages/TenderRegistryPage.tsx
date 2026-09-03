@@ -13,6 +13,8 @@ import {
   ExternalLink,
   PanelLeftClose,
   PanelLeftOpen,
+  Eye,
+  Pencil,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import {
@@ -54,6 +56,7 @@ export const TenderRegistryPage: React.FC = () => {
 
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isRailCollapsed, setIsRailCollapsed] = useState(false);
+  const [viewMode, setViewMode] = useState<'SUMMARY' | 'EDIT'>('SUMMARY');
 
   // Form State initialized from currently selected tender
   const selectedTender =
@@ -269,6 +272,7 @@ export const TenderRegistryPage: React.FC = () => {
   // Sync form when selectedTender changes
   useEffect(() => {
     if (!selectedTender) return;
+    setViewMode('SUMMARY');
     setClassification(
       selectedTender.summary?.classification || 'SOFTWARE / IT RELATED'
     );
@@ -735,6 +739,34 @@ export const TenderRegistryPage: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2">
+              {/* Summary / Edit Toggle */}
+              <div className="flex items-center bg-[#F1F5F9] rounded-lg p-0.5 border border-[#E2E8F0]">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('SUMMARY')}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                    viewMode === 'SUMMARY'
+                      ? 'bg-white text-[#0F172A] shadow-xs'
+                      : 'text-[#64748B] hover:text-[#0F172A]'
+                  }`}
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>Summary</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('EDIT')}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                    viewMode === 'EDIT'
+                      ? 'bg-white text-[#0F172A] shadow-xs'
+                      : 'text-[#64748B] hover:text-[#0F172A]'
+                  }`}
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  <span>Edit</span>
+                </button>
+              </div>
+
               <button
                 type="button"
                 onClick={handleDeleteCurrent}
@@ -751,18 +783,21 @@ export const TenderRegistryPage: React.FC = () => {
                 <span>Workspace</span>
                 <ExternalLink className="w-3 h-3" />
               </Link>
-              <button
-                type="button"
-                onClick={handleSaveEntry}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] shadow-sm transition-colors"
-              >
-                <Save className="w-3.5 h-3.5" />
-                <span>Save Entry</span>
-              </button>
+              {viewMode === 'EDIT' && (
+                <button
+                  type="button"
+                  onClick={handleSaveEntry}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] shadow-sm transition-colors"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Save Entry</span>
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Section Navigation Tabs */}
+          {/* Section Navigation Tabs — only in EDIT mode */}
+          {viewMode === 'EDIT' && (
           <div className="flex items-center border-b border-[#E2E8F0] bg-white px-6 overflow-x-auto shrink-0">
             <button
               type="button"
@@ -829,8 +864,10 @@ export const TenderRegistryPage: React.FC = () => {
               <span>5. Dates, Risks &amp; Notes</span>
             </button>
           </div>
+          )}
 
-          {/* Form Scroll Body */}
+          {/* Form Scroll Body — EDIT mode */}
+          {viewMode === 'EDIT' && (
           <form
             onSubmit={handleSaveEntry}
             className="flex-1 overflow-y-auto p-6 space-y-6 text-xs"
@@ -1575,6 +1612,269 @@ export const TenderRegistryPage: React.FC = () => {
               </div>
             </div>
           </form>
+          )}
+
+          {/* SUMMARY VIEW — single scrollable page */}
+          {viewMode === 'SUMMARY' && selectedTender && (
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 text-xs animate-fadeIn">
+
+              {/* Classification badge */}
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] uppercase tracking-wider">
+                  {selectedTender.summary?.classification || 'SOFTWARE / IT RELATED'}
+                </span>
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0]">
+                  {selectedTender.stage}
+                </span>
+                <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
+                  selectedTender.priority === 'CRITICAL' ? 'bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]' :
+                  selectedTender.priority === 'HIGH' ? 'bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]' :
+                  'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0]'
+                }`}>
+                  {selectedTender.priority} PRIORITY
+                </span>
+              </div>
+
+              {/* BASIC INFORMATION */}
+              <section>
+                <h3 className="text-[11px] font-bold text-[#2563EB] uppercase tracking-widest mb-3 pb-1 border-b border-[#E2E8F0]">
+                  Basic Information
+                </h3>
+                <table className="w-full border border-[#E2E8F0] rounded-lg overflow-hidden">
+                  <tbody>
+                    {[
+                      ['Country', selectedTender.country],
+                      ['Project Name', selectedTender.summary?.projectName],
+                      ['Tender Title', selectedTender.title],
+                      ['Reference No.', selectedTender.referenceNo],
+                      ['Tender ID', selectedTender.id],
+                      ['Client / Organization', selectedTender.organization],
+                      ['Portal', selectedTender.summary?.portal],
+                      ['Published Date', selectedTender.summary?.publishedDate || '—'],
+                      ['Last Date (Submission Deadline)', selectedTender.submissionDeadline ? new Date(selectedTender.submissionDeadline).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) : '—'],
+                      ['Submission Time', selectedTender.summary?.submissionTime || '—'],
+                      ['SOW Category', selectedTender.category],
+                      ...(selectedTender.estimatedValue && selectedTender.estimatedValue > 0
+                        ? [['Estimated Net Value', `$${selectedTender.estimatedValue.toLocaleString()} USD`]]
+                        : []),
+                    ].map(([label, value]) => (
+                      <tr key={label} className="border-b border-[#F1F5F9] last:border-0">
+                        <td className="py-2 px-3 w-44 font-semibold text-[#475569] bg-[#F8FAFC]">{label}</td>
+                        <td className="py-2 px-3 text-[#0F172A]">{value || <span className="text-[#94A3B8]">Not specified</span>}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </section>
+
+              {/* REQUIREMENTS */}
+              {selectedTender.summary?.mainIdea && (
+                <section>
+                  <h3 className="text-[11px] font-bold text-[#2563EB] uppercase tracking-widest mb-3 pb-1 border-b border-[#E2E8F0]">
+                    Requirements
+                  </h3>
+                  <h4 className="font-bold text-[#0F172A] mb-1.5">Main Idea</h4>
+                  <p className="text-[#475569] leading-relaxed mb-4">{selectedTender.summary.mainIdea}</p>
+                </section>
+              )}
+
+              {/* COMMERCIAL REQUIREMENTS */}
+              {selectedTender.summary?.commercial && (
+                <section>
+                  <h4 className="font-bold text-[#0F172A] mb-2 text-[11px] uppercase tracking-wider text-[#475569]">Commercial Requirements</h4>
+                  <ul className="space-y-1 list-disc pl-4">
+                    {[
+                      ['Tender security', selectedTender.summary.commercial.tenderSecurity],
+                      ['Tender document price', selectedTender.summary.commercial.tenderDocPrice],
+                      ['Contract/service period', selectedTender.summary.commercial.contractPeriod],
+                      ['Performance security', selectedTender.summary.commercial.performanceSecurity],
+                    ].filter(([, v]) => v).map(([label, value]) => (
+                      <li key={label} className="text-[#475569]">
+                        <span className="font-semibold text-[#0F172A]">{label}:</span> {value}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {/* TECHNICAL REQUIREMENTS */}
+              {(selectedTender.summary?.technicalReqs?.length ?? 0) > 0 && (
+                <section>
+                  <h4 className="font-bold text-[#0F172A] mb-2 text-[11px] uppercase tracking-wider text-[#475569]">Technical Requirements</h4>
+                  <ul className="space-y-1 list-disc pl-4">
+                    {selectedTender.summary!.technicalReqs!.map((r, i) => (
+                      <li key={i} className="text-[#475569]">{r}</li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {/* TECHNOLOGY MENTIONED */}
+              {(selectedTender.summary?.technologyMentioned?.length ?? 0) > 0 && (
+                <section>
+                  <h4 className="font-bold text-[#0F172A] mb-2 text-[11px] uppercase tracking-wider text-[#475569]">Software / Technology Mentioned</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedTender.summary!.technologyMentioned!.map((t, i) => (
+                      <span key={i} className="px-2.5 py-1 bg-[#F1F5F9] text-[#0F172A] rounded-full text-[10px] font-semibold border border-[#E2E8F0]">{t}</span>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* OPERATIONAL REQUIREMENTS */}
+              {(selectedTender.summary?.operationalReqs?.length ?? 0) > 0 && (
+                <section>
+                  <h4 className="font-bold text-[#0F172A] mb-2 text-[11px] uppercase tracking-wider text-[#475569]">Operational / Service Requirements</h4>
+                  <ul className="space-y-1 list-disc pl-4">
+                    {selectedTender.summary!.operationalReqs!.map((r, i) => (
+                      <li key={i} className="text-[#475569]">{r}</li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {/* ELIGIBILITY */}
+              {selectedTender.summary?.eligibility && (
+                <section>
+                  <h3 className="text-[11px] font-bold text-[#2563EB] uppercase tracking-widest mb-3 pb-1 border-b border-[#E2E8F0]">
+                    Key Eligibility / Qualification
+                  </h3>
+                  <ul className="space-y-1.5 list-disc pl-4">
+                    {Object.values(selectedTender.summary.eligibility).filter(Boolean).map((v, i) => (
+                      <li key={i} className="text-[#475569]">{v as string}</li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {/* JV / CONSORTIUM */}
+              {selectedTender.summary?.jv && (
+                <section>
+                  <h3 className="text-[11px] font-bold text-[#2563EB] uppercase tracking-widest mb-3 pb-1 border-b border-[#E2E8F0]">
+                    JV / Consortium
+                  </h3>
+                  <ul className="space-y-1.5 list-disc pl-4">
+                    {[
+                      ['JV participation', selectedTender.summary.jv.participation],
+                      ['JV agreement requirement', selectedTender.summary.jv.jvAgreement],
+                      ['Lead partner', selectedTender.summary.jv.leadMember],
+                      ['Member rules', selectedTender.summary.jv.memberRules],
+                      ['Local partner requirement', selectedTender.summary.jv.localPartner],
+                    ].filter(([, v]) => v).map(([label, value]) => (
+                      <li key={label} className="text-[#475569]">
+                        <span className="font-semibold text-[#0F172A]">{label}:</span> {value}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {/* DOCUMENTS REQUIRED */}
+              {(selectedTender.summary?.submissionDocuments?.length ?? 0) > 0 && (
+                <section>
+                  <h3 className="text-[11px] font-bold text-[#2563EB] uppercase tracking-widest mb-3 pb-1 border-b border-[#E2E8F0]">
+                    Documents Required in Submission
+                  </h3>
+                  <ul className="space-y-1 list-disc pl-4">
+                    {selectedTender.summary!.submissionDocuments!.map((d, i) => (
+                      <li key={i} className="text-[#475569]">{d}</li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {/* CV / PERSONNEL REQUIREMENTS */}
+              {(selectedTender.summary?.personnel?.length ?? 0) > 0 && (
+                <section>
+                  <h3 className="text-[11px] font-bold text-[#2563EB] uppercase tracking-widest mb-3 pb-1 border-b border-[#E2E8F0]">
+                    CV / Personnel Requirements
+                  </h3>
+                  <table className="w-full border border-[#E2E8F0] rounded-lg overflow-hidden">
+                    <thead className="bg-[#F1F5F9]">
+                      <tr>
+                        <th className="py-2 px-3 text-left font-bold text-[#475569]">No.</th>
+                        <th className="py-2 px-3 text-left font-bold text-[#475569]">Position</th>
+                        <th className="py-2 px-3 text-left font-bold text-[#475569]">Min. Qualification</th>
+                        <th className="py-2 px-3 text-left font-bold text-[#475569]">Required Experience</th>
+                        <th className="py-2 px-3 text-left font-bold text-[#475569]">Qty.</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedTender.summary!.personnel!.map((p, i) => (
+                        <tr key={i} className="border-t border-[#F1F5F9]">
+                          <td className="py-2 px-3 text-[#64748B]">{i + 1}</td>
+                          <td className="py-2 px-3 text-[#0F172A] font-medium">{p.position}</td>
+                          <td className="py-2 px-3 text-[#475569]">{p.qualification || <span className="text-[#94A3B8]">Not specified</span>}</td>
+                          <td className="py-2 px-3 text-[#475569]">{p.experience || <span className="text-[#94A3B8]">Not specified</span>}</td>
+                          <td className="py-2 px-3 text-[#475569]">{p.qty || <span className="text-[#94A3B8]">Not specified</span>}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </section>
+              )}
+
+              {/* IMPORTANT DATES */}
+              {selectedTender.summary?.dates && (
+                <section>
+                  <h3 className="text-[11px] font-bold text-[#2563EB] uppercase tracking-widest mb-3 pb-1 border-b border-[#E2E8F0]">
+                    Important Dates
+                  </h3>
+                  <ul className="space-y-1.5 list-disc pl-4">
+                    {selectedTender.summary.dates.contractStart && (
+                      <li className="text-[#475569]">
+                        <span className="font-semibold text-[#0F172A]">Expected contract start date:</span> {selectedTender.summary.dates.contractStart}
+                      </li>
+                    )}
+                    {selectedTender.summary.commercial?.contractPeriod && (
+                      <li className="text-[#475569]">
+                        <span className="font-semibold text-[#0F172A]">Contract duration:</span> {selectedTender.summary.commercial.contractPeriod}
+                      </li>
+                    )}
+                    {selectedTender.submissionDeadline && (
+                      <li className="text-[#475569]">
+                        <span className="font-semibold text-[#0F172A]">Submission deadline:</span>{' '}
+                        {new Date(selectedTender.submissionDeadline).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}
+                        {selectedTender.summary?.submissionTime ? `, ${selectedTender.summary.submissionTime}` : ''}
+                      </li>
+                    )}
+                    {selectedTender.summary.dates.clarificationDeadline && (
+                      <li className="text-[#475569]">
+                        <span className="font-semibold text-[#0F172A]">Clarification deadline:</span> {selectedTender.summary.dates.clarificationDeadline}
+                      </li>
+                    )}
+                    {selectedTender.summary.dates.openingDate && (
+                      <li className="text-[#475569]">
+                        <span className="font-semibold text-[#0F172A]">Bid opening date:</span> {selectedTender.summary.dates.openingDate}
+                      </li>
+                    )}
+                  </ul>
+                </section>
+              )}
+
+              {/* NOTES */}
+              {selectedTender.summary?.notes && (
+                <section>
+                  <h3 className="text-[11px] font-bold text-[#2563EB] uppercase tracking-widest mb-3 pb-1 border-b border-[#E2E8F0]">
+                    Notes
+                  </h3>
+                  <p className="text-[#475569] leading-relaxed">{selectedTender.summary.notes}</p>
+                </section>
+              )}
+
+              {/* Edit CTA */}
+              <div className="pt-2 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('EDIT')}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  Edit This Entry
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
