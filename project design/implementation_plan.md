@@ -122,3 +122,4 @@ Scaffold the frontend application using React 18, Vite, TypeScript, and Tailwind
   2. Top search bar, quick action button, and user header render accurately.
   3. Navigation through all 17 routes loads corresponding page shells with correct titles, breadcrumbs, and layout without 404s.
   4. Design tokens match `DESIGN.md` (colors, fonts, radii, spacing).
+
