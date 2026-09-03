@@ -24,6 +24,19 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Environment Setup & Documentation Archival
+- **Category:** Environment Configuration & Documentation
+- **Summary:**
+  - Configured frontend environment variables: created [`frontend/.env.example`](file:///h:/Tender%20tracker%20v2/frontend/.env.example) and local [`frontend/.env`](file:///h:/Tender%20tracker%20v2/frontend/.env) pointing to backend API route (`http://localhost:8000/api/v1`).
+  - Archived [`project design/implementation_plan.md`](file:///h:/Tender%20tracker%20v2/project%20design/implementation_plan.md) and [`project design/walkthrough.md`](file:///h:/Tender%20tracker%20v2/project%20design/walkthrough.md) directly in version control.
+  - Verified host Python 3.13.5 runtime ready for Milestone 2 backend environment scaffolding.
+- **Relevant Files:**
+  - `frontend/.env.example`, `frontend/.env`
+  - `project design/implementation_plan.md`
+  - `project design/walkthrough.md`
+
+---
+
 ### [2026-09-03] — Milestone 4: Frontend Foundation & Design System Completed
 - **Category:** Frontend Architecture & Design System
 - **Summary:**
