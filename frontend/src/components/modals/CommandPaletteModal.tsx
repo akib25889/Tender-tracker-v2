@@ -48,10 +48,10 @@ export const CommandPaletteModal: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  // Global Keyboard Listener: Cmd+Shift+K / Ctrl+Shift+K & Escape
+  // Global Keyboard Listener: Cmd+K / Ctrl+K & Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setIsCommandPaletteOpen(!isCommandPaletteOpen);
       } else if (e.key === 'Escape' && isCommandPaletteOpen) {
@@ -438,7 +438,7 @@ export const CommandPaletteModal: React.FC = () => {
 
               return (
                 <div
-                  key={`${item.id}-${idx}`}
+                  key={item.id}
                   data-index={idx}
                   onClick={item.onSelect}
                   onMouseEnter={() => setSelectedIndex(idx)}

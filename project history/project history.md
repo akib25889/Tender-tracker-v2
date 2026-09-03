@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.3.0  
+**Current Version:** 2.4.0  
 **Stack:** FastAPI (Python 3.12+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local SSD Storage  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -19,6 +19,43 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 18-screen routing. |
 | **M5** | **Module Implementations (18 Screens)**| **Completed** | Reactive TenderContext with full CRUD (add, edit, delete, bulk delete), two-pane Tender Registry console (`/registry`), Bid Discovery queue, collaboration suite, and 18 operational screens. |
 | **M6** | **E2E Testing & Production Hardening** | *Pending* | Integration test suite, 3-2-1 backup sentinel, Nginx reverse proxy configuration, production deployment. |
+
+---
+
+### [2026-09-04] — Version 2.4.0: Reusable Master Vault, Role-Based Access Control, Real-Time Chat, Custom Folders & Command Palette
+- **Category:** Master Vault, Security & RBAC, Communications, Command Palette
+- **Summary:**
+  - **Master Reusable Document Library (`/documents`):**
+    - Built central corporate repository for credentials and company files reused across tenders (Trade License, Audited Financials, ISO Certifications, Tax Clearance, Bank Solvency Letters, Expert CVs, Track Record).
+    - Enabled 1-click referencing into any active tender proposal without duplicate file uploads.
+  - **Granular Role-Based Access Control (RBAC):**
+    - Defined 4 security clearance tiers (`ALL_TEAM`, `MANAGEMENT_ONLY`, `RESTRICTED_FINANCE`, `EXECUTIVE_ONLY`).
+    - Enforced clearance checks on both Master Vault and Tender Proposal files, locking downloads and showing restricted badges when clearance is insufficient.
+  - **Custom Vault Folders Lifecycle:**
+    - Added on-the-fly custom folder creation with auto-slug generation.
+    - Added 1-click inline document-to-folder reassignment dropdown on every row.
+    - Added safe folder deletion modal with automated file safeguarding (moving files to default folder to prevent accidental loss).
+  - **Team Chat & Tender Discussions Hub (`/discussions`):**
+    - Added full enterprise collaboration console with general channels (`# General Bid Operations`, `# Technical Solutions`, `# Commercial & Pricing`, `# Legal & Risk`) and proposal-specific threads.
+    - Integrated with tender comments so remarks posted in tender channels synchronize bidirectionally.
+    - Added quick `@Name` mentions and direct workspace jump links.
+  - **Interactive Global Command Palette (`Ctrl + Shift + K`):**
+    - Built omnipresent command palette searching tenders, deliverables, vault files, team members, and system pages.
+    - Added keyboard navigation (`↑`/`↓`, `↵ Enter`, `ESC`), category filter pills, and header search integration.
+  - **Tender Operational Ergonomics:**
+    - Filtered "My Tasks" and dynamic team member name dropdown on `/tasks/my-tasks`.
+    - Added custom team member profile creation modal and full RBAC matrix on `/team`.
+    - Fixed stray render bug on `TenderSummaryDocument.tsx`.
+- **Relevant Files:**
+  - `frontend/src/pages/MasterDocumentVaultPage.tsx`
+  - `frontend/src/pages/ChatDiscussionsPage.tsx`
+  - `frontend/src/components/modals/CommandPaletteModal.tsx`
+  - `frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx`
+  - `frontend/src/components/layout/Header.tsx`
+  - `frontend/src/components/layout/Sidebar.tsx`
+  - `frontend/src/context/TenderContext.tsx`
+  - `frontend/src/types/tender.ts`
+  - `frontend/src/router.tsx`
 
 ---
 

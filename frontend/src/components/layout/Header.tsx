@@ -51,7 +51,7 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="truncate">Search RFP, Tender ID, Authority, or Task...</span>
           </div>
           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-[#64748B] font-mono text-[10px] bg-white border border-[#CBD5E1] px-1.5 py-0.5 rounded shadow-2xs">
-            <span>Ctrl + Shift + K</span>
+            <span>⌘K</span>
           </div>
         </button>
       </div>

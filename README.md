@@ -1,4 +1,4 @@
-﻿# TenderTracker Command Center (v2.3.0)
+# TenderTracker Command Center (v2.4.0)
 
 [![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF?logo=vite)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://reactjs.org/)
@@ -39,27 +39,31 @@ The application will be live at: **`http://127.0.0.1:5173/`**
 
 ---
 
-## 🖥️ Screen & Route Directory (18 Modules)
+## 🖥️ Screen & Route Directory (20 Modules)
 
 | Screen ID | Screen Name | Route | Module |
 | :--- | :--- | :--- | :--- |
 | `screen:login` | Login — Enterprise Sign In | `/login` | `auth` |
 | `screen:dashboard` | Tender Command Center Dashboard | `/dashboard` | `dashboard` |
 | `screen:tender_registry` | Tender Registry & Data Entry Console | `/registry` | `registry` |
+| `screen:tender_summary` | Formal 3-Page Tender Document Summary | `/registry/summary/{id}` | `registry` |
 | `screen:tenders_list` | Tender List & Pipeline Registry | `/tenders` | `tenders` |
 | `screen:bid_discovery` | Bid Discovery Queue (Filtered) | `/tenders?stage=DISCOVERED` | `tenders` |
 | `screen:tender_detail` | Tender Detail & Proposal Workspace | `/tenders/{id}` | `tenders` |
 | `screen:tender_analysis` | Tender Analysis & Scope Workspace | `/tenders/{id}/analysis` | `analysis` |
 | `screen:tender_requirements` | Compliance & Requirements Matrix | `/tenders/{id}/requirements` | `compliance` |
 | `screen:tender_tasks` | Tender Task Board | `/tenders/{id}/tasks` | `tasks` |
-| `screen:tender_documents` | Tender Document Vault | `/tenders/{id}/documents` | `documents` |
+| `screen:tender_documents` | Tender Document Vault & Custom Folders | `/tenders/{id}/documents` | `documents` |
+| `screen:master_documents` | Master Reusable Document Vault & Permissions | `/documents` | `documents` |
 | `screen:tender_review` | Review & Sign-Off Workflow | `/tenders/{id}/review` | `review` |
 | `screen:tender_submission` | Submission Ledger | `/tenders/{id}/submission` | `submission` |
 | `screen:tender_result` | Outcome & Debrief Ledger | `/tenders/{id}/result` | `result` |
-| `screen:my_tasks` | My Tasks — Cross-Tender Console | `/tasks/my-tasks` | `tasks` |
-| `screen:team_allocation` | Tender Team & Workload Allocation | `/team` | `team` |
+| `screen:my_tasks` | My Operational Deliverables (with Name Filter) | `/tasks/my-tasks` | `tasks` |
+| `screen:chat_discussions` | Team Chat & Tender Discussions Hub | `/discussions` | `collaboration` |
+| `screen:team_allocation` | Team Workload & RBAC Access Matrix | `/team` | `team` |
 | `screen:calendar` | Tender Calendar & Deadline Schedule | `/calendar` | `calendar` |
 | `screen:reports` | Reports & Win/Loss Analytics | `/reports` | `analytics` |
+| `screen:archive` | Archived Non-Participating Records | `/archive` | `archive` |
 | `screen:notifications` | Notification & Alert Center | `/notifications` | `notifications` |
 | `screen:settings` | Settings & System Configuration | `/settings` | `settings` |
 
@@ -67,11 +71,15 @@ The application will be live at: **`http://127.0.0.1:5173/`**
 
 ## ⚡ Architecture & Optimization Engines
 
+- **Interactive Command Palette (`Ctrl + Shift + K` / `⌘⇧K`)**: Omnipresent modal indexing tenders, deliverables, vault files, team members, and system pages with keyboard auto-navigation.
+- **Master Reusable Document Vault (`/documents`)**: Upload trade licenses, audited balance sheets, ISO certificates, and CVs once; reference them into any tender proposal with 1 click.
+- **Role-Based Document Access Control**: Granular 4-tier document access permissions (`All Team`, `Management Only`, `Restricted Finance/Legal`, `Executive Board Only`) with download lock enforcement.
+- **Custom Folder Lifecycle**: On-the-fly custom vault folder creation, inline document reassignment, and safe folder deletion with automated file safeguarding.
+- **Real-Time Communications Hub (`/discussions`)**: Cross-team channels and tender proposal comment threads with user tagging (`@Name`) and instant workspace jumping.
 - **Ponytail ("Lazy Senior Dev")**: Generation-time optimization enforcing the 7-Step Decision Ladder to minimize code bloat, avoid over-engineering, and maintain radical conciseness.
 - **Graphify**: Precomputed knowledge graph (`tools/graphify/graphify.py`) indexing routes, screens, entities, and storage paths for instant, low-token context retrieval.
 - **Universal Collaboration**: 4 organizational profiles (`Business Head`, `Executive Manager`, `Senior Manager`, `Tender Analyst`) with universal operational access, interactive deliverable assignment, and threaded commentary.
 - **Deep-Link Registry Editing**: Click **Edit** on any tender to immediately load its full parameters in `/registry?id={id}`.
-- **Blank Date Support**: Leaves dates unpopulated until explicitly entered without unwanted fallback defaults.
 
 ---
 
