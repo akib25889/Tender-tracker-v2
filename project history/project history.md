@@ -73,3 +73,4 @@
   *Context:* AI coding agents tend to over-engineer (generation bloat) and perform repetitive file-tree greps (retrieval bloat).  
   *Decision:* Ponytail sets strict generation guardrails; Graphify maintains pre-indexed project knowledge graphs.  
   *Impact:* Halves token usage, speeds up agent navigation, and ensures clean, minimal, maintainable production code.
+
