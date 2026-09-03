@@ -16,13 +16,32 @@
 | **M1** | **Repository & Agent Tooling** | **Completed** | Git repository initialized, linked to GitHub, `.gitignore` & directory scaffolding, Ponytail & Graphify integration. |
 | **M2** | **Backend Core & Database Schema** | *Pending* | FastAPI application structure, SQLAlchemy models, Alembic migrations, JWT/Argon2id authentication. |
 | **M3** | **Storage Vault & Document Security** | *Pending* | Abstracted local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation. |
-| **M4** | **Frontend Foundation & Design System**| *Pending* | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), Radix UI primitives. |
-| **M5** | **Module Implementations (17 Screens)**| *Pending* | Dashboard, Kanban, Document Vault, Compliance Checklist, Review Sign-Off, Submission Ledger, Win/Loss Analytics. |
+| **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 17-screen routing. |
+| **M5** | **Module Implementations (17 Screens)**| *In Progress* | Dashboard, Kanban, Document Vault, Compliance Checklist, Review Sign-Off, Submission Ledger, Win/Loss Analytics. |
 | **M6** | **E2E Testing & Production Hardening** | *Pending* | Integration test suite, 3-2-1 backup sentinel, Nginx reverse proxy configuration, production deployment. |
 
 ---
 
 ## 2. Chronological Change Log
+
+### [2026-09-03] — Milestone 4: Frontend Foundation & Design System Completed
+- **Category:** Frontend Architecture & Design System
+- **Summary:**
+  - Initialized Vite + React 18 + TypeScript in `frontend/` with path aliasing (`@/*`).
+  - Configured Tailwind CSS with custom theme matching `DESIGN.md` (Slate Navy `#0F172A`, Surface Light `#F8FAFC`, Plus Jakarta Sans display headers, Inter narrative body, JetBrains Mono monetary/code tokens).
+  - Built the responsive App Shell (`AppLayout`, `Sidebar`, `Header`) featuring a collapsible dark navy sidebar (expanded 256px, collapsed 72px) and persistent top masthead with `⌘K` global search and alert ticker.
+  - Built Ponytail-optimized core UI primitives: `StatusBadge` (lifecycle stages & Go/No-Go decisions), `UrgencyBadge` (pulsing deadline countdowns), `ReadinessBar` (color-graded progress indicators), and `Card` (Level 1 elevation).
+  - Configured React Router hierarchy covering all 17 core screens and proposal workspace sub-tabs.
+  - Implemented typed mock pipeline dataset (`$48.5M Net`, 24 active bids, UNDP, World Bank, ADB).
+  - Verified production bundling: `npm run build` succeeds cleanly with 0 TypeScript/compilation errors.
+- **Relevant Files:**
+  - `frontend/src/App.tsx`, `frontend/src/router.tsx`
+  - `frontend/src/components/layout/AppLayout.tsx`, `Sidebar.tsx`, `Header.tsx`
+  - `frontend/src/components/ui/StatusBadge.tsx`, `UrgencyBadge.tsx`, `ReadinessBar.tsx`, `Card.tsx`
+  - `frontend/src/pages/DashboardPage.tsx`, `TenderListPage.tsx`, `TenderDetailPage.tsx`, etc.
+  - `frontend/src/mock/tenders.ts`, `frontend/src/types/tender.ts`
+
+---
 
 ### [2026-09-03] — Milestone 1: Agent Optimization & GitHub Integration
 - **Category:** Infrastructure & AI Tooling

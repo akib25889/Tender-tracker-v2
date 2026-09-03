@@ -1,0 +1,271 @@
+import React from 'react';
+import { useParams, NavLink, Outlet, useLocation } from 'react-router-dom';
+import {
+  FileText,
+  CheckSquare,
+  Kanban,
+  FolderLock,
+  FileCheck2,
+  Send,
+  Award,
+  ChevronRight,
+  Clock,
+  User,
+} from 'lucide-react';
+import { MOCK_TENDERS } from '../mock/tenders';
+import { StatusBadge } from '../components/ui/StatusBadge';
+import { UrgencyBadge } from '../components/ui/UrgencyBadge';
+import { ReadinessBar } from '../components/ui/ReadinessBar';
+import { Card } from '../components/ui/Card';
+
+export const TenderDetailPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+
+  // Find the tender or fallback to the first mock tender
+  const tender =
+    MOCK_TENDERS.find((t) => t.id === id) || MOCK_TENDERS[0];
+
+  const subNavTabs = [
+    { label: 'Overview', path: `/tenders/${tender.id}`, exact: true, icon: FileText },
+    { label: 'Analysis & Scope', path: `/tenders/${tender.id}/analysis`, icon: FileText },
+    { label: 'Compliance Matrix', path: `/tenders/${tender.id}/requirements`, icon: CheckSquare },
+    { label: 'Task Kanban', path: `/tenders/${tender.id}/tasks`, icon: Kanban },
+    { label: 'Document Vault', path: `/tenders/${tender.id}/documents`, icon: FolderLock },
+    { label: 'Review & Sign-Off', path: `/tenders/${tender.id}/review`, icon: FileCheck2 },
+    { label: 'Submission Ledger', path: `/tenders/${tender.id}/submission`, icon: Send },
+    { label: 'Result Post-Mortem', path: `/tenders/${tender.id}/result`, icon: Award },
+  ];
+
+  const isOverview = location.pathname === `/tenders/${tender.id}`;
+
+  return (
+    <div className="space-y-6">
+      {/* Breadcrumb Navigation */}
+      <nav className="flex items-center gap-2 text-xs text-[#64748B]">
+        <NavLink to="/tenders" className="hover:text-[#2563EB] transition-colors">
+          Tenders
+        </NavLink>
+        <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+        <span className="font-mono font-bold text-[#0F172A]">{tender.id}</span>
+        <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+        <span className="font-semibold text-[#0F172A]">Proposal Workspace</span>
+      </nav>
+
+      {/* Master Tender Header Banner */}
+      <div className="bg-white p-6 rounded-lg border border-[#E2E8F0] shadow-sm">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-2 flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-sm font-bold text-[#0F172A] bg-[#F1F5F9] px-2.5 py-0.5 rounded border border-[#E2E8F0]">
+                {tender.id}
+              </span>
+              <span className="font-mono text-xs text-[#64748B]">
+                Ref: {tender.referenceNo}
+              </span>
+              <StatusBadge stage={tender.stage} />
+              <StatusBadge decision={tender.decision} />
+              <UrgencyBadge
+                daysRemaining={tender.daysRemaining}
+                hoursRemaining={tender.hoursRemaining}
+              />
+            </div>
+
+            <h1 className="font-display text-xl sm:text-2xl font-bold text-[#0F172A] leading-tight">
+              {tender.title}
+            </h1>
+
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-[#64748B]">
+              <span className="font-medium text-[#0F172A]">
+                {tender.organization}
+              </span>
+              <span>•</span>
+              <span>{tender.country}</span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-[#94A3B8]" />
+                Cutoff: {new Date(tender.submissionDeadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <User className="w-3.5 h-3.5 text-[#94A3B8]" />
+                Lead: {tender.leadOwner.name}
+              </span>
+            </div>
+          </div>
+
+          {/* Value & Readiness Widget */}
+          <div className="flex items-center gap-6 lg:border-l lg:border-[#F1F5F9] lg:pl-6 shrink-0 justify-between lg:justify-end">
+            <div>
+              <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+                Estimated Net Value
+              </span>
+              <span className="font-mono font-bold text-2xl text-[#0F172A] mt-0.5 block">
+                ${(tender.estimatedValue / 1000000).toFixed(2)}M
+              </span>
+              <span className="text-[11px] text-[#2563EB] font-medium">
+                SOW Category: {tender.category}
+              </span>
+            </div>
+
+            <div className="w-36">
+              <div className="flex items-center justify-between text-[11px] mb-1">
+                <span className="text-[#64748B] font-medium">Readiness</span>
+                <span className="font-mono font-bold text-[#0F172A]">
+                  {tender.readinessScore}%
+                </span>
+              </div>
+              <ReadinessBar score={tender.readinessScore} showLabel={false} />
+            </div>
+          </div>
+        </div>
+
+        {/* Sub-Navigation Ribbon */}
+        <div className="flex items-center gap-1 border-t border-[#F1F5F9] mt-6 pt-3 overflow-x-auto">
+          {subNavTabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <NavLink
+                key={tab.path}
+                to={tab.path}
+                end={tab.exact}
+                className={({ isActive }) =>
+                  `flex items-center gap-2 px-3.5 py-2 rounded-md text-xs font-semibold whitespace-nowrap transition-colors ${
+                    isActive
+                      ? 'bg-[#0F172A] text-white shadow-sm'
+                      : 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC]'
+                  }`
+                }
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{tab.label}</span>
+              </NavLink>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Overview Tab Content or Nested Sub-Route Outlet */}
+      {isOverview ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main 2 Cols: Scope Overview & Gatekeeper QA */}
+          <div className="lg:col-span-2 space-y-6">
+            <Card title="Bid Proposal Executive Summary" subtitle="Scope statement, procurement authority requirements, and deliverables">
+              <div className="space-y-4 text-xs text-[#334155] leading-relaxed">
+                <p>
+                  This bid addresses sovereign requirements for deploying a secure, high-availability ERP and data infrastructure across multilateral regional nodes. The scope requires compliance with tier-4 security certifications, zero-trust cloud orchestration, and 24/7 technical operations SLA.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                  <div className="p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
+                    <span className="font-semibold text-[#0F172A] block mb-1">
+                      Technical SOW Milestones
+                    </span>
+                    <ul className="list-disc pl-4 space-y-1 text-[#64748B]">
+                      <li>Phase 1: Architecture Blueprint &amp; Zero-Trust Audit</li>
+                      <li>Phase 2: High-Performance Database Replication</li>
+                      <li>Phase 3: User Acceptance &amp; Production Handover</li>
+                    </ul>
+                  </div>
+                  <div className="p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
+                    <span className="font-semibold text-[#0F172A] block mb-1">
+                      Key Evaluation Criteria
+                    </span>
+                    <ul className="list-disc pl-4 space-y-1 text-[#64748B]">
+                      <li>70% Technical Methodology &amp; Past Experience</li>
+                      <li>30% Commercial Pricing &amp; SOW BOQ Breakdown</li>
+                      <li>Mandatory ISO 27001 &amp; SOC2 Type II certifications</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            <Card title="Statutory Requirements Matrix Summary" subtitle="Clause verification status mapped to proof documents">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-[#16A34A]"></span>
+                    <span className="text-xs font-semibold text-[#0F172A]">Trade License &amp; Incorporation Certificate</span>
+                  </div>
+                  <span className="text-[11px] font-mono text-[#16A34A] font-semibold">VALIDATED</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-[#16A34A]"></span>
+                    <span className="text-xs font-semibold text-[#0F172A]">Audited Financial Statements (Last 3 Years)</span>
+                  </div>
+                  <span className="text-[11px] font-mono text-[#16A34A] font-semibold">VALIDATED</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse"></span>
+                    <span className="text-xs font-semibold text-[#0F172A]">Bank Guarantee of Bid Security ($284,000)</span>
+                  </div>
+                  <span className="text-[11px] font-mono text-[#DC2626] font-bold">SOLVENCY SEAL PENDING</span>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Right Col: Task Progress & Quick Actions */}
+          <div className="space-y-6">
+            <Card title="Task Execution Progress" subtitle="Cross-department completion status">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#64748B]">Completed Tasks</span>
+                  <span className="font-mono font-bold text-[#0F172A]">
+                    {tender.completedTasksCount} / {tender.totalTasksCount}
+                  </span>
+                </div>
+                <ReadinessBar score={Math.round((tender.completedTasksCount / tender.totalTasksCount) * 100)} />
+
+                <div className="pt-2 border-t border-[#F1F5F9] space-y-2">
+                  <NavLink
+                    to={`/tenders/${tender.id}/tasks`}
+                    className="flex items-center justify-between p-2.5 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] transition-colors text-xs font-semibold text-[#0F172A]"
+                  >
+                    <span>Open Task Kanban Board</span>
+                    <ChevronRight className="w-4 h-4 text-[#64748B]" />
+                  </NavLink>
+                  <NavLink
+                    to={`/tenders/${tender.id}/documents`}
+                    className="flex items-center justify-between p-2.5 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] transition-colors text-xs font-semibold text-[#0F172A]"
+                  >
+                    <span>Open Document Vault</span>
+                    <ChevronRight className="w-4 h-4 text-[#64748B]" />
+                  </NavLink>
+                  <NavLink
+                    to={`/tenders/${tender.id}/review`}
+                    className="flex items-center justify-between p-2.5 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] transition-colors text-xs font-semibold text-[#0F172A]"
+                  >
+                    <span>Sign-Off Gatekeeper Approvals</span>
+                    <ChevronRight className="w-4 h-4 text-[#64748B]" />
+                  </NavLink>
+                </div>
+              </div>
+            </Card>
+
+            <Card title="Vault Storage Verification" subtitle="Local SSD SHA-256 cryptographic logs">
+              <div className="space-y-2 text-[11px] text-[#64748B]">
+                <div className="p-2.5 bg-[#F8FAFC] rounded border border-[#E2E8F0] font-mono">
+                  <div className="text-[#0F172A] font-semibold truncate">
+                    storage/tenders/{tender.id}/05_final_submission_package/
+                  </div>
+                  <div className="text-[10px] text-[#94A3B8] mt-1 truncate">
+                    SHA-256: 8f4c2b9a7d1e3f5...389c
+                  </div>
+                </div>
+                <p className="text-[11px] text-[#16A34A] flex items-center gap-1 font-medium">
+                  ✓ Vault directory locked &amp; replicated
+                </p>
+              </div>
+            </Card>
+          </div>
+        </div>
+      ) : (
+        <Outlet />
+      )}
+    </div>
+  );
+};
+
