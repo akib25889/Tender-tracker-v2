@@ -425,30 +425,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     doc: TenderDocument;
   } | null>(null);
 
-  const canPerformAction = (
-    action: 'ADVANCE_STAGE' | 'SIGN_OFF_TIER_3' | 'DELETE_TENDER' | 'ASSIGN_TASK' | 'EDIT_TECHNICAL'
-  ): boolean => {
-    switch (action) {
-      case 'ADVANCE_STAGE':
-      case 'SIGN_OFF_TIER_3':
-        return (
-          currentUser.role === 'BUSINESS_HEAD' ||
-          currentUser.role === 'EXECUTIVE_MANAGER'
-        );
-      case 'DELETE_TENDER':
-        return currentUser.role === 'BUSINESS_HEAD';
-      case 'ASSIGN_TASK':
-        return (
-          currentUser.role === 'BUSINESS_HEAD' ||
-          currentUser.role === 'EXECUTIVE_MANAGER' ||
-          currentUser.role === 'SENIOR_MANAGER'
-        );
-      case 'EDIT_TECHNICAL':
-        return currentUser.role !== 'TENDER_ANALYST';
-      default:
-        return true;
-    }
-  };
+  // Full access: every role has all operational permissions
+  const canPerformAction = (): boolean => true;
 
   const assignTask = (
     tenderId: string,

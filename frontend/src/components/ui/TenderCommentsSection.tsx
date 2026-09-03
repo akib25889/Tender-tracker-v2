@@ -94,8 +94,7 @@ export const TenderCommentsSection: React.FC<TenderCommentsSectionProps> = ({
         ) : (
           <div className="divide-y divide-[#F1F5F9] border-t border-[#F1F5F9] pt-2 space-y-3">
             {comments.map((comment) => {
-              const isOwn = comment.authorName === currentUser.name;
-              const canDelete = isOwn || currentUser.role === 'BUSINESS_HEAD';
+              const canDelete = true;
 
               return (
                 <div key={comment.id} className="pt-3 first:pt-0 group">

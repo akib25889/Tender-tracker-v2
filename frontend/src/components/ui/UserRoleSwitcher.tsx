@@ -81,10 +81,10 @@ export const UserRoleSwitcher: React.FC = () => {
           <div className="p-3 bg-[#F8FAFC]">
             <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1">
               <Shield className="w-3 h-3 text-[#2563EB]" />
-              <span>Role-Based Access (RBAC)</span>
+              <span>Active Team Identity</span>
             </div>
             <p className="text-[11px] text-[#64748B]">
-              Switch team profile to test role permissions and sign-off policies.
+              Switch team profile for authorship &amp; assignment. All members enjoy full permissions.
             </p>
           </div>
 

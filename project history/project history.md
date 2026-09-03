@@ -27,10 +27,10 @@
 ### [2026-09-03] — Enterprise Collaboration Suite: RBAC, Task Assign, Document Share & Commenting
 - **Category:** Collaboration, Security & Operational Governance
 - **Summary:**
-  - **Role-Based Access Control (RBAC):**
+  - **Role-Based Access Control (RBAC) & Universal Permissions:**
     - Configured the 4 requested organizational roles: `BUSINESS_HEAD` ("Business Head"), `EXECUTIVE_MANAGER` ("Executive Manager"), `SENIOR_MANAGER` ("Senior Manager"), and `TENDER_ANALYST` ("Tender Analyst") ([`tender.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/types/tender.ts), [`users.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/mock/users.ts)).
     - Built [`UserRoleSwitcher.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/UserRoleSwitcher.tsx) mounted in the header, allowing instant profile and role switching with color-coded badges.
-    - Wired `canPerformAction()` governance rules: restricted lifecycle stage advancement and reversion to `BUSINESS_HEAD` and `EXECUTIVE_MANAGER`, task assignment to managers, and full administrative deletion to `BUSINESS_HEAD`.
+    - **Universal Permissions Activated:** Every role possesses full operational access (`canPerformAction` returns `true`). All members can advance/revert lifecycle stages, sign off reviews, assign tasks, share documents, and add/delete comments without restriction.
   - **Task Assignment:**
     - Added interactive Assignee selector to task Kanban cards ([`TenderTasksTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderTasksTab.tsx)).
     - Reassigns tasks dynamically across team members with instant state persistence via `assignTask()`.
