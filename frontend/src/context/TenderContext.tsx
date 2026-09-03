@@ -8,8 +8,12 @@ import {
   TenderDocument,
   TenderDecisionMatrix,
   RequirementStatus,
+  UserProfile,
+  TenderComment,
+  DocumentShareLink,
 } from '../types/tender';
 import { MOCK_TENDERS } from '../mock/tenders';
+import { TEAM_PROFILES } from '../mock/users';
 
 export type CurrencyMode = 'USD' | 'BDT';
 
@@ -39,6 +43,25 @@ interface TenderContextType {
     newStatus: RequirementStatus
   ) => void;
   submitTenderProof: (tenderId: string, portalReference: string) => void;
+  // RBAC
+  currentUser: UserProfile;
+  setCurrentUser: (user: UserProfile) => void;
+  teamMembers: UserProfile[];
+  canPerformAction: (action: 'ADVANCE_STAGE' | 'SIGN_OFF_TIER_3' | 'DELETE_TENDER' | 'ASSIGN_TASK' | 'EDIT_TECHNICAL') => boolean;
+  // Task assignment
+  assignTask: (tenderId: string, taskId: string, newAssignee: string) => void;
+  // Comments
+  addComment: (tenderId: string, text: string) => void;
+  deleteComment: (tenderId: string, commentId: string) => void;
+  // Document Sharing
+  shareDocument: (
+    tenderId: string,
+    docId: string,
+    options: { permission: 'VIEW_ONLY' | 'DOWNLOAD_ALLOWED'; email?: string }
+  ) => DocumentShareLink;
+  sharedLinks: DocumentShareLink[];
+  activeDocForShare: { tenderId: string; doc: TenderDocument } | null;
+  setActiveDocForShare: (item: { tenderId: string; doc: TenderDocument } | null) => void;
   // Currency switcher
   currency: CurrencyMode;
   setCurrency: (c: CurrencyMode) => void;
@@ -394,6 +417,109 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
+  // RBAC & Collaborative State
+  const [currentUser, setCurrentUser] = useState<UserProfile>(TEAM_PROFILES[0]);
+  const [sharedLinks, setSharedLinks] = useState<DocumentShareLink[]>([]);
+  const [activeDocForShare, setActiveDocForShare] = useState<{
+    tenderId: string;
+    doc: TenderDocument;
+  } | null>(null);
+
+  const canPerformAction = (
+    action: 'ADVANCE_STAGE' | 'SIGN_OFF_TIER_3' | 'DELETE_TENDER' | 'ASSIGN_TASK' | 'EDIT_TECHNICAL'
+  ): boolean => {
+    switch (action) {
+      case 'ADVANCE_STAGE':
+      case 'SIGN_OFF_TIER_3':
+      case 'DELETE_TENDER':
+        return currentUser.role === 'BID_DIRECTOR';
+      case 'ASSIGN_TASK':
+        return currentUser.role !== 'VIEWER';
+      case 'EDIT_TECHNICAL':
+        return (
+          currentUser.role === 'BID_DIRECTOR' ||
+          currentUser.role === 'TECHNICAL_LEAD'
+        );
+      default:
+        return true;
+    }
+  };
+
+  const assignTask = (
+    tenderId: string,
+    taskId: string,
+    newAssignee: string
+  ) => {
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        return {
+          ...t,
+          tasks: t.tasks.map((tsk) =>
+            tsk.id === taskId ? { ...tsk, assignee: newAssignee } : tsk
+          ),
+        };
+      })
+    );
+  };
+
+  const addComment = (tenderId: string, content: string) => {
+    const newComment: TenderComment = {
+      id: `CMT-${Date.now()}`,
+      tenderId,
+      authorName: currentUser.name,
+      authorRole: currentUser.role,
+      authorAvatar: currentUser.avatar,
+      content,
+      createdAt: new Date().toISOString(),
+    };
+
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        return {
+          ...t,
+          comments: [newComment, ...(t.comments || [])],
+        };
+      })
+    );
+  };
+
+  const deleteComment = (tenderId: string, commentId: string) => {
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        return {
+          ...t,
+          comments: (t.comments || []).filter((c) => c.id !== commentId),
+        };
+      })
+    );
+  };
+
+  const shareDocument = (
+    tenderId: string,
+    docId: string,
+    options: { permission: 'VIEW_ONLY' | 'DOWNLOAD_ALLOWED'; email?: string }
+  ): DocumentShareLink => {
+    const tender = tenders.find((t) => t.id === tenderId);
+    const doc = tender?.documents.find((d) => d.id === docId);
+
+    const link: DocumentShareLink = {
+      id: `SHR-${Math.floor(1000 + Math.random() * 9000)}`,
+      documentId: docId,
+      documentName: doc?.name || 'Document',
+      token: Math.random().toString(36).substring(2, 15),
+      permission: options.permission,
+      expiresAt: new Date(Date.now() + 7 * 86400000).toISOString(),
+      sharedWithEmail: options.email,
+      createdAt: new Date().toISOString(),
+    };
+
+    setSharedLinks((prev) => [link, ...prev]);
+    return link;
+  };
+
   return (
     <TenderContext.Provider
       value={{
@@ -407,6 +533,17 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         signOffReviewTier,
         toggleRequirementStatus,
         submitTenderProof,
+        currentUser,
+        setCurrentUser,
+        teamMembers: TEAM_PROFILES,
+        canPerformAction,
+        assignTask,
+        addComment,
+        deleteComment,
+        shareDocument,
+        sharedLinks,
+        activeDocForShare,
+        setActiveDocForShare,
         currency,
         setCurrency,
         formatCurrency,

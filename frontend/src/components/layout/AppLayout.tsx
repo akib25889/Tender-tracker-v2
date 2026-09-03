@@ -5,6 +5,7 @@ import { Header } from './Header';
 import { useTenders } from '../../context/TenderContext';
 import { NewTenderModal } from '../modals/NewTenderModal';
 import { UploadDocumentModal } from '../modals/UploadDocumentModal';
+import { ShareDocumentModal } from '../modals/ShareDocumentModal';
 
 export const AppLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -42,6 +43,7 @@ export const AppLayout: React.FC = () => {
       {/* Global Modals */}
       <NewTenderModal />
       <UploadDocumentModal />
+      <ShareDocumentModal />
     </div>
   );
 };

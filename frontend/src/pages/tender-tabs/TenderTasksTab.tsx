@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTenders } from '../../context/TenderContext';
-import { Clock, Plus, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Clock, Plus, ArrowRight, ArrowLeft, CheckCircle2, User } from 'lucide-react';
 import { TaskStatus } from '../../types/tender';
 import { AddTaskModal } from '../../components/modals/AddTaskModal';
 
 export const TenderTasksTab: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { tenders, moveTask } = useTenders();
+  const { tenders, moveTask, assignTask, teamMembers } = useTenders();
   const tender = tenders.find((t) => t.id === id) || tenders[0];
 
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
@@ -102,8 +102,24 @@ export const TenderTasksTab: React.FC = () => {
                       </h4>
 
                       <div className="flex items-center justify-between text-[11px] text-[#64748B] pt-1 border-t border-[#F8FAFC]">
-                        <span>{task.assignee}</span>
-                        <span className="font-mono text-[10px] text-[#DC2626] font-semibold flex items-center gap-1">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <User className="w-3 h-3 text-[#94A3B8] shrink-0" />
+                          <select
+                            value={task.assignee}
+                            onChange={(e) =>
+                              assignTask(tender.id, task.id, e.target.value)
+                            }
+                            className="bg-transparent text-[11px] font-medium text-[#0F172A] border-none p-0 cursor-pointer hover:text-[#2563EB] truncate max-w-[110px]"
+                            title="Click to reassign task"
+                          >
+                            {teamMembers.map((m) => (
+                              <option key={m.id} value={m.name}>
+                                {m.name} ({m.role.replace('_', ' ')})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <span className="font-mono text-[10px] text-[#DC2626] font-semibold flex items-center gap-1 shrink-0">
                           <Clock className="w-3 h-3" />
                           {task.deadline}
                         </span>

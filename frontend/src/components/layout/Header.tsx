@@ -1,6 +1,7 @@
 import React from 'react';
 import { Search, Plus, Bell, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { UserRoleSwitcher } from '../ui/UserRoleSwitcher';
 
 interface HeaderProps {
   sidebarCollapsed: boolean;
@@ -81,19 +82,9 @@ export const Header: React.FC<HeaderProps> = ({
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#2563EB] ring-2 ring-white" />
         </Link>
 
-        {/* User Identity */}
-        <div className="flex items-center gap-2 pl-2 border-l border-[#E2E8F0]">
-          <div className="w-7 h-7 rounded-full bg-[#0F172A] text-white flex items-center justify-center text-xs font-bold">
-            SJ
-          </div>
-          <div className="hidden lg:flex flex-col">
-            <span className="text-xs font-semibold text-[#0F172A] leading-tight">
-              Sarah Jenkins
-            </span>
-            <span className="text-[10px] text-[#64748B]">
-              Bid Operations Director
-            </span>
-          </div>
+        {/* User Identity & RBAC Switcher */}
+        <div className="pl-2 border-l border-[#E2E8F0]">
+          <UserRoleSwitcher />
         </div>
       </div>
     </header>

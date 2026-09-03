@@ -13,6 +13,7 @@ import {
   User,
   ArrowRight,
   ArrowLeft,
+  Lock,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -20,12 +21,13 @@ import { UrgencyBadge } from '../components/ui/UrgencyBadge';
 import { ReadinessBar } from '../components/ui/ReadinessBar';
 import { Card } from '../components/ui/Card';
 import { ExportDropdown } from '../components/ui/ExportDropdown';
+import { TenderCommentsSection } from '../components/ui/TenderCommentsSection';
 import { TenderStage } from '../types/tender';
 
 export const TenderDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
-  const { tenders, updateTenderStage, formatCurrency } = useTenders();
+  const { tenders, updateTenderStage, formatCurrency, canPerformAction } = useTenders();
 
   // Find the tender or fallback to the first tender
   const tender = tenders.find((t) => t.id === id) || tenders[0];
@@ -148,8 +150,10 @@ export const TenderDetailPage: React.FC = () => {
             <div className="flex items-center gap-2">
               {currentStageIndex > 0 && (
                 <button
+                  disabled={!canPerformAction('ADVANCE_STAGE')}
                   onClick={() => updateTenderStage(tender.id, stages[currentStageIndex - 1])}
-                  className="flex items-center gap-1 px-2.5 py-1 bg-white border border-[#E2E8F0] text-[#475569] hover:text-[#0F172A] hover:bg-[#F8FAFC] text-[11px] font-semibold rounded transition-colors shadow-xs"
+                  className="flex items-center gap-1 px-2.5 py-1 bg-white border border-[#E2E8F0] disabled:opacity-40 text-[#475569] hover:text-[#0F172A] hover:bg-[#F8FAFC] text-[11px] font-semibold rounded transition-colors shadow-xs"
+                  title={!canPerformAction('ADVANCE_STAGE') ? 'Only Bid Director can revert lifecycle stage' : undefined}
                 >
                   <ArrowLeft className="w-3 h-3" />
                   <span>Back to {stages[currentStageIndex - 1].replace('_', ' ')}</span>
@@ -157,9 +161,12 @@ export const TenderDetailPage: React.FC = () => {
               )}
               {currentStageIndex < stages.length - 1 && (
                 <button
+                  disabled={!canPerformAction('ADVANCE_STAGE')}
                   onClick={() => updateTenderStage(tender.id, stages[currentStageIndex + 1])}
-                  className="flex items-center gap-1 px-2.5 py-1 bg-[#0F172A] text-white text-[11px] font-semibold rounded hover:bg-[#1E293B] transition-colors shadow-sm"
+                  className="flex items-center gap-1 px-2.5 py-1 bg-[#0F172A] disabled:bg-[#94A3B8] text-white text-[11px] font-semibold rounded hover:bg-[#1E293B] transition-colors shadow-sm"
+                  title={!canPerformAction('ADVANCE_STAGE') ? 'Only Bid Director can advance lifecycle stage' : undefined}
                 >
+                  {!canPerformAction('ADVANCE_STAGE') && <Lock className="w-3 h-3 text-amber-300" />}
                   <span>Advance to {stages[currentStageIndex + 1].replace('_', ' ')}</span>
                   <ArrowRight className="w-3 h-3" />
                 </button>
@@ -380,6 +387,9 @@ export const TenderDetailPage: React.FC = () => {
                 ))}
               </div>
             </Card>
+
+            {/* Proposal Comments & Team Remarks */}
+            <TenderCommentsSection tender={tender} />
           </div>
 
           {/* Right Col: Task Progress & Quick Actions */}

@@ -68,9 +68,47 @@ export interface TenderDecisionMatrix {
 
 export interface SubmissionProof {
   portalReference: string;
-  receiptFileName?: string;
   timestamp?: string;
-  status: 'PENDING' | 'SUBMITTED_LOCKED';
+  sha256ProofReceipt?: string;
+  submittedBy?: string;
+  status?: 'PENDING' | 'SUBMITTED_LOCKED';
+}
+
+export type UserRole =
+  | 'BID_DIRECTOR'
+  | 'TECHNICAL_LEAD'
+  | 'FINANCIAL_ANALYST'
+  | 'COMPLIANCE_OFFICER'
+  | 'VIEWER';
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  role: UserRole;
+  title: string;
+  email: string;
+  avatar: string;
+}
+
+export interface TenderComment {
+  id: string;
+  tenderId: string;
+  authorName: string;
+  authorRole: UserRole;
+  authorAvatar?: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface DocumentShareLink {
+  id: string;
+  documentId: string;
+  documentName: string;
+  token: string;
+  permission: 'VIEW_ONLY' | 'DOWNLOAD_ALLOWED';
+  expiresAt: string;
+  sharedWithEmail?: string;
+  createdAt: string;
 }
 
 export type TenderClassification =
@@ -174,6 +212,7 @@ export interface Tender {
   decisionMatrix?: TenderDecisionMatrix;
   submissionProof?: SubmissionProof;
   summary?: TenderExtendedSummary;
+  comments?: TenderComment[];
 }
 
 export interface PipelineSummary {

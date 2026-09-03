@@ -24,6 +24,38 @@
 
 ## 2. Chronological Change Log
 
+### [2026-09-03] — Enterprise Collaboration Suite: RBAC, Task Assign, Document Share & Commenting
+- **Category:** Collaboration, Security & Operational Governance
+- **Summary:**
+  - **Role-Based Access Control (RBAC):**
+    - Implemented 5 enterprise roles: `BID_DIRECTOR`, `TECHNICAL_LEAD`, `FINANCIAL_ANALYST`, `COMPLIANCE_OFFICER`, and `VIEWER` ([`tender.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/types/tender.ts), [`users.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/mock/users.ts)).
+    - Built [`UserRoleSwitcher.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/UserRoleSwitcher.tsx) mounted in the header, allowing instant profile and role switching with color-coded badges.
+    - Wired `canPerformAction()` governance rules: restricted lifecycle stage advancement and reversion to `BID_DIRECTOR`, locking buttons and indicating role requirement.
+  - **Task Assignment:**
+    - Added interactive Assignee selector to task Kanban cards ([`TenderTasksTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderTasksTab.tsx)).
+    - Reassigns tasks dynamically across team members with instant state persistence via `assignTask()`.
+  - **Document Sharing:**
+    - Added a "Share" action button next to download/verify in Document Vault ([`TenderDocumentsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx)).
+    - Built [`ShareDocumentModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/ShareDocumentModal.tsx) supporting granular permission levels (`View Only` vs. `Full Download`), recipient email, time-limited token links (7-day validity), and one-click copy.
+  - **Team Commenting Thread:**
+    - Created [`TenderCommentsSection.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/TenderCommentsSection.tsx) mounted in the Proposal Workspace ([`TenderDetailPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderDetailPage.tsx)).
+    - Displays comment history with author name, role badges, timestamps, and delete actions for author/Director.
+    - Enables posting new remarks authored under the active user's identity and role.
+- **Relevant Files:**
+  - `frontend/src/types/tender.ts`
+  - `frontend/src/mock/users.ts`
+  - `frontend/src/context/TenderContext.tsx`
+  - `frontend/src/components/ui/UserRoleSwitcher.tsx`
+  - `frontend/src/components/modals/ShareDocumentModal.tsx`
+  - `frontend/src/components/ui/TenderCommentsSection.tsx`
+  - `frontend/src/components/layout/Header.tsx`
+  - `frontend/src/components/layout/AppLayout.tsx`
+  - `frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx`
+  - `frontend/src/pages/tender-tabs/TenderTasksTab.tsx`
+  - `frontend/src/pages/TenderDetailPage.tsx`
+
+---
+
 ### [2026-09-03] — Sidebar Minimizer, Dedicated Tender Registry Page & Monetary Analysis Removal
 - **Category:** Core UX & Information Architecture
 - **Summary:**
