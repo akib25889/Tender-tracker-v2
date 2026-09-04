@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   X,
   Plus,
@@ -28,7 +28,7 @@ const CLASSIFICATIONS: TenderClassification[] = [
 ];
 
 export const NewTenderModal: React.FC = () => {
-  const { isNewTenderModalOpen, setIsNewTenderModalOpen, addTender, currency } =
+  const { isNewTenderModalOpen, setIsNewTenderModalOpen, addTender, currency, tenders } =
     useTenders();
 
   const [activeTab, setActiveTab] = useState<
@@ -57,6 +57,23 @@ export const NewTenderModal: React.FC = () => {
   const [estimatedValue, setEstimatedValue] = useState('2500000');
   const [priority, setPriority] = useState<TenderPriority>('HIGH');
   const [category, setCategory] = useState('IT & Cloud Infrastructure');
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
+
+  const availableCategories = useMemo(() => {
+    const defaults = [
+      'IT & Cloud Infrastructure',
+      'Software / IT Related',
+      'Government Software',
+      'Healthcare Systems',
+      'Cybersecurity & Energy',
+      'Identity & Security',
+      'Healthcare & Cloud Data',
+      'Industrial IoT & SCADA',
+      'Trade & Customs Logistics',
+    ];
+    const fromTenders = (tenders || []).map((t) => t.category).filter(Boolean);
+    return Array.from(new Set([...defaults, ...fromTenders]));
+  }, [tenders]);
 
   // Scope & Commercial
   const [mainIdea, setMainIdea] = useState(
@@ -564,20 +581,65 @@ export const NewTenderModal: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
-                    Scope of Work (SOW) Category *
-                  </label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-                  >
-                    <option value="IT & Cloud Infrastructure">IT &amp; Cloud Infrastructure</option>
-                    <option value="Healthcare Systems">Healthcare Systems</option>
-                    <option value="Cybersecurity & Energy">Cybersecurity &amp; Energy</option>
-                    <option value="Identity & Security">Identity &amp; Security</option>
-                    <option value="Government Software">Government Software</option>
-                  </select>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block font-semibold text-[#0F172A]">
+                      Scope of Work (SOW) Category *
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (isCustomCategory) {
+                          setIsCustomCategory(false);
+                          if (!category) setCategory(availableCategories[0] || 'IT & Cloud Infrastructure');
+                        } else {
+                          setIsCustomCategory(true);
+                          setCategory('');
+                        }
+                      }}
+                      className="text-[11px] font-semibold text-[#2563EB] hover:underline"
+                    >
+                      {isCustomCategory ? '← Choose Existing' : '+ New Category'}
+                    </button>
+                  </div>
+
+                  {isCustomCategory ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        required
+                        autoFocus
+                        placeholder="e.g. Industrial IoT & SCADA, Renewable Energy..."
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#2563EB] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
+                  ) : (
+                    <select
+                      value={availableCategories.includes(category) ? category : '__CUSTOM__'}
+                      onChange={(e) => {
+                        if (e.target.value === '__CUSTOM__') {
+                          setIsCustomCategory(true);
+                          setCategory('');
+                        } else {
+                          setCategory(e.target.value);
+                        }
+                      }}
+                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    >
+                      {availableCategories.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                      {!availableCategories.includes(category) && category && (
+                        <option value={category}>{category}</option>
+                      )}
+                      <option value="__CUSTOM__" className="font-bold text-[#2563EB]">
+                        + Add New Custom Category...
+                      </option>
+                    </select>
+                  )}
                 </div>
               </div>
 
