@@ -3,6 +3,7 @@ from sqlalchemy import Column, String, Float, Integer, Text, DateTime, ForeignKe
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
+
 class Tender(Base):
     __tablename__ = "tenders"
 
@@ -25,23 +26,52 @@ class Tender(Base):
     summary_json = Column(Text, nullable=True)
     archived_from_stage = Column(String(50), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    updated_at = Column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
 
     # Relationships
-    tasks = relationship("TenderTask", back_populates="tender", cascade="all, delete-orphan")
-    documents = relationship("TenderDocument", back_populates="tender", cascade="all, delete-orphan")
-    folders = relationship("TenderFolder", back_populates="tender", cascade="all, delete-orphan")
-    requirements = relationship("TenderRequirement", back_populates="tender", cascade="all, delete-orphan")
-    reviews = relationship("TenderReviewTier", back_populates="tender", cascade="all, delete-orphan")
-    comments = relationship("TenderComment", back_populates="tender", cascade="all, delete-orphan")
-    decision_matrix = relationship("TenderDecisionMatrix", back_populates="tender", uselist=False, cascade="all, delete-orphan")
-    partner_assignments = relationship("TenderPartnerAssignment", cascade="all, delete-orphan")
+    tasks = relationship(
+        "TenderTask", back_populates="tender", cascade="all, delete-orphan"
+    )
+    documents = relationship(
+        "TenderDocument", back_populates="tender", cascade="all, delete-orphan"
+    )
+    folders = relationship(
+        "TenderFolder", back_populates="tender", cascade="all, delete-orphan"
+    )
+    requirements = relationship(
+        "TenderRequirement", back_populates="tender", cascade="all, delete-orphan"
+    )
+    reviews = relationship(
+        "TenderReviewTier", back_populates="tender", cascade="all, delete-orphan"
+    )
+    comments = relationship(
+        "TenderComment", back_populates="tender", cascade="all, delete-orphan"
+    )
+    decision_matrix = relationship(
+        "TenderDecisionMatrix",
+        back_populates="tender",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+    partner_assignments = relationship(
+        "TenderPartnerAssignment", cascade="all, delete-orphan"
+    )
+
 
 class TenderDecisionMatrix(Base):
     __tablename__ = "tender_decision_matrices"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    tender_id = Column(String(50), ForeignKey("tenders.id", ondelete="CASCADE"), nullable=False, unique=True)
+    tender_id = Column(
+        String(50),
+        ForeignKey("tenders.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+    )
     technical_score = Column(Float, default=0.0)
     financial_score = Column(Float, default=0.0)
     team_score = Column(Float, default=0.0)
@@ -53,6 +83,7 @@ class TenderDecisionMatrix(Base):
 
     tender = relationship("Tender", back_populates="decision_matrix")
 
+
 class TenderCategory(Base):
     __tablename__ = "tender_categories"
 
@@ -61,4 +92,3 @@ class TenderCategory(Base):
     description = Column(Text, nullable=True)
     color_badge = Column(String(50), nullable=True, default="blue")
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-

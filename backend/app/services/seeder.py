@@ -162,7 +162,11 @@ INITIAL_CATEGORIES = [
 def seed_database(db: Session):
     # 0. Seed Tender Categories
     for cat in INITIAL_CATEGORIES:
-        existing = db.query(TenderCategory).filter(TenderCategory.name.ilike(cat["name"])).first()
+        existing = (
+            db.query(TenderCategory)
+            .filter(TenderCategory.name.ilike(cat["name"]))
+            .first()
+        )
         if not existing:
             db.add(
                 TenderCategory(
@@ -177,7 +181,11 @@ def seed_database(db: Session):
     existing_tenders = db.query(Tender.category).distinct().all()
     for (t_cat,) in existing_tenders:
         if t_cat and t_cat.strip():
-            existing = db.query(TenderCategory).filter(TenderCategory.name.ilike(t_cat.strip())).first()
+            existing = (
+                db.query(TenderCategory)
+                .filter(TenderCategory.name.ilike(t_cat.strip()))
+                .first()
+            )
             if not existing:
                 db.add(
                     TenderCategory(
