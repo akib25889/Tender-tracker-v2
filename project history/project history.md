@@ -2,8 +2,8 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.4.0  
-**Stack:** FastAPI (Python 3.12+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
+**Current Version:** 2.5.0  
+**Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
 ---
@@ -18,6 +18,83 @@
 | **M3** | **Storage Vault & Document Security** | **Completed** | Local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation, safe folder relocation. |
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 18-screen routing. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+---
+
+### [2026-09-04] — Version 2.5.0: Real-Time Alert Center, Interactive Calendar Grid & Unified Test Runner
+- **Category:** Operational Intelligence, UX Enhancement, QA Tooling
+- **Commit:** `ae2d644` → `origin/main`
+- **Summary:**
+  - **Real-Time Operational Alert Center (`GET /api/alerts`):**
+    - New backend router [`backend/app/routers/alerts.py`](file:///h:/Tender%20tracker%20v2/backend/app/routers/alerts.py) synthesising 4 alert categories from live database state.
+    - `DEADLINE` alerts for active tenders with `hours_remaining ≤ 48` (CRITICAL ≤24h / WARNING).
+    - `BLOCKER` alerts for any `TenderRequirement` with `status = BLOCKER` on active tenders.
+    - `APPROVAL` alerts for Review Tier 3 (Legal) or Tier 4 (Executive) with `PENDING` / `ACTION_REQUIRED` sign-off.
+    - `VAULT` alerts for `ResourceShare` rows past `expires_at` without a `revoked_at` timestamp.
+    - Alerts sorted CRITICAL → WARNING → INFO, then by hours ascending. Response shape: `{ count, unread, alerts[] }`.
+  - **Live Header Bell Badge ([`Header.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/Header.tsx)):**
+    - Bell icon replaced with numbered red badge (capped at `9+`) polled from `/api/alerts` on mount and every 60 seconds.
+    - Badge disappears when `unread = 0`. Silent fallback when backend is offline.
+  - **NotificationsPage Wired to Live API ([`NotificationsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/NotificationsPage.tsx)):**
+    - Fetches live alerts on mount. Refresh button with spinner. Severity-coloured unread dots: 🔴 CRITICAL · 🟡 WARNING · 🔵 INFO.
+    - Category filter tabs: ALL / DEADLINE / BLOCKER / APPROVAL / VAULT. Green "all clear" empty-state.
+  - **Interactive Monthly Calendar Grid ([`CalendarPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/CalendarPage.tsx)):**
+    - Added **Timeline ↔ Grid** icon toggle (List / Calendar).
+    - Grid: full interactive monthly calendar. Prev/Next month navigation. Tender ID chips per cell colour-coded: 🔴 ≤2d · 🟡 ≤7d · 🔵 >7d. `+N more` overflow. "Today" highlighted. Bottom legend row.
+    - Zero new npm packages — pure native date arithmetic.
+  - **Unified Root Test Runner ([`run_all_tests.py`](file:///h:/Tender%20tracker%20v2/run_all_tests.py)):**
+    - One-command 4-gate verification: DB health → pytest (25 tests) → TypeScript `tsc -b --noEmit` → knowledge graph sync.
+    - Coloured ANSI pass/fail output, elapsed time, exits `0` only when all 4 gates pass.
+- **Relevant Files:**
+  - `backend/app/routers/alerts.py` *(NEW)*
+  - `backend/app/main.py`
+  - `frontend/src/components/layout/Header.tsx`
+  - `frontend/src/pages/NotificationsPage.tsx`
+  - `frontend/src/pages/CalendarPage.tsx`
+  - `run_all_tests.py` *(NEW)*
+  - `backend/tests/test_sharing_and_isolation.py` (utcnow fix)
+
+---
+
+### [2026-09-04] — QA Audit: 13 Bugs Identified & Resolved (v2.4.x Hardening)
+- **Category:** Quality Assurance, Security, Backend Stability, Frontend Resilience
+- **Commit:** `c1952c8` → `origin/main`
+- **Summary:** Full-stack QA audit acting as a senior quality assurance engineer. 13 bugs identified and resolved across backend and frontend.
+
+  | ID | Category | Fix |
+  | :--- | :--- | :--- |
+  | BUG-01 | Backend / Testing | Added `setup_module()` in `test_api_integration.py` so `TestClient(app)` initializes tables and seeds via lifespan |
+  | BUG-02 | Frontend / API Sync | Wired `addTender` → `POST /api/tenders`, `updateTender` → `PUT /api/tenders/{id}` in `TenderContext.tsx` |
+  | BUG-03 | Frontend / Null Safety | Added `if (!tender) return null` early-return guards in `TenderDetailPage.tsx` and all 8 sub-tab components |
+  | BUG-04 | Backend / Schema | Added `folders: List[FolderOut]` to `TenderOut` in `schemas/tender.py` |
+  | BUG-05 | Backend / Documents | Enabled `ReusableDocument` lookup in `validate_shared_token` and `download_shared_file` |
+  | BUG-06 | Backend / Security | Sanitised filenames with `Path(file.filename or "uploaded_file").name` to prevent path traversal |
+  | BUG-07 | Backend / PK Collision | Replaced `.count() + 101` with `uuid.uuid4().hex[:8].upper()` in tasks, comments, documents routers |
+  | BUG-08 | Backend / None Safety | `(t.readiness_score or 0)` guard in `dashboard.py` avg readiness calculation |
+  | BUG-09 | Backend / FK Validation | Added 404 check for `tender_id` in `assign_partner_to_tender` |
+  | BUG-10 | Frontend / Export | `(t.estimatedValue \|\| 0)` NaN guard in `exportUtils.ts` and `ReportsPage.tsx` |
+  | BUG-11 | Backend / Deprecation | Migrated all `datetime.utcnow()` to `datetime.now(timezone.utc)` across backend and tests |
+  | BUG-12 | Frontend / Arrays | `(t.tasks \|\| [])` and `(t.documents \|\| [])` null-array guards in Command Palette, MyTasks, TeamAllocation |
+  | BUG-13 | Backend / Cascade | Added `cascade="all, delete-orphan"` for partner assignments + explicit `ResourceShare` deletion in `delete_tender` |
+
+- **Test Results (post-fix):** 25/25 passing — 100% pass rate
+- **Relevant Files:**
+  - `backend/tests/test_api_integration.py`
+  - `frontend/src/context/TenderContext.tsx`
+  - `frontend/src/pages/TenderDetailPage.tsx`
+  - `frontend/src/pages/tender-tabs/` *(all 8 sub-tab components)*
+  - `backend/app/schemas/tender.py`
+  - `backend/app/routers/documents.py`
+  - `backend/app/services/storage.py`
+  - `backend/app/routers/tasks.py`, `comments.py`
+  - `backend/app/routers/dashboard.py`
+  - `backend/app/routers/permissions.py`
+  - `frontend/src/utils/exportUtils.ts`
+  - `frontend/src/pages/ReportsPage.tsx`
+  - `backend/app/models/tender.py`
+  - `frontend/src/components/modals/CommandPaletteModal.tsx`
+  - `frontend/src/pages/MyTasksPage.tsx`
+  - `frontend/src/pages/TeamAllocationPage.tsx`
 
 ---
 

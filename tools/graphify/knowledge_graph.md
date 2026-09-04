@@ -88,3 +88,32 @@
 - `screen:tender_requirements` ──[VALIDATES_COMPLIANCE]──> `entity:tender_requirements`
 - `screen:tender_review` ──[RECORDS_SIGNOFF]──> `entity:tender_reviews`
 - `screen:tender_analysis` ──[SCORES_GO_NO_GO]──> `entity:tender_decisions`
+- `screen:notifications` ──[CONSUMES_LIVE_ALERTS]──> `api:alerts`
+- `screen:calendar` ──[RENDERS_TIMELINE_AND_GRID]──> `entity:tenders`
+- `api:alerts` ──[READS_DEADLINES_FROM]──> `entity:tenders`
+- `api:alerts` ──[READS_BLOCKERS_FROM]──> `entity:tender_requirements`
+- `api:alerts` ──[READS_SIGNOFFS_FROM]──> `entity:tender_reviews`
+- `api:alerts` ──[READS_EXPIRY_FROM]──> `entity:resource_shares`
+
+## 6. Backend API Routers
+
+| Router | Prefix | Description |
+| :--- | :--- | :--- |
+| `auth` | `/api/auth` | JWT login |
+| `tenders` | `/api/tenders` | Full CRUD, archive, restore, reviews, stage |
+| `tasks` | `/api/tasks` | Task CRUD + PATCH status/assignee |
+| `documents` | `/api/documents` | Upload, download, share token, ZIP |
+| `comments` | `/api/comments` | Threaded discussion CRUD |
+| `dashboard` | `/api/dashboard` | KPI stats + win/loss analytics |
+| `permissions` | `/api/permissions` | RBAC engine, partner orgs, audit trail |
+| `alerts` | `/api/alerts` | **Live operational alerts (v2.5.0)** |
+
+## 7. Current Quality Gates
+
+| Gate | Result |
+| :--- | :--- |
+| `pytest backend/tests` | ✅ 25/25 passed |
+| `tsc -b --noEmit` | ✅ 0 errors |
+| `npm run build` | ✅ Clean |
+| Knowledge graph nodes | 46 nodes, 24 edges |
+| Git HEAD | `ae2d644` on `origin/main` |
