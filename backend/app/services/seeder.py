@@ -161,13 +161,21 @@ INITIAL_CATEGORIES = [
 ]
 
 INITIAL_SETTINGS = [
-    {"key": "vault_path", "value": "H:/Tender tracker v2/storage/tenders", "category": "STORAGE"},
+    {
+        "key": "vault_path",
+        "value": "H:/Tender tracker v2/storage/tenders",
+        "category": "STORAGE",
+    },
     {"key": "alert_threshold_hours", "value": "48", "category": "ALERTS"},
     {"key": "gatekeeper_sla_hours", "value": "48", "category": "ALERTS"},
     {"key": "enable_sha_verification", "value": "true", "category": "SECURITY"},
     {"key": "smtp_server", "value": "smtp.tendertracker.internal", "category": "SMTP"},
     {"key": "smtp_port", "value": "587", "category": "SMTP"},
-    {"key": "sender_email", "value": "notifications@tendertracker.enterprise", "category": "SMTP"},
+    {
+        "key": "sender_email",
+        "value": "notifications@tendertracker.enterprise",
+        "category": "SMTP",
+    },
     {"key": "notify_deadlines", "value": "true", "category": "SMTP"},
     {"key": "notify_sign_offs", "value": "true", "category": "SMTP"},
     {"key": "notify_blockers", "value": "true", "category": "SMTP"},
@@ -221,12 +229,18 @@ def seed_database(db: Session):
     # 0. Seed System Settings
     for s in INITIAL_SETTINGS:
         if not db.query(SystemSetting).filter(SystemSetting.key == s["key"]).first():
-            db.add(SystemSetting(key=s["key"], value=s["value"], category=s["category"]))
+            db.add(
+                SystemSetting(key=s["key"], value=s["value"], category=s["category"])
+            )
     db.commit()
 
     # 0.1 Seed Channel Messages
     for msg in INITIAL_CHANNEL_MESSAGES:
-        if not db.query(ChatChannelMessage).filter(ChatChannelMessage.id == msg["id"]).first():
+        if (
+            not db.query(ChatChannelMessage)
+            .filter(ChatChannelMessage.id == msg["id"])
+            .first()
+        ):
             db.add(
                 ChatChannelMessage(
                     id=msg["id"],

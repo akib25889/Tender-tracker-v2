@@ -394,8 +394,16 @@ def extract_project_nodes():
         ("screen:tender_detail", "entity:tender_decisions", "GOVERNS_DECISION"),
         ("screen:settings", "entity:system_settings", "CONFIGURES_PREFERENCES"),
         ("screen:settings", "entity:tender_categories", "MANAGES_TAXONOMIES"),
-        ("screen:tender_submission", "entity:tender_submissions", "RECORDS_SUBMISSION_PROOF"),
-        ("screen:chat_discussions", "entity:chat_channel_messages", "PERSISTS_CHANNEL_CHAT"),
+        (
+            "screen:tender_submission",
+            "entity:tender_submissions",
+            "RECORDS_SUBMISSION_PROOF",
+        ),
+        (
+            "screen:chat_discussions",
+            "entity:chat_channel_messages",
+            "PERSISTS_CHANNEL_CHAT",
+        ),
     ]
     for src, tgt, rel in screen_entity_map:
         edges.append({"source": src, "target": tgt, "relation": rel})
