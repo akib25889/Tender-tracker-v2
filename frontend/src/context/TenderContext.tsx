@@ -817,6 +817,15 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const submitTenderProof = (tenderId: string, portalReference: string) => {
+    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/submission`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        portal_reference: portalReference,
+        submitted_by: currentUser.name || 'Sarah Jenkins',
+      }),
+    }).catch(() => {});
+
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;

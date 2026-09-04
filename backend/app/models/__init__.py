@@ -1,10 +1,17 @@
 from app.models.user import User
-from app.models.tender import Tender, TenderDecisionMatrix, TenderCategory
+from app.models.tender import (
+    Tender,
+    TenderDecisionMatrix,
+    TenderCategory,
+    TenderSubmission,
+)
 from app.models.task import TenderTask
 from app.models.document import TenderFolder, TenderDocument, ReusableDocument
 from app.models.requirement import TenderRequirement
 from app.models.review import TenderReviewTier
 from app.models.comment import TenderComment
+from app.models.setting import SystemSetting
+from app.models.chat import ChatChannelMessage
 from app.models.permission import (
     Permission,
     PartnerOrganization,
@@ -21,6 +28,9 @@ __all__ = [
     "Tender",
     "TenderDecisionMatrix",
     "TenderCategory",
+    "TenderSubmission",
+    "SystemSetting",
+    "ChatChannelMessage",
     "TenderTask",
     "TenderFolder",
     "TenderDocument",

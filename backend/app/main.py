@@ -15,6 +15,9 @@ from app.routers import (
     permissions,
     alerts,
     categories,
+    settings as settings_router,
+    submissions,
+    chat,
 )
 
 
@@ -60,6 +63,9 @@ app.include_router(dashboard.router, prefix=settings.API_V1_STR)
 app.include_router(permissions.router, prefix=settings.API_V1_STR)
 app.include_router(alerts.router, prefix=settings.API_V1_STR)
 app.include_router(categories.router, prefix=settings.API_V1_STR)
+app.include_router(settings_router.router, prefix=settings.API_V1_STR)
+app.include_router(submissions.router, prefix=settings.API_V1_STR)
+app.include_router(chat.router, prefix=settings.API_V1_STR)
 
 
 @app.get(f"{settings.API_V1_STR}/health", tags=["Health"])

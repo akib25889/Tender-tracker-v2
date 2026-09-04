@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card';
 import {
   HardDrive,
@@ -143,8 +143,46 @@ export const SettingsPage: React.FC = () => {
 
   const [saved, setSaved] = useState(false);
 
-  const handleSave = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/api/settings')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: Record<string, string> | null) => {
+        if (data) {
+          if (data.vault_path) setVaultPath(data.vault_path);
+          if (data.alert_threshold_hours) setAlertThresholdHours(Number(data.alert_threshold_hours));
+          if (data.enable_sha_verification !== undefined) setEnableShaVerification(data.enable_sha_verification === 'true');
+          if (data.smtp_server) setSmtpServer(data.smtp_server);
+          if (data.smtp_port) setSmtpPort(Number(data.smtp_port));
+          if (data.sender_email) setSenderEmail(data.sender_email);
+          if (data.notify_deadlines !== undefined) setNotifyDeadlines(data.notify_deadlines === 'true');
+          if (data.notify_sign_offs !== undefined) setNotifySignOffs(data.notify_sign_offs === 'true');
+          if (data.notify_blockers !== undefined) setNotifyBlockers(data.notify_blockers === 'true');
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      await fetch('http://127.0.0.1:8000/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vault_path: vaultPath,
+          alert_threshold_hours: String(alertThresholdHours),
+          enable_sha_verification: String(enableShaVerification),
+          smtp_server: smtpServer,
+          smtp_port: String(smtpPort),
+          sender_email: senderEmail,
+          notify_deadlines: String(notifyDeadlines),
+          notify_sign_offs: String(notifySignOffs),
+          notify_blockers: String(notifyBlockers),
+        }),
+      });
+    } catch {
+      // Offline fallback
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };

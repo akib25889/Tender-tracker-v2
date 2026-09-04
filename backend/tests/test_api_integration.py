@@ -259,3 +259,87 @@ def test_08_category_lifecycle():
     verify_res = client.get("/api/categories")
     remaining_names = [c["name"] for c in verify_res.json()]
     assert "Biometrics & Border Security" not in remaining_names
+
+
+def test_09_system_settings_lifecycle():
+    # 1. Get settings
+    get_res = client.get("/api/settings")
+    assert get_res.status_code == 200
+    settings = get_res.json()
+    assert "vault_path" in settings
+    assert "alert_threshold_hours" in settings
+
+    # 2. Update settings
+    updates = {
+        "vault_path": "H:/Tender tracker v2/storage/tenders_custom",
+        "alert_threshold_hours": "36",
+        "smtp_server": "smtp.company.org",
+    }
+    post_res = client.post("/api/settings", json=updates)
+    assert post_res.status_code == 200
+    updated = post_res.json()
+    assert updated["vault_path"] == "H:/Tender tracker v2/storage/tenders_custom"
+    assert updated["alert_threshold_hours"] == "36"
+    assert updated["smtp_server"] == "smtp.company.org"
+
+    # 3. Verify persistence
+    verify_res = client.get("/api/settings")
+    assert verify_res.status_code == 200
+    assert verify_res.json()["alert_threshold_hours"] == "36"
+
+
+def test_10_tender_submission_proof_lock():
+    test_id = "TDR-E2E-TEST-01"
+    # 1. Record submission proof
+    payload = {
+        "portal_reference": "UNGM-2026-CONF-99812",
+        "submitted_by": "Sarah Jenkins",
+        "receipt_sha256": "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
+        "receipt_path": "storage/tenders/TDR-E2E-TEST-01/06_submission_receipts/receipt.pdf",
+    }
+    sub_res = client.post(f"/api/tenders/{test_id}/submission", json=payload)
+    assert sub_res.status_code == 201
+    sub_data = sub_res.json()
+    assert sub_data["tender_id"] == test_id
+    assert sub_data["portal_reference"] == "UNGM-2026-CONF-99812"
+    assert sub_data["status"] == "SUBMITTED_LOCKED"
+
+    # 2. Verify tender stage transitioned to SUBMITTED and score=100
+    t_res = client.get(f"/api/tenders/{test_id}")
+    assert t_res.status_code == 200
+    tender = t_res.json()
+    assert tender["stage"] == "SUBMITTED"
+    assert tender["readiness_score"] == 100
+
+    # 3. Retrieve submission proof
+    get_sub_res = client.get(f"/api/tenders/{test_id}/submission")
+    assert get_sub_res.status_code == 200
+    assert get_sub_res.json()["portal_reference"] == "UNGM-2026-CONF-99812"
+
+
+def test_11_chat_channels_lifecycle():
+    channel = "general-ops"
+    # 1. Get seeded messages
+    list_res = client.get(f"/api/chat/channels/{channel}/messages")
+    assert list_res.status_code == 200
+    messages = list_res.json()
+    assert len(messages) >= 1
+
+    # 2. Post new channel message
+    payload = {
+        "content": "Final compliance checks for DG DIGIT have passed.",
+        "sender_name": "Elena Rostova",
+        "sender_role": "TENDER_ANALYST",
+        "sender_avatar": "ER",
+    }
+    post_res = client.post(f"/api/chat/channels/{channel}/messages", json=payload)
+    assert post_res.status_code == 201
+    created = post_res.json()
+    assert created["channel_id"] == channel
+    assert created["content"] == payload["content"]
+
+    # 3. Verify retrieved list includes new message
+    verify_res = client.get(f"/api/chat/channels/{channel}/messages")
+    assert verify_res.status_code == 200
+    contents = [m["content"] for m in verify_res.json()]
+    assert payload["content"] in contents

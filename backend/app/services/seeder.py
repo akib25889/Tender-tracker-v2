@@ -14,6 +14,8 @@ from app.models.permission import (
     PermissionRule,
     AccessBlock,
 )
+from app.models.setting import SystemSetting
+from app.models.chat import ChatChannelMessage
 from app.core.security import get_password_hash
 from app.services.storage import ensure_tender_directories
 
@@ -158,9 +160,86 @@ INITIAL_CATEGORIES = [
     },
 ]
 
+INITIAL_SETTINGS = [
+    {"key": "vault_path", "value": "H:/Tender tracker v2/storage/tenders", "category": "STORAGE"},
+    {"key": "alert_threshold_hours", "value": "48", "category": "ALERTS"},
+    {"key": "gatekeeper_sla_hours", "value": "48", "category": "ALERTS"},
+    {"key": "enable_sha_verification", "value": "true", "category": "SECURITY"},
+    {"key": "smtp_server", "value": "smtp.tendertracker.internal", "category": "SMTP"},
+    {"key": "smtp_port", "value": "587", "category": "SMTP"},
+    {"key": "sender_email", "value": "notifications@tendertracker.enterprise", "category": "SMTP"},
+    {"key": "notify_deadlines", "value": "true", "category": "SMTP"},
+    {"key": "notify_sign_offs", "value": "true", "category": "SMTP"},
+    {"key": "notify_blockers", "value": "true", "category": "SMTP"},
+]
+
+INITIAL_CHANNEL_MESSAGES = [
+    {
+        "id": "MSG-INIT-01",
+        "channel_id": "general-ops",
+        "sender_name": "Sarah Jenkins",
+        "sender_role": "Director of Procurement & Bid Capture",
+        "sender_avatar": "SJ",
+        "content": "Good morning team. Please review the weekly bid pipeline targets. We have two critical submissions due in the next 10 days.",
+    },
+    {
+        "id": "MSG-INIT-02",
+        "channel_id": "general-ops",
+        "sender_name": "Dr. Marcus Vance",
+        "sender_role": "Head of Technical Architecture & Delivery",
+        "sender_avatar": "MV",
+        "content": "Technical architecture diagrams and bill-of-quantities for the European DG modernization tender have been uploaded to the vault.",
+    },
+    {
+        "id": "MSG-INIT-03",
+        "channel_id": "tender-radar",
+        "sender_name": "Elena Rostova",
+        "sender_role": "Senior Bid Analyst & Compliance Lead",
+        "sender_avatar": "ER",
+        "content": "New RFP spotted on UNGM portal: Renewable Solar Microgrid Monitoring System in East Africa. Intake specifications drafted.",
+    },
+    {
+        "id": "MSG-INIT-04",
+        "channel_id": "compliance-desk",
+        "sender_name": "Elena Rostova",
+        "sender_role": "Senior Bid Analyst & Compliance Lead",
+        "sender_avatar": "ER",
+        "content": "Reminder: All subcontractor tax clearance certificates must have at least 60 days validity remaining prior to submission lock.",
+    },
+    {
+        "id": "MSG-INIT-05",
+        "channel_id": "commercial-pricing",
+        "sender_name": "Tariq Al-Mansoor",
+        "sender_role": "Commercial Pricing & Contracts Director",
+        "sender_avatar": "TA",
+        "content": "Foreign exchange rate sensitivity modeling has been applied with a 3.5% buffer for multilateral USD contracts.",
+    },
+]
+
 
 def seed_database(db: Session):
-    # 0. Seed Tender Categories
+    # 0. Seed System Settings
+    for s in INITIAL_SETTINGS:
+        if not db.query(SystemSetting).filter(SystemSetting.key == s["key"]).first():
+            db.add(SystemSetting(key=s["key"], value=s["value"], category=s["category"]))
+    db.commit()
+
+    # 0.1 Seed Channel Messages
+    for msg in INITIAL_CHANNEL_MESSAGES:
+        if not db.query(ChatChannelMessage).filter(ChatChannelMessage.id == msg["id"]).first():
+            db.add(
+                ChatChannelMessage(
+                    id=msg["id"],
+                    channel_id=msg["channel_id"],
+                    sender_name=msg["sender_name"],
+                    sender_role=msg["sender_role"],
+                    sender_avatar=msg["sender_avatar"],
+                    content=msg["content"],
+                )
+            )
+    db.commit()
+
+    # 0.2 Seed Tender Categories
     for cat in INITIAL_CATEGORIES:
         existing = (
             db.query(TenderCategory)

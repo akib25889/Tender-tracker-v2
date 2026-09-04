@@ -152,6 +152,31 @@ export const ChatDiscussionsPage: React.FC = () => {
     localStorage.setItem('tendertracker_general_chat', JSON.stringify(generalMessages));
   }, [generalMessages]);
 
+  useEffect(() => {
+    if (!activeChannelId.startsWith('tdr-')) {
+      fetch(`http://127.0.0.1:8000/api/chat/channels/${activeChannelId}/messages`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (Array.isArray(data) && data.length > 0) {
+            const mapped: GeneralMessage[] = data.map((m: any) => ({
+              id: m.id,
+              channelId: m.channel_id,
+              authorName: m.sender_name,
+              authorRole: m.sender_role,
+              authorAvatar: m.sender_avatar || 'SJ',
+              content: m.content,
+              createdAt: m.created_at,
+            }));
+            setGeneralMessages((prev) => {
+              const otherChannels = prev.filter((m) => m.channelId !== activeChannelId);
+              return [...otherChannels, ...mapped];
+            });
+          }
+        })
+        .catch(() => {});
+    }
+  }, [activeChannelId]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -191,16 +216,40 @@ export const ChatDiscussionsPage: React.FC = () => {
     if (isTenderChannel && selectedTender) {
       addComment(selectedTender.id, inputText.trim());
     } else {
+      const text = inputText.trim();
+      const tempId = `MSG-${Date.now()}`;
       const newMsg: GeneralMessage = {
-        id: `MSG-${Date.now()}`,
+        id: tempId,
         channelId: activeChannelId,
         authorName: currentUser.name,
         authorRole: currentUser.role,
         authorAvatar: currentUser.avatar,
-        content: inputText.trim(),
+        content: text,
         createdAt: new Date().toISOString(),
       };
       setGeneralMessages((prev) => [...prev, newMsg]);
+
+      fetch(`http://127.0.0.1:8000/api/chat/channels/${activeChannelId}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: text,
+          sender_name: currentUser.name,
+          sender_role: currentUser.role,
+          sender_avatar: currentUser.avatar,
+        }),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((saved) => {
+          if (saved) {
+            setGeneralMessages((prev) =>
+              prev.map((m) =>
+                m.id === tempId ? { ...m, id: saved.id, createdAt: saved.created_at } : m
+              )
+            );
+          }
+        })
+        .catch(() => {});
     }
 
     setInputText('');

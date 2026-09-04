@@ -60,6 +60,12 @@ class Tender(Base):
     partner_assignments = relationship(
         "TenderPartnerAssignment", cascade="all, delete-orphan"
     )
+    submission = relationship(
+        "TenderSubmission",
+        back_populates="tender",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
 
 
 class TenderDecisionMatrix(Base):
@@ -92,3 +98,23 @@ class TenderCategory(Base):
     description = Column(Text, nullable=True)
     color_badge = Column(String(50), nullable=True, default="blue")
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+class TenderSubmission(Base):
+    __tablename__ = "tender_submissions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    tender_id = Column(
+        String(50),
+        ForeignKey("tenders.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+    )
+    portal_reference = Column(String(100), nullable=False)
+    submitted_by = Column(String(100), nullable=False, default="Sarah Jenkins")
+    submitted_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    receipt_sha256 = Column(String(64), nullable=True)
+    receipt_path = Column(String(255), nullable=True)
+    status = Column(String(50), nullable=False, default="SUBMITTED_LOCKED")
+
+    tender = relationship("Tender", back_populates="submission")
