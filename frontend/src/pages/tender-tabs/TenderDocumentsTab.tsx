@@ -16,6 +16,7 @@ import {
   Lock,
   Trash2,
   Archive,
+  Share2,
 } from 'lucide-react';
 
 const ACCESS_STYLES: Record<
@@ -62,6 +63,7 @@ export const TenderDocumentsTab: React.FC = () => {
     updateTenderDocumentAccess,
     hasDocumentAccess,
     currentUser,
+    setActiveDocForShare,
   } = useTenders();
 
   const tender = tenders.find((t) => t.id === id) || tenders[0];
@@ -453,17 +455,30 @@ export const TenderDocumentsTab: React.FC = () => {
                       <td className="py-3 px-3 text-[#64748B]">{doc.uploadedAt}</td>
                       <td className="py-3 px-3 text-right">
                         {hasAccess ? (
-                          <button
-                            type="button"
-                            onClick={() =>
-                              alert(`Simulating secure download for ${doc.name}`)
-                            }
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-[#0F172A] bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg transition-colors shadow-2xs"
-                            title="Download file"
-                          >
-                            <Download className="w-3.5 h-3.5 text-[#64748B]" />
-                            <span>Download</span>
-                          </button>
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setActiveDocForShare({ tenderId: tender.id, doc })
+                              }
+                              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#2563EB] bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-lg transition-colors shadow-2xs"
+                              title="Share document link"
+                            >
+                              <Share2 className="w-3.5 h-3.5" />
+                              <span>Share</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                alert(`Simulating secure download for ${doc.name}`)
+                              }
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-[#0F172A] bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg transition-colors shadow-2xs"
+                              title="Download file"
+                            >
+                              <Download className="w-3.5 h-3.5 text-[#64748B]" />
+                              <span>Download</span>
+                            </button>
+                          </div>
                         ) : (
                           <span
                             className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] rounded-lg cursor-not-allowed"

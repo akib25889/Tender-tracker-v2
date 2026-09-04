@@ -27,11 +27,17 @@ from app.services.storage import (
 
 router = APIRouter(tags=["Document Vault & Master Library"])
 
+
 @router.get("/tenders/{tender_id}/documents", response_model=List[DocumentOut])
 def get_tender_documents(tender_id: str, db: Session = Depends(get_db)):
     return db.query(TenderDocument).filter(TenderDocument.tender_id == tender_id).all()
 
-@router.post("/tenders/{tender_id}/documents/upload", response_model=DocumentOut, status_code=status.HTTP_201_CREATED)
+
+@router.post(
+    "/tenders/{tender_id}/documents/upload",
+    response_model=DocumentOut,
+    status_code=status.HTTP_201_CREATED,
+)
 async def upload_tender_document(
     tender_id: str,
     file: UploadFile = File(...),
@@ -42,13 +48,17 @@ async def upload_tender_document(
     tender = db.query(Tender).filter(Tender.id == tender_id).first()
     if not tender:
         raise HTTPException(status_code=404, detail="Tender not found")
-        
+
     target_dir = get_tender_storage_dir(tender_id) / folder
     filename, sha256_hash, size_bytes = await save_uploaded_file(file, target_dir)
-    
-    size_mb = f"{size_bytes / (1024 * 1024):.1f} MB" if size_bytes >= 1024 * 1024 else f"{size_bytes / 1024:.0f} KB"
+
+    size_mb = (
+        f"{size_bytes / (1024 * 1024):.1f} MB"
+        if size_bytes >= 1024 * 1024
+        else f"{size_bytes / 1024:.0f} KB"
+    )
     doc_id = f"DOC-{db.query(TenderDocument).count() + 101}"
-    
+
     doc = TenderDocument(
         id=doc_id,
         tender_id=tender_id,
@@ -66,16 +76,18 @@ async def upload_tender_document(
     db.refresh(doc)
     return doc
 
+
 @router.get("/documents/{doc_id}/download")
 def download_document(doc_id: str, db: Session = Depends(get_db)):
     doc = db.query(TenderDocument).filter(TenderDocument.id == doc_id).first()
     if not doc or not doc.file_path or not os.path.exists(doc.file_path):
-        raise HTTPException(status_code=404, detail="Physical document file not found on disk")
+        raise HTTPException(
+            status_code=404, detail="Physical document file not found on disk"
+        )
     return FileResponse(
-        path=doc.file_path,
-        filename=doc.name,
-        media_type="application/octet-stream"
+        path=doc.file_path, filename=doc.name, media_type="application/octet-stream"
     )
+
 
 @router.get("/tenders/{tender_id}/documents/zip")
 def download_tender_zip(
@@ -111,8 +123,14 @@ def download_tender_zip(
         ]
 
         for d in docs:
-            arc_path = d.name if (folder and folder.upper() != "ALL") else f"{d.folder}/{d.name}"
-            manifest_lines.append(f"{d.folder}/{d.name} | {d.size} | {d.access_level} | {d.sha256}")
+            arc_path = (
+                d.name
+                if (folder and folder.upper() != "ALL")
+                else f"{d.folder}/{d.name}"
+            )
+            manifest_lines.append(
+                f"{d.folder}/{d.name} | {d.size} | {d.access_level} | {d.sha256}"
+            )
 
             if d.file_path and os.path.exists(d.file_path):
                 zf.write(d.file_path, arc_path)
@@ -137,8 +155,9 @@ def download_tender_zip(
     return Response(
         content=zip_buffer.getvalue(),
         media_type="application/zip",
-        headers={"Content-Disposition": f'attachment; filename="{zip_filename}"'}
+        headers={"Content-Disposition": f'attachment; filename="{zip_filename}"'},
     )
+
 
 @router.get("/tenders/{tender_id}/folders/{folder_name}/zip")
 def download_folder_zip(
@@ -151,62 +170,82 @@ def download_folder_zip(
 
 # --- Custom Folders ---
 
-@router.post("/tenders/{tender_id}/folders", response_model=FolderOut, status_code=status.HTTP_201_CREATED)
-def create_folder(tender_id: str, folder_in: FolderCreate, db: Session = Depends(get_db)):
+
+@router.post(
+    "/tenders/{tender_id}/folders",
+    response_model=FolderOut,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_folder(
+    tender_id: str, folder_in: FolderCreate, db: Session = Depends(get_db)
+):
     tender = db.query(Tender).filter(Tender.id == tender_id).first()
     if not tender:
         raise HTTPException(status_code=404, detail="Tender not found")
-        
+
     folder = TenderFolder(
         tender_id=tender_id,
         name=folder_in.name,
         label=folder_in.label,
     )
     db.add(folder)
-    
+
     # Create directory on disk
-    (get_tender_storage_dir(tender_id) / folder_in.name).mkdir(parents=True, exist_ok=True)
-    
+    (get_tender_storage_dir(tender_id) / folder_in.name).mkdir(
+        parents=True, exist_ok=True
+    )
+
     db.commit()
     db.refresh(folder)
     return folder
 
-@router.delete("/tenders/{tender_id}/folders/{folder_name}", status_code=status.HTTP_204_NO_CONTENT)
+
+@router.delete(
+    "/tenders/{tender_id}/folders/{folder_name}", status_code=status.HTTP_204_NO_CONTENT
+)
 def delete_folder(tender_id: str, folder_name: str, db: Session = Depends(get_db)):
     # 1. Safely reassign documents in database
     db.query(TenderDocument).filter(
-        TenderDocument.tender_id == tender_id,
-        TenderDocument.folder == folder_name
+        TenderDocument.tender_id == tender_id, TenderDocument.folder == folder_name
     ).update({"folder": "01_original_tender_documents"})
-    
+
     # 2. Safely relocate physical files on SSD
     safe_relocate_folder_files(tender_id, folder_name, "01_original_tender_documents")
-    
+
     # 3. Remove folder record if custom
     db.query(TenderFolder).filter(
-        TenderFolder.tender_id == tender_id,
-        TenderFolder.name == folder_name
+        TenderFolder.tender_id == tender_id, TenderFolder.name == folder_name
     ).delete()
-    
+
     db.commit()
     return None
 
+
 # --- Reusable Master Document Library ---
 
+
 @router.get("/reusable-documents", response_model=List[ReusableDocOut])
-def get_reusable_documents(category: Optional[str] = None, db: Session = Depends(get_db)):
+def get_reusable_documents(
+    category: Optional[str] = None, db: Session = Depends(get_db)
+):
     query = db.query(ReusableDocument)
     if category and category.upper() != "ALL":
         query = query.filter(ReusableDocument.category == category)
     return query.order_by(ReusableDocument.uploaded_at.desc()).all()
 
-@router.post("/reusable-documents", response_model=ReusableDocOut, status_code=status.HTTP_201_CREATED)
+
+@router.post(
+    "/reusable-documents",
+    response_model=ReusableDocOut,
+    status_code=status.HTTP_201_CREATED,
+)
 def create_reusable_document(doc_in: ReusableDocCreate, db: Session = Depends(get_db)):
     doc_id = f"RUD-{db.query(ReusableDocument).count() + 101}"
-    
+
     import secrets
+
     mock_hash = secrets.token_hex(32)
-    
+
     new_doc = ReusableDocument(
         id=doc_id,
         name=doc_in.name,
@@ -224,13 +263,26 @@ def create_reusable_document(doc_in: ReusableDocCreate, db: Session = Depends(ge
     db.refresh(new_doc)
     return new_doc
 
-@router.post("/tenders/{tender_id}/link-reusable", response_model=DocumentOut, status_code=status.HTTP_201_CREATED)
-def link_reusable_to_tender(tender_id: str, req: LinkReusableRequest, db: Session = Depends(get_db)):
+
+@router.post(
+    "/tenders/{tender_id}/link-reusable",
+    response_model=DocumentOut,
+    status_code=status.HTTP_201_CREATED,
+)
+def link_reusable_to_tender(
+    tender_id: str, req: LinkReusableRequest, db: Session = Depends(get_db)
+):
     tender = db.query(Tender).filter(Tender.id == tender_id).first()
-    master = db.query(ReusableDocument).filter(ReusableDocument.id == req.reusable_doc_id).first()
+    master = (
+        db.query(ReusableDocument)
+        .filter(ReusableDocument.id == req.reusable_doc_id)
+        .first()
+    )
     if not tender or not master:
-        raise HTTPException(status_code=404, detail="Tender or Reusable Document not found")
-        
+        raise HTTPException(
+            status_code=404, detail="Tender or Reusable Document not found"
+        )
+
     doc_id = f"DOC-LINK-{db.query(TenderDocument).count() + 101}"
     linked_doc = TenderDocument(
         id=doc_id,

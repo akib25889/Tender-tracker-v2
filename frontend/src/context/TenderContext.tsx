@@ -850,7 +850,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     options: { permission: 'VIEW_ONLY' | 'DOWNLOAD_ALLOWED'; email?: string }
   ): DocumentShareLink => {
     const tender = tenders.find((t) => t.id === tenderId);
-    const doc = tender?.documents.find((d) => d.id === docId);
+    const doc =
+      tender?.documents.find((d) => d.id === docId) ||
+      reusableDocuments.find((d) => d.id === docId);
 
     const link: DocumentShareLink = {
       id: `SHR-${Math.floor(1000 + Math.random() * 9000)}`,

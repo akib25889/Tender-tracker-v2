@@ -21,6 +21,28 @@
 
 ---
 
+### [2026-09-04] — Document Vault & Master Library Secure File Share Link Engine
+- **Category:** Document Vault, Security, RBAC & Partner Collaboration
+- **Summary:**
+  - **Granular Share Modal & Permission Controls (`ShareDocumentModal.tsx`):**
+    - Enabled time-limited (7-day default expiry) secure link generation for all files in both the Tender Document Vault and Master Reusable Document Vault.
+    - Integrated granular permission selector: **`View Only`** (in-browser watermarked preview without raw file download) vs. **`Full Download`** (authorized partner direct download).
+    - Optional recipient email restriction binding access to authorized stakeholders.
+    - 1-click **Copy Share Link** with instant visual feedback and audit logging.
+  - **Global & Interactive Integration:**
+    - Mounted `<ShareDocumentModal />` in [`AppLayout.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/layout/AppLayout.tsx) for seamless context-driven activation across all screens.
+    - Added dedicated **`Share`** action button (`Share2` icon) on every document row in [`TenderDocumentsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx).
+    - Added dedicated **`Share`** action button on every master credential row in [`MasterDocumentVaultPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MasterDocumentVaultPage.tsx).
+    - Extended `shareDocument` in [`TenderContext.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/context/TenderContext.tsx) to transparently resolve documents from either active tender workspaces or central master reusable libraries.
+- **Relevant Files:**
+  - `frontend/src/components/layout/AppLayout.tsx`
+  - `frontend/src/components/modals/ShareDocumentModal.tsx`
+  - `frontend/src/context/TenderContext.tsx`
+  - `frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx`
+  - `frontend/src/pages/MasterDocumentVaultPage.tsx`
+
+---
+
 ### [2026-09-04] — Single-Folder & Complete Vault ZIP Package Download Engine
 - **Category:** Document Vault, Compression, Client & Server Architecture
 - **Summary:**

@@ -19,7 +19,8 @@ import {
   Award,
   Users,
   DollarSign,
-  Scale
+  Scale,
+  Share2,
 } from 'lucide-react';
 
 const CATEGORY_ICONS: Record<string, any> = {
@@ -74,6 +75,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
     hasDocumentAccess,
     currentUser,
     tenders,
+    setActiveDocForShare,
   } = useTenders();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -404,6 +406,31 @@ export const MasterDocumentVaultPage: React.FC = () => {
                           >
                             <LinkIcon className="w-3 h-3" />
                             <span>Use in Tender</span>
+                          </button>
+
+                          {/* Share Document Link */}
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setActiveDocForShare({
+                                tenderId: 'Master Library',
+                                doc: {
+                                  id: doc.id,
+                                  name: doc.name,
+                                  folder: doc.category,
+                                  revision: doc.revision,
+                                  uploadedAt: doc.uploadedAt,
+                                  size: doc.size,
+                                  sha256: doc.sha256,
+                                  accessLevel: doc.accessLevel,
+                                },
+                              })
+                            }
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#2563EB] bg-[#EFF6FF] hover:bg-[#DBEAFE] border border-[#BFDBFE] rounded-lg transition-colors"
+                            title="Generate shareable link for this master document"
+                          >
+                            <Share2 className="w-3 h-3" />
+                            <span>Share</span>
                           </button>
 
                           {/* Secure Download Button */}

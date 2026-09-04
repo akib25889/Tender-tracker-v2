@@ -164,7 +164,9 @@ def test_05_document_vault_custom_folders_and_safe_deletion():
     assert del_folder_res.status_code == 204
 
     # 5. Test Download Folder as ZIP
-    folder_zip_res = client.get(f"/api/tenders/{test_id}/folders/02_company_statutory_documents/zip")
+    folder_zip_res = client.get(
+        f"/api/tenders/{test_id}/folders/02_company_statutory_documents/zip"
+    )
     assert folder_zip_res.status_code == 200
     assert folder_zip_res.headers["content-type"] == "application/zip"
     assert folder_zip_res.content[:4] == b"PK\x03\x04"
