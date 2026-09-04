@@ -163,6 +163,34 @@
       "module": "settings"
     },
     {
+      "id": "screen:master_documents",
+      "name": "Master Reusable Document Vault",
+      "type": "screen",
+      "route": "/documents",
+      "module": "documents"
+    },
+    {
+      "id": "screen:chat_discussions",
+      "name": "Team Chat & Tender Discussions",
+      "type": "screen",
+      "route": "/discussions",
+      "module": "collaboration"
+    },
+    {
+      "id": "screen:tender_summary",
+      "name": "Formal 3-Page Tender Document Summary",
+      "type": "screen",
+      "route": "/registry/summary/{id}",
+      "module": "registry"
+    },
+    {
+      "id": "screen:archive",
+      "name": "Archived Non-Participating Records",
+      "type": "screen",
+      "route": "/archive",
+      "module": "archive"
+    },
+    {
       "id": "entity:users",
       "name": "users",
       "type": "db_table",
@@ -215,6 +243,18 @@
       "name": "audit_logs",
       "type": "db_table",
       "desc": "System-wide immutable security and activity log"
+    },
+    {
+      "id": "entity:reusable_documents",
+      "name": "reusable_documents",
+      "type": "db_table",
+      "desc": "Corporate master credentials, validity expiration, access tiers"
+    },
+    {
+      "id": "entity:tender_comments",
+      "name": "tender_comments",
+      "type": "db_table",
+      "desc": "Real-time proposal remarks, debrief notes, and cross-team chat"
     },
     {
       "id": "storage:root",
@@ -349,6 +389,21 @@
       "source": "screen:tender_documents",
       "target": "entity:document_versions",
       "relation": "TRACKS_VERSIONS"
+    },
+    {
+      "source": "screen:tender_documents",
+      "target": "entity:reusable_documents",
+      "relation": "REFERENCES_MASTER_FILES"
+    },
+    {
+      "source": "screen:master_documents",
+      "target": "entity:reusable_documents",
+      "relation": "MANAGES_MASTER_CREDENTIALS"
+    },
+    {
+      "source": "screen:chat_discussions",
+      "target": "entity:tender_comments",
+      "relation": "TRANSMITS_COLLABORATIVE_CHAT"
     },
     {
       "source": "screen:tender_requirements",

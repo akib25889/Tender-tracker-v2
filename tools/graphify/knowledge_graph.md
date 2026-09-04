@@ -33,6 +33,10 @@
 | `screen:reports` | Reports & Win/Loss Analytics | `/reports` | `analytics` |
 | `screen:notifications` | Notification & Alert Center | `/notifications` | `notifications` |
 | `screen:settings` | Settings & System Configuration | `/settings` | `settings` |
+| `screen:master_documents` | Master Reusable Document Vault | `/documents` | `documents` |
+| `screen:chat_discussions` | Team Chat & Tender Discussions | `/discussions` | `collaboration` |
+| `screen:tender_summary` | Formal 3-Page Tender Document Summary | `/registry/summary/{id}` | `registry` |
+| `screen:archive` | Archived Non-Participating Records | `/archive` | `archive` |
 
 ## 3. Database Entities & Relationships
 
@@ -45,6 +49,8 @@
 - **`tender_requirements`**: Compliance matrix clauses and evidence links
 - **`tender_reviews`**: Multi-tier approval sign-offs and comment audit trail
 - **`audit_logs`**: System-wide immutable security and activity log
+- **`reusable_documents`**: Corporate master credentials, validity expiration, access tiers
+- **`tender_comments`**: Real-time proposal remarks, debrief notes, and cross-team chat
 
 ## 4. Local File Storage Vault
 
@@ -76,6 +82,9 @@
 - `screen:my_tasks` ──[FILTERS_BY_ASSIGNEE]──> `entity:tender_tasks`
 - `screen:tender_documents` ──[MANAGES_VAULT]──> `entity:documents`
 - `screen:tender_documents` ──[TRACKS_VERSIONS]──> `entity:document_versions`
+- `screen:tender_documents` ──[REFERENCES_MASTER_FILES]──> `entity:reusable_documents`
+- `screen:master_documents` ──[MANAGES_MASTER_CREDENTIALS]──> `entity:reusable_documents`
+- `screen:chat_discussions` ──[TRANSMITS_COLLABORATIVE_CHAT]──> `entity:tender_comments`
 - `screen:tender_requirements` ──[VALIDATES_COMPLIANCE]──> `entity:tender_requirements`
 - `screen:tender_review` ──[RECORDS_SIGNOFF]──> `entity:tender_reviews`
 - `screen:tender_analysis` ──[SCORES_GO_NO_GO]──> `entity:tender_decisions`

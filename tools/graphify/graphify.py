@@ -179,6 +179,30 @@ def extract_project_nodes():
             "route": "/settings",
             "module": "settings",
         },
+        {
+            "id": "screen:master_documents",
+            "name": "Master Reusable Document Vault",
+            "route": "/documents",
+            "module": "documents",
+        },
+        {
+            "id": "screen:chat_discussions",
+            "name": "Team Chat & Tender Discussions",
+            "route": "/discussions",
+            "module": "collaboration",
+        },
+        {
+            "id": "screen:tender_summary",
+            "name": "Formal 3-Page Tender Document Summary",
+            "route": "/registry/summary/{id}",
+            "module": "registry",
+        },
+        {
+            "id": "screen:archive",
+            "name": "Archived Non-Participating Records",
+            "route": "/archive",
+            "module": "archive",
+        },
     ]
 
     for sc in screens:
@@ -248,6 +272,18 @@ def extract_project_nodes():
             "type": "db_table",
             "desc": "System-wide immutable security and activity log",
         },
+        {
+            "id": "entity:reusable_documents",
+            "name": "reusable_documents",
+            "type": "db_table",
+            "desc": "Corporate master credentials, validity expiration, access tiers",
+        },
+        {
+            "id": "entity:tender_comments",
+            "name": "tender_comments",
+            "type": "db_table",
+            "desc": "Real-time proposal remarks, debrief notes, and cross-team chat",
+        },
     ]
     nodes.extend(entities)
 
@@ -316,6 +352,9 @@ def extract_project_nodes():
         ("screen:my_tasks", "entity:tender_tasks", "FILTERS_BY_ASSIGNEE"),
         ("screen:tender_documents", "entity:documents", "MANAGES_VAULT"),
         ("screen:tender_documents", "entity:document_versions", "TRACKS_VERSIONS"),
+        ("screen:tender_documents", "entity:reusable_documents", "REFERENCES_MASTER_FILES"),
+        ("screen:master_documents", "entity:reusable_documents", "MANAGES_MASTER_CREDENTIALS"),
+        ("screen:chat_discussions", "entity:tender_comments", "TRANSMITS_COLLABORATIVE_CHAT"),
         (
             "screen:tender_requirements",
             "entity:tender_requirements",
