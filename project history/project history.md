@@ -19,6 +19,33 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 18-screen routing. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
 
+### [2026-09-04] — Version 2.6.0: Partner Portal Direct Login, Email Dispatcher, Radar Scoring, Batch CSV/JSON Ingestion & SOW Clarification
+- **Category:** Partner Collaboration, Communications, Governance Analytics, Data Ingestion, Technical Standards
+- **Commit:** `5d571b8` → `origin/main`
+- **Summary:**
+  - **Partner Portal Direct Authentication (`/login`):**
+    - Dual-tab authentication switcher between *Internal Bid Team* and *JV / Partner Portal*.
+    - Authenticated partners access watermarked, isolated document portals with cryptographic tokens and permission ceiling enforcement.
+  - **Automated Email Notification Dispatcher (`/settings`):**
+    - Configurable SMTP relay integration with TLS/STARTTLS support and authorized sender mapping.
+    - Automated trigger subscriptions for critical deadline escalations (≤48h), Tier 3/4 gatekeeper approvals, and compliance blockers with live test alert dispatcher.
+  - **Multi-Criteria Radar & pWin Scoring Engine (`/tenders/{id}/analysis`):**
+    - Dynamic geometric multi-axis SVG radar chart mapping Technical Fit (35%), Financial Margin (30%), Team Capacity (20%), and SLA Compliance (15%).
+    - Win probability (`pWin`) calculation against historical donor awards and target margin indicators.
+    - Automated Gatekeeper Decision Recommendation banner with rule-based outcome synthesis.
+  - **Batch Pipeline Ingestion (CSV & JSON) (`/tenders`):**
+    - 1-click batch import modal with drag-and-drop file upload, real-time JSON/CSV parsing, pre-commit validation, and interactive table preview.
+    - Built-in instant sample templates for JSON and CSV testing.
+  - **Real Multilateral Tenders Ingested:**
+    - Ingested WHO health informatics (`TDR-2026-WHO-044`), JICA smart water SCADA (`TDR-2026-JICA-118`), and ADB regional logistics (`TDR-2026-ADB-402`) with realistic statutory profiles.
+  - **Universal Standardization: "Scope of Work (SOW)":**
+    - Fully clarified the acronym across all workspace headers, table headers, document builders, and exports to eliminate ambiguity.
+  - **AI Scope Extractor Archival & Documentation:**
+    - Documented comprehensive specification and 4-tier memory preservation model under `docs/future_implementations/ai_scope_extraction_and_summarizer.md`.
+    - Cleaned all active AI assistant references from active UI components and routers.
+  - **Verification Gates:**
+    - 4/4 verification gates passing: SQLite DB health, 25/25 Pytest suite, 0 TypeScript errors, and knowledge graph sync.
+
 ---
 
 ### [2026-09-04] — Version 2.5.0: Real-Time Alert Center, Interactive Calendar Grid & Unified Test Runner

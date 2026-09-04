@@ -1,4 +1,4 @@
-# TenderTracker Command Center (v2.5.0)
+# TenderTracker Command Center (v2.6.0)
 
 [![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF?logo=vite)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://reactjs.org/)
@@ -43,7 +43,7 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 
 1. **Stage 1 — Bid Discovery**: Scanner intake and portal integration with confidence scoring.
 2. **Stage 2 — Screening**: Entity jurisdiction check, debarment screening, and mandatory criteria.
-3. **Stage 3 — Analysis & Go/No-Go**: Clause extraction, SLA viability, and weighted decision scoring (35% Tech, 30% Fin, 20% Team, 15% SLA).
+3. **Stage 3 — Analysis & Go/No-Go**: Scope breakdown, SLA viability, geometric radar evaluation (35% Tech, 30% Fin, 20% Team, 15% SLA), and predicted win probability (`pWin`).
 4. **Stage 4 — Preparation**: Task board, statutory document vault population, and clause compliance checklist.
 5. **Stage 5 — Review & Approval**: 4-tier sequential gatekeeper sign-off (Technical, Financial, Legal, Executive).
 6. **Stage 6 — Submission & Outcome**: Portal proof verification, SHA-256 cryptographic locking, and win/loss debrief ledger.
@@ -54,7 +54,7 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 
 | Screen ID | Screen Name | Route | Module |
 | :--- | :--- | :--- | :--- |
-| `screen:login` | Login — Enterprise Sign In | `/login` | `auth` |
+| `screen:login` | Login — Internal & Partner Portal | `/login` | `auth` |
 | `screen:dashboard` | Tender Command Center Dashboard | `/dashboard` | `dashboard` |
 | `screen:tender_registry` | Tender Registry & Data Entry Console | `/registry` | `registry` |
 | `screen:tender_summary` | Formal 3-Page Tender Document Summary | `/registry/summary/{id}` | `registry` |
@@ -83,12 +83,18 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 ## ⚡ Architecture & Optimization Engines
 
 - **Interactive Command Palette (`Ctrl + Shift + K` / `⌘⇧K`)**: Omnipresent modal indexing tenders, deliverables, vault files, team members, and system pages with keyboard auto-navigation.
+- **Partner Portal Direct Login (`/login`)**: Dual-mode authentication switcher enabling Joint Venture and consortium partners to log in securely with watermarked cryptographic isolation.
+- **Automated Email Notification Dispatcher (`/settings`)**: Configurable SMTP relay integration with deadline escalation (≤48h) and gatekeeper sign-off triggers.
+- **Multi-Criteria Radar & pWin Evaluation (`/tenders/{id}/analysis`)**: Multi-axis geometric visual evaluation mapping Technical, Financial, Team, and SLA pillars alongside historical donor award win probability.
+- **Batch CSV/JSON Pipeline Ingestion (`/tenders`)**: Direct drag-and-drop batch tender import with pre-validation and interactive preview table.
+- **Scope of Work (SOW) Standard**: Unified full-form standard throughout the UI, exports, and document generators.
+- **Future AI Scope Extractor Specification (`docs/future_implementations/`)**: Fully documented future implementation specification and 4-tier memory preservation model.
 - **Master Reusable Document Vault (`/documents`)**: Upload trade licenses, audited balance sheets, ISO certificates, and CVs once; reference them into any tender proposal with 1 click.
 - **Role-Based Document Access Control**: Granular 4-tier document access permissions (`All Team`, `Management Only`, `Restricted Finance/Legal`, `Executive Board Only`) with download lock enforcement.
 - **Custom Folder Lifecycle**: On-the-fly custom vault folder creation, inline document reassignment, and safe folder deletion with automated file safeguarding.
 - **Real-Time Communications Hub (`/discussions`)**: Cross-team channels and tender proposal comment threads with user tagging (`@Name`) and instant workspace jumping.
-- **Real-Time Operational Alert Center (`/notifications`)**: Live `/api/alerts` endpoint synthesises critical deadline warnings (≤48h), requirement blockers, pending Tier 3/4 executive sign-offs, and expired partner share links from the database. Live numbered badge on header bell, polled every 60 seconds.
-- **Interactive Monthly Calendar Grid (`/calendar`)**: Toggle between chronological Timeline and interactive monthly Grid view with colour-coded deadline chips per day (🔴 ≤2d · 🟡 ≤7d · 🔵 >7d) and prev/next month navigation.
+- **Real-Time Operational Alert Center (`/notifications`)**: Live `/api/alerts` endpoint synthesises critical deadline warnings (≤48h), requirement blockers, pending Tier 3/4 executive sign-offs, and expired partner share links. Live numbered badge on header bell.
+- **Interactive Monthly Calendar Grid (`/calendar`)**: Toggle between chronological Timeline and interactive monthly Grid view with colour-coded deadline chips per day and prev/next month navigation.
 - **Unified Verification Runner (`run_all_tests.py`)**: One-command script executing all 4 quality gates — DB health, pytest backend, TypeScript type-check, and knowledge graph sync — with coloured pass/fail output.
 - **Ponytail ("Lazy Senior Dev")**: Generation-time optimization enforcing the 7-Step Decision Ladder to minimize code bloat, avoid over-engineering, and maintain radical conciseness.
 - **Graphify**: Precomputed knowledge graph (`tools/graphify/graphify.py`) indexing routes, screens, entities, and storage paths for instant, low-token context retrieval.
@@ -97,7 +103,7 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 
 ---
 
-## 🔌 REST API Reference (v2.5.0)
+## 🔌 REST API Reference (v2.6.0)
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
