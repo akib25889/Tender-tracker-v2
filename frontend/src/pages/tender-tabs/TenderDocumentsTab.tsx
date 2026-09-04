@@ -453,22 +453,20 @@ export const TenderDocumentsTab: React.FC = () => {
                               onClick={() =>
                                 setActiveDocForShare({ tenderId: tender.id, doc })
                               }
-                              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#2563EB] bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-lg transition-colors shadow-2xs"
+                              className="p-1.5 text-[#2563EB] bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-lg transition-colors shadow-2xs"
                               title="Share document link"
                             >
                               <Share2 className="w-3.5 h-3.5" />
-                              <span>Share</span>
                             </button>
                             <button
                               type="button"
                               onClick={() =>
                                 alert(`Simulating secure download for ${doc.name}`)
                               }
-                              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-[#0F172A] bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg transition-colors shadow-2xs"
+                              className="p-1.5 text-[#0F172A] bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg transition-colors shadow-2xs"
                               title="Download file"
                             >
                               <Download className="w-3.5 h-3.5 text-[#64748B]" />
-                              <span>Download</span>
                             </button>
                           </div>
                         ) : (

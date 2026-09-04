@@ -420,11 +420,10 @@ export const MasterDocumentVaultPage: React.FC = () => {
                                 },
                               })
                             }
-                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#2563EB] bg-[#EFF6FF] hover:bg-[#DBEAFE] border border-[#BFDBFE] rounded-lg transition-colors"
+                            className="p-1.5 text-[#2563EB] bg-[#EFF6FF] hover:bg-[#DBEAFE] border border-[#BFDBFE] rounded-lg transition-colors shadow-2xs"
                             title="Generate shareable link for this master document"
                           >
-                            <Share2 className="w-3 h-3" />
-                            <span>Share</span>
+                            <Share2 className="w-3.5 h-3.5" />
                           </button>
 
                           {/* Secure Download Button */}
@@ -432,11 +431,10 @@ export const MasterDocumentVaultPage: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => alert(`Simulating secure download for ${doc.name}`)}
-                              className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-[#0F172A] bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg transition-colors shadow-2xs"
+                              className="p-1.5 text-[#0F172A] bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg transition-colors shadow-2xs"
                               title="Download Master Document"
                             >
-                              <Download className="w-3 h-3 text-[#64748B]" />
-                              <span>Download</span>
+                              <Download className="w-3.5 h-3.5 text-[#64748B]" />
                             </button>
                           ) : (
                             <span
