@@ -352,9 +352,21 @@ def extract_project_nodes():
         ("screen:my_tasks", "entity:tender_tasks", "FILTERS_BY_ASSIGNEE"),
         ("screen:tender_documents", "entity:documents", "MANAGES_VAULT"),
         ("screen:tender_documents", "entity:document_versions", "TRACKS_VERSIONS"),
-        ("screen:tender_documents", "entity:reusable_documents", "REFERENCES_MASTER_FILES"),
-        ("screen:master_documents", "entity:reusable_documents", "MANAGES_MASTER_CREDENTIALS"),
-        ("screen:chat_discussions", "entity:tender_comments", "TRANSMITS_COLLABORATIVE_CHAT"),
+        (
+            "screen:tender_documents",
+            "entity:reusable_documents",
+            "REFERENCES_MASTER_FILES",
+        ),
+        (
+            "screen:master_documents",
+            "entity:reusable_documents",
+            "MANAGES_MASTER_CREDENTIALS",
+        ),
+        (
+            "screen:chat_discussions",
+            "entity:tender_comments",
+            "TRANSMITS_COLLABORATIVE_CHAT",
+        ),
         (
             "screen:tender_requirements",
             "entity:tender_requirements",

@@ -66,4 +66,6 @@ Thumbs.db
 storage/
 *.db
 backend/tender_tracker.db
+backups/
+backend/backups/
 

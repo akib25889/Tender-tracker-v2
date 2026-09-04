@@ -17,8 +17,41 @@
 | **M2** | **Backend Core & Database Schema** | **Completed** | FastAPI application structure, SQLAlchemy models, SQLite & MySQL 8.4 dual-mode, JWT/bcrypt authentication, local disk storage vault (HDD / SSD), and REST APIs. |
 | **M3** | **Storage Vault & Document Security** | **Completed** | Local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation, safe folder relocation. |
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 18-screen routing. |
-| **M5** | **Module Implementations (18 Screens)**| **Completed** | Reactive TenderContext with full CRUD (add, edit, delete, bulk delete), two-pane Tender Registry console (`/registry`), Bid Discovery queue, collaboration suite, and 18 operational screens. |
-| **M6** | **E2E Testing & Production Hardening** | *Pending* | Integration test suite, 3-2-1 backup sentinel, Nginx reverse proxy configuration, production deployment. |
+| **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+---
+
+### [2026-09-04] — Milestone 6 (M6): E2E Testing, 3-2-1 Backup Sentinel & Production Hardening Delivered
+- **Category:** Quality Assurance, Security, Backup Sentinel, Production Deployment
+- **Summary:**
+  - **Automated Integration & E2E Test Suite (`backend/tests/`):**
+    - Auth & RBAC validation: password verification, JWT generation, invalid credentials rejection.
+    - Tender lifecycle CRUD: opportunity intake, stage transitions (`DISCOVERED` -> `PREPARATION` -> `SUBMISSION`), Go/No-Go score recording, archive & restore.
+    - Operational deliverables: task assignment, priority filters, status movement (`TODO` -> `IN_PROGRESS` -> `DONE`).
+    - Document vault & cryptography: file upload, SHA-256 verification, custom folder creation, safe folder deletion with automatic file safeguarding, master reusable credential linking.
+    - Real-time discussions: threaded comments and cross-team channel messaging.
+    - Executive 10-second KPI calculations: pipeline valuation, readiness scores, deadline countdowns.
+    - Runner script `backend/run_tests.py` achieves 100% pass rate.
+  - **Automated 3-2-1 Backup Sentinel (`backend/scripts/backup_sentinel.py`):**
+    - Creates timestamped snapshots of database and storage vault into compressed ZIP archives.
+    - Generates cryptographic `manifest.json` recording SHA-256 hashes for all database and document files.
+    - Enforces retention rotation policy keeping 7 daily, 4 weekly, and 6 monthly snapshots.
+    - Implements automated restore and integrity verification testing to ensure backup recoverability.
+  - **Production Hardening & Deployment Assets (`deployment/`):**
+    - Production Nginx reverse proxy (`deployment/nginx/tendertracker.conf`) with `client_max_body_size 100M`, security headers (HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy), SPA fallback, and gzip compression.
+    - Linux systemd daemon service (`deployment/systemd/tendertracker-backend.service`) with process isolation and auto-restart.
+    - Multi-container Docker Compose configuration (`deployment/docker-compose.yml` & `backend/Dockerfile`) orchestrating Frontend, FastAPI, MySQL 8.4, and persistent storage volumes.
+    - Unified deployment scripts `deployment/deploy.ps1` and `deployment/deploy.sh`.
+- **Relevant Files:**
+  - `backend/tests/test_api_integration.py`
+  - `backend/run_tests.py`
+  - `backend/scripts/backup_sentinel.py`
+  - `deployment/nginx/tendertracker.conf`
+  - `deployment/systemd/tendertracker-backend.service`
+  - `deployment/docker-compose.yml`
+  - `backend/Dockerfile`
+  - `deployment/deploy.ps1`
+  - `deployment/deploy.sh`
 
 ---
 
