@@ -4,11 +4,11 @@ import { Card } from '../../components/ui/Card';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { useTenders } from '../../context/TenderContext';
 import { DecisionStatus } from '../../types/tender';
-import { Check, ShieldCheck, PieChart, Sparkles, TrendingUp } from 'lucide-react';
+import { Check, ShieldCheck, PieChart, TrendingUp } from 'lucide-react';
 
 export const TenderAnalysisTab: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { tenders, setTenderDecision, setActiveScopeExtractorTenderId } = useTenders();
+  const { tenders, setTenderDecision } = useTenders();
   const tender = tenders.find((t) => t.id === id) || tenders[0];
 
   const [technical, setTechnical] = useState(tender?.decisionMatrix?.technical || 9.2);
@@ -185,12 +185,12 @@ export const TenderAnalysisTab: React.FC = () => {
                 </div>
               </div>
 
-              {/* Gatekeeper AI Recommendation */}
+              {/* Gatekeeper Decision Recommendation */}
               <div className="p-3.5 bg-linear-to-r from-[#EFF6FF] to-[#F0FDF4] rounded-lg border border-[#BFDBFE] flex items-start gap-3">
-                <Sparkles className="w-5 h-5 text-[#2563EB] shrink-0 mt-0.5" />
+                <ShieldCheck className="w-5 h-5 text-[#2563EB] shrink-0 mt-0.5" />
                 <div className="space-y-0.5">
                   <span className="font-bold text-xs text-[#0F172A]">
-                    Automated Gatekeeper Decision Recommendation:
+                    Gatekeeper Decision Recommendation:
                   </span>
                   <p className="text-xs text-[#334155] leading-relaxed">
                     {aggregateScore >= 8.5
@@ -266,13 +266,13 @@ export const TenderAnalysisTab: React.FC = () => {
                 onChange={(e) => setTeam(Number(e.target.value))}
                 className="w-full accent-[#D97706] cursor-pointer"
               />
-              <p className="text-[11px] text-[#64748B]">Resource availability vs deadline</p>
+              <p className="text-[11px] text-[#64748B]">Key personnel availability and certifications</p>
             </div>
 
             <div className="p-3.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
-                  SLA &amp; Risk (15%)
+                  SLA &amp; Compliance (15%)
                 </span>
                 <span className="font-mono text-sm font-bold text-[#16A34A]">
                   {sla} / 10
@@ -287,16 +287,15 @@ export const TenderAnalysisTab: React.FC = () => {
                 onChange={(e) => setSla(Number(e.target.value))}
                 className="w-full accent-[#16A34A] cursor-pointer"
               />
-              <p className="text-[11px] text-[#64748B]">Liability cap and penalty terms</p>
+              <p className="text-[11px] text-[#64748B]">Liquidated damages and SLA covenants</p>
             </div>
           </div>
 
+          {/* Decision Outcome Summary & Rationale Textarea */}
           <div className="p-4 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-semibold text-[#0F172A]">
-                  Calculated Overall Viability Index:
-                </span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E8F0] pb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-[#64748B]">Aggregate Gate Score:</span>
                 <span className="font-mono text-lg font-bold text-[#2563EB]">
                   {aggregateScore} / 10
                 </span>
@@ -331,45 +330,6 @@ export const TenderAnalysisTab: React.FC = () => {
           </div>
         </Card>
       </form>
-
-      {/* Clause Extraction & Scope Breakdown */}
-      <Card
-        title="AI Clause Extraction & Scope Breakdown"
-        subtitle="Automated extraction of RFP requirements, deliverables, and penalty clauses"
-        headerAction={
-          <button
-            type="button"
-            onClick={() => setActiveScopeExtractorTenderId(tender.id)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-linear-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#1D4ED8] hover:to-[#1E40AF] text-white rounded-lg text-xs font-semibold shadow-xs transition-all cursor-pointer"
-            title="Launch AI Scope Extractor to parse RFP documents"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-            <span>Launch Scope Extractor</span>
-          </button>
-        }
-      >
-        <div className="space-y-3">
-          <div className="p-3.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="font-semibold text-xs text-[#0F172A]">Clause 3.1: High Availability &amp; Multi-Region Failover</span>
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#EFF6FF] text-[#1D4ED8]">MANDATORY</span>
-            </div>
-            <p className="text-xs text-[#475569]">
-              The solution must support active-passive geographic redundancy with an RTO &lt; 15 minutes and RPO &lt; 1 minute across sovereign donor boundaries.
-            </p>
-          </div>
-
-          <div className="p-3.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="font-semibold text-xs text-[#0F172A]">Clause 5.4: Liquidated Damages &amp; Performance Bonds</span>
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#FEF2F2] text-[#B91C1C]">FINANCIAL RISK</span>
-            </div>
-            <p className="text-xs text-[#475569]">
-              0.5% penalty per calendar day of delay up to a maximum cap of 10% of the total contract value. Unconditional bank guarantee required upon award.
-            </p>
-          </div>
-        </div>
-      </Card>
     </div>
   );
 };

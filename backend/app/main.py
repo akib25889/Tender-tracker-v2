@@ -14,7 +14,6 @@ from app.routers import (
     dashboard,
     permissions,
     alerts,
-    scope_extractor,
 )
 
 
@@ -59,7 +58,6 @@ app.include_router(comments.router, prefix=settings.API_V1_STR)
 app.include_router(dashboard.router, prefix=settings.API_V1_STR)
 app.include_router(permissions.router, prefix=settings.API_V1_STR)
 app.include_router(alerts.router, prefix=settings.API_V1_STR)
-app.include_router(scope_extractor.router, prefix=settings.API_V1_STR)
 
 
 @app.get(f"{settings.API_V1_STR}/health", tags=["Health"])

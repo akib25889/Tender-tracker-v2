@@ -19,7 +19,6 @@ import {
   Printer,
   Archive,
   RotateCcw,
-  Sparkles,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -41,7 +40,6 @@ export const TenderDetailPage: React.FC = () => {
     restoreTender,
     deleteTender,
     formatCurrency,
-    setActiveScopeExtractorTenderId,
   } = useTenders();
 
   // Find the tender or fallback to the first tender
@@ -111,15 +109,6 @@ export const TenderDetailPage: React.FC = () => {
         </nav>
 
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setActiveScopeExtractorTenderId(tender.id)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-linear-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#1D4ED8] hover:to-[#1E40AF] text-xs font-semibold text-white rounded-lg shadow-sm transition-all cursor-pointer"
-            title="AI Scope Extraction & Summarizer for RFP documents"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-            <span>AI Scope Extractor</span>
-          </button>
           <Link
             to={`/registry?id=${tender.id}`}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] text-xs font-semibold text-[#0F172A] rounded-lg transition-colors shadow-2xs"

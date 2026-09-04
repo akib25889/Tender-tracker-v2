@@ -218,34 +218,3 @@ def test_07_dashboard_stats():
     assert "totalPipelineValue" in stats
     assert stats["activeTendersCount"] >= 1
     assert "stageDistribution" in stats
-
-
-def test_08_scope_extraction_and_application():
-    test_id = "TDR-E2E-TEST-01"
-    
-    # 1. Test extraction endpoint
-    extract_res = client.post(f"/api/tenders/{test_id}/extract-scope")
-    assert extract_res.status_code == 200
-    data = extract_res.json()
-    assert data["tender_id"] == test_id
-    assert "mandatory_criteria" in data
-    assert len(data["mandatory_criteria"]) >= 3
-    assert "commercial_terms" in data
-    assert "technical_deliverables" in data
-    assert "personnel_mandates" in data
-    assert "clauses" in data
-    assert data["suggested_pwin"] > 0
-
-    # 2. Test apply extraction endpoint
-    apply_payload = {
-        "apply_requirements": True,
-        "apply_tasks": True,
-        "apply_decision_matrix": True,
-    }
-    apply_res = client.post(f"/api/tenders/{test_id}/apply-extraction", json=apply_payload)
-    assert apply_res.status_code == 200
-    apply_data = apply_res.json()
-    assert apply_data["status"] == "SUCCESS"
-    assert apply_data["tasks_created"] >= 1
-    assert apply_data["requirements_created"] >= 1
-

@@ -5,7 +5,6 @@ import { Header } from './Header';
 import { UploadDocumentModal } from '../modals/UploadDocumentModal';
 import { ShareDocumentModal } from '../modals/ShareDocumentModal';
 import { CommandPaletteModal } from '../modals/CommandPaletteModal';
-import { AIScopeExtractorModal } from '../modals/AIScopeExtractorModal';
 import { useTheme } from '../../hooks/useTheme';
 
 export const AppLayout: React.FC = () => {
@@ -46,7 +45,6 @@ export const AppLayout: React.FC = () => {
       <UploadDocumentModal />
       <ShareDocumentModal />
       <CommandPaletteModal />
-      <AIScopeExtractorModal />
     </div>
   );
 };
