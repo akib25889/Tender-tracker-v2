@@ -549,29 +549,38 @@
   *Decision:* Mapped 4 organizational titles (`Business Head`, `Executive Manager`, `Senior Manager`, `Tender Analyst`) with universal operational access; replaced "Kanban" with "Task Board"; replaced "Post-Mortem" with "Outcome & Debrief".  
   *Impact:* Clear, unhindered operational flow with zero permission roadblocks and professional enterprise copy.
 
+- **ADR-006: Dual-Mode Database Architecture (SQLite for Dev / MySQL 8.4 for Prod)**  
+  *Context:* Requiring a running MySQL server for local feature development or test execution created unnecessary setup friction for developer workstations that may not have MySQL installed.  
+  *Decision:* Implemented SQLAlchemy ORM with auto-dialect selection. The backend defaults to an embedded zero-configuration SQLite database (`tender_tracker.db`) for instant local development, automated integration testing, and CI. When deploying to production, simply configuring `DATABASE_URL` in `.env` connects to MySQL 8.4 LTS (or Docker Compose container) with zero application code changes.  
+  *Impact:* 100% test coverage and full local execution out of the box with zero external database dependencies, while retaining enterprise MySQL 8.4 compatibility.
+
 ---
 
-## 4. Current Application Screen & Route Directory (18 Screens)
+## 4. Current Application Screen & Route Directory (21 Screens)
 
 | Screen ID | Screen Name | Route | Module |
 | :--- | :--- | :--- | :--- |
 | `screen:login` | Login - Enterprise Sign In | `/login` | `auth` |
 | `screen:dashboard` | Tender Command Center Dashboard | `/dashboard` | `dashboard` |
 | `screen:tender_registry` | Tender Registry & Data Entry | `/registry` | `registry` |
+| `screen:tender_summary` | Formal 3-Page Tender Document Summary | `/registry/summary/{id}` | `registry` |
 | `screen:tenders_list` | Tender List & Pipeline Registry | `/tenders` | `tenders` |
 | `screen:bid_discovery` | Bid Discovery Queue (Filtered) | `/tenders?stage=DISCOVERED` | `tenders` |
 | `screen:tender_detail` | Tender Detail & Proposal Workspace | `/tenders/{id}` | `tenders` |
 | `screen:tender_analysis` | Tender Analysis & Scope Workspace | `/tenders/{id}/analysis` | `analysis` |
 | `screen:tender_requirements` | Compliance & Requirements Matrix | `/tenders/{id}/requirements` | `compliance` |
 | `screen:tender_tasks` | Tender Task Board | `/tenders/{id}/tasks` | `tasks` |
-| `screen:tender_documents` | Tender Document Vault | `/tenders/{id}/documents` | `documents` |
+| `screen:tender_documents` | Tender Document Vault & Custom Folders | `/tenders/{id}/documents` | `documents` |
+| `screen:master_documents` | Master Reusable Document Vault & Permissions | `/documents` | `documents` |
 | `screen:tender_review` | Review & Sign-Off Workflow | `/tenders/{id}/review` | `review` |
 | `screen:tender_submission` | Submission Ledger | `/tenders/{id}/submission` | `submission` |
 | `screen:tender_result` | Outcome & Debrief Ledger | `/tenders/{id}/result` | `result` |
 | `screen:my_tasks` | My Tasks - Cross-Tender Console | `/tasks/my-tasks` | `tasks` |
+| `screen:chat_discussions` | Team Chat & Tender Discussions Hub | `/discussions` | `collaboration` |
 | `screen:team_allocation` | Tender Team & Workload Allocation | `/team` | `team` |
 | `screen:calendar` | Tender Calendar & Deadline Schedule | `/calendar` | `calendar` |
 | `screen:reports` | Reports & Win/Loss Analytics | `/reports` | `analytics` |
+| `screen:archive` | Archived Non-Participating Records | `/archive` | `archive` |
 | `screen:notifications` | Notification & Alert Center | `/notifications` | `notifications` |
 | `screen:settings` | Settings & System Configuration | `/settings` | `settings` |
 

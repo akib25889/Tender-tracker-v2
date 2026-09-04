@@ -78,8 +78,21 @@ The application will be live at: **`http://127.0.0.1:5173/`**
 - **Real-Time Communications Hub (`/discussions`)**: Cross-team channels and tender proposal comment threads with user tagging (`@Name`) and instant workspace jumping.
 - **Ponytail ("Lazy Senior Dev")**: Generation-time optimization enforcing the 7-Step Decision Ladder to minimize code bloat, avoid over-engineering, and maintain radical conciseness.
 - **Graphify**: Precomputed knowledge graph (`tools/graphify/graphify.py`) indexing routes, screens, entities, and storage paths for instant, low-token context retrieval.
-- **Universal Collaboration**: 4 organizational profiles (`Business Head`, `Executive Manager`, `Senior Manager`, `Tender Analyst`) with universal operational access, interactive deliverable assignment, and threaded commentary.
+- **Dual-Mode Database Architecture (SQLite Dev / MySQL 8.4 Prod)**: Embedded SQLite (`tender_tracker.db`) provides instant, zero-setup local development and automated testing without requiring a local MySQL installation. Fully production-ready for MySQL 8.4 LTS via SQLAlchemy with zero code changes.
+- **Local Disk Storage (HDD / SSD)**: Direct local server filesystem storage under `storage/tenders/{TDR-ID}/...` with streaming 1 MB chunk uploads and SHA-256 cryptographic hashing. Fully compatible with mechanical HDDs, solid-state SSDs, and external mounted drives.
 - **Deep-Link Registry Editing**: Click **Edit** on any tender to immediately load its full parameters in `/registry?id={id}`.
+
+---
+
+## 🗄️ Database & Storage Engine Architecture
+
+TenderTracker avoids unnecessary cloud dependencies and external service lock-in:
+
+| Environment | Database Engine | Setup Required | Notes |
+| :--- | :--- | :--- | :--- |
+| **Local Dev & Testing** | **SQLite 3** (`tender_tracker.db`) | **None (0 sec)** | Built directly into Python standard library. Runs all tests and development without installing MySQL. |
+| **Production Server** | **MySQL 8.4 LTS** | Set `.env` `DATABASE_URL` | Connects via `pymysql`. Automated container deployment available via `deployment/docker-compose.yml`. |
+| **Document Vault** | **Local Disk (HDD / SSD)** | Configurable `STORAGE_ROOT` | Microsecond read/write, SHA-256 integrity manifests, 3-2-1 backup rotation sentinel. |
 
 ---
 

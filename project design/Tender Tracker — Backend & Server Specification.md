@@ -59,7 +59,9 @@ The system should avoid unnecessary cloud-storage and distributed-processing inf
 
 ## 2.3 Database
 
-- MySQL 8+
+- **Dual-Mode Architecture (SQLAlchemy ORM)**:
+  - **Local Development & Testing**: SQLite 3 (`tender_tracker.db`) — zero configuration, embedded in Python standard library, runs immediately without local MySQL installation.
+  - **Production Server**: MySQL 8.4 LTS — connected via `DATABASE_URL` in `.env` or automated via `deployment/docker-compose.yml`.
 
 ## 2.4 File Storage
 

@@ -7,6 +7,7 @@ from app.core.config import settings
 
 client = TestClient(app)
 
+
 def test_01_health_check():
     response = client.get("/api/health")
     assert response.status_code == 200
@@ -14,11 +15,12 @@ def test_01_health_check():
     assert data["status"] == "healthy"
     assert "version" in data
 
+
 def test_02_auth_and_team():
     # Test valid login
     login_payload = {
         "email": "sarah.jenkins@tendertracker.org",
-        "password": "Password123!"
+        "password": "Password123!",
     }
     res = client.post("/api/auth/login", json=login_payload)
     assert res.status_code == 200
@@ -29,7 +31,7 @@ def test_02_auth_and_team():
     # Test invalid login
     bad_login = {
         "email": "sarah.jenkins@tendertracker.org",
-        "password": "WrongPassword!"
+        "password": "WrongPassword!",
     }
     bad_res = client.post("/api/auth/login", json=bad_login)
     assert bad_res.status_code == 401
@@ -39,6 +41,7 @@ def test_02_auth_and_team():
     assert team_res.status_code == 200
     team = team_res.json()
     assert len(team) >= 4
+
 
 def test_03_tender_lifecycle_and_storage_provisioning():
     test_id = "TDR-E2E-TEST-01"
@@ -94,6 +97,7 @@ def test_03_tender_lifecycle_and_storage_provisioning():
     assert restore_res.status_code == 200
     assert restore_res.json()["stage"] == "PREPARATION"
 
+
 def test_04_tasks_and_deliverables():
     test_id = "TDR-E2E-TEST-01"
     task_payload = {
@@ -101,7 +105,7 @@ def test_04_tasks_and_deliverables():
         "assignee": "Dr. Marcus Vance",
         "status": "TODO",
         "priority": "HIGH",
-        "due_date": "2026-09-12"
+        "due_date": "2026-09-12",
     }
 
     create_res = client.post(f"/api/tasks/tender/{test_id}", json=task_payload)
@@ -116,6 +120,7 @@ def test_04_tasks_and_deliverables():
     assert patch_res.status_code == 200
     assert patch_res.json()["status"] == "IN_PROGRESS"
 
+
 def test_05_document_vault_custom_folders_and_safe_deletion():
     test_id = "TDR-E2E-TEST-01"
 
@@ -125,7 +130,7 @@ def test_05_document_vault_custom_folders_and_safe_deletion():
         "category": "Certifications & ISO",
         "size": "2.4 MB",
         "access_level": "ALL_TEAM",
-        "description": "Information security certification valid through 2028."
+        "description": "Information security certification valid through 2028.",
     }
     rud_res = client.post("/api/reusable-documents", json=reusable_payload)
     assert rud_res.status_code == 201
@@ -135,7 +140,7 @@ def test_05_document_vault_custom_folders_and_safe_deletion():
     # 2. Link reusable document into tender
     link_payload = {
         "reusable_doc_id": rud_id,
-        "target_folder": "02_company_statutory_documents"
+        "target_folder": "02_company_statutory_documents",
     }
     link_res = client.post(f"/api/tenders/{test_id}/link-reusable", json=link_payload)
     assert link_res.status_code == 201
@@ -146,15 +151,18 @@ def test_05_document_vault_custom_folders_and_safe_deletion():
     # 3. Create Custom Folder
     folder_payload = {
         "name": "07_client_clarifications",
-        "label": "Client Clarifications & Addenda"
+        "label": "Client Clarifications & Addenda",
     }
     folder_res = client.post(f"/api/tenders/{test_id}/folders", json=folder_payload)
     assert folder_res.status_code == 201
     assert folder_res.json()["name"] == "07_client_clarifications"
 
     # 4. Safe Delete Folder (documents inside should be relocated to 01_original_tender_documents)
-    del_folder_res = client.delete(f"/api/tenders/{test_id}/folders/07_client_clarifications")
+    del_folder_res = client.delete(
+        f"/api/tenders/{test_id}/folders/07_client_clarifications"
+    )
     assert del_folder_res.status_code == 204
+
 
 def test_06_team_comments_and_discussions():
     test_id = "TDR-E2E-TEST-01"
@@ -163,7 +171,7 @@ def test_06_team_comments_and_discussions():
         "author_name": "Tariq Al-Mansoor",
         "author_role": "SENIOR_MANAGER",
         "author_avatar": "TA",
-        "content": "Commercial pricing modeling completed for Asian Development Bank proposal."
+        "content": "Commercial pricing modeling completed for Asian Development Bank proposal.",
     }
     post_res = client.post("/api/comments", json=comment_payload)
     assert post_res.status_code == 201
@@ -176,6 +184,7 @@ def test_06_team_comments_and_discussions():
     assert list_res.status_code == 200
     comments = list_res.json()
     assert len(comments) >= 1
+
 
 def test_07_dashboard_stats():
     stats_res = client.get("/api/dashboard/stats")
