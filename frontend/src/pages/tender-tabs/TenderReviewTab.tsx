@@ -15,6 +15,8 @@ export const TenderReviewTab: React.FC = () => {
     tierName: string;
   } | null>(null);
 
+  if (!tender) return null;
+
   return (
     <div className="space-y-6">
       <Card
@@ -22,7 +24,7 @@ export const TenderReviewTab: React.FC = () => {
         subtitle="Sequential stage 5 sign-offs enforcing multi-department validation before final submission lock"
       >
         <div className="space-y-4">
-          {tender.reviews.map((r) => (
+          {(tender.reviews || []).map((r) => (
             <div
               key={r.tierNumber}
               className={`p-4 rounded-lg border transition-colors space-y-2 ${

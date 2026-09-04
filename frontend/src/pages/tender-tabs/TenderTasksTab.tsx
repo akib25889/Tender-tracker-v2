@@ -12,6 +12,8 @@ export const TenderTasksTab: React.FC = () => {
 
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
 
+  if (!tender) return null;
+
   const columns: { id: TaskStatus; title: string }[] = [
     { id: 'TODO', title: 'To Do' },
     { id: 'IN_PROGRESS', title: 'In Progress' },
@@ -55,7 +57,7 @@ export const TenderTasksTab: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {columns.map((col) => {
-          const colTasks = tender.tasks.filter((t) => t.status === col.id);
+          const colTasks = (tender.tasks || []).filter((t) => t.status === col.id);
           return (
             <div
               key={col.id}

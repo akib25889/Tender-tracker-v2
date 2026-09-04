@@ -4,6 +4,7 @@ import zipfile
 import secrets
 import uuid
 from typing import List, Optional
+from datetime import datetime, timedelta
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from fastapi import (
@@ -133,6 +134,7 @@ async def upload_tender_document(
         if size_bytes >= 1024 * 1024
         else f"{size_bytes / 1024:.0f} KB"
     )
+    doc_id = f"DOC-{db.query(TenderDocument).count() + 101}"
     doc_id = f"DOC-{uuid.uuid4().hex[:8].upper()}"
 
     doc = TenderDocument(
@@ -398,6 +400,7 @@ def link_reusable_to_tender(
             status_code=404, detail="Tender or Reusable Document not found"
         )
 
+    doc_id = f"DOC-LINK-{db.query(TenderDocument).count() + 101}"
     doc_id = f"DOC-LINK-{uuid.uuid4().hex[:8].upper()}"
     linked_doc = TenderDocument(
         id=doc_id,

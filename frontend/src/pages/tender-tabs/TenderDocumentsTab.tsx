@@ -111,6 +111,8 @@ export const TenderDocumentsTab: React.FC = () => {
     },
   ];
 
+  if (!tender) return null;
+
   const folders = [...defaultFolders, ...(tender.customFolders || [])].filter(
     (f) => !(tender.deletedFolders || []).includes(f.name)
   );
@@ -148,7 +150,7 @@ export const TenderDocumentsTab: React.FC = () => {
     setIsLinkModalOpen(false);
   };
 
-  const displayedDocs = tender.documents.filter(
+  const displayedDocs = (tender.documents || []).filter(
     (d) => activeFolderFilter === 'ALL' || d.folder === activeFolderFilter
   );
 

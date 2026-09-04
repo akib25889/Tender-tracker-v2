@@ -12,7 +12,9 @@ export const TenderRequirementsTab: React.FC = () => {
 
   const [filter, setFilter] = useState<'ALL' | 'VERIFIED' | 'BLOCKER'>('ALL');
 
-  const filteredRequirements = tender.requirements.filter((req) => {
+  if (!tender) return null;
+
+  const filteredRequirements = (tender.requirements || []).filter((req) => {
     if (filter === 'ALL') return true;
     return req.status === filter;
   });
@@ -27,7 +29,7 @@ export const TenderRequirementsTab: React.FC = () => {
     toggleRequirementStatus(tender.id, reqId, next);
   };
 
-  const blockers = tender.requirements.filter((r) => r.status === 'BLOCKER');
+  const blockers = (tender.requirements || []).filter((r) => r.status === 'BLOCKER');
 
   return (
     <div className="space-y-6">

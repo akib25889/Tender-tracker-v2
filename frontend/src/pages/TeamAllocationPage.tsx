@@ -37,16 +37,18 @@ export const TeamAllocationPage: React.FC = () => {
 
   // Calculate dynamic active tasks per member
   const memberStats = teamMembers.map((m) => {
-    const maxCap = 6;
+    const maxCap = m.maxCapacity || 6;
+    const memberName = (m.name || '').toLowerCase();
     const assignedTasks = tenders.flatMap((t) =>
-      t.tasks.filter((task) => task.assignee.toLowerCase().includes(m.name.toLowerCase()) && task.status !== 'DONE')
+      (t.tasks || []).filter((task) => (task.assignee || '').toLowerCase().includes(memberName) && task.status !== 'DONE')
     );
-    const ledTenders = tenders.filter((t) => t.leadOwner && t.leadOwner.name.toLowerCase().includes(m.name.toLowerCase()));
+    const ledTenders = tenders.filter((t) => t.leadOwner?.name?.toLowerCase().includes(memberName));
     const loadPercent = Math.min(100, Math.round((assignedTasks.length / maxCap) * 100));
 
+    const title = m.title || '';
     return {
       ...m,
-      dept: m.title.includes('Finance') ? 'Commercial Finance' : m.title.includes('Technical') ? 'Solutions Architecture' : m.title.includes('Compliance') ? 'Legal & Risk' : 'Bid Operations',
+      dept: title.includes('Finance') ? 'Commercial Finance' : title.includes('Technical') ? 'Solutions Architecture' : title.includes('Compliance') ? 'Legal & Risk' : 'Bid Operations',
       activeTasksCount: assignedTasks.length,
       ledTendersCount: ledTenders.length,
       loadPercent,

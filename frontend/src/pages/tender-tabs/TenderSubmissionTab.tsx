@@ -10,9 +10,11 @@ export const TenderSubmissionTab: React.FC = () => {
   const tender = tenders.find((t) => t.id === id) || tenders[0];
 
   const [portalRef, setPortalRef] = useState(
-    tender.submissionProof?.portalReference || 'UNGM-SUB-9941'
+    tender?.submissionProof?.portalReference || 'UNGM-SUB-9941'
   );
-  const [submitted, setSubmitted] = useState(tender.stage === 'SUBMITTED');
+  const [submitted, setSubmitted] = useState(tender?.stage === 'SUBMITTED');
+
+  if (!tender) return null;
 
   const handleSealSubmission = (e: React.FormEvent) => {
     e.preventDefault();

@@ -10,16 +10,18 @@ export const TenderResultTab: React.FC = () => {
   const tender = tenders.find((t) => t.id === id) || tenders[0];
 
   const [outcome, setOutcome] = useState<'AWARDED' | 'LOST'>(
-    tender.stage === 'AWARDED' ? 'AWARDED' : 'LOST'
+    tender?.stage === 'AWARDED' ? 'AWARDED' : 'LOST'
   );
   const [awardedAmount, setAwardedAmount] = useState(
-    tender.estimatedValue.toString()
+    (tender?.estimatedValue || 0).toString()
   );
   const [lossReason, setLossReason] = useState('Price Competitiveness');
   const [notes, setNotes] = useState(
     'Evaluated high technical score (92/100). Competitor discount was 4.2% below margin limit.'
   );
   const [saved, setSaved] = useState(false);
+
+  if (!tender) return null;
 
   const handleRecordResult = (e: React.FormEvent) => {
     e.preventDefault();

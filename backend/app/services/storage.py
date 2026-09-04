@@ -34,6 +34,7 @@ async def save_uploaded_file(file: UploadFile, target_dir: Path) -> tuple[str, s
     Returns: (stored_filename, sha256_hash, file_size_bytes)
     """
     target_dir.mkdir(parents=True, exist_ok=True)
+    file_path = target_dir / file.filename
     safe_name = Path(file.filename or "uploaded_file").name
     file_path = target_dir / safe_name
     
@@ -46,6 +47,7 @@ async def save_uploaded_file(file: UploadFile, target_dir: Path) -> tuple[str, s
             hasher.update(chunk)
             buffer.write(chunk)
             
+    return file.filename, hasher.hexdigest(), size
     return safe_name, hasher.hexdigest(), size
 
 def safe_relocate_folder_files(tender_id: str, source_folder: str, target_folder: str = "01_original_tender_documents"):

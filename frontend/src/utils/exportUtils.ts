@@ -317,7 +317,7 @@ export const exportPipelineAsMarkdown = (tenders: Tender[]) => {
 
 ## Active Tender Opportunities
 | ID | SOW Title | Authority | Value (USD) | Stage | Decision | Deadline | Readiness |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
 ${tenders
   .map(
     (t) =>
@@ -367,9 +367,12 @@ export const exportPipelineAsWord = (tenders: Tender[]) => {
         <td><strong>${t.id}</strong></td>
         <td>${t.title}</td>
         <td>${t.organization}</td>
+        <td>$${(t.estimatedValue / 1000000).toFixed(2)}M</td>
         <td>$${((t.estimatedValue || 0) / 1000000).toFixed(2)}M</td>
         <td>${t.stage}</td>
         <td>${t.decision}</td>
+        <td>${new Date(t.submissionDeadline).toLocaleDateString('en-GB')}</td>
+        <td>${t.readinessScore}%</td>
         <td>${t.submissionDeadline ? new Date(t.submissionDeadline).toLocaleDateString('en-GB') : '—'}</td>
         <td>${t.readinessScore || 0}%</td>
       </tr>`
@@ -435,9 +438,12 @@ export const exportPipelineAsPDF = (tenders: Tender[]) => {
           <td><strong>${t.id}</strong></td>
           <td>${t.title}</td>
           <td>${t.organization}</td>
+          <td>$${(t.estimatedValue / 1000000).toFixed(2)}M</td>
           <td>$${((t.estimatedValue || 0) / 1000000).toFixed(2)}M</td>
           <td>${t.stage}</td>
           <td>${t.decision}</td>
+          <td>${new Date(t.submissionDeadline).toLocaleDateString('en-GB')}</td>
+          <td>${t.readinessScore}%</td>
           <td>${t.submissionDeadline ? new Date(t.submissionDeadline).toLocaleDateString('en-GB') : '—'}</td>
           <td>${t.readinessScore || 0}%</td>
         </tr>`

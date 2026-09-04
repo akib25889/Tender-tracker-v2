@@ -31,6 +31,7 @@ def create_task(tender_id: str, task_in: TaskCreate, db: Session = Depends(get_d
     if not tender:
         raise HTTPException(status_code=404, detail="Tender not found")
         
+    task_id = f"TSK-{db.query(TenderTask).count() + 101}"
     task_id = f"TSK-{uuid.uuid4().hex[:8].upper()}"
     db_task = TenderTask(
         id=task_id,

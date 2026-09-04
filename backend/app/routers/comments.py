@@ -23,6 +23,7 @@ def get_comments(
 
 @router.post("", response_model=CommentOut, status_code=status.HTTP_201_CREATED)
 def post_comment(comment_in: CommentCreate, db: Session = Depends(get_db)):
+    comment_id = f"CMT-{db.query(TenderComment).count() + 101}"
     comment_id = f"CMT-{uuid.uuid4().hex[:8].upper()}"
     db_comment = TenderComment(
         id=comment_id,

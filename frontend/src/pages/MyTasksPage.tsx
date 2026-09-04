@@ -13,7 +13,7 @@ export const MyTasksPage: React.FC = () => {
 
   // Collect all tasks across all tenders with their tender metadata
   const allTasks = tenders.flatMap((tender) =>
-    tender.tasks.map((task) => ({
+    (tender.tasks || []).map((task) => ({
       ...task,
       tenderId: tender.id,
       tenderTitle: tender.title,
@@ -22,7 +22,7 @@ export const MyTasksPage: React.FC = () => {
   );
 
   const myTasksCount = allTasks.filter(
-    (t) => t.assignee.toLowerCase().includes(currentUser.name.toLowerCase())
+    (t) => (t.assignee || '').toLowerCase().includes((currentUser?.name || '').toLowerCase())
   ).length;
 
   const filteredTasks = allTasks.filter((task) => {
@@ -31,16 +31,17 @@ export const MyTasksPage: React.FC = () => {
 
     let matchesAssignee = true;
     if (assigneeFilter === 'ME') {
-      matchesAssignee = task.assignee.toLowerCase().includes(currentUser.name.toLowerCase());
+      matchesAssignee = (task.assignee || '').toLowerCase().includes((currentUser?.name || '').toLowerCase());
     } else if (assigneeFilter !== 'ALL') {
-      matchesAssignee = task.assignee.toLowerCase().includes(assigneeFilter.toLowerCase());
+      matchesAssignee = (task.assignee || '').toLowerCase().includes(assigneeFilter.toLowerCase());
     }
 
+    const q = searchQuery.toLowerCase();
     const matchesSearch =
-      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      task.tenderTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      task.tenderId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      task.assignee.toLowerCase().includes(searchQuery.toLowerCase());
+      (task.title || '').toLowerCase().includes(q) ||
+      (task.tenderTitle || '').toLowerCase().includes(q) ||
+      (task.tenderId || '').toLowerCase().includes(q) ||
+      (task.assignee || '').toLowerCase().includes(q);
 
     return matchesStatus && matchesAssignee && matchesSearch;
   });

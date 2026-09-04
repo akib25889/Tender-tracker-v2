@@ -11,16 +11,18 @@ export const TenderAnalysisTab: React.FC = () => {
   const { tenders, setTenderDecision } = useTenders();
   const tender = tenders.find((t) => t.id === id) || tenders[0];
 
-  const [technical, setTechnical] = useState(tender.decisionMatrix?.technical || 9.2);
-  const [financial, setFinancial] = useState(tender.decisionMatrix?.financial || 8.5);
-  const [team, setTeam] = useState(tender.decisionMatrix?.team || 7.8);
-  const [sla, setSla] = useState(tender.decisionMatrix?.sla || 9.0);
-  const [decision, setDecision] = useState<DecisionStatus>(tender.decision);
+  const [technical, setTechnical] = useState(tender?.decisionMatrix?.technical || 9.2);
+  const [financial, setFinancial] = useState(tender?.decisionMatrix?.financial || 8.5);
+  const [team, setTeam] = useState(tender?.decisionMatrix?.team || 7.8);
+  const [sla, setSla] = useState(tender?.decisionMatrix?.sla || 9.0);
+  const [decision, setDecision] = useState<DecisionStatus>(tender?.decision || 'PENDING');
   const [rationale, setRationale] = useState(
-    tender.decisionMatrix?.rationale ||
+    tender?.decisionMatrix?.rationale ||
       'Technical architecture verified. Commercial margin satisfies 28% internal hurdle rate.'
   );
   const [savedSuccess, setSavedSuccess] = useState(false);
+
+  if (!tender) return null;
 
   // Compute weighted aggregate score (35% tech, 30% fin, 20% team, 15% sla)
   const aggregateScore = Number(
