@@ -258,3 +258,11 @@ export interface PipelineSummary {
   averageReadiness: number;
   winRatePercent: number;
 }
+
+export interface TenderCategory {
+  id: number;
+  name: string;
+  description?: string;
+  color_badge?: string;
+  created_at?: string;
+}

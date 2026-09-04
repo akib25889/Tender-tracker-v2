@@ -1,11 +1,135 @@
 import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
-import { HardDrive, Save, Check, Mail, Bell, Send } from 'lucide-react';
+import {
+  HardDrive,
+  Save,
+  Check,
+  Mail,
+  Bell,
+  Send,
+  Tags,
+  Plus,
+  Trash2,
+  Edit2,
+  AlertCircle,
+  X,
+} from 'lucide-react';
+import { useTenders } from '../context/TenderContext';
 
 export const SettingsPage: React.FC = () => {
+  const { categories, addCategory, updateCategory, deleteCategory, tenders } = useTenders();
+
   const [vaultPath, setVaultPath] = useState('H:/Tender tracker v2/storage/tenders');
   const [alertThresholdHours, setAlertThresholdHours] = useState(48);
   const [enableShaVerification, setEnableShaVerification] = useState(true);
+
+  // Category management states
+  const [newCatName, setNewCatName] = useState('');
+  const [newCatDesc, setNewCatDesc] = useState('');
+  const [newCatColor, setNewCatColor] = useState('blue');
+  const [isAddingCat, setIsAddingCat] = useState(false);
+  const [editingCatId, setEditingCatId] = useState<number | null>(null);
+  const [editCatName, setEditCatName] = useState('');
+  const [editCatDesc, setEditCatDesc] = useState('');
+  const [editCatColor, setEditCatColor] = useState('blue');
+  const [catError, setCatError] = useState<string | null>(null);
+  const [catSuccess, setCatSuccess] = useState<string | null>(null);
+
+  const COLOR_OPTIONS = [
+    { label: 'Blue', value: 'blue', bg: 'bg-blue-500' },
+    { label: 'Purple', value: 'purple', bg: 'bg-purple-500' },
+    { label: 'Emerald', value: 'emerald', bg: 'bg-emerald-500' },
+    { label: 'Amber', value: 'amber', bg: 'bg-amber-500' },
+    { label: 'Rose', value: 'rose', bg: 'bg-rose-500' },
+    { label: 'Teal', value: 'teal', bg: 'bg-teal-500' },
+    { label: 'Indigo', value: 'indigo', bg: 'bg-indigo-500' },
+    { label: 'Cyan', value: 'cyan', bg: 'bg-cyan-500' },
+  ];
+
+  const getBadgeClasses = (color?: string) => {
+    switch (color) {
+      case 'purple':
+        return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'emerald':
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'amber':
+        return 'bg-amber-50 text-amber-700 border-amber-200';
+      case 'rose':
+        return 'bg-rose-50 text-rose-700 border-rose-200';
+      case 'teal':
+        return 'bg-teal-50 text-teal-700 border-teal-200';
+      case 'indigo':
+        return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+      case 'cyan':
+        return 'bg-cyan-50 text-cyan-700 border-cyan-200';
+      default:
+        return 'bg-blue-50 text-blue-700 border-blue-200';
+    }
+  };
+
+  const handleCreateCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCatError(null);
+    if (!newCatName.trim()) {
+      setCatError('Category name is required.');
+      return;
+    }
+    const created = await addCategory({
+      name: newCatName.trim(),
+      description: newCatDesc.trim() || undefined,
+      color_badge: newCatColor,
+    });
+    if (created) {
+      setNewCatName('');
+      setNewCatDesc('');
+      setNewCatColor('blue');
+      setIsAddingCat(false);
+      setCatSuccess(`Category "${created.name}" created and synced to database.`);
+      setTimeout(() => setCatSuccess(null), 3500);
+    }
+  };
+
+  const handleStartEdit = (cat: { id: number; name: string; description?: string; color_badge?: string }) => {
+    setEditingCatId(cat.id);
+    setEditCatName(cat.name);
+    setEditCatDesc(cat.description || '');
+    setEditCatColor(cat.color_badge || 'blue');
+    setCatError(null);
+  };
+
+  const handleSaveEdit = async (id: number) => {
+    setCatError(null);
+    if (!editCatName.trim()) {
+      setCatError('Category name is required.');
+      return;
+    }
+    const updated = await updateCategory(id, {
+      name: editCatName.trim(),
+      description: editCatDesc.trim() || undefined,
+      color_badge: editCatColor,
+    });
+    if (updated) {
+      setEditingCatId(null);
+      setCatSuccess(`Category "${updated.name}" updated successfully.`);
+      setTimeout(() => setCatSuccess(null), 3500);
+    }
+  };
+
+  const handleDeleteCategory = async (id: number, name: string) => {
+    setCatError(null);
+    const inUse = tenders.filter((t) => t.category === name).length;
+    if (inUse > 0) {
+      setCatError(`Cannot delete category "${name}" because it is currently assigned to ${inUse} active tender(s). Reassign them first.`);
+      return;
+    }
+    const ok = await deleteCategory(id);
+    if (ok) {
+      setCatSuccess(`Category "${name}" removed.`);
+      setTimeout(() => setCatSuccess(null), 3500);
+    } else {
+      setCatError(`Failed to delete category "${name}".`);
+    }
+  };
 
   // Email Notification & SMTP Settings
   const [smtpServer, setSmtpServer] = useState('smtp.tendertracker.internal');
@@ -113,6 +237,276 @@ export const SettingsPage: React.FC = () => {
                 onChange={(e) => setEnableShaVerification(e.target.checked)}
                 className="w-4 h-4 accent-[#2563EB]"
               />
+            </div>
+          </div>
+        </Card>
+
+        {/* Scope of Work (SOW) Categories Console */}
+        <Card
+          title="Scope of Work (SOW) Corporate Categories"
+          subtitle="Database-backed enterprise categories assigned to tenders across all pipeline gates"
+        >
+          <div className="space-y-4 text-xs">
+            {catSuccess && (
+              <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg flex items-center gap-2 animate-fadeIn">
+                <Check className="w-4 h-4 shrink-0 text-emerald-600" />
+                <span>{catSuccess}</span>
+              </div>
+            )}
+
+            {catError && (
+              <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg flex items-center gap-2 animate-fadeIn">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                <span>{catError}</span>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between">
+              <div className="text-[#64748B]">
+                Total registered categories in database: <strong className="text-[#0F172A]">{categories.length}</strong>
+              </div>
+              {!isAddingCat && (
+                <button
+                  type="button"
+                  onClick={() => setIsAddingCat(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg font-semibold shadow-xs transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add New Category</span>
+                </button>
+              )}
+            </div>
+
+            {/* Add New Category Drawer */}
+            {isAddingCat && (
+              <div className="p-4 bg-[#F8FAFC] border border-[#BFDBFE] rounded-lg space-y-3 animate-fadeIn">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#0F172A] flex items-center gap-1.5">
+                    <Tags className="w-4 h-4 text-[#2563EB]" />
+                    Create New Category
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingCat(false)}
+                    className="p-1 text-[#64748B] hover:text-[#0F172A]"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-semibold text-[#0F172A] mb-1">
+                      Category Name <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Renewable Energy Infrastructure"
+                      value={newCatName}
+                      onChange={(e) => setNewCatName(e.target.value)}
+                      className="w-full px-3 py-1.5 bg-white border border-[#CBD5E1] rounded text-xs text-[#0F172A]"
+                      autoFocus
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-[#0F172A] mb-1">
+                      Badge Theme
+                    </label>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {COLOR_OPTIONS.map((c) => (
+                        <button
+                          key={c.value}
+                          type="button"
+                          onClick={() => setNewCatColor(c.value)}
+                          className={`px-2.5 py-1 rounded-md text-[11px] font-semibold border transition-all ${
+                            newCatColor === c.value
+                              ? 'ring-2 ring-offset-1 ring-[#2563EB] font-bold border-transparent'
+                              : 'border-[#E2E8F0] opacity-80 hover:opacity-100'
+                          } ${getBadgeClasses(c.value)}`}
+                        >
+                          {c.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block font-semibold text-[#0F172A] mb-1">
+                      Scope & Description (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Solar farm EPC, grid storage battery systems, and utility substations."
+                      value={newCatDesc}
+                      onChange={(e) => setNewCatDesc(e.target.value)}
+                      className="w-full px-3 py-1.5 bg-white border border-[#CBD5E1] rounded text-xs text-[#0F172A]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2 border-t border-[#E2E8F0]">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingCat(false)}
+                    className="px-3 py-1.5 bg-white border border-[#CBD5E1] text-[#64748B] hover:text-[#0F172A] rounded font-medium"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCreateCategory}
+                    className="px-4 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded font-semibold shadow-xs"
+                  >
+                    Save Category
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Category Table */}
+            <div className="border border-[#E2E8F0] rounded-lg overflow-hidden">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B] font-semibold">
+                    <th className="py-2.5 px-3">Category Name</th>
+                    <th className="py-2.5 px-3 hidden sm:table-cell">Scope & Description</th>
+                    <th className="py-2.5 px-3 text-center">Tenders</th>
+                    <th className="py-2.5 px-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#F1F5F9]">
+                  {categories.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="py-6 text-center text-[#64748B]">
+                        No categories found. Click "Add New Category" above to create one.
+                      </td>
+                    </tr>
+                  ) : (
+                    categories.map((cat) => {
+                      const isEditing = editingCatId === cat.id;
+                      const inUseCount = tenders.filter((t) => t.category === cat.name).length;
+
+                      if (isEditing) {
+                        return (
+                          <tr key={cat.id} className="bg-[#EFF6FF]/40">
+                            <td className="p-3">
+                              <input
+                                type="text"
+                                value={editCatName}
+                                onChange={(e) => setEditCatName(e.target.value)}
+                                className="w-full px-2 py-1 bg-white border border-[#3B82F6] rounded text-xs font-semibold text-[#0F172A]"
+                              />
+                              <div className="flex gap-1.5 mt-2 flex-wrap">
+                                {COLOR_OPTIONS.map((c) => (
+                                  <button
+                                    key={c.value}
+                                    type="button"
+                                    onClick={() => setEditCatColor(c.value)}
+                                    className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border ${
+                                      editCatColor === c.value ? 'ring-2 ring-[#2563EB]' : 'opacity-70'
+                                    } ${getBadgeClasses(c.value)}`}
+                                  >
+                                    {c.label}
+                                  </button>
+                                ))}
+                              </div>
+                            </td>
+                            <td className="p-3 hidden sm:table-cell">
+                              <input
+                                type="text"
+                                value={editCatDesc}
+                                onChange={(e) => setEditCatDesc(e.target.value)}
+                                className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-xs text-[#0F172A]"
+                                placeholder="Description..."
+                              />
+                            </td>
+                            <td className="p-3 text-center font-mono font-bold text-[#64748B]">
+                              {inUseCount}
+                            </td>
+                            <td className="p-3 text-right">
+                              <div className="flex items-center justify-end gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => handleSaveEdit(cat.id)}
+                                  className="px-2.5 py-1 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded text-xs font-semibold"
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingCatId(null)}
+                                  className="px-2 py-1 bg-white border border-[#CBD5E1] text-[#64748B] rounded text-xs"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      }
+
+                      return (
+                        <tr key={cat.id} className="hover:bg-[#F8FAFC] transition-colors">
+                          <td className="py-2.5 px-3">
+                            <span
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getBadgeClasses(
+                                cat.color_badge
+                              )}`}
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
+                              {cat.name}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-3 text-[#64748B] text-[11px] hidden sm:table-cell max-w-md truncate">
+                            {cat.description || <span className="italic text-[#94A3B8]">No description provided</span>}
+                          </td>
+                          <td className="py-2.5 px-3 text-center">
+                            <span
+                              className={`font-mono text-xs font-bold px-2 py-0.5 rounded ${
+                                inUseCount > 0
+                                  ? 'bg-[#F1F5F9] text-[#0F172A]'
+                                  : 'text-[#94A3B8]'
+                              }`}
+                            >
+                              {inUseCount}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-3 text-right">
+                            <div className="flex items-center justify-end gap-1">
+                              <button
+                                type="button"
+                                onClick={() => handleStartEdit(cat)}
+                                title="Edit Category"
+                                className="p-1 rounded text-[#64748B] hover:text-[#2563EB] hover:bg-[#EFF6FF] transition-colors"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteCategory(cat.id, cat.name)}
+                                title={
+                                  inUseCount > 0
+                                    ? `Assigned to ${inUseCount} tenders (cannot delete)`
+                                    : 'Delete Category'
+                                }
+                                disabled={inUseCount > 0}
+                                className={`p-1 rounded transition-colors ${
+                                  inUseCount > 0
+                                    ? 'text-[#CBD5E1] cursor-not-allowed'
+                                    : 'text-[#64748B] hover:text-rose-600 hover:bg-rose-50'
+                                }`}
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </Card>

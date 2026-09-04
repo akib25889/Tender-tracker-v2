@@ -14,6 +14,7 @@ import {
   DocumentShareLink,
   ReusableDocument,
   DocumentAccessLevel,
+  TenderCategory,
 } from '../types/tender';
 import { MOCK_TENDERS } from '../mock/tenders';
 import { TEAM_PROFILES } from '../mock/users';
@@ -100,6 +101,12 @@ interface TenderContextType {
   currency: CurrencyMode;
   setCurrency: (c: CurrencyMode) => void;
   formatCurrency: (amountInUSD: number) => string;
+  // Category Management
+  categories: TenderCategory[];
+  addCategory: (categoryData: { name: string; description?: string; color_badge?: string }) => Promise<TenderCategory | null>;
+  updateCategory: (id: number, updates: { name?: string; description?: string; color_badge?: string }) => Promise<TenderCategory | null>;
+  deleteCategory: (id: number) => Promise<boolean>;
+  refreshCategories: () => Promise<void>;
   // Modal states
   isNewTenderModalOpen: boolean;
   setIsNewTenderModalOpen: (open: boolean) => void;
@@ -202,6 +209,112 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   const [activeTenderIdForModal, setActiveTenderIdForModal] = useState<string | null>(null);
   const [activeTierForSignOff, setActiveTierForSignOff] = useState<number | null>(null);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  // Category Management State
+  const [categories, setCategories] = useState<TenderCategory[]>(() => {
+    return [
+      { id: 1, name: 'Software Development', description: 'Enterprise application development, modernization, web/mobile engineering, and custom software delivery.', color_badge: 'blue' },
+      { id: 2, name: 'Cloud & Cyber Security', description: 'Cloud migration, FedRAMP/ISO 27001 architectures, perimeter security, and SOC operations.', color_badge: 'purple' },
+      { id: 3, name: 'Healthcare & Medical Systems', description: 'Hospital management systems, medical device interfaces, PACS, and biomedical software solutions.', color_badge: 'emerald' },
+      { id: 4, name: 'Infrastructure & Public Works', description: 'Civil infrastructure, datacenter physical deployments, fiber backbones, and municipal utilities.', color_badge: 'amber' },
+      { id: 5, name: 'Defense & Strategic Technology', description: 'Mission-critical C4ISR defense solutions, encrypted tactical links, and aerospace integration.', color_badge: 'rose' },
+      { id: 6, name: 'Energy & Utilities', description: 'Smart grid metering, renewable SCADA, power distribution automation, and ESG monitoring.', color_badge: 'teal' },
+      { id: 7, name: 'Smart City & Transportation', description: 'Intelligent traffic management, automated fare collection, and IoT sensor telemetry.', color_badge: 'indigo' },
+      { id: 8, name: 'Consulting & Advisory Services', description: 'Strategic advisory, regulatory compliance audits, and digital transformation roadmapping.', color_badge: 'cyan' },
+    ];
+  });
+
+  const refreshCategories = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/categories');
+      if (res.ok) {
+        const data: TenderCategory[] = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setCategories(data);
+        }
+      }
+    } catch {
+      // Backend unavailable, retain current state
+    }
+  };
+
+  useEffect(() => {
+    refreshCategories();
+  }, []);
+
+  const addCategory = async (categoryData: { name: string; description?: string; color_badge?: string }): Promise<TenderCategory | null> => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(categoryData),
+      });
+      if (res.ok) {
+        const created: TenderCategory = await res.json();
+        setCategories((prev) => {
+          const exists = prev.find((c) => c.id === created.id || c.name.toLowerCase() === created.name.toLowerCase());
+          if (exists) return prev;
+          return [...prev, created].sort((a, b) => a.name.localeCompare(b.name));
+        });
+        return created;
+      }
+    } catch {
+      // Fallback to local
+    }
+    const localCat: TenderCategory = {
+      id: Date.now(),
+      name: categoryData.name,
+      description: categoryData.description,
+      color_badge: categoryData.color_badge || 'blue',
+    };
+    setCategories((prev) => [...prev, localCat].sort((a, b) => a.name.localeCompare(b.name)));
+    return localCat;
+  };
+
+  const updateCategory = async (id: number, updates: { name?: string; description?: string; color_badge?: string }): Promise<TenderCategory | null> => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/categories/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+      if (res.ok) {
+        const updated: TenderCategory = await res.json();
+        setCategories((prev) => prev.map((c) => (c.id === id ? updated : c)));
+        if (updates.name) {
+          const oldCat = categories.find((c) => c.id === id);
+          if (oldCat) {
+            setTenders((prev) =>
+              prev.map((t) => (t.category === oldCat.name ? { ...t, category: updates.name! } : t))
+            );
+          }
+        }
+        return updated;
+      }
+    } catch {
+      // Fallback to local
+    }
+    setCategories((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, ...updates } : c))
+    );
+    return null;
+  };
+
+  const deleteCategory = async (id: number): Promise<boolean> => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/categories/${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setCategories((prev) => prev.filter((c) => c.id !== id));
+        return true;
+      }
+      return false;
+    } catch {
+      setCategories((prev) => prev.filter((c) => c.id !== id));
+      return true;
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tenders));
@@ -1036,6 +1149,11 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         currency,
         setCurrency,
         formatCurrency,
+        categories,
+        addCategory,
+        updateCategory,
+        deleteCategory,
+        refreshCategories,
         isNewTenderModalOpen,
         setIsNewTenderModalOpen,
         uploadFolderTarget,

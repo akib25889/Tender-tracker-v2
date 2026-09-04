@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.user import User
-from app.models.tender import Tender, TenderDecisionMatrix
+from app.models.tender import Tender, TenderDecisionMatrix, TenderCategory
 from app.models.task import TenderTask
 from app.models.document import TenderDocument, ReusableDocument
 from app.models.requirement import TenderRequirement
@@ -115,8 +115,79 @@ INITIAL_REUSABLE_DOCS = [
     },
 ]
 
+INITIAL_CATEGORIES = [
+    {
+        "name": "Software Development",
+        "description": "Enterprise application development, modernization, web/mobile engineering, and custom software delivery.",
+        "color_badge": "blue",
+    },
+    {
+        "name": "Cloud & Cyber Security",
+        "description": "Cloud migration, FedRAMP/ISO 27001 architectures, perimeter security, and SOC operations.",
+        "color_badge": "purple",
+    },
+    {
+        "name": "Healthcare & Medical Systems",
+        "description": "Hospital management systems, medical device interfaces, PACS, and biomedical software solutions.",
+        "color_badge": "emerald",
+    },
+    {
+        "name": "Infrastructure & Public Works",
+        "description": "Civil infrastructure, datacenter physical deployments, fiber backbones, and municipal utilities.",
+        "color_badge": "amber",
+    },
+    {
+        "name": "Defense & Strategic Technology",
+        "description": "Mission-critical C4ISR defense solutions, encrypted tactical links, and aerospace integration.",
+        "color_badge": "rose",
+    },
+    {
+        "name": "Energy & Utilities",
+        "description": "Smart grid metering, renewable SCADA, power distribution automation, and ESG monitoring.",
+        "color_badge": "teal",
+    },
+    {
+        "name": "Smart City & Transportation",
+        "description": "Intelligent traffic management, automated fare collection, and IoT sensor telemetry.",
+        "color_badge": "indigo",
+    },
+    {
+        "name": "Consulting & Advisory Services",
+        "description": "Strategic advisory, regulatory compliance audits, and digital transformation roadmapping.",
+        "color_badge": "cyan",
+    },
+]
+
 
 def seed_database(db: Session):
+    # 0. Seed Tender Categories
+    for cat in INITIAL_CATEGORIES:
+        existing = db.query(TenderCategory).filter(TenderCategory.name.ilike(cat["name"])).first()
+        if not existing:
+            db.add(
+                TenderCategory(
+                    name=cat["name"],
+                    description=cat.get("description"),
+                    color_badge=cat.get("color_badge", "blue"),
+                )
+            )
+    db.commit()
+
+    # Sync any custom categories that may already exist in tenders
+    existing_tenders = db.query(Tender.category).distinct().all()
+    for (t_cat,) in existing_tenders:
+        if t_cat and t_cat.strip():
+            existing = db.query(TenderCategory).filter(TenderCategory.name.ilike(t_cat.strip())).first()
+            if not existing:
+                db.add(
+                    TenderCategory(
+                        name=t_cat.strip(),
+                        description="Imported from active tenders.",
+                        color_badge="blue",
+                    )
+                )
+    db.commit()
+
     # 1. Seed Users if empty
     if db.query(User).count() == 0:
         for u in INITIAL_USERS:

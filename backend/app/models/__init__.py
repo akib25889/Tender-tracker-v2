@@ -1,5 +1,5 @@
 from app.models.user import User
-from app.models.tender import Tender, TenderDecisionMatrix
+from app.models.tender import Tender, TenderDecisionMatrix, TenderCategory
 from app.models.task import TenderTask
 from app.models.document import TenderFolder, TenderDocument, ReusableDocument
 from app.models.requirement import TenderRequirement
@@ -20,6 +20,7 @@ __all__ = [
     "User",
     "Tender",
     "TenderDecisionMatrix",
+    "TenderCategory",
     "TenderTask",
     "TenderFolder",
     "TenderDocument",

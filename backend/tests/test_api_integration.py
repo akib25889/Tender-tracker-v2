@@ -218,3 +218,44 @@ def test_07_dashboard_stats():
     assert "totalPipelineValue" in stats
     assert stats["activeTendersCount"] >= 1
     assert "stageDistribution" in stats
+
+
+def test_08_category_lifecycle():
+    # 1. List seeded categories
+    list_res = client.get("/api/categories")
+    assert list_res.status_code == 200
+    categories = list_res.json()
+    assert len(categories) >= 5
+    cat_names = [c["name"] for c in categories]
+    assert "Software Development" in cat_names
+
+    # 2. Create new category
+    new_cat = {
+        "name": "Biometric ID & Border Control",
+        "description": "Automated border clearance gates and biometric verification systems.",
+        "color_badge": "indigo",
+    }
+    create_res = client.post("/api/categories", json=new_cat)
+    assert create_res.status_code == 201
+    created = create_res.json()
+    cat_id = created["id"]
+    assert created["name"] == new_cat["name"]
+
+    # 3. Update category
+    update_res = client.put(
+        f"/api/categories/{cat_id}",
+        json={"name": "Biometrics & Border Security", "color_badge": "cyan"},
+    )
+    assert update_res.status_code == 200
+    updated = update_res.json()
+    assert updated["name"] == "Biometrics & Border Security"
+    assert updated["color_badge"] == "cyan"
+
+    # 4. Delete category
+    del_res = client.delete(f"/api/categories/{cat_id}")
+    assert del_res.status_code == 204
+
+    # 5. Verify it's gone
+    verify_res = client.get("/api/categories")
+    remaining_names = [c["name"] for c in verify_res.json()]
+    assert "Biometrics & Border Security" not in remaining_names

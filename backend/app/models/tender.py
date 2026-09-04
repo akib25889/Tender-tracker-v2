@@ -52,3 +52,13 @@ class TenderDecisionMatrix(Base):
     rationale = Column(Text, nullable=True)
 
     tender = relationship("Tender", back_populates="decision_matrix")
+
+class TenderCategory(Base):
+    __tablename__ = "tender_categories"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(100), unique=True, nullable=False, index=True)
+    description = Column(Text, nullable=True)
+    color_badge = Column(String(50), nullable=True, default="blue")
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+

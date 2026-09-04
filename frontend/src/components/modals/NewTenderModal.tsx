@@ -28,8 +28,15 @@ const CLASSIFICATIONS: TenderClassification[] = [
 ];
 
 export const NewTenderModal: React.FC = () => {
-  const { isNewTenderModalOpen, setIsNewTenderModalOpen, addTender, currency, tenders } =
-    useTenders();
+  const {
+    isNewTenderModalOpen,
+    setIsNewTenderModalOpen,
+    addTender,
+    currency,
+    tenders,
+    categories,
+    addCategory,
+  } = useTenders();
 
   const [activeTab, setActiveTab] = useState<
     'BASIC' | 'SCOPE' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS'
@@ -60,20 +67,11 @@ export const NewTenderModal: React.FC = () => {
   const [isCustomCategory, setIsCustomCategory] = useState(false);
 
   const availableCategories = useMemo(() => {
-    const defaults = [
-      'IT & Cloud Infrastructure',
-      'Software / IT Related',
-      'Government Software',
-      'Healthcare Systems',
-      'Cybersecurity & Energy',
-      'Identity & Security',
-      'Healthcare & Cloud Data',
-      'Industrial IoT & SCADA',
-      'Trade & Customs Logistics',
-    ];
+    const fromCategories = (categories || []).map((c) => c.name);
     const fromTenders = (tenders || []).map((t) => t.category).filter(Boolean);
-    return Array.from(new Set([...defaults, ...fromTenders]));
-  }, [tenders]);
+    const combined = Array.from(new Set([...fromCategories, ...fromTenders])).filter(Boolean);
+    return combined.sort((a, b) => a.localeCompare(b));
+  }, [categories, tenders]);
 
   // Scope & Commercial
   const [mainIdea, setMainIdea] = useState(
@@ -293,6 +291,10 @@ export const NewTenderModal: React.FC = () => {
 
     const newTenderId = tenderId.trim() || `TDR-2026-${Math.floor(100 + Math.random() * 900)}`;
     const finalTitle = tenderTitle.trim() || projectName.trim() || 'Untitled Tender Opportunity';
+
+    if (category && category.trim()) {
+      addCategory({ name: category.trim() });
+    }
 
     addTender({
       id: newTenderId,

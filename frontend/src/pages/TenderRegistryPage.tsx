@@ -33,7 +33,7 @@ const CLASSIFICATIONS: TenderClassification[] = [
 ];
 
 export const TenderRegistryPage: React.FC = () => {
-  const { tenders, addTender, deleteTender } = useTenders();
+  const { tenders, addTender, deleteTender, categories, addCategory } = useTenders();
   const [searchParams] = useSearchParams();
   const editIdFromUrl = searchParams.get('id') || searchParams.get('edit');
 
@@ -101,20 +101,11 @@ export const TenderRegistryPage: React.FC = () => {
   const [isCustomCategory, setIsCustomCategory] = useState(false);
 
   const availableCategories = useMemo(() => {
-    const defaults = [
-      'IT & Cloud Infrastructure',
-      'Software / IT Related',
-      'Government Software',
-      'Healthcare Systems',
-      'Cybersecurity & Energy',
-      'Identity & Security',
-      'Healthcare & Cloud Data',
-      'Industrial IoT & SCADA',
-      'Trade & Customs Logistics',
-    ];
+    const fromCategories = (categories || []).map((c) => c.name);
     const fromTenders = tenders.map((t) => t.category).filter(Boolean);
-    return Array.from(new Set([...defaults, ...fromTenders]));
-  }, [tenders]);
+    const combined = Array.from(new Set([...fromCategories, ...fromTenders])).filter(Boolean);
+    return combined.sort((a, b) => a.localeCompare(b));
+  }, [categories, tenders]);
 
   // Scope & Commercial
   const [mainIdea, setMainIdea] = useState(
@@ -497,6 +488,10 @@ export const TenderRegistryPage: React.FC = () => {
       estimatedValue !== '' && !isNaN(Number(estimatedValue)) && Number(estimatedValue) > 0
         ? Number(estimatedValue)
         : 0;
+
+    if (category && category.trim()) {
+      addCategory({ name: category.trim() });
+    }
 
     addTender({
       id: tenderId,
