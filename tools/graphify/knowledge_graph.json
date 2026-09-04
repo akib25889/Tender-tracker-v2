@@ -136,7 +136,7 @@
     },
     {
       "id": "screen:reports",
-      "name": "Reports & Win/Loss Analytics",
+      "name": "Report & Analytics",
       "type": "screen",
       "route": "/reports",
       "module": "analytics"

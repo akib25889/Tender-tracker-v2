@@ -29,7 +29,7 @@
 | `screen:tender_review` | Review & Sign-Off Workflow | `/tenders/{id}/review` | `review` |
 | `screen:tender_submission` | Submission Ledger | `/tenders/{id}/submission` | `submission` |
 | `screen:tender_result` | Outcome & Win/Loss Debrief | `/tenders/{id}/result` | `result` |
-| `screen:reports` | Reports & Win/Loss Analytics | `/reports` | `analytics` |
+| `screen:reports` | Report & Analytics | `/reports` | `analytics` |
 | `screen:notifications` | Notification & Alert Center | `/notifications` | `notifications` |
 | `screen:settings` | Settings & System Configuration | `/settings` | `settings` |
 | `screen:master_documents` | Master Reusable Document Vault | `/documents` | `documents` |

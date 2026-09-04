@@ -72,7 +72,7 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 | `screen:chat_discussions` | Team Chat & Tender Discussions Hub | `/discussions` | `collaboration` |
 | `screen:team_allocation` | Team Workload & RBAC Access Matrix | `/team` | `team` |
 | `screen:calendar` | Tender Calendar & Deadline Schedule | `/calendar` | `calendar` |
-| `screen:reports` | Reports & Win/Loss Analytics | `/reports` | `analytics` |
+| `screen:reports` | Report & Analytics (Basic, General, Advance) | `/reports` | `analytics` |
 | `screen:archive` | Archived Non-Participating Records | `/archive` | `archive` |
 | `screen:notifications` | Real-Time Operational Alert Center | `/notifications` | `notifications` |
 | `screen:settings` | Settings & System Configuration | `/settings` | `settings` |

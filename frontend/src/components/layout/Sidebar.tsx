@@ -88,7 +88,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       badge: undefined,
     },
     {
-      label: 'Reports & Status',
+      label: 'Report & Analytics',
       path: '/reports',
       icon: BarChart3,
       badge: undefined,

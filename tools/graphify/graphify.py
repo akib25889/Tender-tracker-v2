@@ -157,7 +157,7 @@ def extract_project_nodes():
         },
         {
             "id": "screen:reports",
-            "name": "Reports & Win/Loss Analytics",
+            "name": "Report & Analytics",
             "route": "/reports",
             "module": "analytics",
         },

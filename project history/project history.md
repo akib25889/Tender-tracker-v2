@@ -19,6 +19,17 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 18-screen routing. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
 
+### [2026-09-04] — Version 2.6.2: Report & Analytics 3-Mode Intelligence Architecture
+- **Category:** Analytics, UX Architecture, Telemetry
+- **Summary:**
+  - **Renamed Module:** Updated navigation and page identity to **Report & Analytics** (`/reports`).
+  - **3-Mode Segmented Control:**
+    - **Basic Mode:** High-level executive overview with 4 headline cards (Total Pipeline Value, Cumulative Win Rate, Won Contracts Value, Active in Preparation) and a complete Stage Breakdown Summary table.
+    - **General Mode:** Standard operational analytics featuring Top 3 KPI cards, Pipeline Distribution by Domain & Scope of Work (SOW) Category, and Procuring Entity Exposure & Conversion.
+    - **Advance Mode:** Deep conversion telemetry featuring Deal Ticket Size, Bid Capture Efficiency, Stage Progression Funnel, and an extensible **Advance Metrics Configuration Hub** ready for custom formula definition.
+
+---
+
 ### [2026-09-04] — Version 2.6.1: Archival of Tender Analysis & Scope Workspace
 - **Category:** Architecture Simplification, Governance, Documentation
 - **Summary:**
