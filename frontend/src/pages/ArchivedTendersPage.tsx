@@ -336,7 +336,7 @@ export const ArchivedTendersPage: React.FC = () => {
                 </h3>
                 <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-1 leading-relaxed">
                   Are you sure you want to permanently delete{' '}
-                  <strong className="text-[#0F172A] dark:text-white">"{tenderToDelete.title}"</strong> ({tenderToDelete.id})? This will permanently wipe all preserved SOW specs and audit history.
+                  <strong className="text-[#0F172A] dark:text-white">"{tenderToDelete.title}"</strong> ({tenderToDelete.id})? This will permanently wipe all preserved Scope of Work (SOW) specs and audit history.
                 </p>
               </div>
             </div>

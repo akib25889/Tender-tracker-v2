@@ -126,6 +126,7 @@ def gate_pytest() -> bool:
 def gate_typescript() -> bool:
     banner("Gate 3 / 4 — Frontend TypeScript Type Check")
     import os
+
     env = os.environ.copy()
     # On Windows, npx is a cmd script: npx.cmd
     npx_cmd = "npx.cmd" if sys.platform == "win32" else "npx"

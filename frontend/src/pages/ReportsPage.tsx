@@ -128,7 +128,7 @@ export const ReportsPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Breakdown by Domain / Sector */}
         <Card
-          title="Pipeline Distribution by Domain & SOW Category"
+          title="Pipeline Distribution by Domain & Scope of Work (SOW) Category"
           subtitle="Valuation and volume distribution across technical sectors"
         >
           <div className="space-y-4">

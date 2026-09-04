@@ -65,7 +65,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
             setData({
               token: 'SHR-TOKEN-ADB-SCADA',
               document_id: 'DOC-SCADA-01',
-              document_name: 'Smart_Grid_Substation_Cybersecurity_Architecture_SOW.pdf',
+              document_name: 'Smart_Grid_Substation_Cybersecurity_Architecture_ScopeOfWork.pdf',
               tender_id: 'TDR-2026-ADB-215',
               tender_title: 'Smart Grid Management & SCADA Cybersecurity Hardening',
               folder: '03_technical_proposal',
@@ -106,7 +106,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
           setData({
             token: 'SHR-TOKEN-ADB-SCADA',
             document_id: 'DOC-SCADA-01',
-            document_name: 'Smart_Grid_Substation_Cybersecurity_Architecture_SOW.pdf',
+            document_name: 'Smart_Grid_Substation_Cybersecurity_Architecture_ScopeOfWork.pdf',
             tender_id: 'TDR-2026-ADB-215',
             tender_title: 'Smart Grid Management & SCADA Cybersecurity Hardening',
             folder: '03_technical_proposal',

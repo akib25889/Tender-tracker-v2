@@ -285,7 +285,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       tasks: [
         {
           id: `TSK-${Math.floor(100 + Math.random() * 900)}`,
-          title: 'Review Scope of Work & Technical SOW',
+          title: 'Review Scope of Work (SOW) Specifications',
           assignee: 'Dr. Marcus Vance',
           priority: 'HIGH',
           deadline: 'Day 3',

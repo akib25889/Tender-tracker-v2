@@ -437,7 +437,7 @@ export const TenderListPage: React.FC = () => {
                       )}
                     </button>
                   </th>
-                  <th className="py-3 px-4">Tender ID &amp; SOW Title</th>
+                  <th className="py-3 px-4">Tender ID &amp; Scope of Work (SOW)</th>
                   <th className="py-3 px-4">Issuing Authority</th>
                   <th className="py-3 px-4 whitespace-nowrap">Value</th>
                   <th className="py-3 px-4 whitespace-nowrap">Stage</th>

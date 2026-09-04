@@ -175,13 +175,13 @@ export const TenderDetailPage: React.FC = () => {
                   {formatCurrency(tender.estimatedValue)}
                 </span>
                 <span className="text-[11px] text-[#2563EB] font-medium">
-                  SOW Category: {tender.category}
+                  Scope of Work (SOW) Category: {tender.category}
                 </span>
               </div>
             ) : (
               <div>
                 <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
-                  SOW Category
+                  Scope of Work (SOW) Category
                 </span>
                 <span className="font-semibold text-sm text-[#0F172A] mt-0.5 block">
                   {tender.category}

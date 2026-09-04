@@ -962,7 +962,7 @@ export const TenderRegistryPage: React.FC = () => {
 
                   <div>
                     <label className="block font-semibold text-[#0F172A] mb-1">
-                      SOW Category *
+                      Scope of Work (SOW) Category *
                     </label>
                     <select
                       value={category}

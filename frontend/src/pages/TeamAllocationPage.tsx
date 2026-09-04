@@ -66,7 +66,7 @@ export const TeamAllocationPage: React.FC = () => {
       note: 'All staff can register discovered opportunities and draft specifications',
     },
     {
-      feature: 'Technical SOW Sign-Off (Tier 1)',
+      feature: 'Technical Scope of Work (SOW) Sign-Off (Tier 1)',
       businessHead: true,
       execManager: true,
       seniorManager: false,

@@ -318,7 +318,7 @@
     - Added dedicated **"Estimated Net Value ($ USD)"** input field in both Tab 1 (Basic Information) and Tab 2 (Scope & Commercial).
     - Removed the hardcoded default fallback of `$1,000,000` (which previously forced all newly created tenders to display `৳12.20 Cr`).
   - **Conditional Estimated Net Value Display ([`TenderDetailPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderDetailPage.tsx), [`TenderContext.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/context/TenderContext.tsx)):**
-    - Updated Proposal Workspace header widget: if a tender has no entered estimated value (zero or undefined), the **"Estimated Net Value"** block is completely hidden, cleanly displaying only the SOW Category.
+    - Updated Proposal Workspace header widget: if a tender has no entered estimated value (zero or undefined), the **"Estimated Net Value"** block is completely hidden, cleanly displaying only the Scope of Work (SOW) Category.
     - Updated `formatCurrency` to return a clean `"—"` dash when amounts are zero, null, or undefined.
 - **Relevant Files:**
   - `frontend/src/pages/TenderRegistryPage.tsx`
@@ -546,7 +546,7 @@
 - **Category:** Domain Model Expansion & Opportunity Intake
 - **Summary:**
   - Integrated all fields from [`tender-dashboard.html`](file:///h:/Tender%20tracker%20v2/tender-dashboard.html) into the New Tender Registration modal ([`NewTenderModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/NewTenderModal.tsx)), organized into 5 intuitive tabs:
-    1. **Basic Info & Classification:** Domain classification pills (`SOFTWARE / IT RELATED`, etc.), Tender Title, Project Name, Tender ID, Reference No., Client / Donor, Portal, Country, SOW Category, Estimated Net Value (USD/BDT), Published Date, Submission Cutoff Date & Time, Priority.
+    1. **Basic Info & Classification:** Domain classification pills (`SOFTWARE / IT RELATED`, etc.), Tender Title, Project Name, Tender ID, Reference No., Client / Donor, Portal, Country, Scope of Work (SOW) Category, Estimated Net Value (USD/BDT), Published Date, Submission Cutoff Date & Time, Priority.
     2. **Scope & Commercial Requirements:** Concept & Main Idea, Tender Security (EMD), Contract / Service Period, Document Price, Performance Security, dynamic Technical Requirements list, Software/Tech Stack mentioned, Operational & SLA service lines.
     3. **Eligibility & JV Guidelines:** General Experience, Similar Contracts Experience, Min Contract Value, Annual Turnover, Liquid Assets / Credit Line, Quality Certifications, Local Presence mandate, and JV / Consortium rules.
     4. **Submission Docs, Staffing & Hardware:** Submission Documents checklist, Key Personnel / CV Table (`position`, `qualification`, `experience`, `qty`), and Hardware & Equipment specifications Table (`equipment`, `purpose`).
@@ -688,7 +688,7 @@
   *Impact:* Halves token usage, speeds up agent navigation, and ensures clean, minimal, maintainable production code.
 
 - **ADR-004: Dedicated Full-Page Tender Registry Console over Popup Modals**  
-  *Context:* Tender intake requires capturing 5 comprehensive tabs of metadata (Classification, SOW, Eligibility, Staffing/Hardware, Dates/Risks). Rendering this in a floating popup modal cluttered the viewport and duplicated navigation.  
+  *Context:* Tender intake requires capturing 5 comprehensive tabs of metadata (Classification, Scope of Work (SOW), Eligibility, Staffing/Hardware, Dates/Risks). Rendering this in a floating popup modal cluttered the viewport and duplicated navigation.  
   *Decision:* Replaced modal-based intake with a dedicated full-page console at `/registry` ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx)). Removed the 1,550-line modal from the application root.  
   *Impact:* Reduced JavaScript bundle by ~47 kB, improved data entry ergonomics, and enabled deep-link editing via `/registry?id={id}`.
 

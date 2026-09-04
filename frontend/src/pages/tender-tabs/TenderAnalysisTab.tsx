@@ -224,7 +224,7 @@ export const TenderAnalysisTab: React.FC = () => {
                 onChange={(e) => setTechnical(Number(e.target.value))}
                 className="w-full accent-[#16A34A] cursor-pointer"
               />
-              <p className="text-[11px] text-[#64748B]">SOW methodology and stack compliance</p>
+              <p className="text-[11px] text-[#64748B]">Scope of Work (SOW) methodology and stack compliance</p>
             </div>
 
             <div className="p-3.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-2">

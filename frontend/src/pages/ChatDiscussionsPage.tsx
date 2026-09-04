@@ -35,7 +35,7 @@ const DEFAULT_GENERAL_CHANNELS = [
   {
     id: 'tech-architecture',
     name: 'technical-solutions',
-    label: 'Technical Solutions & SOW',
+    label: 'Technical Solutions & Scope of Work (SOW)',
     description: 'Scope of work reviews, cloud architecture diagrams, and cybersecurity accreditation.',
   },
   {

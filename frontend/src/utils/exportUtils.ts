@@ -316,7 +316,7 @@ export const exportPipelineAsMarkdown = (tenders: Tender[]) => {
 ---
 
 ## Active Tender Opportunities
-| ID | SOW Title | Authority | Value (USD) | Stage | Decision | Deadline | Readiness |
+| ID | Title & Scope of Work (SOW) | Authority | Value (USD) | Stage | Decision | Deadline | Readiness |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
 ${tenders
   .map(
@@ -352,7 +352,7 @@ export const exportPipelineAsWord = (tenders: Tender[]) => {
   <table>
     <tr>
       <th>Tender ID</th>
-      <th>Title & SOW</th>
+      <th>Title & Scope of Work (SOW)</th>
       <th>Authority</th>
       <th>Value</th>
       <th>Stage</th>

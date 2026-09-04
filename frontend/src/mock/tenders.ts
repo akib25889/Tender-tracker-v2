@@ -455,7 +455,7 @@ export const MOCK_TENDERS: Tender[] = [
       },
       {
         id: 'DOC-03',
-        name: 'Technical_Methodology_SOW_v3.pdf',
+        name: 'Technical_Methodology_ScopeOfWork_v3.pdf',
         folder: '03_technical_proposal',
         revision: 'v3.0',
         sha256: '7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c',
@@ -685,7 +685,7 @@ export const MOCK_TENDERS: Tender[] = [
   {
     id: 'TDR-2026-MOF-052',
     referenceNo: 'MOF-PROC-2026-88',
-    title: 'National Tax Portal Migration & Distributed Microservices SOW',
+    title: 'National Tax Portal Migration & Distributed Microservices Scope of Work (SOW)',
     organization: 'Ministry of Finance & Revenue',
     country: 'Sovereign / National',
     category: 'Government Software',

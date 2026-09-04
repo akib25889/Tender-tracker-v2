@@ -35,7 +35,7 @@ The platform embodies the **"10-Second Rule"**: within ten seconds of accessing 
 | :--- | :--- | :--- | :--- |
 | **Sarah Jenkins** | Senior Bid Operations Director (Super Admin) | Pipeline health oversight, win probability optimization, Go/No-Go gate sign-off, board reporting. | Dashboard, Go/No-Go Decision, Win/Loss Analytics, Board Export |
 | **Bid / Proposal Manager** | Operational Bid Lead | End-to-end coordination, cross-department task assignment, document compilation, readiness verification. | Tender Detail Workspace, Kanban Board, Requirements Matrix |
-| **Technical Solutions Lead** | Architect / Tech Lead | Scope breakdown, RFP technical compliance scoring, BOQ/SOW architecture, methodology drafting. | Tender Analysis Workspace, Task Board, Document Vault |
+| **Technical Solutions Lead** | Architect / Tech Lead | Scope breakdown, RFP technical compliance scoring, BOQ & Scope of Work (SOW) architecture, methodology drafting. | Tender Analysis Workspace, Task Board, Document Vault |
 | **Finance & Compliance Officer** | Finance & Legal Lead | Solvency certificates, bank guarantee releases, turnover checks, trade license verification, post-bid audits. | Requirements Checklist, Document Vault, Review Sign-Off |
 
 ---
