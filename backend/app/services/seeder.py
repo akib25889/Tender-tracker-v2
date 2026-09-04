@@ -327,6 +327,52 @@ def seed_database(db: Session):
             )
         )
 
+        # T3: WHO Health Information Exchange
+        t3 = Tender(
+            id="TDR-2026-WHO-044",
+            reference_no="WPRO-2026-RFP-091",
+            title="Integrated Health Information Exchange & Disease Surveillance Cloud System",
+            organization="World Health Organization (WHO WPRO)",
+            country="Fiji & South Pacific Regional",
+            category="Healthcare & Cloud Data",
+            estimated_value=6900000.0,
+            stage="PREPARATION",
+            decision="GO",
+            priority="HIGH",
+            submission_deadline="2026-09-22T15:00:00Z",
+            days_remaining=18,
+            hours_remaining=432,
+            readiness_score=68,
+            lead_owner_name="Dr. Marcus Vance",
+            lead_owner_role="Head of Technical Architecture",
+        )
+        db.add(t3)
+        db.flush()
+        ensure_tender_directories(t3.id)
+
+        # T4: JICA Smart Water SCADA
+        t4 = Tender(
+            id="TDR-2026-JICA-118",
+            reference_no="JICA-BD-P108-2026",
+            title="Dhaka Smart Water Supply Network SCADA Automation & IoT Metering",
+            organization="Japan International Cooperation Agency (JICA / DWASA)",
+            country="Bangladesh",
+            category="Industrial IoT & SCADA",
+            estimated_value=18500000.0,
+            stage="UNDER_ANALYSIS",
+            decision="GO",
+            priority="CRITICAL",
+            submission_deadline="2026-09-08T11:00:00Z",
+            days_remaining=4,
+            hours_remaining=96,
+            readiness_score=82,
+            lead_owner_name="Tariq Al-Mansoor",
+            lead_owner_role="Commercial Pricing Director",
+        )
+        db.add(t4)
+        db.flush()
+        ensure_tender_directories(t4.id)
+
         db.commit()
 
     # 4. Seed Standard Permissions Catalog

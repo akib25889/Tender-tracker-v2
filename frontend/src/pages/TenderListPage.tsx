@@ -14,12 +14,14 @@ import {
   Archive,
   RotateCcw,
   FileText,
+  Upload,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { UrgencyBadge } from '../components/ui/UrgencyBadge';
 import { ReadinessBar } from '../components/ui/ReadinessBar';
 import { ExportDropdown } from '../components/ui/ExportDropdown';
+import { ImportTenderModal } from '../components/modals/ImportTenderModal';
 import { TenderStage } from '../types/tender';
 
 export const TenderListPage: React.FC = () => {
@@ -35,6 +37,7 @@ export const TenderListPage: React.FC = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [tenderToDelete, setTenderToDelete] = useState<{ id: string; title: string } | null>(null);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   useEffect(() => {
     if (stageFromUrl) {
@@ -109,6 +112,9 @@ export const TenderListPage: React.FC = () => {
     'Cybersecurity & Energy',
     'Identity & Security',
     'Government Software',
+    'Healthcare & Cloud Data',
+    'Industrial IoT & SCADA',
+    'Trade & Customs Logistics',
   ];
 
   return (
@@ -125,6 +131,14 @@ export const TenderListPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => setIsImportModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#0F172A] rounded-lg text-xs font-semibold shadow-2xs transition-colors"
+          >
+            <Upload className="w-3.5 h-3.5 text-[#2563EB]" />
+            <span>Import CSV / JSON</span>
+          </button>
           <ExportDropdown tenders={filteredTenders} label="Export Pipeline" />
           <Link
             to="/registry"
@@ -642,6 +656,12 @@ export const TenderListPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Batch Import Modal */}
+      <ImportTenderModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+      />
     </div>
   );
 };

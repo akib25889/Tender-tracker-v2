@@ -150,6 +150,13 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
             uniqueTenders.push(item);
           }
         }
+        // Merge in any newly seeded mock tenders that do not exist in cache yet
+        for (const mockItem of MOCK_TENDERS) {
+          if (!seenIds.has(mockItem.id)) {
+            seenIds.add(mockItem.id);
+            uniqueTenders.push(mockItem);
+          }
+        }
         return uniqueTenders;
       } catch (e) {
         console.error('Failed to parse cached tenders:', e);

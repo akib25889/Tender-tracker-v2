@@ -31,9 +31,15 @@ CYAN = "\033[96m"
 BOLD = "\033[1m"
 RESET = "\033[0m"
 
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 
 def banner(text: str) -> None:
-    bar = "─" * 60
+    bar = "=" * 60
     print(f"\n{CYAN}{BOLD}{bar}{RESET}")
     print(f"{CYAN}{BOLD}  {text}{RESET}")
     print(f"{CYAN}{BOLD}{bar}{RESET}")
@@ -41,12 +47,12 @@ def banner(text: str) -> None:
 
 def ok(label: str, detail: str = "") -> None:
     suffix = f"  {YELLOW}{detail}{RESET}" if detail else ""
-    print(f"  {GREEN}✓  PASS{RESET}  {label}{suffix}")
+    print(f"  {GREEN}[PASS]{RESET}  {label}{suffix}")
 
 
 def fail(label: str, detail: str = "") -> None:
     suffix = f"\n{RED}{detail}{RESET}" if detail else ""
-    print(f"  {RED}✗  FAIL{RESET}  {label}{suffix}")
+    print(f"  {RED}[FAIL]{RESET}  {label}{suffix}")
 
 
 def run(cmd: list[str], cwd: Path | None = None, env_extra: dict | None = None):
@@ -69,6 +75,10 @@ def run(cmd: list[str], cwd: Path | None = None, env_extra: dict | None = None):
 # ─── Gate 1: Database Health ──────────────────────────────────────────────────
 def gate_db_health() -> bool:
     banner("Gate 1 / 4 — Database Health Check")
+    python_exe = ROOT / "backend" / "venv" / "Scripts" / "python.exe"
+    if not python_exe.exists():
+        python_exe = Path(sys.executable)
+
     script = """
 import sys
 sys.path.insert(0, 'backend')
@@ -79,7 +89,7 @@ with engine.connect() as conn:
     conn.execute(text('SELECT 1'))
 print('OK')
 """
-    rc, out = run([sys.executable, "-c", script])
+    rc, out = run([str(python_exe), "-c", script], env_extra={"PYTHONPATH": "backend"})
     if rc == 0 and "OK" in out:
         ok("SQLite engine responds to SELECT 1")
         return True
@@ -115,7 +125,19 @@ def gate_pytest() -> bool:
 # ─── Gate 3: TypeScript Type Check ───────────────────────────────────────────
 def gate_typescript() -> bool:
     banner("Gate 3 / 4 — Frontend TypeScript Type Check")
-    rc, out = run(["npx", "tsc", "-b", "--noEmit"], cwd=ROOT / "frontend")
+    import os
+    env = os.environ.copy()
+    # On Windows, npx is a cmd script: npx.cmd
+    npx_cmd = "npx.cmd" if sys.platform == "win32" else "npx"
+    res = subprocess.run(
+        [npx_cmd, "tsc", "-b", "--noEmit"],
+        cwd=str(ROOT / "frontend"),
+        capture_output=True,
+        text=True,
+        shell=(sys.platform == "win32"),
+        env=env,
+    )
+    rc, out = res.returncode, res.stdout + res.stderr
     if rc == 0:
         ok("TypeScript: zero type errors")
         return True
@@ -173,7 +195,7 @@ def main() -> int:
             results.append(False)
 
     elapsed = time.monotonic() - t0
-    bar = "─" * 60
+    bar = "=" * 60
     print(f"\n{BOLD}{bar}{RESET}")
     passed = sum(results)
     total = len(results)
