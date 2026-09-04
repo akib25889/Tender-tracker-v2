@@ -372,8 +372,6 @@ export const TenderDocumentsTab: React.FC = () => {
                 <th className="py-2.5 px-3">File Name</th>
                 <th className="py-2.5 px-3 w-56">Target Folder (Move / Assign)</th>
                 <th className="py-2.5 px-3 w-44">Access Permission Scope</th>
-                <th className="py-2.5 px-3">Size</th>
-                <th className="py-2.5 px-3">Revision</th>
                 <th className="py-2.5 px-3">Uploaded</th>
                 <th className="py-2.5 px-3 text-right">Action</th>
               </tr>
@@ -381,7 +379,7 @@ export const TenderDocumentsTab: React.FC = () => {
             <tbody className="divide-y divide-[#F1F5F9]">
               {displayedDocs.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-xs text-[#94A3B8]">
+                  <td colSpan={5} className="py-8 text-center text-xs text-[#94A3B8]">
                     No files found in this folder. Click <strong>"+ Upload here"</strong> or <strong>"Link Master Library File"</strong> above to add files.
                   </td>
                 </tr>
@@ -446,12 +444,6 @@ export const TenderDocumentsTab: React.FC = () => {
                         </select>
                       </td>
 
-                      <td className="py-3 px-3 font-mono text-[11px] text-[#64748B]">
-                        {doc.size || '1.8 MB'}
-                      </td>
-                      <td className="py-3 px-3 font-mono font-semibold text-[#0F172A]">
-                        {doc.revision}
-                      </td>
                       <td className="py-3 px-3 text-[#64748B]">{doc.uploadedAt}</td>
                       <td className="py-3 px-3 text-right">
                         {hasAccess ? (

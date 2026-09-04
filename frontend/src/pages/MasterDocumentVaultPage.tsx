@@ -310,14 +310,13 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 <th className="py-3 px-4">Category</th>
                 <th className="py-3 px-4">Access Permission Scope</th>
                 <th className="py-3 px-4">Validity / Expiry</th>
-                <th className="py-3 px-4">Size &amp; Rev</th>
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F1F5F9]">
               {filteredDocs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-xs text-[#94A3B8]">
+                  <td colSpan={5} className="py-8 text-center text-xs text-[#94A3B8]">
                     No reusable documents match your filter. Click "Upload Reusable Master File" to add documents.
                   </td>
                 </tr>
@@ -388,11 +387,6 @@ export const MasterDocumentVaultPage: React.FC = () => {
                         ) : (
                           <span className="text-[#94A3B8] text-[11px] italic">Perpetual</span>
                         )}
-                      </td>
-
-                      <td className="py-3.5 px-4 font-mono text-[11px]">
-                        <span className="font-semibold text-[#0F172A]">{doc.revision}</span>
-                        <span className="text-[#64748B] ml-1.5">({doc.size})</span>
                       </td>
 
                       <td className="py-3.5 px-4 text-right">

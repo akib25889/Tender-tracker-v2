@@ -82,9 +82,7 @@ export const ShareDocumentModal: React.FC = () => {
             <span className="truncate">{doc.name}</span>
           </div>
           <div className="flex items-center gap-4 text-[10px] text-[#64748B] font-mono mt-1">
-            <span>Size: {doc.size}</span>
-            <span>Rev: {doc.revision}</span>
-            <span>Tender: {tenderId}</span>
+            <span>Tender Context: {tenderId}</span>
           </div>
         </div>
 
