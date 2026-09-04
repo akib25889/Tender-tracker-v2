@@ -163,6 +163,18 @@ def test_05_document_vault_custom_folders_and_safe_deletion():
     )
     assert del_folder_res.status_code == 204
 
+    # 5. Test Download Folder as ZIP
+    folder_zip_res = client.get(f"/api/tenders/{test_id}/folders/02_company_statutory_documents/zip")
+    assert folder_zip_res.status_code == 200
+    assert folder_zip_res.headers["content-type"] == "application/zip"
+    assert folder_zip_res.content[:4] == b"PK\x03\x04"
+
+    # 6. Test Download All Vault Folders as ZIP
+    all_zip_res = client.get(f"/api/tenders/{test_id}/documents/zip")
+    assert all_zip_res.status_code == 200
+    assert all_zip_res.headers["content-type"] == "application/zip"
+    assert all_zip_res.content[:4] == b"PK\x03\x04"
+
 
 def test_06_team_comments_and_discussions():
     test_id = "TDR-E2E-TEST-01"

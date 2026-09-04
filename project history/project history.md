@@ -21,6 +21,26 @@
 
 ---
 
+### [2026-09-04] — Single-Folder & Complete Vault ZIP Package Download Engine
+- **Category:** Document Vault, Compression, Client & Server Architecture
+- **Summary:**
+  - **Single-Folder ZIP Download:**
+    - Added dedicated folder download button (`Download`) on every folder card header and footer quick-action (`Download ZIP`) in [`TenderDocumentsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx).
+    - Downloads that specific folder as `{tender_id}_{folder_name}.zip` with an embedded manifest listing all file metadata, revisions, and SHA-256 hashes.
+  - **Complete Vault ZIP Package Download:**
+    - Added prominent **`📦 Download All as ZIP`** button in the top action bar of the Document Vault.
+    - Archives all folders organized in clean subdirectories (`01_original_tender_documents/...`, `02_company_statutory_documents/...`, etc.) along with a `VAULT_COMPLETE_MANIFEST.txt` into `{tender_id}_complete_vault.zip`.
+  - **Dual Backend & Zero-Dependency Client-Side Engine:**
+    - **FastAPI Endpoints:** `GET /api/tenders/{tender_id}/documents/zip?folder={folder}` and `GET /api/tenders/{tender_id}/folders/{folder_name}/zip` streaming compressed ZIP archives directly.
+    - **Client-Side PKZIP Engine (`frontend/src/utils/zipDownloader.ts`):** Implemented pure TypeScript zero-dependency PKZIP generator with CRC-32 table calculation and standard `Blob` download triggering for instant browser execution and offline resilience.
+- **Relevant Files:**
+  - `frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx`
+  - `frontend/src/utils/zipDownloader.ts`
+  - `backend/app/routers/documents.py`
+  - `backend/tests/test_api_integration.py`
+
+---
+
 ### [2026-09-04] — Milestone 6 (M6): E2E Testing, 3-2-1 Backup Sentinel & Production Hardening Delivered
 - **Category:** Quality Assurance, Security, Backup Sentinel, Production Deployment
 - **Summary:**

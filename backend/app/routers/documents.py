@@ -1,9 +1,11 @@
-﻿import os
+import os
+import io
+import zipfile
 from typing import List, Optional
 from datetime import datetime
 from pathlib import Path
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.tender import Tender
@@ -68,12 +70,84 @@ async def upload_tender_document(
 def download_document(doc_id: str, db: Session = Depends(get_db)):
     doc = db.query(TenderDocument).filter(TenderDocument.id == doc_id).first()
     if not doc or not doc.file_path or not os.path.exists(doc.file_path):
-        raise HTTPException(status_code=404, detail="Physical document file not found on SSD storage")
+        raise HTTPException(status_code=404, detail="Physical document file not found on disk")
     return FileResponse(
         path=doc.file_path,
         filename=doc.name,
         media_type="application/octet-stream"
     )
+
+@router.get("/tenders/{tender_id}/documents/zip")
+def download_tender_zip(
+    tender_id: str,
+    folder: Optional[str] = None,
+    db: Session = Depends(get_db),
+):
+    tender = db.query(Tender).filter(Tender.id == tender_id).first()
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
+
+    query = db.query(TenderDocument).filter(TenderDocument.tender_id == tender_id)
+    if folder and folder.upper() != "ALL":
+        query = query.filter(TenderDocument.folder == folder)
+        zip_filename = f"{tender_id}_{folder}.zip"
+    else:
+        zip_filename = f"{tender_id}_complete_vault.zip"
+
+    docs = query.all()
+    zip_buffer = io.BytesIO()
+
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+        manifest_lines = [
+            f"TenderTracker Vault Archive: {tender_id}",
+            f"Tender Title: {tender.title}",
+            f"Organization: {tender.organization}",
+            f"Archive Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+            f"Scope: {folder if folder and folder.upper() != 'ALL' else 'Complete Vault'}",
+            f"Total Documents: {len(docs)}",
+            "-" * 70,
+            "FOLDER / FILENAME | SIZE | ACCESS | SHA-256 CHECKSUM",
+            "-" * 70,
+        ]
+
+        for d in docs:
+            arc_path = d.name if (folder and folder.upper() != "ALL") else f"{d.folder}/{d.name}"
+            manifest_lines.append(f"{d.folder}/{d.name} | {d.size} | {d.access_level} | {d.sha256}")
+
+            if d.file_path and os.path.exists(d.file_path):
+                zf.write(d.file_path, arc_path)
+            else:
+                content = (
+                    f"TenderTracker Vault Document Record\n"
+                    f"====================================\n"
+                    f"Tender ID:    {tender_id}\n"
+                    f"Document:     {d.name}\n"
+                    f"Folder:       {d.folder}\n"
+                    f"Access Level: {d.access_level}\n"
+                    f"Revision:     {d.revision}\n"
+                    f"SHA-256 Hash: {d.sha256}\n"
+                    f"Uploaded At:  {d.uploaded_at}\n"
+                    f"Size:         {d.size}\n"
+                ).encode("utf-8")
+                zf.writestr(arc_path, content)
+
+        zf.writestr("VAULT_MANIFEST.txt", "\n".join(manifest_lines).encode("utf-8"))
+
+    zip_buffer.seek(0)
+    return Response(
+        content=zip_buffer.getvalue(),
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="{zip_filename}"'}
+    )
+
+@router.get("/tenders/{tender_id}/folders/{folder_name}/zip")
+def download_folder_zip(
+    tender_id: str,
+    folder_name: str,
+    db: Session = Depends(get_db),
+):
+    return download_tender_zip(tender_id=tender_id, folder=folder_name, db=db)
+
 
 # --- Custom Folders ---
 

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { useTenders } from '../../context/TenderContext';
 import { DocumentAccessLevel } from '../../types/tender';
+import { downloadFolderAsZip, downloadAllVaultAsZip } from '../../utils/zipDownloader';
 import {
   Folder,
   FileText,
@@ -14,6 +15,7 @@ import {
   Link as LinkIcon,
   Lock,
   Trash2,
+  Archive,
 } from 'lucide-react';
 
 const ACCESS_STYLES: Record<
@@ -188,6 +190,24 @@ export const TenderDocumentsTab: React.FC = () => {
             <span>Create Folder</span>
           </button>
 
+          {/* Download All Vault as ZIP */}
+          <button
+            type="button"
+            onClick={() =>
+              downloadAllVaultAsZip(
+                tender.id,
+                tender.title,
+                folders,
+                tender.documents
+              )
+            }
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#CBD5E1] text-[#0F172A] text-xs font-semibold rounded-lg hover:bg-[#F8FAFC] shadow-xs transition-colors"
+            title="Download entire tender vault across all folders as a structured ZIP package"
+          >
+            <Archive className="w-3.5 h-3.5 text-[#2563EB]" />
+            <span>Download All as ZIP</span>
+          </button>
+
           {/* Upload Document Button */}
           <button
             type="button"
@@ -252,6 +272,22 @@ export const TenderDocumentsTab: React.FC = () => {
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
+                        downloadFolderAsZip(
+                          tender.id,
+                          f.name,
+                          f.label,
+                          tender.documents
+                        );
+                      }}
+                      className="p-1 rounded text-[#64748B] hover:text-[#2563EB] hover:bg-[#EFF6FF] transition-colors"
+                      title={`Download folder "${f.label}" as ZIP`}
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setFolderToDelete({
                           name: f.name,
                           label: f.label,
@@ -270,16 +306,36 @@ export const TenderDocumentsTab: React.FC = () => {
                   <span className="font-semibold">
                     {folderFiles.length} file{folderFiles.length === 1 ? '' : 's'} inside
                   </span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenUpload(f.name);
-                    }}
-                    className="text-[#2563EB] hover:underline font-semibold"
-                  >
-                    + Upload here
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        downloadFolderAsZip(
+                          tender.id,
+                          f.name,
+                          f.label,
+                          tender.documents
+                        );
+                      }}
+                      className="inline-flex items-center gap-1 text-[#2563EB] hover:underline font-semibold"
+                      title={`Download ${f.label} as ZIP archive`}
+                    >
+                      <Download className="w-3 h-3" />
+                      <span>Download ZIP</span>
+                    </button>
+                    <span className="text-[#CBD5E1]">•</span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenUpload(f.name);
+                      }}
+                      className="text-[#2563EB] hover:underline font-semibold"
+                    >
+                      + Upload
+                    </button>
+                  </div>
                 </div>
               </div>
             </Card>
