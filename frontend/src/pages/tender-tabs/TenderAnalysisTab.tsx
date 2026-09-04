@@ -8,7 +8,7 @@ import { Check, ShieldCheck, PieChart, Sparkles, TrendingUp } from 'lucide-react
 
 export const TenderAnalysisTab: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { tenders, setTenderDecision } = useTenders();
+  const { tenders, setTenderDecision, setActiveScopeExtractorTenderId } = useTenders();
   const tender = tenders.find((t) => t.id === id) || tenders[0];
 
   const [technical, setTechnical] = useState(tender?.decisionMatrix?.technical || 9.2);
@@ -336,6 +336,17 @@ export const TenderAnalysisTab: React.FC = () => {
       <Card
         title="AI Clause Extraction & Scope Breakdown"
         subtitle="Automated extraction of RFP requirements, deliverables, and penalty clauses"
+        headerAction={
+          <button
+            type="button"
+            onClick={() => setActiveScopeExtractorTenderId(tender.id)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-linear-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#1D4ED8] hover:to-[#1E40AF] text-white rounded-lg text-xs font-semibold shadow-xs transition-all cursor-pointer"
+            title="Launch AI Scope Extractor to parse RFP documents"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+            <span>Launch Scope Extractor</span>
+          </button>
+        }
       >
         <div className="space-y-3">
           <div className="p-3.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-1">

@@ -111,6 +111,8 @@ interface TenderContextType {
   setActiveTierForSignOff: (tier: number | null) => void;
   isCommandPaletteOpen: boolean;
   setIsCommandPaletteOpen: (open: boolean) => void;
+  activeScopeExtractorTenderId: string | null;
+  setActiveScopeExtractorTenderId: (id: string | null) => void;
 }
 
 const TenderContext = createContext<TenderContextType | undefined>(undefined);
@@ -202,6 +204,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   const [activeTenderIdForModal, setActiveTenderIdForModal] = useState<string | null>(null);
   const [activeTierForSignOff, setActiveTierForSignOff] = useState<number | null>(null);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [activeScopeExtractorTenderId, setActiveScopeExtractorTenderId] = useState<string | null>(null);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tenders));
@@ -1046,6 +1049,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         setActiveTierForSignOff,
         isCommandPaletteOpen,
         setIsCommandPaletteOpen,
+        activeScopeExtractorTenderId,
+        setActiveScopeExtractorTenderId,
       }}
     >
       {children}

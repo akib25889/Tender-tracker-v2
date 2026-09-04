@@ -17,6 +17,7 @@ import {
   Trash2,
   Archive,
   Share2,
+  Sparkles,
 } from 'lucide-react';
 
 const ACCESS_STYLES: Record<
@@ -64,6 +65,7 @@ export const TenderDocumentsTab: React.FC = () => {
     hasDocumentAccess,
     currentUser,
     setActiveDocForShare,
+    setActiveScopeExtractorTenderId,
   } = useTenders();
 
   const tender = tenders.find((t) => t.id === id) || tenders[0];
@@ -168,13 +170,22 @@ export const TenderDocumentsTab: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Link from Master Library Button */}
+          {/* AI Scope Extractor Button */}
+          <button
+            type="button"
+            onClick={() => setActiveScopeExtractorTenderId(tender.id)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-linear-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#1D4ED8] hover:to-[#1E40AF] text-white text-xs font-semibold rounded-lg shadow-sm transition-all cursor-pointer"
+            title="Extract mandatory criteria, staffing, and risk clauses directly from RFP documents"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+            <span>Extract Scope from RFP</span>
+          </button>
+
+          {/* Link Master Reusable Document Button */}
           <button
             type="button"
             onClick={() => {
-              if (reusableDocuments.length > 0) {
-                setSelectedReusableDocId(reusableDocuments[0].id);
-              }
+              setSelectedReusableDocId('');
               setIsLinkModalOpen(true);
             }}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-[#EFF6FF] border border-[#BFDBFE] text-[#1D4ED8] text-xs font-semibold rounded-lg hover:bg-[#DBEAFE] shadow-xs transition-colors"
