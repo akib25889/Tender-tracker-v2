@@ -142,7 +142,15 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
             sanitized.unshift(acriMock);
           }
         }
-        return sanitized;
+        const seenIds = new Set<string>();
+        const uniqueTenders: Tender[] = [];
+        for (const item of sanitized) {
+          if (!seenIds.has(item.id)) {
+            seenIds.add(item.id);
+            uniqueTenders.push(item);
+          }
+        }
+        return uniqueTenders;
       } catch (e) {
         console.error('Failed to parse cached tenders:', e);
       }
@@ -193,7 +201,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [tenders]);
 
   const addTender = (tenderData: Partial<Tender>) => {
-    const newId = tenderData.id || `TDR-2026-${Math.floor(100 + Math.random() * 900)}`;
+    const newId =
+      tenderData.id ||
+      `TDR-2026-${Date.now().toString().slice(-4)}${Math.floor(10 + Math.random() * 90)}`;
     const submissionDeadlineStr =
       tenderData.submissionDeadline && tenderData.submissionDeadline.trim().length > 0
         ? tenderData.submissionDeadline

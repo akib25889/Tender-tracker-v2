@@ -9,8 +9,10 @@ import os
 
 sys.path.insert(0, os.path.abspath("."))
 
-from sqlalchemy.orm import Session
-from app.core.database import SessionLocal, Base, engine
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.pool import StaticPool
+from app.core.database import Base
 from app.models.user import User
 from app.models.tender import Tender
 from app.models.permission import (
@@ -25,10 +27,17 @@ from app.models.permission import (
 from app.services.authorization import AuthorizationService
 from app.services.seeder import seed_database
 
+TEST_ENGINE = create_engine(
+    "sqlite:///:memory:",
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
+TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=TEST_ENGINE)
+
 
 def setup_module():
-    Base.metadata.create_all(bind=engine)
-    db = SessionLocal()
+    Base.metadata.create_all(bind=TEST_ENGINE)
+    db = TestSessionLocal()
     try:
         seed_database(db)
     finally:
@@ -36,7 +45,7 @@ def setup_module():
 
 
 def get_fresh_db():
-    return SessionLocal()
+    return TestSessionLocal()
 
 
 # ==============================================================================

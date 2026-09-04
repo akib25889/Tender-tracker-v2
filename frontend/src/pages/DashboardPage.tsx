@@ -26,13 +26,13 @@ export const DashboardPage: React.FC = () => {
   );
   const dueThisWeek = tenders.filter((t) => t.daysRemaining <= 7);
   const totalMissingDocs = tenders.reduce(
-    (acc, t) => acc + t.missingDocumentsCount,
+    (acc, t) => acc + (t.missingDocumentsCount || 0),
     0
   );
   const avgReadiness =
     tenders.length > 0
       ? Math.round(
-          tenders.reduce((acc, t) => acc + t.readinessScore, 0) / tenders.length
+          tenders.reduce((acc, t) => acc + (t.readinessScore || 0), 0) / tenders.length
         )
       : 0;
 

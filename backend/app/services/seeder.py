@@ -348,9 +348,19 @@ def seed_database(db: Session):
         ("document.share", "Share Document Link", "document", "share"),
         ("financial.view", "View Financial & BOQ Rates", "financial", "view"),
         ("financial.edit", "Edit Commercial Pricing Model", "financial", "edit"),
-        ("submission.submit", "Execute Final Portal Bid Submission", "submission", "submit"),
+        (
+            "submission.submit",
+            "Execute Final Portal Bid Submission",
+            "submission",
+            "submit",
+        ),
         ("partner.manage", "Manage JV & Consortium Partners", "partner", "manage"),
-        ("permission.manage", "Master Access Control & Ceilings", "permission", "manage"),
+        (
+            "permission.manage",
+            "Master Access Control & Ceilings",
+            "permission",
+            "manage",
+        ),
     ]
 
     for code, name, module, action in STANDARD_PERMISSIONS:
@@ -417,7 +427,11 @@ def seed_database(db: Session):
         db.commit()
 
     # 6. Seed Baseline Role Rules for BUSINESS_HEAD and TENDER_ANALYST
-    if not db.query(PermissionRule).filter(PermissionRule.subject_id == "BUSINESS_HEAD").first():
+    if (
+        not db.query(PermissionRule)
+        .filter(PermissionRule.subject_id == "BUSINESS_HEAD")
+        .first()
+    ):
         for code, _, _, _ in STANDARD_PERMISSIONS:
             db.add(
                 PermissionRule(
@@ -430,7 +444,11 @@ def seed_database(db: Session):
                 )
             )
 
-    if not db.query(PermissionRule).filter(PermissionRule.subject_id == "TENDER_ANALYST").first():
+    if (
+        not db.query(PermissionRule)
+        .filter(PermissionRule.subject_id == "TENDER_ANALYST")
+        .first()
+    ):
         analyst_allowed = [
             "tender.view",
             "document.view",
