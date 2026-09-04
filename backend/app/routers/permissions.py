@@ -1,7 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+import csv
+import io
+import json
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel
+
 
 from app.core.database import get_db
 from app.models.permission import (
@@ -458,3 +462,98 @@ def list_audit_logs(
         query = query.filter(AuthorizationAuditLog.decision == decision.upper())
     logs = query.order_by(AuthorizationAuditLog.created_at.desc()).limit(limit).all()
     return logs
+
+
+@router.get("/audit-logs/export")
+def export_audit_logs(
+    format: str = Query("csv", pattern="^(csv|json)$"),
+    db: Session = Depends(get_db),
+):
+    logs = (
+        db.query(AuthorizationAuditLog)
+        .order_by(AuthorizationAuditLog.created_at.desc())
+        .limit(1000)
+        .all()
+    )
+
+    if format == "json":
+        data = [
+            {
+                "uuid": log.uuid,
+                "request_id": log.request_id,
+                "timestamp": log.created_at.isoformat() if log.created_at else None,
+                "user_id": log.user_id,
+                "partner_organization_id": log.partner_organization_id,
+                "tender_id": log.tender_id,
+                "resource_type": log.resource_type,
+                "resource_id": log.resource_id,
+                "permission_code": log.permission_code,
+                "action": log.action,
+                "decision": log.decision,
+                "denial_reason_code": log.denial_reason_code,
+                "denial_message": log.denial_message,
+                "matched_rule_id": log.matched_rule_id,
+                "ip_address": log.ip_address,
+                "user_agent": log.user_agent,
+            }
+            for log in logs
+        ]
+        return Response(
+            content=json.dumps(data, indent=2),
+            media_type="application/json",
+            headers={
+                "Content-Disposition": 'attachment; filename="authorization_audit_log.json"'
+            },
+        )
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(
+        [
+            "UUID",
+            "Request ID",
+            "Timestamp",
+            "User ID",
+            "Partner Org",
+            "Tender ID",
+            "Resource Type",
+            "Resource ID",
+            "Permission Code",
+            "Action",
+            "Decision",
+            "Denial Reason",
+            "Matched Rule ID",
+            "IP Address",
+            "User Agent",
+        ]
+    )
+
+    for log in logs:
+        writer.writerow(
+            [
+                log.uuid,
+                log.request_id,
+                log.created_at.isoformat() if log.created_at else "",
+                log.user_id or "",
+                log.partner_organization_id or "",
+                log.tender_id or "",
+                log.resource_type or "",
+                log.resource_id or "",
+                log.permission_code,
+                log.action,
+                log.decision,
+                log.denial_reason_code or "",
+                log.matched_rule_id or "",
+                log.ip_address or "",
+                log.user_agent or "",
+            ]
+        )
+
+    output.seek(0)
+    return Response(
+        content=output.getvalue(),
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": 'attachment; filename="authorization_audit_log.csv"'
+        },
+    )

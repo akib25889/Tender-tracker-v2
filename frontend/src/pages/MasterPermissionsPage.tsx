@@ -953,6 +953,30 @@ export const MasterPermissionsPage: React.FC = () => {
                   className="w-full pl-8 pr-2 py-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A]"
                 />
               </div>
+
+              <a
+                href="http://127.0.0.1:8000/api/permissions/audit-logs/export?format=csv"
+                target="_blank"
+                rel="noreferrer"
+                download="authorization_audit_log.csv"
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-white border border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#0F172A] rounded-lg shadow-2xs transition-colors"
+                title="Download complete audit ledger as CSV"
+              >
+                <Download className="w-3.5 h-3.5 text-[#2563EB]" />
+                <span>Export CSV</span>
+              </a>
+
+              <a
+                href="http://127.0.0.1:8000/api/permissions/audit-logs/export?format=json"
+                target="_blank"
+                rel="noreferrer"
+                download="authorization_audit_log.json"
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-white border border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#0F172A] rounded-lg shadow-2xs transition-colors"
+                title="Download complete audit ledger as JSON"
+              >
+                <Download className="w-3.5 h-3.5 text-[#64748B]" />
+                <span>Export JSON</span>
+              </a>
             </div>
           }
         >

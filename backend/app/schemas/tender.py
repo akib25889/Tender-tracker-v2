@@ -5,6 +5,7 @@ from app.schemas.task import TaskOut
 from app.schemas.document import DocumentOut, FolderOut
 from app.schemas.comment import CommentOut
 
+
 class RequirementOut(BaseModel):
     id: str
     tender_id: str
@@ -15,6 +16,7 @@ class RequirementOut(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class ReviewTierOut(BaseModel):
     id: int
@@ -50,6 +52,7 @@ class DecisionMatrixOut(BaseModel):
     class Config:
         from_attributes = True
 
+
 class TenderBase(BaseModel):
     reference_no: Optional[str] = ""
     title: str
@@ -68,8 +71,10 @@ class TenderBase(BaseModel):
     lead_owner_role: Optional[str] = "Business Head"
     summary_json: Optional[str] = None
 
+
 class TenderCreate(TenderBase):
     id: Optional[str] = None
+
 
 class TenderUpdate(BaseModel):
     reference_no: Optional[str] = None
@@ -89,6 +94,7 @@ class TenderUpdate(BaseModel):
     lead_owner_role: Optional[str] = None
     summary_json: Optional[str] = None
     archived_from_stage: Optional[str] = None
+
 
 class TenderOut(TenderBase):
     id: str
