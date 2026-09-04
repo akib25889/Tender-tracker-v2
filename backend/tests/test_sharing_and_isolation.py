@@ -1,7 +1,7 @@
 import unittest
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -113,7 +113,7 @@ class TestSharingAndIsolation(unittest.TestCase):
             can_preview=True,
             can_download=False,
             token="token-abc-123",
-            expires_at=datetime.utcnow() + timedelta(days=7),
+            expires_at=datetime.now(timezone.utc) + timedelta(days=7),
             status="ACTIVE",
         )
         self.db.add(share)
@@ -147,7 +147,7 @@ class TestSharingAndIsolation(unittest.TestCase):
         self.db.commit()
 
         # Simulate query for ORG-PARTNER-01
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         active_shares = (
             self.db.query(ResourceShare)
             .filter(
@@ -189,7 +189,7 @@ class TestSharingAndIsolation(unittest.TestCase):
         self.db.commit()
 
         share.status = "REVOKED"
-        share.revoked_at = datetime.utcnow()
+        share.revoked_at = datetime.now(timezone.utc)
         share.revoked_by = "SECURITY_OFFICER"
         self.db.commit()
 

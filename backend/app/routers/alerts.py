@@ -1,0 +1,157 @@
+"""
+Real-Time Operational Alert Center
+Synthesizes live alerts from the database:
+  - Critical deadlines (≤48h)
+  - Requirement blockers (status=BLOCKER)
+  - Pending Tier 3/4 executive sign-offs
+  - Expired resource share links
+"""
+
+from datetime import datetime, timezone
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from app.core.database import get_db
+from app.models.tender import Tender
+from app.models.requirement import TenderRequirement
+from app.models.review import TenderReviewTier
+from app.models.permission import ResourceShare
+
+router = APIRouter(prefix="/alerts", tags=["Operational Alerts"])
+
+
+@router.get("")
+def get_alerts(db: Session = Depends(get_db)):
+    alerts = []
+    now = datetime.now(timezone.utc)
+
+    # ── 1. Critical Deadlines (≤48 hours remaining, active tenders) ──────────
+    active_tenders = (
+        db.query(Tender)
+        .filter(Tender.stage.notin_(["ARCHIVED", "SUBMITTED", "AWARDED", "LOST"]))
+        .all()
+    )
+
+    for t in active_tenders:
+        hours = t.hours_remaining or 0
+        if 0 < hours <= 48:
+            severity = "CRITICAL" if hours <= 24 else "WARNING"
+            alerts.append(
+                {
+                    "id": f"ALERT-DL-{t.id}",
+                    "category": "DEADLINE",
+                    "severity": severity,
+                    "title": f"{'CRITICAL: ' if severity == 'CRITICAL' else ''}Deadline in {hours}h — {t.id}",
+                    "description": (
+                        f"Submission window for '{t.title}' closes in {hours} hours. "
+                        f"Authority: {t.organization}."
+                    ),
+                    "tender_id": t.id,
+                    "tender_title": t.title,
+                    "hours_remaining": hours,
+                    "read": False,
+                }
+            )
+
+    # ── 2. Active Requirement Blockers ────────────────────────────────────────
+    blockers = (
+        db.query(TenderRequirement).filter(TenderRequirement.status == "BLOCKER").all()
+    )
+    for req in blockers:
+        tender = db.query(Tender).filter(Tender.id == req.tender_id).first()
+        if tender and tender.stage not in ("ARCHIVED", "SUBMITTED", "AWARDED", "LOST"):
+            alerts.append(
+                {
+                    "id": f"ALERT-BLK-{req.id}",
+                    "category": "BLOCKER",
+                    "severity": "WARNING",
+                    "title": f"Blocker Flagged: {req.title}",
+                    "description": (
+                        f"Requirement '{req.title}' is blocking {tender.id} — {tender.title}. "
+                        f"Owner: {req.owner or 'Unassigned'}."
+                    ),
+                    "tender_id": tender.id,
+                    "tender_title": tender.title,
+                    "hours_remaining": None,
+                    "read": False,
+                }
+            )
+
+    # ── 3. Pending Tier 3/4 Executive Sign-Offs ───────────────────────────────
+    exec_tiers = (
+        db.query(TenderReviewTier)
+        .filter(
+            TenderReviewTier.tier_number.in_([3, 4]),
+            TenderReviewTier.sign_off_status.in_(["PENDING", "ACTION_REQUIRED"]),
+        )
+        .all()
+    )
+    for tier in exec_tiers:
+        tender = db.query(Tender).filter(Tender.id == tier.tender_id).first()
+        if tender and tender.stage not in ("ARCHIVED", "SUBMITTED"):
+            label = (
+                "Legal Solvency" if tier.tier_number == 3 else "Executive Gatekeeper"
+            )
+            alerts.append(
+                {
+                    "id": f"ALERT-TIER-{tier.id}",
+                    "category": "APPROVAL",
+                    "severity": "INFO",
+                    "title": f"Tier {tier.tier_number} {label} Sign-Off Pending",
+                    "description": (
+                        f"Tier {tier.tier_number} ({label}) awaiting sign-off on {tender.id}. "
+                        f"Required by: {tier.role_required}."
+                    ),
+                    "tender_id": tender.id,
+                    "tender_title": tender.title,
+                    "hours_remaining": None,
+                    "read": False,
+                }
+            )
+
+    # ── 4. Expired Resource Share Links (not yet revoked) ────────────────────
+    expired_shares = (
+        db.query(ResourceShare)
+        .filter(
+            ResourceShare.revoked_at.is_(None),
+            ResourceShare.expires_at.isnot(None),
+        )
+        .all()
+    )
+    for share in expired_shares:
+        exp = share.expires_at
+        if exp and exp.tzinfo is None:
+            exp = exp.replace(tzinfo=timezone.utc)
+        if exp and exp < now:
+            alerts.append(
+                {
+                    "id": f"ALERT-SHARE-{share.id}",
+                    "category": "VAULT",
+                    "severity": "INFO",
+                    "title": "Expired Share Link Detected",
+                    "description": (
+                        f"Partner share token '{share.token}' for resource "
+                        f"'{share.resource_id}' expired on "
+                        f"{share.expires_at.strftime('%d %b %Y, %H:%M')} UTC and "
+                        f"has not been revoked."
+                    ),
+                    "tender_id": share.tender_id or "",
+                    "tender_title": "",
+                    "hours_remaining": None,
+                    "read": False,
+                }
+            )
+
+    # Sort: CRITICAL first, then WARNING, then INFO; within same severity by hours_remaining asc
+    severity_order = {"CRITICAL": 0, "WARNING": 1, "INFO": 2}
+    alerts.sort(
+        key=lambda a: (
+            severity_order.get(a["severity"], 9),
+            a["hours_remaining"] if a["hours_remaining"] is not None else 9999,
+        )
+    )
+
+    return {
+        "count": len(alerts),
+        "unread": sum(1 for a in alerts if not a["read"]),
+        "alerts": alerts,
+    }

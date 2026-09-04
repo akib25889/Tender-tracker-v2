@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, Plus, Bell, PanelLeftClose, PanelLeftOpen, Moon, Sun } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { UserRoleSwitcher } from '../ui/UserRoleSwitcher';
@@ -18,6 +18,20 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleTheme,
 }) => {
   const { setIsCommandPaletteOpen } = useTenders();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchUnread = () => {
+      fetch('http://127.0.0.1:8000/api/alerts')
+        .then((r) => r.json())
+        .then((data) => setUnreadCount(data.unread ?? 0))
+        .catch(() => {});
+    };
+    fetchUnread();
+    // Refresh badge every 60 seconds
+    const interval = setInterval(fetchUnread, 60_000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <header
@@ -81,14 +95,24 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         )}
 
-        {/* System Alert Bell */}
+        {/* System Alert Bell — live unread badge */}
         <Link
           to="/notifications"
           className="relative p-2 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors"
           title="Audit alerts"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#2563EB] ring-2 ring-white" />
+          {unreadCount > 0 && (
+            unreadCount <= 9 ? (
+              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 rounded-full bg-[#DC2626] text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-white">
+                {unreadCount}
+              </span>
+            ) : (
+              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 rounded-full bg-[#DC2626] text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-white">
+                9+
+              </span>
+            )
+          )}
         </Link>
 
         {/* User Identity & RBAC Switcher */}

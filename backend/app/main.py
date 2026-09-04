@@ -13,6 +13,7 @@ from app.routers import (
     comments,
     dashboard,
     permissions,
+    alerts,
 )
 
 
@@ -56,6 +57,7 @@ app.include_router(documents.router, prefix=settings.API_V1_STR)
 app.include_router(comments.router, prefix=settings.API_V1_STR)
 app.include_router(dashboard.router, prefix=settings.API_V1_STR)
 app.include_router(permissions.router, prefix=settings.API_V1_STR)
+app.include_router(alerts.router, prefix=settings.API_V1_STR)
 
 
 @app.get(f"{settings.API_V1_STR}/health", tags=["Health"])
