@@ -21,6 +21,35 @@
 
 ---
 
+### [2026-09-04] — Master Access Control & Permission Center Module (JV Specification Engine)
+- **Category:** Authorization, Security, Multi-Tenant Architecture, JV Collaboration
+- **Summary:**
+  - **Master Permission Command Center (`frontend/src/pages/MasterPermissionsPage.tsx`):**
+    - Mounted at `/permissions` with direct sidebar integration ("Access & Permissions").
+    - **Tab 1: Live Diagnostic Simulator:** Interactive tool simulating any user/partner + tender + resource + action, visually animating the 4-layer evaluation sequence (Security Blockers $\rightarrow$ Access Boundaries $\rightarrow$ Partner Ceilings $\rightarrow$ Scope Hierarchy) with explicit PASS/FAIL statuses, matched rules, and internal denial codes.
+    - **Tab 2: JV & Partner Organization Ceilings:** Directory of registered partner organizations (*Apex Engineering JV*, *Global Infra Consortium*), tender assignment management, and granular checklist to configure maximum permission ceilings ($\text{Actual Access} = \text{Ceiling} \cap \text{Granted}$).
+    - **Tab 3: Role Baselines & Scope Overrides:** Multi-role matrix (`BUSINESS_HEAD`, `BID_MANAGER`, `TECHNICAL_LEAD`, `FINANCE_COMMERCIAL`, `LEGAL_COUNSEL`, `TENDER_ANALYST`) and explicit resource/tender-level overrides.
+    - **Tab 4: Security Blockers (Layer 1):** Emergency hard-suspension control for users and partner organizations.
+    - **Tab 5: Authorization Audit Trail:** Searchable append-only ledger displaying `request_id`, client IP, user, partner, action, decision (`ALLOW`/`DENY`), and internal reason codes.
+  - **Backend Central Authorization Engine (`backend/app/services/authorization.py`):**
+    - Implemented full multi-layer evaluation pipeline with standard permission codes and standardized denial reasons (`USER_SUSPENDED`, `ORGANIZATION_SUSPENDED`, `PARTNER_NOT_ASSIGNED`, `PARTNER_PERMISSION_CEILING_EXCEEDED`, `EXPLICIT_PERMISSION_DENIED`, `DEFAULT_DENY`).
+    - Integrated append-only logging to `authorization_audit_logs`.
+    - Created REST API router `backend/app/routers/permissions.py` mounted at `/api/permissions`.
+  - **15 Automated Conflict & Security Tests (`backend/tests/test_authorization_engine.py`):**
+    - Automated test suite implementing all 15 scenarios specified in Section 57 of the JV Collaboration Specification (100% pass rate).
+- **Relevant Files:**
+  - `backend/app/models/permission.py`
+  - `backend/app/services/authorization.py`
+  - `backend/app/routers/permissions.py`
+  - `backend/app/services/seeder.py`
+  - `backend/tests/test_authorization_engine.py`
+  - `frontend/src/pages/MasterPermissionsPage.tsx`
+  - `frontend/src/types/permission.ts`
+  - `frontend/src/router.tsx`
+  - `frontend/src/components/layout/Sidebar.tsx`
+
+---
+
 ### [2026-09-04] — Document Vault & Master Library Secure File Share Link Engine
 - **Category:** Document Vault, Security, RBAC & Partner Collaboration
 - **Summary:**

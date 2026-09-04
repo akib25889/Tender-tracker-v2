@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   Archive,
   MessageSquare,
+  KeyRound,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 
@@ -101,6 +102,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
   ];
 
   const systemItems = [
+    {
+      label: 'Access & Permissions',
+      path: '/permissions',
+      icon: KeyRound,
+      badge: 'Master',
+    },
     {
       label: 'Notifications',
       path: '/notifications',

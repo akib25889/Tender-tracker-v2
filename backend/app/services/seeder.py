@@ -1,4 +1,4 @@
-﻿from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session
 from app.models.user import User
 from app.models.tender import Tender, TenderDecisionMatrix
 from app.models.task import TenderTask
@@ -6,6 +6,14 @@ from app.models.document import TenderDocument, ReusableDocument
 from app.models.requirement import TenderRequirement
 from app.models.review import TenderReviewTier
 from app.models.comment import TenderComment
+from app.models.permission import (
+    Permission,
+    PartnerOrganization,
+    TenderPartnerAssignment,
+    PartnerPermissionCeiling,
+    PermissionRule,
+    AccessBlock,
+)
 from app.core.security import get_password_hash
 from app.services.storage import ensure_tender_directories
 
@@ -107,6 +115,7 @@ INITIAL_REUSABLE_DOCS = [
     },
 ]
 
+
 def seed_database(db: Session):
     # 1. Seed Users if empty
     if db.query(User).count() == 0:
@@ -171,41 +180,108 @@ def seed_database(db: Session):
         ensure_tender_directories(t1.id)
 
         # Tasks for T1
-        db.add(TenderTask(id="TSK-101", tender_id=t1.id, title="Finalize System Architecture Diagram", assignee="Dr. Marcus Vance", status="DONE", priority="HIGH"))
-        db.add(TenderTask(id="TSK-102", tender_id=t1.id, title="Compile Audited Financial Balance Sheets", assignee="Tariq Al-Mansoor", status="IN_PROGRESS", priority="HIGH"))
-        db.add(TenderTask(id="TSK-103", tender_id=t1.id, title="Validate GDPR & Security Compliance", assignee="Elena Rostova", status="REVIEW", priority="MEDIUM"))
+        db.add(
+            TenderTask(
+                id="TSK-101",
+                tender_id=t1.id,
+                title="Finalize System Architecture Diagram",
+                assignee="Dr. Marcus Vance",
+                status="DONE",
+                priority="HIGH",
+            )
+        )
+        db.add(
+            TenderTask(
+                id="TSK-102",
+                tender_id=t1.id,
+                title="Compile Audited Financial Balance Sheets",
+                assignee="Tariq Al-Mansoor",
+                status="IN_PROGRESS",
+                priority="HIGH",
+            )
+        )
+        db.add(
+            TenderTask(
+                id="TSK-103",
+                tender_id=t1.id,
+                title="Validate GDPR & Security Compliance",
+                assignee="Elena Rostova",
+                status="REVIEW",
+                priority="MEDIUM",
+            )
+        )
 
         # Review tiers for T1
-        db.add(TenderReviewTier(tender_id=t1.id, tier_number=1, tier_name="Technical Architecture", role_required="EXECUTIVE_MANAGER", sign_off_status="APPROVED", signed_off_by="Dr. Marcus Vance", signed_off_at="2026-09-02"))
-        db.add(TenderReviewTier(tender_id=t1.id, tier_number=2, tier_name="Financial Feasibility", role_required="SENIOR_MANAGER", sign_off_status="APPROVED", signed_off_by="Tariq Al-Mansoor", signed_off_at="2026-09-03"))
-        db.add(TenderReviewTier(tender_id=t1.id, tier_number=3, tier_name="Legal & Governance", role_required="TENDER_ANALYST", sign_off_status="PENDING"))
-        db.add(TenderReviewTier(tender_id=t1.id, tier_number=4, tier_name="Executive Sign-Off", role_required="BUSINESS_HEAD", sign_off_status="PENDING"))
+        db.add(
+            TenderReviewTier(
+                tender_id=t1.id,
+                tier_number=1,
+                tier_name="Technical Architecture",
+                role_required="EXECUTIVE_MANAGER",
+                sign_off_status="APPROVED",
+                signed_off_by="Dr. Marcus Vance",
+                signed_off_at="2026-09-02",
+            )
+        )
+        db.add(
+            TenderReviewTier(
+                tender_id=t1.id,
+                tier_number=2,
+                tier_name="Financial Feasibility",
+                role_required="SENIOR_MANAGER",
+                sign_off_status="APPROVED",
+                signed_off_by="Tariq Al-Mansoor",
+                signed_off_at="2026-09-03",
+            )
+        )
+        db.add(
+            TenderReviewTier(
+                tender_id=t1.id,
+                tier_number=3,
+                tier_name="Legal & Governance",
+                role_required="TENDER_ANALYST",
+                sign_off_status="PENDING",
+            )
+        )
+        db.add(
+            TenderReviewTier(
+                tender_id=t1.id,
+                tier_number=4,
+                tier_name="Executive Sign-Off",
+                role_required="BUSINESS_HEAD",
+                sign_off_status="PENDING",
+            )
+        )
 
         # Documents for T1
-        db.add(TenderDocument(
-            id="DOC-01",
-            tender_id=t1.id,
-            name="Official_RFP_Specifications_DIGIT_2026.pdf",
-            folder="01_original_tender_documents",
-            size="4.2 MB",
-            revision="v1.0",
-            sha256="b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0b9a8c7",
-            uploaded_at="2026-08-25",
-            access_level="ALL_TEAM"
-        ))
+        db.add(
+            TenderDocument(
+                id="DOC-01",
+                tender_id=t1.id,
+                name="Official_RFP_Specifications_DIGIT_2026.pdf",
+                folder="01_original_tender_documents",
+                size="4.2 MB",
+                revision="v1.0",
+                sha256="b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0b9a8c7",
+                uploaded_at="2026-08-25",
+                access_level="ALL_TEAM",
+            )
+        )
 
         # Decision Matrix for T1
-        db.add(TenderDecisionMatrix(
-            tender_id=t1.id,
-            technical_score=90.0,
-            financial_score=85.0,
-            team_score=88.0,
-            sla_score=92.0,
-            composite_score=88.5,
-            threshold=70.0,
-            status="GO",
-            rationale="High strategic alignment with corporate multi-cloud delivery capabilities."
-        ))
+        db.add(
+            TenderDecisionMatrix(
+                tender_id=t1.id,
+                technical_score=90.0,
+                financial_score=85.0,
+                team_score=88.0,
+                sla_score=92.0,
+                composite_score=88.5,
+                threshold=70.0,
+                status="GO",
+                rationale="High strategic alignment with corporate multi-cloud delivery capabilities.",
+            )
+        )
 
         # T2: ACRI Digital Ratings Platform
         t2 = Tender(
@@ -230,7 +306,150 @@ def seed_database(db: Session):
         db.flush()
         ensure_tender_directories(t2.id)
 
-        db.add(TenderTask(id="TSK-201", tender_id=t2.id, title="Review UNDP Quantum Portal Guidelines", assignee="Elena Rostova", status="TODO", priority="HIGH"))
-        db.add(TenderTask(id="TSK-202", tender_id=t2.id, title="Evaluate Local Consortium / JV Partner in Abidjan", assignee="Tariq Al-Mansoor", status="IN_PROGRESS", priority="HIGH"))
+        db.add(
+            TenderTask(
+                id="TSK-201",
+                tender_id=t2.id,
+                title="Review UNDP Quantum Portal Guidelines",
+                assignee="Elena Rostova",
+                status="TODO",
+                priority="HIGH",
+            )
+        )
+        db.add(
+            TenderTask(
+                id="TSK-202",
+                tender_id=t2.id,
+                title="Evaluate Local Consortium / JV Partner in Abidjan",
+                assignee="Tariq Al-Mansoor",
+                status="IN_PROGRESS",
+                priority="HIGH",
+            )
+        )
 
         db.commit()
+
+    # 4. Seed Standard Permissions Catalog
+    STANDARD_PERMISSIONS = [
+        ("tender.view", "View Tender Overview", "tender", "view"),
+        ("tender.create", "Create New Opportunity", "tender", "create"),
+        ("tender.edit", "Modify Tender Details", "tender", "edit"),
+        ("tender.delete", "Delete Tender Record", "tender", "delete"),
+        ("task.view", "View Operational Tasks", "task", "view"),
+        ("task.create", "Create Task Deliverables", "task", "create"),
+        ("task.edit", "Edit Task Status & Assignee", "task", "edit"),
+        ("task.delete", "Delete Task", "task", "delete"),
+        ("document.view", "View Document Metadata", "document", "view"),
+        ("document.preview", "In-Browser Watermarked Preview", "document", "preview"),
+        ("document.upload", "Upload Files to Vault", "document", "upload"),
+        ("document.download", "Download Original Files", "document", "download"),
+        ("document.edit", "Modify / Move Documents", "document", "edit"),
+        ("document.delete", "Delete Document", "document", "delete"),
+        ("document.share", "Share Document Link", "document", "share"),
+        ("financial.view", "View Financial & BOQ Rates", "financial", "view"),
+        ("financial.edit", "Edit Commercial Pricing Model", "financial", "edit"),
+        ("submission.submit", "Execute Final Portal Bid Submission", "submission", "submit"),
+        ("partner.manage", "Manage JV & Consortium Partners", "partner", "manage"),
+        ("permission.manage", "Master Access Control & Ceilings", "permission", "manage"),
+    ]
+
+    for code, name, module, action in STANDARD_PERMISSIONS:
+        if not db.query(Permission).filter(Permission.code == code).first():
+            db.add(Permission(code=code, name=name, module=module, action=action))
+    db.commit()
+
+    # 5. Seed Sample Partner Organization
+    partner_apex = (
+        db.query(PartnerOrganization)
+        .filter(PartnerOrganization.id == "ORG-APEX-01")
+        .first()
+    )
+    if not partner_apex:
+        partner_apex = PartnerOrganization(
+            id="ORG-APEX-01",
+            name="Apex Engineering & Infrastructure JV",
+            partner_type="JV_PARTNER",
+            country="Bangladesh",
+            contact_email="bids@apex-engineering.com",
+            status="ACTIVE",
+            notes="Primary civil works & hardware integration consortium partner.",
+        )
+        db.add(partner_apex)
+        db.commit()
+
+        # Assign to T1 and T2 if tenders exist
+        t1 = db.query(Tender).first()
+        if t1:
+            db.add(
+                TenderPartnerAssignment(
+                    tender_id=t1.id,
+                    organization_id="ORG-APEX-01",
+                    partner_type="JV_PARTNER",
+                    status="ACTIVE",
+                    start_date="2026-08-01",
+                    end_date="2027-08-01",
+                )
+            )
+
+        # Ceilings for APEX
+        apex_ceilings = [
+            ("tender.view", True),
+            ("task.view", True),
+            ("task.edit", True),
+            ("document.view", True),
+            ("document.preview", True),
+            ("document.upload", True),
+            ("document.download", True),
+            ("document.delete", False),
+            ("financial.view", False),
+            ("financial.edit", False),
+            ("submission.submit", False),
+            ("permission.manage", False),
+        ]
+        for pcode, allowed in apex_ceilings:
+            db.add(
+                PartnerPermissionCeiling(
+                    partner_organization_id="ORG-APEX-01",
+                    permission_code=pcode,
+                    allowed=allowed,
+                )
+            )
+        db.commit()
+
+    # 6. Seed Baseline Role Rules for BUSINESS_HEAD and TENDER_ANALYST
+    if not db.query(PermissionRule).filter(PermissionRule.subject_id == "BUSINESS_HEAD").first():
+        for code, _, _, _ in STANDARD_PERMISSIONS:
+            db.add(
+                PermissionRule(
+                    subject_type="ROLE",
+                    subject_id="BUSINESS_HEAD",
+                    permission_code=code,
+                    effect="ALLOW",
+                    scope_type="ROLE",
+                    scope_id="BUSINESS_HEAD",
+                )
+            )
+
+    if not db.query(PermissionRule).filter(PermissionRule.subject_id == "TENDER_ANALYST").first():
+        analyst_allowed = [
+            "tender.view",
+            "document.view",
+            "document.preview",
+            "document.download",
+            "document.upload",
+            "task.view",
+            "task.edit",
+        ]
+        for pcode in analyst_allowed:
+            db.add(
+                PermissionRule(
+                    subject_type="ROLE",
+                    subject_id="TENDER_ANALYST",
+                    permission_code=pcode,
+                    effect="ALLOW",
+                    scope_type="ROLE",
+                    scope_id="TENDER_ANALYST",
+                )
+            )
+
+    db.commit()

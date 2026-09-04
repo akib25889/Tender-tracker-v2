@@ -22,6 +22,7 @@ import { NotificationsPage } from './pages/NotificationsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { MasterDocumentVaultPage } from './pages/MasterDocumentVaultPage';
 import { ChatDiscussionsPage } from './pages/ChatDiscussionsPage';
+import { MasterPermissionsPage } from './pages/MasterPermissionsPage';
 
 export const router = createBrowserRouter([
   {
@@ -121,6 +122,10 @@ export const router = createBrowserRouter([
       {
         path: 'settings',
         element: <SettingsPage />,
+      },
+      {
+        path: 'permissions',
+        element: <MasterPermissionsPage />,
       },
       {
         path: '*',
