@@ -21,7 +21,6 @@
 | `screen:tenders_list` | Tender List & Pipeline Registry | `/tenders` | `tenders` |
 | `screen:tender_registry` | Tender Registry & Data Entry | `/registry` | `registry` |
 | `screen:tender_detail` | Tender Detail & Proposal Workspace | `/tenders/{id}` | `tenders` |
-| `screen:tender_analysis` | Tender Analysis & Scope Workspace | `/tenders/{id}/analysis` | `analysis` |
 | `screen:tender_requirements` | Compliance & Requirements Matrix | `/tenders/{id}/requirements` | `compliance` |
 | `screen:tender_tasks` | Tender Task Management Kanban | `/tenders/{id}/tasks` | `tasks` |
 | `screen:tender_documents` | Tender Document Vault | `/tenders/{id}/documents` | `documents` |
@@ -87,4 +86,4 @@
 - `screen:chat_discussions` ──[TRANSMITS_COLLABORATIVE_CHAT]──> `entity:tender_comments`
 - `screen:tender_requirements` ──[VALIDATES_COMPLIANCE]──> `entity:tender_requirements`
 - `screen:tender_review` ──[RECORDS_SIGNOFF]──> `entity:tender_reviews`
-- `screen:tender_analysis` ──[SCORES_GO_NO_GO]──> `entity:tender_decisions`
+- `screen:tender_detail` ──[GOVERNS_DECISION]──> `entity:tender_decisions`

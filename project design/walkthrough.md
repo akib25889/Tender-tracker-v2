@@ -29,30 +29,29 @@ The Tender Command Center is an enterprise-grade procurement lifecycle managemen
 - **Clean Blank Date Inputs:** No unwanted fallback dates — Clarification Deadline, Bid Opening Date, Contract Start, and Published Date stay clean and blank until entered.
 - **Estimated Net Value Control:** Dedicated input fields in Tab 1 and Tab 2, with automatic elimination of default mock budgets.
 
-### C. 22 Operational Modules & Screen Directory
+### C. 21 Operational Modules & Screen Directory
 
 1. **Tender Command Center Dashboard ([`DashboardPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/DashboardPage.tsx))**: Real-time KPI ribbons, clickable 6-gate breakdown cards leading into the filtered pipeline, and zero-money attention queue.
 2. **Tender Registry & Data Entry ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx))**: Full-page 5-tab console matching official RFP specifications.
 3. **Pipeline Registry ([`TenderListPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderListPage.tsx))**: Multi-facet filter bar, direct row **Edit** and **Delete** actions, bulk delete bar, full JSON dataset export, and batch CSV/JSON ingestion.
 4. **Bid Discovery Queue (`/tenders?stage=DISCOVERED`)**: Auto-filtered queue dedicated to incoming opportunities with quick discovery banners and active sidebar counts.
 5. **Proposal Workspace ([`TenderDetailPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderDetailPage.tsx))**: Interactive 6-gate progression bar, quick Edit/Delete actions, and conditionally hidden Estimated Net Value widget.
-6. **Analysis & Scope ([`TenderAnalysisTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderAnalysisTab.tsx))**: Multi-criteria radar chart visualization, dynamic pWin (Probability of Win) calculation engine, and Gatekeeper Decision Recommendation with Go/No-Go score weighting.
-7. **Compliance Matrix ([`TenderRequirementsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderRequirementsTab.tsx))**: Clause status toggling, blocker alert banners, and direct vault document linking.
-8. **Tender Task Board ([`TenderTasksTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderTasksTab.tsx))**: 4-column deliverable board (`To Do`, `In Progress`, `Under Review`, `Completed`) with inline assignee dropdown.
-9. **Document Vault ([`TenderDocumentsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx))**: Category filtering, direct file download, custom folder lifecycle, and master library linking.
-10. **Master Document Library ([`MasterDocumentVaultPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MasterDocumentVaultPage.tsx))**: Central corporate credential vault with 4-tier RBAC access control.
-11. **Review & Sign-Off ([`TenderReviewTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderReviewTab.tsx))**: 4-tier sequential gatekeeper workflow.
-12. **Submission Ledger ([`TenderSubmissionTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderSubmissionTab.tsx))**: Portal reference confirmation and final workspace lock.
-13. **Outcome & Debrief ([`TenderResultTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderResultTab.tsx))**: Contract won/lost debrief logger feeding the analytics suite.
-14. **My Tasks ([`MyTasksPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MyTasksPage.tsx))**: Cross-tender personal deliverable checklist.
-15. **Team Allocation ([`TeamAllocationPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TeamAllocationPage.tsx))**: Department workload capacity distribution.
-16. **Calendar ([`CalendarPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/CalendarPage.tsx))**: Toggle between **Timeline** (chronological list with 7/14-day filters) and **Grid** (interactive monthly calendar with colour-coded deadline chips, prev/next navigation).
-17. **Win/Loss Analytics Reports ([`ReportsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ReportsPage.tsx))**: Sector distribution progress bars and conversion rates.
-18. **Real-Time Alert Center ([`NotificationsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/NotificationsPage.tsx))**: Live alerts from `/api/alerts` — critical deadline warnings (≤48h), requirement blockers, pending Tier 3/4 executive sign-offs, expired partner share links. Refresh button, severity-coloured unread dots, category filter tabs. Header bell shows live numbered badge (polled every 60s).
-19. **Master Permissions ([`MasterPermissionsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MasterPermissionsPage.tsx))**: 5-tab authorization control centre — Live Diagnostic Simulator, JV Partner Ceilings, Role Baselines, Security Blockers, Audit Trail.
-20. **Partner Portal ([`PartnerPortalPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/PartnerPortalPage.tsx))**: Token-authenticated, credential-less portal interface for Joint Venture partners to review allocated opportunities and contribute statutory documents.
-21. **Team Chat ([`ChatDiscussionsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ChatDiscussionsPage.tsx))**: Cross-team channels and proposal-specific threads.
-22. **Settings ([`SettingsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/SettingsPage.tsx))**: Storage vault directory configuration and SLA thresholds.
+6. **Compliance Matrix ([`TenderRequirementsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderRequirementsTab.tsx))**: Clause status toggling, blocker alert banners, and direct vault document linking.
+7. **Tender Task Board ([`TenderTasksTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderTasksTab.tsx))**: 4-column deliverable board (`To Do`, `In Progress`, `Under Review`, `Completed`) with inline assignee dropdown.
+8. **Document Vault ([`TenderDocumentsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx))**: Category filtering, direct file download, custom folder lifecycle, and master library linking.
+9. **Master Document Library ([`MasterDocumentVaultPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MasterDocumentVaultPage.tsx))**: Central corporate credential vault with 4-tier RBAC access control.
+10. **Review & Sign-Off ([`TenderReviewTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderReviewTab.tsx))**: 4-tier sequential gatekeeper workflow.
+11. **Submission Ledger ([`TenderSubmissionTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderSubmissionTab.tsx))**: Portal reference confirmation and final workspace lock.
+12. **Outcome & Debrief ([`TenderResultTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderResultTab.tsx))**: Contract won/lost debrief logger feeding the analytics suite.
+13. **My Tasks ([`MyTasksPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MyTasksPage.tsx))**: Cross-tender personal deliverable checklist.
+14. **Team Allocation ([`TeamAllocationPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TeamAllocationPage.tsx))**: Department workload capacity distribution.
+15. **Calendar ([`CalendarPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/CalendarPage.tsx))**: Toggle between **Timeline** (chronological list with 7/14-day filters) and **Grid** (interactive monthly calendar with colour-coded deadline chips, prev/next navigation).
+16. **Win/Loss Analytics Reports ([`ReportsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ReportsPage.tsx))**: Sector distribution progress bars and conversion rates.
+17. **Real-Time Alert Center ([`NotificationsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/NotificationsPage.tsx))**: Live alerts from `/api/alerts` — critical deadline warnings (≤48h), requirement blockers, pending Tier 3/4 executive sign-offs, expired partner share links. Refresh button, severity-coloured unread dots, category filter tabs. Header bell shows live numbered badge (polled every 60s).
+18. **Master Permissions ([`MasterPermissionsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MasterPermissionsPage.tsx))**: 5-tab authorization control centre — Live Diagnostic Simulator, JV Partner Ceilings, Role Baselines, Security Blockers, Audit Trail.
+19. **Partner Portal ([`PartnerPortalPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/PartnerPortalPage.tsx))**: Token-authenticated, credential-less portal interface for Joint Venture partners to review allocated opportunities and contribute statutory documents.
+20. **Team Chat ([`ChatDiscussionsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ChatDiscussionsPage.tsx))**: Cross-team channels and proposal-specific threads.
+21. **Settings ([`SettingsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/SettingsPage.tsx))**: Storage vault directory configuration and SLA thresholds.
 
 ---
 
@@ -65,10 +64,9 @@ The Tender Command Center is an enterprise-grade procurement lifecycle managemen
 - Tokenized partner authentication via `/partner/login` and `/partner/portal?token=...`.
 - Enables external Joint Venture (JV) collaborators to securely submit statutory credentials and view tender deliverables without requiring internal corporate directory access.
 
-### C. Advanced Scoring & Bidability (Multi-Criteria Radar & pWin)
-- Interactive polygon radar chart in `TenderAnalysisTab.tsx` measuring Technical Capability, Commercial Feasibility, Team Availability, and Past Performance.
-- Dynamic pWin calculator with weighted confidence sliders.
-- Formalized "Gatekeeper Decision Recommendation" replacing speculative AI evaluation with deterministic, auditable multi-factor decision modeling.
+### C. Analysis & Scope Tab Archival
+- Complete mathematical decision models (4-pillar weighted score, SVG radar geometry, pWin calculation, Gatekeeper Recommendation) archived and documented in [`docs/future_implementations/tender_analysis_and_scope_workspace.md`](file:///h:/Tender%20tracker%20v2/docs/future_implementations/tender_analysis_and_scope_workspace.md).
+- The tab and its child route have been cleanly decoupled from the active proposal workspace, keeping the UI streamlined and focused on verified requirements and task deliverables.
 
 ### D. SMTP Email Notification Dispatcher
 - Robust email notification service in `backend/app/services/email_service.py` supporting TLS/SSL SMTP servers.

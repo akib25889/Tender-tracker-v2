@@ -61,7 +61,6 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 | `screen:tenders_list` | Tender List & Pipeline Registry | `/tenders` | `tenders` |
 | `screen:bid_discovery` | Bid Discovery Queue (Filtered) | `/tenders?stage=DISCOVERED` | `tenders` |
 | `screen:tender_detail` | Tender Detail & Proposal Workspace | `/tenders/{id}` | `tenders` |
-| `screen:tender_analysis` | Tender Analysis & Scope Workspace | `/tenders/{id}/analysis` | `analysis` |
 | `screen:tender_requirements` | Compliance & Requirements Matrix | `/tenders/{id}/requirements` | `compliance` |
 | `screen:tender_tasks` | Tender Task Board | `/tenders/{id}/tasks` | `tasks` |
 | `screen:tender_documents` | Tender Document Vault & Custom Folders | `/tenders/{id}/documents` | `documents` |
@@ -85,10 +84,9 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 - **Interactive Command Palette (`Ctrl + Shift + K` / `⌘⇧K`)**: Omnipresent modal indexing tenders, deliverables, vault files, team members, and system pages with keyboard auto-navigation.
 - **Partner Portal Direct Login (`/login`)**: Dual-mode authentication switcher enabling Joint Venture and consortium partners to log in securely with watermarked cryptographic isolation.
 - **Automated Email Notification Dispatcher (`/settings`)**: Configurable SMTP relay integration with deadline escalation (≤48h) and gatekeeper sign-off triggers.
-- **Multi-Criteria Radar & pWin Evaluation (`/tenders/{id}/analysis`)**: Multi-axis geometric visual evaluation mapping Technical, Financial, Team, and SLA pillars alongside historical donor award win probability.
 - **Batch CSV/JSON Pipeline Ingestion (`/tenders`)**: Direct drag-and-drop batch tender import with pre-validation and interactive preview table.
 - **Scope of Work (SOW) Standard**: Unified full-form standard throughout the UI, exports, and document generators.
-- **Future AI Scope Extractor Specification (`docs/future_implementations/`)**: Fully documented future implementation specification and 4-tier memory preservation model.
+- **Archived Future Specifications (`docs/future_implementations/`)**: Fully documented future specifications for both the **Tender Analysis & Scope Workspace** (4-pillar weighted score, SVG radar geometry, pWin) and the **AI Scope Extractor & Summarizer**.
 - **Master Reusable Document Vault (`/documents`)**: Upload trade licenses, audited balance sheets, ISO certificates, and CVs once; reference them into any tender proposal with 1 click.
 - **Role-Based Document Access Control**: Granular 4-tier document access permissions (`All Team`, `Management Only`, `Restricted Finance/Legal`, `Executive Board Only`) with download lock enforcement.
 - **Custom Folder Lifecycle**: On-the-fly custom vault folder creation, inline document reassignment, and safe folder deletion with automated file safeguarding.

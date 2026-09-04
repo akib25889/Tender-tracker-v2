@@ -108,12 +108,6 @@ def extract_project_nodes():
             "module": "tenders",
         },
         {
-            "id": "screen:tender_analysis",
-            "name": "Tender Analysis & Scope Workspace",
-            "route": "/tenders/{id}/analysis",
-            "module": "analysis",
-        },
-        {
             "id": "screen:tender_requirements",
             "name": "Compliance & Requirements Matrix",
             "route": "/tenders/{id}/requirements",
@@ -373,7 +367,7 @@ def extract_project_nodes():
             "VALIDATES_COMPLIANCE",
         ),
         ("screen:tender_review", "entity:tender_reviews", "RECORDS_SIGNOFF"),
-        ("screen:tender_analysis", "entity:tender_decisions", "SCORES_GO_NO_GO"),
+        ("screen:tender_detail", "entity:tender_decisions", "GOVERNS_DECISION"),
     ]
     for src, tgt, rel in screen_entity_map:
         edges.append({"source": src, "target": tgt, "relation": rel})

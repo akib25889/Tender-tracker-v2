@@ -79,13 +79,6 @@
       "module": "tenders"
     },
     {
-      "id": "screen:tender_analysis",
-      "name": "Tender Analysis & Scope Workspace",
-      "type": "screen",
-      "route": "/tenders/{id}/analysis",
-      "module": "analysis"
-    },
-    {
       "id": "screen:tender_requirements",
       "name": "Compliance & Requirements Matrix",
       "type": "screen",
@@ -416,9 +409,9 @@
       "relation": "RECORDS_SIGNOFF"
     },
     {
-      "source": "screen:tender_analysis",
+      "source": "screen:tender_detail",
       "target": "entity:tender_decisions",
-      "relation": "SCORES_GO_NO_GO"
+      "relation": "GOVERNS_DECISION"
     }
   ]
 }

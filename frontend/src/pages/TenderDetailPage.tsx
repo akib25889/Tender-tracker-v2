@@ -71,7 +71,6 @@ export const TenderDetailPage: React.FC = () => {
 
   const subNavTabs = [
     { label: 'Overview', path: `/tenders/${tender.id}`, exact: true, icon: FileText },
-    { label: 'Analysis & Scope', path: `/tenders/${tender.id}/analysis`, icon: FileText },
     { label: 'Compliance Matrix', path: `/tenders/${tender.id}/requirements`, icon: CheckSquare },
     { label: 'Task Board', path: `/tenders/${tender.id}/tasks`, icon: Kanban },
     { label: 'Document Vault', path: `/tenders/${tender.id}/documents`, icon: FolderLock },

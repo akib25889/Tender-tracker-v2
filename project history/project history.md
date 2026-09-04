@@ -19,6 +19,17 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 18-screen routing. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
 
+### [2026-09-04] — Version 2.6.1: Archival of Tender Analysis & Scope Workspace
+- **Category:** Architecture Simplification, Governance, Documentation
+- **Summary:**
+  - **Tender Analysis & Scope Workspace Archival (`/tenders/{id}/analysis`):**
+    - Archived full technical specification to `docs/future_implementations/tender_analysis_and_scope_workspace.md`.
+    - Preserved 4-pillar weighted score formula (Tech 35%, Fin 30%, Team 20%, SLA 15%), SVG radar geometry, pWin calculation, and rule-based Gatekeeper Decision Recommendation.
+    - Decoupled `TenderAnalysisTab` from proposal workspace navigation (`subNavTabs`), removed child route from `router.tsx`, and removed active component to maintain radical conciseness (Ponytail principle).
+    - Updated knowledge graph (`graphify.py`) and documentation to 21 active modules.
+
+---
+
 ### [2026-09-04] — Version 2.6.0: Partner Portal Direct Login, Email Dispatcher, Radar Scoring, Batch CSV/JSON Ingestion & SOW Clarification
 - **Category:** Partner Collaboration, Communications, Governance Analytics, Data Ingestion, Technical Standards
 - **Commit:** `5d571b8` → `origin/main`
