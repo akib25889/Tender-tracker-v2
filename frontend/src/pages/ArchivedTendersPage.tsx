@@ -7,7 +7,6 @@ import {
   Trash2,
   FileText,
   ChevronRight,
-  FolderGit2,
   Building2,
   Globe2,
   AlertCircle,
@@ -81,16 +80,6 @@ export const ArchivedTendersPage: React.FC = () => {
           <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-0.5 max-w-3xl">
             Tender opportunities where our team decided not to submit a proposal. All technical requirements, donor specifications, and audit notes are retained here for institutional history and future reference.
           </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Link
-            to="/tenders"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[#21262D] border border-[#E2E8F0] dark:border-[#30363D] hover:bg-[#F8FAFC] dark:hover:bg-[#30363D] text-xs font-semibold text-[#0F172A] dark:text-white rounded-lg transition-colors shadow-2xs"
-          >
-            <FolderGit2 className="w-3.5 h-3.5 text-[#2563EB]" />
-            <span>Active Pipeline</span>
-          </Link>
         </div>
       </div>
 
