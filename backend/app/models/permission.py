@@ -165,3 +165,35 @@ class AuthorizationAuditLog(Base):
     user_agent = Column(String(255), nullable=True, default="TenderTracker Client")
     metadata_json = Column(Text, nullable=True)
     created_at = Column(DateTime, server_default=func.now(), nullable=False, index=True)
+
+
+class ResourceShare(Base):
+    __tablename__ = "resource_shares"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    uuid = Column(
+        String(36), default=lambda: str(uuid.uuid4()), unique=True, nullable=False
+    )
+    resource_type = Column(String(50), default="DOCUMENT", nullable=False)  # DOCUMENT, FOLDER
+    resource_id = Column(String(50), nullable=False, index=True)
+    tender_id = Column(String(50), nullable=False, index=True)
+    shared_by_user_id = Column(String(50), nullable=False, default="SYSTEM_ADMIN")
+    shared_with_type = Column(
+        String(50), default="PARTNER_ORGANIZATION", nullable=False
+    )  # PARTNER_ORGANIZATION, USER, PUBLIC
+    shared_with_id = Column(String(50), nullable=True, index=True)
+    recipient_email = Column(String(150), nullable=True)
+    can_view = Column(Boolean, default=True, nullable=False)
+    can_preview = Column(Boolean, default=True, nullable=False)
+    can_download = Column(Boolean, default=False, nullable=False)
+    can_upload = Column(Boolean, default=False, nullable=False)
+    can_edit = Column(Boolean, default=False, nullable=False)
+    can_delete = Column(Boolean, default=False, nullable=False)
+    can_share = Column(Boolean, default=False, nullable=False)
+    token = Column(String(100), unique=True, nullable=False, index=True)
+    expires_at = Column(DateTime, nullable=True)
+    status = Column(String(20), default="ACTIVE", nullable=False)  # ACTIVE, REVOKED, EXPIRED
+    revoked_at = Column(DateTime, nullable=True)
+    revoked_by = Column(String(50), nullable=True)
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+

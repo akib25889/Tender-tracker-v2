@@ -293,6 +293,71 @@ def assign_partner_to_tender(
     return assignment
 
 
+@router.get("/tenders/{tender_id}/partners")
+def get_tender_partners(tender_id: str, db: Session = Depends(get_db)):
+    assignments = (
+        db.query(TenderPartnerAssignment)
+        .filter(TenderPartnerAssignment.tender_id == tender_id)
+        .all()
+    )
+    results = []
+    for a in assignments:
+        org = (
+            db.query(PartnerOrganization)
+            .filter(PartnerOrganization.id == a.organization_id)
+            .first()
+        )
+        ceilings = (
+            db.query(PartnerPermissionCeiling)
+            .filter(
+                PartnerPermissionCeiling.partner_organization_id == a.organization_id
+            )
+            .all()
+        )
+        results.append(
+            {
+                "assignment_id": a.id,
+                "organization_id": a.organization_id,
+                "organization_name": org.name if org else a.organization_id,
+                "country": org.country if org else "Bangladesh",
+                "contact_email": org.contact_email if org else None,
+                "contact_phone": org.contact_phone if org else None,
+                "partner_type": a.partner_type,
+                "status": a.status,
+                "start_date": a.start_date,
+                "end_date": a.end_date,
+                "notes": a.notes,
+                "assigned_at": a.assigned_at.isoformat() if a.assigned_at else None,
+                "ceilings": {c.permission_code: c.allowed for c in ceilings},
+            }
+        )
+    return results
+
+
+@router.delete("/tenders/{tender_id}/partners/{partner_id}")
+def unassign_partner_from_tender(
+    tender_id: str, partner_id: str, db: Session = Depends(get_db)
+):
+    assignment = (
+        db.query(TenderPartnerAssignment)
+        .filter(
+            TenderPartnerAssignment.tender_id == tender_id,
+            TenderPartnerAssignment.organization_id == partner_id,
+        )
+        .first()
+    )
+    if not assignment:
+        raise HTTPException(status_code=404, detail="Partner assignment not found")
+    db.delete(assignment)
+    db.commit()
+    return {
+        "message": "Partner successfully unassigned from tender",
+        "partner_id": partner_id,
+        "tender_id": tender_id,
+    }
+
+
+
 @router.get("/partners/{partner_id}/ceilings")
 def get_partner_ceilings(partner_id: str, db: Session = Depends(get_db)):
     ceilings = (

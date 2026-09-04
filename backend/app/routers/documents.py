@@ -1,15 +1,18 @@
 import os
 import io
 import zipfile
+import secrets
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, Request, status
 from fastapi.responses import FileResponse, Response
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.tender import Tender
 from app.models.document import TenderDocument, TenderFolder, ReusableDocument
+from app.models.permission import ResourceShare, PartnerOrganization
+from app.services.authorization import AuthorizationService
 from app.schemas.document import (
     DocumentOut,
     FolderCreate,
@@ -17,6 +20,9 @@ from app.schemas.document import (
     ReusableDocCreate,
     ReusableDocOut,
     LinkReusableRequest,
+    ResourceShareCreate,
+    ResourceShareOut,
+    PublicShareValidationOut,
 )
 from app.services.storage import (
     get_tender_storage_dir,
@@ -28,8 +34,52 @@ from app.services.storage import (
 router = APIRouter(tags=["Document Vault & Master Library"])
 
 
+
 @router.get("/tenders/{tender_id}/documents", response_model=List[DocumentOut])
-def get_tender_documents(tender_id: str, db: Session = Depends(get_db)):
+def get_tender_documents(
+    tender_id: str,
+    user_id: Optional[str] = Query(None),
+    partner_org_id: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+):
+    # If request is scoped to a partner organization, enforce anti-leakage isolation
+    if partner_org_id:
+        auth = AuthorizationService.authorize(
+            db=db,
+            user_id=user_id,
+            permission_code="document.view",
+            tender_id=tender_id,
+            partner_org_id=partner_org_id,
+        )
+        if not auth.allowed:
+            raise HTTPException(
+                status_code=403,
+                detail=auth.denial_message or "Access to tender documents denied.",
+            )
+
+        now = datetime.utcnow()
+        active_shares = (
+            db.query(ResourceShare)
+            .filter(
+                ResourceShare.tender_id == tender_id,
+                ResourceShare.status == "ACTIVE",
+                (ResourceShare.expires_at == None) | (ResourceShare.expires_at > now),
+                (ResourceShare.shared_with_id == partner_org_id)
+                | (ResourceShare.shared_with_type == "PUBLIC"),
+                ResourceShare.can_view == True,
+            )
+            .all()
+        )
+        shared_doc_ids = {s.resource_id for s in active_shares}
+        return (
+            db.query(TenderDocument)
+            .filter(
+                TenderDocument.tender_id == tender_id,
+                TenderDocument.id.in_(shared_doc_ids),
+            )
+            .all()
+        )
+
     return db.query(TenderDocument).filter(TenderDocument.tender_id == tender_id).all()
 
 
@@ -43,11 +93,27 @@ async def upload_tender_document(
     file: UploadFile = File(...),
     folder: str = Form("01_original_tender_documents"),
     access_level: str = Form("ALL_TEAM"),
+    user_id: Optional[str] = Form(None),
+    partner_org_id: Optional[str] = Form(None),
     db: Session = Depends(get_db),
 ):
     tender = db.query(Tender).filter(Tender.id == tender_id).first()
     if not tender:
         raise HTTPException(status_code=404, detail="Tender not found")
+
+    if user_id or partner_org_id:
+        auth = AuthorizationService.authorize(
+            db=db,
+            user_id=user_id,
+            permission_code="document.upload",
+            tender_id=tender_id,
+            partner_org_id=partner_org_id,
+        )
+        if not auth.allowed:
+            raise HTTPException(
+                status_code=403,
+                detail=auth.denial_message or "Document upload forbidden.",
+            )
 
     target_dir = get_tender_storage_dir(tender_id) / folder
     filename, sha256_hash, size_bytes = await save_uploaded_file(file, target_dir)
@@ -78,15 +144,57 @@ async def upload_tender_document(
 
 
 @router.get("/documents/{doc_id}/download")
-def download_document(doc_id: str, db: Session = Depends(get_db)):
+def download_document(
+    doc_id: str,
+    user_id: Optional[str] = Query(None),
+    partner_org_id: Optional[str] = Query(None),
+    share_token: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+):
     doc = db.query(TenderDocument).filter(TenderDocument.id == doc_id).first()
     if not doc or not doc.file_path or not os.path.exists(doc.file_path):
         raise HTTPException(
             status_code=404, detail="Physical document file not found on disk"
         )
+
+    if share_token:
+        share = (
+            db.query(ResourceShare)
+            .filter(ResourceShare.token == share_token)
+            .first()
+        )
+        now = datetime.utcnow()
+        if not share or share.resource_id != doc_id or share.status != "ACTIVE":
+            raise HTTPException(
+                status_code=403, detail="Invalid or revoked share token"
+            )
+        if share.expires_at and share.expires_at < now:
+            raise HTTPException(status_code=403, detail="Share token has expired")
+        if not share.can_download:
+            raise HTTPException(
+                status_code=403,
+                detail="Download permission not granted on this shared link",
+            )
+    elif partner_org_id:
+        auth = AuthorizationService.authorize(
+            db=db,
+            user_id=user_id,
+            permission_code="document.download",
+            tender_id=doc.tender_id,
+            resource_type="DOCUMENT",
+            resource_id=doc_id,
+            partner_org_id=partner_org_id,
+        )
+        if not auth.allowed:
+            raise HTTPException(
+                status_code=403,
+                detail=auth.denial_message or "Document download forbidden",
+            )
+
     return FileResponse(
         path=doc.file_path, filename=doc.name, media_type="application/octet-stream"
     )
+
 
 
 @router.get("/tenders/{tender_id}/documents/zip")
@@ -302,3 +410,148 @@ def link_reusable_to_tender(
     db.commit()
     db.refresh(linked_doc)
     return linked_doc
+
+
+# --- Resource Sharing Endpoints (Sections 20, 21, 30) ---
+
+
+@router.post("/documents/{doc_id}/share", response_model=ResourceShareOut)
+def create_document_share(
+    doc_id: str,
+    payload: ResourceShareCreate,
+    shared_by_user_id: str = Query("SYSTEM_ADMIN"),
+    db: Session = Depends(get_db),
+):
+    doc = db.query(TenderDocument).filter(TenderDocument.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    token = secrets.token_urlsafe(24)
+    expires_at = None
+    if payload.expires_in_days:
+        expires_at = datetime.utcnow() + timedelta(days=payload.expires_in_days)
+
+    share = ResourceShare(
+        resource_type="DOCUMENT",
+        resource_id=doc_id,
+        tender_id=doc.tender_id,
+        shared_by_user_id=shared_by_user_id,
+        shared_with_type=payload.shared_with_type,
+        shared_with_id=payload.shared_with_id,
+        recipient_email=payload.recipient_email,
+        can_view=payload.can_view,
+        can_preview=payload.can_preview,
+        can_download=payload.can_download,
+        can_share=payload.can_reshare,
+        token=token,
+        expires_at=expires_at,
+        status="ACTIVE",
+    )
+    db.add(share)
+    db.commit()
+    db.refresh(share)
+    return share
+
+
+@router.get("/documents/{doc_id}/shares", response_model=List[ResourceShareOut])
+def get_document_shares(doc_id: str, db: Session = Depends(get_db)):
+    return (
+        db.query(ResourceShare)
+        .filter(ResourceShare.resource_id == doc_id, ResourceShare.status == "ACTIVE")
+        .order_by(ResourceShare.created_at.desc())
+        .all()
+    )
+
+
+@router.delete("/shares/{share_id}")
+def revoke_share(
+    share_id: int,
+    revoked_by: str = Query("SYSTEM_ADMIN"),
+    db: Session = Depends(get_db),
+):
+    share = db.query(ResourceShare).filter(ResourceShare.id == share_id).first()
+    if not share:
+        raise HTTPException(status_code=404, detail="Share record not found")
+
+    share.status = "REVOKED"
+    share.revoked_at = datetime.utcnow()
+    share.revoked_by = revoked_by
+    db.commit()
+    return {"message": "Resource share successfully revoked", "share_id": share_id}
+
+
+@router.get("/shared/{token}", response_model=PublicShareValidationOut)
+def validate_shared_token(token: str, db: Session = Depends(get_db)):
+    share = db.query(ResourceShare).filter(ResourceShare.token == token).first()
+    if not share:
+        raise HTTPException(status_code=404, detail="Shared link not found or invalid")
+
+    now = datetime.utcnow()
+    if share.status == "REVOKED":
+        raise HTTPException(
+            status_code=403, detail="This shared document link has been revoked."
+        )
+
+    if share.expires_at and share.expires_at < now:
+        raise HTTPException(
+            status_code=403, detail="This shared document link has expired."
+        )
+
+    doc = (
+        db.query(TenderDocument)
+        .filter(TenderDocument.id == share.resource_id)
+        .first()
+    )
+    if not doc:
+        raise HTTPException(
+            status_code=404, detail="Associated document no longer exists."
+        )
+
+    tender = db.query(Tender).filter(Tender.id == share.tender_id).first()
+
+    return PublicShareValidationOut(
+        token=token,
+        document_id=doc.id,
+        document_name=doc.name,
+        tender_id=doc.tender_id,
+        tender_title=tender.title if tender else doc.tender_id,
+        folder=doc.folder,
+        size=doc.size,
+        sha256=doc.sha256,
+        can_view=share.can_view,
+        can_download=share.can_download,
+        expires_at=share.expires_at,
+        status=share.status,
+        shared_by=share.shared_by_user_id,
+    )
+
+
+@router.get("/shared/{token}/download")
+def download_shared_file(token: str, db: Session = Depends(get_db)):
+    share = db.query(ResourceShare).filter(ResourceShare.token == token).first()
+    if not share:
+        raise HTTPException(status_code=404, detail="Shared link not found or invalid")
+
+    now = datetime.utcnow()
+    if share.status == "REVOKED":
+        raise HTTPException(status_code=403, detail="Share link has been revoked.")
+    if share.expires_at and share.expires_at < now:
+        raise HTTPException(status_code=403, detail="Share link has expired.")
+    if not share.can_download:
+        raise HTTPException(
+            status_code=403,
+            detail="Download permission not granted for this shared link.",
+        )
+
+    doc = (
+        db.query(TenderDocument)
+        .filter(TenderDocument.id == share.resource_id)
+        .first()
+    )
+    if not doc or not doc.file_path or not os.path.exists(doc.file_path):
+        raise HTTPException(status_code=404, detail="Document file not found on disk")
+
+    return FileResponse(
+        path=doc.file_path, filename=doc.name, media_type="application/octet-stream"
+    )
+

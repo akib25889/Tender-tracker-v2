@@ -23,11 +23,17 @@ import { SettingsPage } from './pages/SettingsPage';
 import { MasterDocumentVaultPage } from './pages/MasterDocumentVaultPage';
 import { ChatDiscussionsPage } from './pages/ChatDiscussionsPage';
 import { MasterPermissionsPage } from './pages/MasterPermissionsPage';
+import { TenderPartnersTab } from './pages/tender-tabs/TenderPartnersTab';
+import { SharedDocumentPortalPage } from './pages/SharedDocumentPortalPage';
 
 export const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
+  },
+  {
+    path: '/shared/:token',
+    element: <SharedDocumentPortalPage />,
   },
   {
     path: '/',
@@ -76,6 +82,10 @@ export const router = createBrowserRouter([
           {
             path: 'documents',
             element: <TenderDocumentsTab />,
+          },
+          {
+            path: 'partners',
+            element: <TenderPartnersTab />,
           },
           {
             path: 'review',

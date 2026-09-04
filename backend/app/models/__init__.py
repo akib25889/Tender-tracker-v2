@@ -13,6 +13,7 @@ from app.models.permission import (
     PermissionRule,
     AccessBlock,
     AuthorizationAuditLog,
+    ResourceShare,
 )
 
 __all__ = [
@@ -33,4 +34,6 @@ __all__ = [
     "PermissionRule",
     "AccessBlock",
     "AuthorizationAuditLog",
+    "ResourceShare",
 ]
+
