@@ -357,7 +357,6 @@ def unassign_partner_from_tender(
     }
 
 
-
 @router.get("/partners/{partner_id}/ceilings")
 def get_partner_ceilings(partner_id: str, db: Session = Depends(get_db)):
     ceilings = (

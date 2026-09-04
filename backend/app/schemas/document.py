@@ -7,6 +7,7 @@ class FolderCreate(BaseModel):
     name: str
     label: str
 
+
 class FolderOut(BaseModel):
     id: int
     tender_id: str
@@ -15,6 +16,7 @@ class FolderOut(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class DocumentOut(BaseModel):
     id: str
@@ -32,6 +34,7 @@ class DocumentOut(BaseModel):
     class Config:
         from_attributes = True
 
+
 class ReusableDocCreate(BaseModel):
     name: str
     category: str = "Company Statutory"
@@ -39,6 +42,7 @@ class ReusableDocCreate(BaseModel):
     expiry_date: Optional[str] = None
     access_level: str = "ALL_TEAM"
     description: Optional[str] = None
+
 
 class ReusableDocOut(BaseModel):
     id: str
@@ -54,6 +58,7 @@ class ReusableDocOut(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class LinkReusableRequest(BaseModel):
     reusable_doc_id: str
@@ -108,4 +113,3 @@ class PublicShareValidationOut(BaseModel):
     expires_at: Optional[datetime] = None
     status: str
     shared_by: str
-

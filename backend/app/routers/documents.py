@@ -5,7 +5,17 @@ import secrets
 from typing import List, Optional
 from datetime import datetime, timedelta
 from pathlib import Path
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, Request, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    UploadFile,
+    File,
+    Form,
+    Query,
+    Request,
+    status,
+)
 from fastapi.responses import FileResponse, Response
 from sqlalchemy.orm import Session
 from app.core.database import get_db
@@ -32,7 +42,6 @@ from app.services.storage import (
 )
 
 router = APIRouter(tags=["Document Vault & Master Library"])
-
 
 
 @router.get("/tenders/{tender_id}/documents", response_model=List[DocumentOut])
@@ -159,9 +168,7 @@ def download_document(
 
     if share_token:
         share = (
-            db.query(ResourceShare)
-            .filter(ResourceShare.token == share_token)
-            .first()
+            db.query(ResourceShare).filter(ResourceShare.token == share_token).first()
         )
         now = datetime.utcnow()
         if not share or share.resource_id != doc_id or share.status != "ACTIVE":
@@ -194,7 +201,6 @@ def download_document(
     return FileResponse(
         path=doc.file_path, filename=doc.name, media_type="application/octet-stream"
     )
-
 
 
 @router.get("/tenders/{tender_id}/documents/zip")
@@ -498,9 +504,7 @@ def validate_shared_token(token: str, db: Session = Depends(get_db)):
         )
 
     doc = (
-        db.query(TenderDocument)
-        .filter(TenderDocument.id == share.resource_id)
-        .first()
+        db.query(TenderDocument).filter(TenderDocument.id == share.resource_id).first()
     )
     if not doc:
         raise HTTPException(
@@ -544,9 +548,7 @@ def download_shared_file(token: str, db: Session = Depends(get_db)):
         )
 
     doc = (
-        db.query(TenderDocument)
-        .filter(TenderDocument.id == share.resource_id)
-        .first()
+        db.query(TenderDocument).filter(TenderDocument.id == share.resource_id).first()
     )
     if not doc or not doc.file_path or not os.path.exists(doc.file_path):
         raise HTTPException(status_code=404, detail="Document file not found on disk")
@@ -554,4 +556,3 @@ def download_shared_file(token: str, db: Session = Depends(get_db)):
     return FileResponse(
         path=doc.file_path, filename=doc.name, media_type="application/octet-stream"
     )
-

@@ -174,7 +174,9 @@ class ResourceShare(Base):
     uuid = Column(
         String(36), default=lambda: str(uuid.uuid4()), unique=True, nullable=False
     )
-    resource_type = Column(String(50), default="DOCUMENT", nullable=False)  # DOCUMENT, FOLDER
+    resource_type = Column(
+        String(50), default="DOCUMENT", nullable=False
+    )  # DOCUMENT, FOLDER
     resource_id = Column(String(50), nullable=False, index=True)
     tender_id = Column(String(50), nullable=False, index=True)
     shared_by_user_id = Column(String(50), nullable=False, default="SYSTEM_ADMIN")
@@ -192,8 +194,9 @@ class ResourceShare(Base):
     can_share = Column(Boolean, default=False, nullable=False)
     token = Column(String(100), unique=True, nullable=False, index=True)
     expires_at = Column(DateTime, nullable=True)
-    status = Column(String(20), default="ACTIVE", nullable=False)  # ACTIVE, REVOKED, EXPIRED
+    status = Column(
+        String(20), default="ACTIVE", nullable=False
+    )  # ACTIVE, REVOKED, EXPIRED
     revoked_at = Column(DateTime, nullable=True)
     revoked_by = Column(String(50), nullable=True)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
-

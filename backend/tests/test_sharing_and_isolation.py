@@ -50,7 +50,6 @@ class TestSharingAndIsolation(unittest.TestCase):
         )
         self.db.add(self.tender)
 
-
         # Seed Documents
         self.doc1 = TenderDocument(
             id="DOC-101",
@@ -120,7 +119,11 @@ class TestSharingAndIsolation(unittest.TestCase):
         self.db.add(share)
         self.db.commit()
 
-        queried = self.db.query(ResourceShare).filter(ResourceShare.token == "token-abc-123").first()
+        queried = (
+            self.db.query(ResourceShare)
+            .filter(ResourceShare.token == "token-abc-123")
+            .first()
+        )
         self.assertIsNotNone(queried)
         self.assertTrue(queried.can_view)
         self.assertFalse(queried.can_download)
@@ -151,7 +154,8 @@ class TestSharingAndIsolation(unittest.TestCase):
                 ResourceShare.tender_id == "TDR-TEST-001",
                 ResourceShare.status == "ACTIVE",
                 (ResourceShare.expires_at == None) | (ResourceShare.expires_at > now),
-                (ResourceShare.shared_with_id == "ORG-PARTNER-01") | (ResourceShare.shared_with_type == "PUBLIC"),
+                (ResourceShare.shared_with_id == "ORG-PARTNER-01")
+                | (ResourceShare.shared_with_type == "PUBLIC"),
                 ResourceShare.can_view == True,
             )
             .all()
@@ -189,7 +193,11 @@ class TestSharingAndIsolation(unittest.TestCase):
         share.revoked_by = "SECURITY_OFFICER"
         self.db.commit()
 
-        updated = self.db.query(ResourceShare).filter(ResourceShare.token == "token-revoke-test").first()
+        updated = (
+            self.db.query(ResourceShare)
+            .filter(ResourceShare.token == "token-revoke-test")
+            .first()
+        )
         self.assertEqual(updated.status, "REVOKED")
         self.assertIsNotNone(updated.revoked_at)
 
