@@ -62,3 +62,8 @@ Thumbs.db
 *.sln
 *.sw?
 
+# Storage Vault & Database
+storage/
+*.db
+backend/tender_tracker.db
+

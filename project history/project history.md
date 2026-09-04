@@ -14,11 +14,48 @@
 | :--- | :--- | :--- | :--- |
 | **M0** | **Product & Architecture Specs** | **Completed** | Full PRD, 17-screen specifications, backend storage spec, 17 interactive HTML prototypes. |
 | **M1** | **Repository & Agent Tooling** | **Completed** | Git repository initialized, linked to GitHub, `.gitignore` & directory scaffolding, Ponytail & Graphify integration. |
-| **M2** | **Backend Core & Database Schema** | *Pending* | FastAPI application structure, SQLAlchemy models, Alembic migrations, JWT/Argon2id authentication. |
-| **M3** | **Storage Vault & Document Security** | *Pending* | Abstracted local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation. |
+| **M2** | **Backend Core & Database Schema** | **Completed** | FastAPI application structure, SQLAlchemy models, SQLite & MySQL 8.4 dual-mode, JWT/bcrypt authentication, local SSD storage vault, and REST APIs. |
+| **M3** | **Storage Vault & Document Security** | **Completed** | Local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation, safe folder relocation. |
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 18-screen routing. |
 | **M5** | **Module Implementations (18 Screens)**| **Completed** | Reactive TenderContext with full CRUD (add, edit, delete, bulk delete), two-pane Tender Registry console (`/registry`), Bid Discovery queue, collaboration suite, and 18 operational screens. |
 | **M6** | **E2E Testing & Production Hardening** | *Pending* | Integration test suite, 3-2-1 backup sentinel, Nginx reverse proxy configuration, production deployment. |
+
+---
+
+### [2026-09-04] — Milestone 2 (M2): FastAPI Backend Core & Database Schema Delivered
+- **Category:** Backend Core, Database, Storage Vault, REST API
+- **Summary:**
+  - **FastAPI Core Engine (`backend/app/main.py`):**
+    - Initialized enterprise FastAPI application with CORS middleware, lifespan events, and global `/api/health` monitoring.
+    - Interactive OpenAPI documentation active at `http://127.0.0.1:8000/docs`.
+  - **Dual-Mode Database Architecture (`backend/app/core/database.py`):**
+    - Configured SQLAlchemy engine supporting zero-config local development using SQLite (`sqlite:///./tender_tracker.db`) and production-grade MySQL 8.4 LTS via `.env`.
+  - **SQLAlchemy ORM Models (`backend/app/models/`):**
+    - Implemented full schema covering `User`, `Tender`, `TenderDecisionMatrix`, `TenderTask`, `TenderFolder`, `TenderDocument`, `ReusableDocument`, `TenderRequirement`, `TenderReviewTier`, and `TenderComment`.
+  - **Local SSD Storage Vault Engine (`backend/app/services/storage.py`):**
+    - Implemented automatic folder structure provisioning (`01_` through `06_`) under `storage/tenders/{TDR-ID}/`.
+    - Implemented streaming file upload with cryptographic SHA-256 calculation and safe folder deletion with automatic file safeguarding.
+  - **Auto-Seeder Service (`backend/app/services/seeder.py`):**
+    - Automatically seeds the 4 standard user profiles and primary tenders with tasks, documents, review tiers, and decision matrices.
+  - **REST API Routers (`backend/app/routers/`):**
+    - Auth & Team (`/api/auth`)
+    - Tenders & Stages (`/api/tenders`)
+    - Tasks & Kanban (`/api/tasks`)
+    - Vault Documents & Reusable Library (`/api/documents`, `/api/reusable-documents`)
+    - Real-Time Chat & Threaded Comments (`/api/comments`)
+    - 10-Second Executive Dashboard Metrics (`/api/dashboard/stats`)
+- **Relevant Files:**
+  - `backend/app/main.py`
+  - `backend/app/core/config.py`
+  - `backend/app/core/database.py`
+  - `backend/app/core/security.py`
+  - `backend/app/models/`
+  - `backend/app/schemas/`
+  - `backend/app/services/storage.py`
+  - `backend/app/services/seeder.py`
+  - `backend/app/routers/`
+  - `backend/requirements.txt`
+  - `backend/.env.example`
 
 ---
 
