@@ -1,6 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel
 
+
 class UserBase(BaseModel):
     name: str
     email: str
@@ -10,8 +11,10 @@ class UserBase(BaseModel):
     max_capacity: int = 5
     avatar: str = "TM"
 
+
 class UserCreate(UserBase):
     password: str
+
 
 class UserProfile(UserBase):
     id: str
@@ -19,9 +22,11 @@ class UserProfile(UserBase):
     class Config:
         from_attributes = True
 
+
 class UserLogin(BaseModel):
     email: str
     password: str
+
 
 class Token(BaseModel):
     access_token: str

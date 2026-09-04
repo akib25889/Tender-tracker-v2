@@ -54,7 +54,7 @@
 
 ## 4. Local File Storage Vault
 
-- `storage/tenders/{TDR-ID}`: Local SSD root per tender
+- `storage/tenders/{TDR-ID}`: Local disk vault root per tender (HDD / SSD)
 - `01_original_tender_documents`: Official RFP notices and specs
 - `02_company_statutory_documents`: Trade license, tax clearance, solvency
 - `03_technical_proposal`: Scope, methodology, CVs, credentials

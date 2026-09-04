@@ -3,7 +3,7 @@
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
 **Current Version:** 2.4.0  
-**Stack:** FastAPI (Python 3.12+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local SSD Storage  
+**Stack:** FastAPI (Python 3.12+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
 ---
@@ -14,7 +14,7 @@
 | :--- | :--- | :--- | :--- |
 | **M0** | **Product & Architecture Specs** | **Completed** | Full PRD, 17-screen specifications, backend storage spec, 17 interactive HTML prototypes. |
 | **M1** | **Repository & Agent Tooling** | **Completed** | Git repository initialized, linked to GitHub, `.gitignore` & directory scaffolding, Ponytail & Graphify integration. |
-| **M2** | **Backend Core & Database Schema** | **Completed** | FastAPI application structure, SQLAlchemy models, SQLite & MySQL 8.4 dual-mode, JWT/bcrypt authentication, local SSD storage vault, and REST APIs. |
+| **M2** | **Backend Core & Database Schema** | **Completed** | FastAPI application structure, SQLAlchemy models, SQLite & MySQL 8.4 dual-mode, JWT/bcrypt authentication, local disk storage vault (HDD / SSD), and REST APIs. |
 | **M3** | **Storage Vault & Document Security** | **Completed** | Local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation, safe folder relocation. |
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 18-screen routing. |
 | **M5** | **Module Implementations (18 Screens)**| **Completed** | Reactive TenderContext with full CRUD (add, edit, delete, bulk delete), two-pane Tender Registry console (`/registry`), Bid Discovery queue, collaboration suite, and 18 operational screens. |
@@ -32,8 +32,8 @@
     - Configured SQLAlchemy engine supporting zero-config local development using SQLite (`sqlite:///./tender_tracker.db`) and production-grade MySQL 8.4 LTS via `.env`.
   - **SQLAlchemy ORM Models (`backend/app/models/`):**
     - Implemented full schema covering `User`, `Tender`, `TenderDecisionMatrix`, `TenderTask`, `TenderFolder`, `TenderDocument`, `ReusableDocument`, `TenderRequirement`, `TenderReviewTier`, and `TenderComment`.
-  - **Local SSD Storage Vault Engine (`backend/app/services/storage.py`):**
-    - Implemented automatic folder structure provisioning (`01_` through `06_`) under `storage/tenders/{TDR-ID}/`.
+  - **Local Disk Storage Vault Engine (`backend/app/services/storage.py`):**
+    - Implemented automatic folder structure provisioning (`01_` through `06_`) under `storage/tenders/{TDR-ID}/` on local disk (HDD / SSD).
     - Implemented streaming file upload with cryptographic SHA-256 calculation and safe folder deletion with automatic file safeguarding.
   - **Auto-Seeder Service (`backend/app/services/seeder.py`):**
     - Automatically seeds the 4 standard user profiles and primary tenders with tasks, documents, review tiers, and decision matrices.
@@ -491,10 +491,10 @@
 
 ## 3. Architecture Decision Records (ADR) Summary
 
-- **ADR-001: Local SSD Storage for MVP**  
+- **ADR-001: Local Disk Storage (HDD / SSD) for MVP**  
   *Context:* Small internal team (3–8 users).  
-  *Decision:* Store tender documents directly on the server SSD under `storage/tenders/{TDR-ID}/...` with SHA-256 checksums rather than AWS S3 / Cloudflare R2 / MinIO.  
-  *Impact:* Eliminates external cloud storage complexity, provides microsecond read latency, and simplifies initial deployment while maintaining a clean abstraction layer for future cloud migration.
+  *Decision:* Store tender documents directly on the local server filesystem (HDD / SSD) under `storage/tenders/{TDR-ID}/...` with SHA-256 checksums rather than AWS S3 / Cloudflare R2 / MinIO.  
+  *Impact:* Eliminates external cloud storage complexity, fully supports mechanical HDDs and solid-state SSDs alike, and simplifies initial deployment while maintaining a clean abstraction layer for future cloud migration.
 
 - **ADR-002: Decoupled Lifecycle Status vs. Go/No-Go Decision Matrix**  
   *Context:* Traditional systems conflate workflow stage with executive evaluation.  

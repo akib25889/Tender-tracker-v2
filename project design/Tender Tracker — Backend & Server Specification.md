@@ -63,9 +63,9 @@ The system should avoid unnecessary cloud-storage and distributed-processing inf
 
 ## 2.4 File Storage
 
-**Local server filesystem / SSD**
+**Local server filesystem (HDD / SSD)**
 
-The server's SSD will store tender documents and other application files.
+The server's local disk (mechanical HDD, SATA SSD, or NVMe SSD) will store tender documents and other application files.
 
 Google Drive, AWS S3, Cloudflare R2, and MinIO are **not required for the MVP**.
 
@@ -118,7 +118,7 @@ The system should follow these principles:
 
 1. Keep the MVP simple.
 2. MySQL stores structured application data.
-3. Local SSD stores actual documents.
+3. Local disk (HDD / SSD) stores actual documents.
 4. Files must not be stored directly inside MySQL.
 5. Protected files must not be publicly accessible.
 6. FastAPI controls document access.

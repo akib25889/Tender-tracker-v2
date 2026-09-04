@@ -293,7 +293,7 @@ def extract_project_nodes():
             "id": "storage:root",
             "name": "storage/tenders/{TDR-ID}",
             "type": "storage_vault",
-            "desc": "Local SSD root per tender",
+            "desc": "Local disk vault root per tender (HDD / SSD)",
         },
         {
             "id": "storage:original",

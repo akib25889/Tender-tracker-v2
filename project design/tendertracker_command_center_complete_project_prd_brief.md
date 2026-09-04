@@ -76,14 +76,14 @@ Following the architecture specification (**DOCUMENT_11**), the platform leverag
 └─────────────┬────────────────────────────┬─────────────┘
               │                            │
 ┌─────────────▼───────────────┐ ┌──────────▼─────────────┐
-│       MySQL 8.4 Database     │ │   Local SSD Vault       │
+│       MySQL 8.4 Database     │ │ Local Disk Vault (HDD/SSD)│
 │  (Metadata, RBAC, Tasks,    │ │  (/opt/tender-tracker/  │
 │   Audit Logs, Checksums)    │ │   storage/tenders/...)  │
 └─────────────────────────────┘ └────────────────────────┘
 ```
 
 ### Storage & Security Architecture
-1. **Local Server SSD Storage**: High-speed, isolated file hierarchy (`storage/tenders/{TDR-ID}/...`) avoiding external cloud dependencies while maintaining strict path sanitization.
+1. **Local Server Disk Storage (HDD / SSD)**: Isolated file hierarchy (`storage/tenders/{TDR-ID}/...`) avoiding external cloud dependencies while maintaining strict path sanitization. Compatible with both mechanical HDDs and solid-state SSDs.
 2. **Document Integrity & Immutability**: Full version history with automated SHA-256 checksums per revision.
 3. **Backup Sentinel**: Automated 3-2-1 off-site replication with daily verified snapshots.
 4. **Access Control (RBAC)**: 7 discrete permission tiers from Super Admin to Viewer with strict separation of financial and gate sign-off privileges.
