@@ -2,8 +2,9 @@ import os
 import io
 import zipfile
 import secrets
+import uuid
 from typing import List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from fastapi import (
     APIRouter,
@@ -132,7 +133,7 @@ async def upload_tender_document(
         if size_bytes >= 1024 * 1024
         else f"{size_bytes / 1024:.0f} KB"
     )
-    doc_id = f"DOC-{db.query(TenderDocument).count() + 101}"
+    doc_id = f"DOC-{uuid.uuid4().hex[:8].upper()}"
 
     doc = TenderDocument(
         id=doc_id,
@@ -397,7 +398,7 @@ def link_reusable_to_tender(
             status_code=404, detail="Tender or Reusable Document not found"
         )
 
-    doc_id = f"DOC-LINK-{db.query(TenderDocument).count() + 101}"
+    doc_id = f"DOC-LINK-{uuid.uuid4().hex[:8].upper()}"
     linked_doc = TenderDocument(
         id=doc_id,
         tender_id=tender_id,
@@ -506,22 +507,25 @@ def validate_shared_token(token: str, db: Session = Depends(get_db)):
     doc = (
         db.query(TenderDocument).filter(TenderDocument.id == share.resource_id).first()
     )
+    rud = None
     if not doc:
-        raise HTTPException(
-            status_code=404, detail="Associated document no longer exists."
-        )
+        rud = db.query(ReusableDocument).filter(ReusableDocument.id == share.resource_id).first()
+        if not rud:
+            raise HTTPException(
+                status_code=404, detail="Associated document no longer exists."
+            )
 
-    tender = db.query(Tender).filter(Tender.id == share.tender_id).first()
+    tender = db.query(Tender).filter(Tender.id == share.tender_id).first() if share.tender_id else None
 
     return PublicShareValidationOut(
         token=token,
-        document_id=doc.id,
-        document_name=doc.name,
-        tender_id=doc.tender_id,
-        tender_title=tender.title if tender else doc.tender_id,
-        folder=doc.folder,
-        size=doc.size,
-        sha256=doc.sha256,
+        document_id=doc.id if doc else rud.id,
+        document_name=doc.name if doc else rud.name,
+        tender_id=doc.tender_id if doc else (share.tender_id or "MASTER_LIBRARY"),
+        tender_title=tender.title if tender else (share.tender_id or "Master Document Library"),
+        folder=doc.folder if doc else rud.category,
+        size=doc.size if doc else rud.size,
+        sha256=doc.sha256 if doc else rud.sha256,
         can_view=share.can_view,
         can_download=share.can_download,
         expires_at=share.expires_at,
@@ -536,7 +540,7 @@ def download_shared_file(token: str, db: Session = Depends(get_db)):
     if not share:
         raise HTTPException(status_code=404, detail="Shared link not found or invalid")
 
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
     if share.status == "REVOKED":
         raise HTTPException(status_code=403, detail="Share link has been revoked.")
     if share.expires_at and share.expires_at < now:
@@ -550,9 +554,17 @@ def download_shared_file(token: str, db: Session = Depends(get_db)):
     doc = (
         db.query(TenderDocument).filter(TenderDocument.id == share.resource_id).first()
     )
-    if not doc or not doc.file_path or not os.path.exists(doc.file_path):
+    file_path = doc.file_path if doc else None
+    filename = doc.name if doc else None
+    if not doc:
+        rud = db.query(ReusableDocument).filter(ReusableDocument.id == share.resource_id).first()
+        if rud:
+            file_path = rud.file_path
+            filename = rud.name
+
+    if not file_path or not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Document file not found on disk")
 
     return FileResponse(
-        path=doc.file_path, filename=doc.name, media_type="application/octet-stream"
+        path=file_path, filename=filename or "document.bin", media_type="application/octet-stream"
     )

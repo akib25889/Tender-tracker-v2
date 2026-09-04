@@ -94,7 +94,7 @@ export const CommandPaletteModal: React.FC = () => {
 
   // 2. Tasks across all tenders
   tenders.forEach((t) => {
-    t.tasks.forEach((task) => {
+    (t.tasks || []).forEach((task) => {
       allItems.push({
         id: `task-${t.id}-${task.id}`,
         category: 'TASKS',
@@ -118,7 +118,7 @@ export const CommandPaletteModal: React.FC = () => {
 
   // 3. Documents (Tender Vault Docs + Reusable Master Docs)
   tenders.forEach((t) => {
-    t.documents.forEach((doc) => {
+    (t.documents || []).forEach((doc) => {
       allItems.push({
         id: `doc-${t.id}-${doc.id}`,
         category: 'DOCS',

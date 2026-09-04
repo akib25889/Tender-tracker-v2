@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.tender import Tender, TenderDecisionMatrix
 from app.models.review import TenderReviewTier
+from app.models.permission import ResourceShare
 from app.schemas.tender import (
     TenderCreate,
     TenderUpdate,
@@ -135,6 +136,7 @@ def delete_tender(tender_id: str, db: Session = Depends(get_db)):
     if not tender:
         raise HTTPException(status_code=404, detail="Tender not found")
 
+    db.query(ResourceShare).filter(ResourceShare.tender_id == tender_id).delete()
     db.delete(tender)
     db.commit()
     return None

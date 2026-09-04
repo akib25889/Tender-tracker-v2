@@ -38,6 +38,23 @@ export const TenderDetailPage: React.FC = () => {
   // Find the tender or fallback to the first tender
   const tender = tenders.find((t) => t.id === id) || tenders[0];
 
+  if (!tender) {
+    return (
+      <div className="p-12 text-center bg-white rounded-xl border border-[#E2E8F0] space-y-4">
+        <h2 className="text-xl font-bold text-[#0F172A]">Tender Not Found</h2>
+        <p className="text-xs text-[#64748B]">
+          The tender with ID "{id}" could not be located in the current pipeline.
+        </p>
+        <button
+          onClick={() => navigate('/tenders')}
+          className="px-4 py-2 bg-[#0F172A] text-white text-xs font-semibold rounded-lg hover:bg-slate-800 transition-colors"
+        >
+          Return to Tender Pipeline
+        </button>
+      </div>
+    );
+  }
+
   const handleDeleteTender = () => {
     if (window.confirm(`Are you sure you want to permanently delete tender "${tender.title}" (${tender.id})?`)) {
       deleteTender(tender.id);

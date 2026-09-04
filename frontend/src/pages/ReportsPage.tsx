@@ -42,14 +42,14 @@ export const ReportsPage: React.FC = () => {
       .catch((err) => console.error('Failed to fetch analytics:', err));
   }, []);
 
-  const totalValue = analytics?.total_pipeline_value ?? tenders.reduce((acc, t) => acc + t.estimatedValue, 0);
+  const totalValue = analytics?.total_pipeline_value ?? tenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
   const winRate = analytics?.cumulative_win_rate ?? 68.5;
 
   // Fallback category stats if analytics endpoint not yet loaded
   const categories = Array.from(new Set(tenders.map((t) => t.category)));
   const fallbackCategoryStats = categories.map((cat) => {
     const catTenders = tenders.filter((t) => t.category === cat);
-    const catVal = catTenders.reduce((acc, t) => acc + t.estimatedValue, 0);
+    const catVal = catTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
     const share = Math.round((catVal / (totalValue || 1)) * 100) || 0;
     return { category: cat, count: catTenders.length, total_value: catVal, share_percent: share, win_rate: 65.0 };
   });

@@ -304,6 +304,31 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       summary: tenderData.summary,
     };
 
+    // Persist new tender to FastAPI backend
+    fetch('http://127.0.0.1:8000/api/tenders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: newTender.id,
+        reference_no: newTender.referenceNo || '',
+        title: newTender.title,
+        organization: newTender.organization,
+        country: newTender.country,
+        category: newTender.category,
+        estimated_value: newTender.estimatedValue || 0,
+        stage: newTender.stage,
+        decision: newTender.decision,
+        priority: newTender.priority,
+        submission_deadline: newTender.submissionDeadline,
+        days_remaining: newTender.daysRemaining,
+        hours_remaining: newTender.hoursRemaining,
+        readiness_score: newTender.readinessScore,
+        lead_owner_name: newTender.leadOwner?.name,
+        lead_owner_role: newTender.leadOwner?.role,
+        summary_json: newTender.summary ? JSON.stringify(newTender.summary) : null,
+      }),
+    }).catch(() => {});
+
     setTenders((prev) => {
       const exists = prev.some((t) => t.id === newId);
       if (exists) {
@@ -326,6 +351,27 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const updateTender = (id: string, updates: Partial<Tender>) => {
+    const payload: any = {};
+    if (updates.title !== undefined) payload.title = updates.title;
+    if (updates.referenceNo !== undefined) payload.reference_no = updates.referenceNo;
+    if (updates.organization !== undefined) payload.organization = updates.organization;
+    if (updates.country !== undefined) payload.country = updates.country;
+    if (updates.category !== undefined) payload.category = updates.category;
+    if (updates.estimatedValue !== undefined) payload.estimated_value = updates.estimatedValue;
+    if (updates.stage !== undefined) payload.stage = updates.stage;
+    if (updates.decision !== undefined) payload.decision = updates.decision;
+    if (updates.priority !== undefined) payload.priority = updates.priority;
+    if (updates.submissionDeadline !== undefined) payload.submission_deadline = updates.submissionDeadline;
+    if (updates.readinessScore !== undefined) payload.readiness_score = updates.readinessScore;
+
+    if (Object.keys(payload).length > 0) {
+      fetch(`http://127.0.0.1:8000/api/tenders/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
+    }
+
     setTenders((prev) =>
       prev.map((t) => (t.id === id ? { ...t, ...updates } : t))
     );

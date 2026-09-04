@@ -17,6 +17,7 @@ from app.models.permission import (
     AccessBlock,
     AuthorizationAuditLog,
 )
+from app.models.tender import Tender
 from app.services.authorization import AuthorizationService
 
 router = APIRouter(prefix="/permissions", tags=["Permissions & Access Control"])
@@ -262,6 +263,10 @@ def assign_partner_to_tender(
     )
     if not partner:
         raise HTTPException(status_code=404, detail="Partner organization not found")
+
+    tender = db.query(Tender).filter(Tender.id == payload.tender_id).first()
+    if not tender:
+        raise HTTPException(status_code=404, detail=f"Tender {payload.tender_id} not found")
 
     existing = (
         db.query(TenderPartnerAssignment)

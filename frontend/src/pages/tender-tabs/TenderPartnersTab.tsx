@@ -57,6 +57,7 @@ export const TenderPartnersTab: React.FC = () => {
   const [notes, setNotes] = useState('');
 
   const fetchTenderPartners = async () => {
+    if (!tender) return;
     try {
       setLoading(true);
       const res = await fetch(`http://127.0.0.1:8000/api/permissions/tenders/${tender.id}/partners`);
@@ -86,7 +87,7 @@ export const TenderPartnersTab: React.FC = () => {
   useEffect(() => {
     fetchTenderPartners();
     fetchAllPartners();
-  }, [tender.id]);
+  }, [tender?.id]);
 
   const handleAssignPartner = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,6 +163,8 @@ export const TenderPartnersTab: React.FC = () => {
       console.error('Failed to update ceiling:', err);
     }
   };
+
+  if (!tender) return null;
 
   return (
     <div className="space-y-6">

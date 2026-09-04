@@ -103,6 +103,7 @@ class TenderOut(TenderBase):
     archived_from_stage: Optional[str] = None
     tasks: List[TaskOut] = []
     documents: List[DocumentOut] = []
+    folders: List[FolderOut] = []
     customFolders: List[FolderOut] = []
     requirements: List[RequirementOut] = []
     reviews: List[ReviewTierOut] = []

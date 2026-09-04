@@ -4,8 +4,19 @@ from pathlib import Path
 from fastapi.testclient import TestClient
 from app.main import app
 from app.core.config import settings
+from app.core.database import Base, engine, SessionLocal
+from app.services.seeder import seed_database
 
 client = TestClient(app)
+
+
+def setup_module():
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        seed_database(db)
+    finally:
+        db.close()
 
 
 def test_01_health_check():

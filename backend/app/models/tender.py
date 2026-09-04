@@ -1,4 +1,4 @@
-﻿from datetime import datetime, timezone
+from datetime import datetime, timezone
 from sqlalchemy import Column, String, Float, Integer, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from app.core.database import Base
@@ -35,6 +35,7 @@ class Tender(Base):
     reviews = relationship("TenderReviewTier", back_populates="tender", cascade="all, delete-orphan")
     comments = relationship("TenderComment", back_populates="tender", cascade="all, delete-orphan")
     decision_matrix = relationship("TenderDecisionMatrix", back_populates="tender", uselist=False, cascade="all, delete-orphan")
+    partner_assignments = relationship("TenderPartnerAssignment", cascade="all, delete-orphan")
 
 class TenderDecisionMatrix(Base):
     __tablename__ = "tender_decision_matrices"

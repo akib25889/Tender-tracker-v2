@@ -307,7 +307,7 @@ export const exportPipelineAsJSON = (tenders: Tender[]) => {
 };
 
 export const exportPipelineAsMarkdown = (tenders: Tender[]) => {
-  const totalVal = tenders.reduce((acc, t) => acc + t.estimatedValue, 0);
+  const totalVal = tenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
 
   const md = `# TenderTracker Pipeline Registry Export
 **Generated:** ${new Date().toLocaleDateString('en-GB')}  
@@ -321,7 +321,7 @@ export const exportPipelineAsMarkdown = (tenders: Tender[]) => {
 ${tenders
   .map(
     (t) =>
-      `| \`${t.id}\` | ${t.title} | ${t.organization} | $${(t.estimatedValue / 1000000).toFixed(2)}M | ${t.stage} | ${t.decision} | ${new Date(t.submissionDeadline).toLocaleDateString('en-GB')} | ${t.readinessScore}% |`
+      `| \`${t.id}\` | ${t.title} | ${t.organization} | $${((t.estimatedValue || 0) / 1000000).toFixed(2)}M | ${t.stage} | ${t.decision} | ${t.submissionDeadline ? new Date(t.submissionDeadline).toLocaleDateString('en-GB') : '—'} | ${t.readinessScore || 0}% |`
   )
   .join('\n')}
 
@@ -333,7 +333,7 @@ ${tenders
 };
 
 export const exportPipelineAsWord = (tenders: Tender[]) => {
-  const totalVal = tenders.reduce((acc, t) => acc + t.estimatedValue, 0);
+  const totalVal = tenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
 
   const html = `
 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
@@ -367,11 +367,11 @@ export const exportPipelineAsWord = (tenders: Tender[]) => {
         <td><strong>${t.id}</strong></td>
         <td>${t.title}</td>
         <td>${t.organization}</td>
-        <td>$${(t.estimatedValue / 1000000).toFixed(2)}M</td>
+        <td>$${((t.estimatedValue || 0) / 1000000).toFixed(2)}M</td>
         <td>${t.stage}</td>
         <td>${t.decision}</td>
-        <td>${new Date(t.submissionDeadline).toLocaleDateString('en-GB')}</td>
-        <td>${t.readinessScore}%</td>
+        <td>${t.submissionDeadline ? new Date(t.submissionDeadline).toLocaleDateString('en-GB') : '—'}</td>
+        <td>${t.readinessScore || 0}%</td>
       </tr>`
       )
       .join('')}
@@ -384,7 +384,7 @@ export const exportPipelineAsWord = (tenders: Tender[]) => {
 };
 
 export const exportPipelineAsPDF = (tenders: Tender[]) => {
-  const totalVal = tenders.reduce((acc, t) => acc + t.estimatedValue, 0);
+  const totalVal = tenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
 
   const printWindow = window.open('', '_blank');
   if (!printWindow) {
@@ -435,11 +435,11 @@ export const exportPipelineAsPDF = (tenders: Tender[]) => {
           <td><strong>${t.id}</strong></td>
           <td>${t.title}</td>
           <td>${t.organization}</td>
-          <td>$${(t.estimatedValue / 1000000).toFixed(2)}M</td>
+          <td>$${((t.estimatedValue || 0) / 1000000).toFixed(2)}M</td>
           <td>${t.stage}</td>
           <td>${t.decision}</td>
-          <td>${new Date(t.submissionDeadline).toLocaleDateString('en-GB')}</td>
-          <td>${t.readinessScore}%</td>
+          <td>${t.submissionDeadline ? new Date(t.submissionDeadline).toLocaleDateString('en-GB') : '—'}</td>
+          <td>${t.readinessScore || 0}%</td>
         </tr>`
         )
         .join('')}

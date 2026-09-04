@@ -14,7 +14,7 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
     total_val = sum(t.estimated_value or 0.0 for t in active_tenders)
     due_week = sum(1 for t in active_tenders if 0 < t.days_remaining <= 7)
     avg_readiness = (
-        sum(t.readiness_score for t in active_tenders) / len(active_tenders)
+        sum((t.readiness_score or 0) for t in active_tenders) / len(active_tenders)
         if active_tenders
         else 0
     )
