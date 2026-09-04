@@ -1,10 +1,11 @@
-﻿from typing import List, Optional
+from datetime import datetime
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.tender import Tender, TenderDecisionMatrix
 from app.models.review import TenderReviewTier
-from app.schemas.tender import TenderCreate, TenderUpdate, TenderOut
+from app.schemas.tender import TenderCreate, TenderUpdate, TenderOut, ReviewTierOut, SignOffRequest
 from app.services.storage import ensure_tender_directories
 
 router = APIRouter(prefix="/tenders", tags=["Tenders"])
@@ -140,3 +141,101 @@ def restore_tender(tender_id: str, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(tender)
     return tender
+
+
+@router.get("/{tender_id}/reviews", response_model=List[ReviewTierOut])
+def get_tender_reviews(tender_id: str, db: Session = Depends(get_db)):
+    tender = db.query(Tender).filter(Tender.id == tender_id).first()
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
+    reviews = (
+        db.query(TenderReviewTier)
+        .filter(TenderReviewTier.tender_id == tender_id)
+        .order_by(TenderReviewTier.tier_number.asc())
+        .all()
+    )
+    if not reviews:
+        # Auto-provision 4 tiers if none exist
+        tiers = [
+            (1, "Technical Architecture", "EXECUTIVE_MANAGER"),
+            (2, "Financial Feasibility", "SENIOR_MANAGER"),
+            (3, "Legal & Governance", "TENDER_ANALYST"),
+            (4, "Executive Sign-Off", "BUSINESS_HEAD"),
+        ]
+        created = []
+        for num, name, role in tiers:
+            tier = TenderReviewTier(
+                tender_id=tender_id,
+                tier_number=num,
+                tier_name=name,
+                role_required=role,
+                sign_off_status="ACTION_REQUIRED" if num == 1 else "WAITING",
+            )
+            db.add(tier)
+            created.append(tier)
+        db.commit()
+        return created
+    return reviews
+
+
+@router.put(
+    "/{tender_id}/reviews/{tier_number}/sign-off",
+    response_model=List[ReviewTierOut],
+)
+def sign_off_tender_tier(
+    tender_id: str,
+    tier_number: int,
+    payload: SignOffRequest,
+    db: Session = Depends(get_db),
+):
+    tender = db.query(Tender).filter(Tender.id == tender_id).first()
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
+
+    tier = (
+        db.query(TenderReviewTier)
+        .filter(
+            TenderReviewTier.tender_id == tender_id,
+            TenderReviewTier.tier_number == tier_number,
+        )
+        .first()
+    )
+    if not tier:
+        raise HTTPException(status_code=404, detail="Review tier not found")
+
+    tier.sign_off_status = payload.status
+    tier.signed_off_by = payload.signer_name
+    tier.signed_off_at = datetime.now().strftime("%d %b %Y, %H:%M")
+    tier.comments = payload.comments
+
+    # Advance next tier to ACTION_REQUIRED if this one is APPROVED
+    if payload.status == "APPROVED":
+        next_tier = (
+            db.query(TenderReviewTier)
+            .filter(
+                TenderReviewTier.tender_id == tender_id,
+                TenderReviewTier.tier_number == tier_number + 1,
+            )
+            .first()
+        )
+        if next_tier and next_tier.sign_off_status in ["WAITING", "PENDING"]:
+            next_tier.sign_off_status = "ACTION_REQUIRED"
+
+    # Check if all tiers approved
+    all_tiers = (
+        db.query(TenderReviewTier)
+        .filter(TenderReviewTier.tender_id == tender_id)
+        .all()
+    )
+    if all(t.sign_off_status == "APPROVED" for t in all_tiers):
+        tender.stage = "SUBMITTED"
+        tender.readiness_score = 100
+
+    db.commit()
+    return (
+        db.query(TenderReviewTier)
+        .filter(TenderReviewTier.tender_id == tender_id)
+        .order_by(TenderReviewTier.tier_number.asc())
+        .all()
+    )
+

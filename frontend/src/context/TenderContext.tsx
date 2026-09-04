@@ -332,14 +332,24 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const deleteTender = (id: string) => {
+    fetch(`http://127.0.0.1:8000/api/tenders/${id}`, { method: 'DELETE' }).catch(() => {});
     setTenders((prev) => prev.filter((t) => t.id !== id));
   };
 
   const deleteMultipleTenders = (ids: string[]) => {
+    ids.forEach((id) => {
+      fetch(`http://127.0.0.1:8000/api/tenders/${id}`, { method: 'DELETE' }).catch(() => {});
+    });
     setTenders((prev) => prev.filter((t) => !ids.includes(t.id)));
   };
 
   const updateTenderStage = (tenderId: string, stage: TenderStage) => {
+    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ stage }),
+    }).catch(() => {});
+
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -357,6 +367,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const archiveTender = (tenderId: string) => {
+    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/archive`, { method: 'POST' }).catch(() => {});
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -372,6 +383,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const restoreTender = (tenderId: string) => {
+    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/restore`, { method: 'POST' }).catch(() => {});
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -409,6 +421,18 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const addTask = (tenderId: string, taskData: Omit<TenderTask, 'id'>) => {
+    fetch(`http://127.0.0.1:8000/api/tasks/tender/${tenderId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: taskData.title,
+        assignee: taskData.assignee,
+        due_date: taskData.deadline,
+        status: taskData.status,
+        priority: taskData.priority,
+      }),
+    }).catch(() => {});
+
     const newTask: TenderTask = {
       id: `TSK-${Math.floor(100 + Math.random() * 900)}`,
       ...taskData,
@@ -433,6 +457,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const moveTask = (tenderId: string, taskId: string, newStatus: TaskStatus) => {
+    fetch(`http://127.0.0.1:8000/api/tasks/${taskId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus }),
+    }).catch(() => {});
+
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -554,6 +584,16 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     tierNumber: number,
     comments: string
   ) => {
+    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/reviews/${tierNumber}/sign-off`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        signer_name: currentUser.name,
+        comments: comments || 'Signed off and verified.',
+        status: 'APPROVED',
+      }),
+    }).catch(() => {});
+
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -807,6 +847,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     taskId: string,
     newAssignee: string
   ) => {
+    fetch(`http://127.0.0.1:8000/api/tasks/${taskId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ assignee: newAssignee }),
+    }).catch(() => {});
+
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -821,6 +867,18 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const addComment = (tenderId: string, content: string) => {
+    fetch(`http://127.0.0.1:8000/api/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tender_id: tenderId,
+        author_name: currentUser.name,
+        author_role: currentUser.role,
+        author_avatar: currentUser.avatar,
+        content,
+      }),
+    }).catch(() => {});
+
     const newComment: TenderComment = {
       id: `CMT-${Date.now()}`,
       tenderId,
@@ -843,6 +901,10 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const deleteComment = (tenderId: string, commentId: string) => {
+    fetch(`http://127.0.0.1:8000/api/comments/${commentId}`, {
+      method: 'DELETE',
+    }).catch(() => {});
+
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;

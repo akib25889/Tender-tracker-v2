@@ -1,4 +1,4 @@
-﻿from datetime import datetime
+from datetime import datetime
 from typing import Optional, List, Any
 from pydantic import BaseModel
 from app.schemas.task import TaskOut
@@ -29,6 +29,13 @@ class ReviewTierOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class SignOffRequest(BaseModel):
+    signer_name: str = "Sarah Jenkins"
+    comments: Optional[str] = "Signed off and verified."
+    status: str = "APPROVED"
+
 
 class DecisionMatrixOut(BaseModel):
     technical_score: float = 0.0
