@@ -1,4 +1,4 @@
-# TenderTracker Command Center (v2.6.0)
+# TenderTracker Command Center (v2.7.0)
 
 [![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF?logo=vite)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://reactjs.org/)
@@ -101,7 +101,7 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 
 ---
 
-## 🔌 REST API Reference (v2.6.0)
+## 🔌 REST API Reference (v2.7.0)
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
@@ -111,6 +111,11 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 | `GET/PUT/DELETE` | `/api/tenders/{id}` | Tender CRUD |
 | `POST` | `/api/tenders/{id}/archive` | Archive tender |
 | `POST` | `/api/tenders/{id}/restore` | Restore archived tender |
+| `GET/POST` | `/api/tenders/{id}/submission` | Legal submission proof ledger & stage lock |
+| `GET/POST` | `/api/categories` | Corporate SOW category list & creation |
+| `PUT/DELETE` | `/api/categories/{id}` | Update category / safe delete with usage check |
+| `GET/POST` | `/api/settings` | Server system configuration (vault, SLA, SMTP) |
+| `GET/POST` | `/api/chat/channels/{id}/messages` | Persistent channel discussion streams |
 | `GET/POST` | `/api/tasks/tender/{id}` | Tender task list / create |
 | `PATCH` | `/api/tasks/{id}` | Update task status/assignee |
 | `GET/POST` | `/api/documents/tender/{id}` | Document vault list / upload |
@@ -125,12 +130,12 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 
 ---
 
-## 🗄️ Database & Storage Engine Architecture
+## 🗄️ Database & Storage Engine Architecture (22 Tables)
 
 | Environment | Database Engine | Setup Required | Notes |
 | :--- | :--- | :--- | :--- |
-| **Local Dev & Testing** | **SQLite 3** (`tender_tracker.db`) | **None (0 sec)** | Built directly into Python standard library. Runs all tests and development without installing MySQL. |
-| **Production Server** | **MySQL 8.4 LTS** | Set `.env` `DATABASE_URL` | Connects via `pymysql`. Automated container deployment available via `deployment/docker-compose.yml`. |
+| **Local Dev & Testing** | **SQLite 3** (`tender_tracker.db`) | **None (0 sec)** | Built directly into Python standard library. Runs all 29 tests and development without installing MySQL. |
+| **Production Server** | **MySQL 8.4 LTS** | Set `.env` `DATABASE_URL` | Connects via `pymysql`. 22 normalized tables auto-generated via SQLAlchemy Base metadata. |
 | **Document Vault** | **Local Disk (HDD / SSD)** | Configurable `STORAGE_ROOT` | Microsecond read/write, SHA-256 integrity manifests, 3-2-1 backup rotation sentinel. |
 
 ---
@@ -139,13 +144,13 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 
 | Suite | Result |
 | :--- | :--- |
-| `test_api_integration.py` (7 tests) | ✅ 7/7 pass |
+| `test_api_integration.py` (11 tests) | ✅ 11/11 pass |
 | `test_authorization_engine.py` (15 tests) | ✅ 15/15 pass |
 | `test_sharing_and_isolation.py` (3 tests) | ✅ 3/3 pass |
-| **Total** | **✅ 25/25 pass** |
+| **Total** | **✅ 29/29 pass** |
 | TypeScript `tsc -b` | ✅ 0 errors |
 | Production `npm run build` | ✅ Clean |
-| Knowledge graph | ✅ 46 nodes, 24 edges |
+| Knowledge graph | ✅ 49 nodes, 28 edges |
 
 ---
 

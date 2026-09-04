@@ -278,6 +278,30 @@ def extract_project_nodes():
             "type": "db_table",
             "desc": "Real-time proposal remarks, debrief notes, and cross-team chat",
         },
+        {
+            "id": "entity:tender_categories",
+            "name": "tender_categories",
+            "type": "db_table",
+            "desc": "Corporate SOW categories, taxonomy codes, and badge styling",
+        },
+        {
+            "id": "entity:system_settings",
+            "name": "system_settings",
+            "type": "db_table",
+            "desc": "NVMe storage vault paths, SLA alert thresholds, and SMTP gateway configurations",
+        },
+        {
+            "id": "entity:tender_submissions",
+            "name": "tender_submissions",
+            "type": "db_table",
+            "desc": "Official portal submission references, receipt checksums, and lock timestamps",
+        },
+        {
+            "id": "entity:chat_channel_messages",
+            "name": "chat_channel_messages",
+            "type": "db_table",
+            "desc": "Persistent department channel discussions and collaboration streams",
+        },
     ]
     nodes.extend(entities)
 
@@ -368,6 +392,10 @@ def extract_project_nodes():
         ),
         ("screen:tender_review", "entity:tender_reviews", "RECORDS_SIGNOFF"),
         ("screen:tender_detail", "entity:tender_decisions", "GOVERNS_DECISION"),
+        ("screen:settings", "entity:system_settings", "CONFIGURES_PREFERENCES"),
+        ("screen:settings", "entity:tender_categories", "MANAGES_TAXONOMIES"),
+        ("screen:tender_submission", "entity:tender_submissions", "RECORDS_SUBMISSION_PROOF"),
+        ("screen:chat_discussions", "entity:chat_channel_messages", "PERSISTS_CHANNEL_CHAT"),
     ]
     for src, tgt, rel in screen_entity_map:
         edges.append({"source": src, "target": tgt, "relation": rel})

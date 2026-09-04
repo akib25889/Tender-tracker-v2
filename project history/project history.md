@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.5.0  
+**Current Version:** 2.7.0  
 **Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -18,6 +18,21 @@
 | **M3** | **Storage Vault & Document Security** | **Completed** | Local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation, safe folder relocation. |
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 18-screen routing. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+### [2026-09-04] — Version 2.7.0: Schema Expansion (22 Tables), Settings Persistence, Legal Submissions & DB-Backed Channel Chat
+- **Category:** Database Architecture, Full-Stack Persistence, Team Communications, Governance
+- **Summary:**
+  - **Schema Expansion to 22 Tables:**
+    - **`tender_categories`:** Dedicated table for corporate Scope of Work taxonomies with badge styling, auto-import from active tenders, and safe deletion guards.
+    - **`system_settings`:** Database-backed configuration persistence for local NVMe storage paths, SLA urgency windows, and SMTP relay credentials.
+    - **`tender_submissions`:** Cryptographic legal submission ledger capturing portal confirmation IDs, receipt checksums, submitter identity, and automated stage locking.
+    - **`chat_channel_messages`:** Database-backed multi-channel communications hub migrating `#general-ops`, `#tender-radar`, `#compliance-desk`, and `#commercial-pricing` from browser `localStorage` to server-side persistence.
+  - **Frontend UI Consoles:**
+    - **Settings Page (`/settings`):** Added SOW Corporate Categories Management card with inline editing, color theme picker, and active tender assignment counters. Connected system configuration form to `/api/settings`.
+    - **Chat Discussions (`/discussions`):** Connected channel streams directly to `/api/chat/channels/{id}/messages` with seamless offline fallbacks.
+    - **Archived Tenders (`/archive`):** Cleaned redundant header navigation to streamline UX.
+  - **Test Suite Expansion:**
+    - Expanded integration tests from 25 to 29 tests (100% passing).
 
 ### [2026-09-04] — Version 2.6.2: Report & Analytics 3-Mode Intelligence Architecture
 - **Category:** Analytics, UX Architecture, Telemetry

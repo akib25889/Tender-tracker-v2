@@ -250,6 +250,30 @@
       "desc": "Real-time proposal remarks, debrief notes, and cross-team chat"
     },
     {
+      "id": "entity:tender_categories",
+      "name": "tender_categories",
+      "type": "db_table",
+      "desc": "Corporate SOW categories, taxonomy codes, and badge styling"
+    },
+    {
+      "id": "entity:system_settings",
+      "name": "system_settings",
+      "type": "db_table",
+      "desc": "NVMe storage vault paths, SLA alert thresholds, and SMTP gateway configurations"
+    },
+    {
+      "id": "entity:tender_submissions",
+      "name": "tender_submissions",
+      "type": "db_table",
+      "desc": "Official portal submission references, receipt checksums, and lock timestamps"
+    },
+    {
+      "id": "entity:chat_channel_messages",
+      "name": "chat_channel_messages",
+      "type": "db_table",
+      "desc": "Persistent department channel discussions and collaboration streams"
+    },
+    {
       "id": "storage:root",
       "name": "storage/tenders/{TDR-ID}",
       "type": "storage_vault",
@@ -412,6 +436,26 @@
       "source": "screen:tender_detail",
       "target": "entity:tender_decisions",
       "relation": "GOVERNS_DECISION"
+    },
+    {
+      "source": "screen:settings",
+      "target": "entity:system_settings",
+      "relation": "CONFIGURES_PREFERENCES"
+    },
+    {
+      "source": "screen:settings",
+      "target": "entity:tender_categories",
+      "relation": "MANAGES_TAXONOMIES"
+    },
+    {
+      "source": "screen:tender_submission",
+      "target": "entity:tender_submissions",
+      "relation": "RECORDS_SUBMISSION_PROOF"
+    },
+    {
+      "source": "screen:chat_discussions",
+      "target": "entity:chat_channel_messages",
+      "relation": "PERSISTS_CHANNEL_CHAT"
     }
   ]
 }

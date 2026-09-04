@@ -50,6 +50,10 @@
 - **`audit_logs`**: System-wide immutable security and activity log
 - **`reusable_documents`**: Corporate master credentials, validity expiration, access tiers
 - **`tender_comments`**: Real-time proposal remarks, debrief notes, and cross-team chat
+- **`tender_categories`**: Corporate SOW categories, taxonomy codes, and badge styling
+- **`system_settings`**: NVMe storage vault paths, SLA alert thresholds, and SMTP gateway configurations
+- **`tender_submissions`**: Official portal submission references, receipt checksums, and lock timestamps
+- **`chat_channel_messages`**: Persistent department channel discussions and collaboration streams
 
 ## 4. Local File Storage Vault
 
@@ -87,3 +91,7 @@
 - `screen:tender_requirements` ──[VALIDATES_COMPLIANCE]──> `entity:tender_requirements`
 - `screen:tender_review` ──[RECORDS_SIGNOFF]──> `entity:tender_reviews`
 - `screen:tender_detail` ──[GOVERNS_DECISION]──> `entity:tender_decisions`
+- `screen:settings` ──[CONFIGURES_PREFERENCES]──> `entity:system_settings`
+- `screen:settings` ──[MANAGES_TAXONOMIES]──> `entity:tender_categories`
+- `screen:tender_submission` ──[RECORDS_SUBMISSION_PROOF]──> `entity:tender_submissions`
+- `screen:chat_discussions` ──[PERSISTS_CHANNEL_CHAT]──> `entity:chat_channel_messages`
