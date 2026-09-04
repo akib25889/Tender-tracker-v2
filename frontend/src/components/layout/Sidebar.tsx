@@ -208,21 +208,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
         </div>
       </div>
 
-      {/* Footer Area: Operational Readiness & System */}
+      {/* Footer Area: System Nav */}
       <div className="p-3 border-t border-[#1E293B]">
-        {!collapsed && (
-          <div className="p-3 rounded-lg bg-[#1E293B] mb-3">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[11px] font-medium text-[#94A3B8]">
-                Operational Readiness
-              </span>
-              <span className="font-mono text-xs font-bold text-white">84%</span>
-            </div>
-            <div className="w-full bg-[#0F172A] h-1.5 rounded-full overflow-hidden">
-              <div className="bg-[#2563EB] h-full rounded-full w-[84%]"></div>
-            </div>
-          </div>
-        )}
 
         <nav className="space-y-1 mb-2">
           {systemItems.map((item) => {
