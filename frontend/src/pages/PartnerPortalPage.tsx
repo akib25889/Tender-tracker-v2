@@ -20,6 +20,8 @@ import {
   X,
   FileCheck,
   Building2,
+  Menu,
+  Gavel,
 } from 'lucide-react';
 
 interface DocumentItem {
@@ -53,6 +55,10 @@ interface DeliverableTask {
 }
 
 export const PartnerPortalPage: React.FC = () => {
+  // Sidebar state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeNav, setActiveNav] = useState<'tender' | 'revisions' | 'documents' | 'deliverables' | 'tor' | 'comms'>('tender');
+
   // Category tab state
   const [selectedCategory, setSelectedCategory] = useState<'All' | 'Statutory' | 'Technical' | 'Legal'>('All');
   
@@ -295,58 +301,271 @@ export const PartnerPortalPage: React.FC = () => {
   const torPercentage = Math.round((torCompletedCount / torItems.length) * 100);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] flex flex-col font-sans">
-      {/* Top Global Partner Header */}
-      <header className="bg-white border-b border-[#E2E8F0] shadow-xs h-16 sticky top-0 z-30 px-4 md:px-8 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-[#0F172A] text-white flex items-center justify-center font-bold text-sm shadow-xs">
-            <Building2 className="w-5 h-5 text-blue-400" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-sm md:text-base font-bold text-[#0F172A] tracking-tight">
-                Consortium Technology Partners Ltd.
-              </h1>
-              <span className="hidden sm:inline-block text-xs text-[#94A3B8]">•</span>
-              <span className="hidden sm:inline-block text-xs font-semibold text-[#2563EB]">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] flex font-sans">
+      {/* 1. Mobile Sidebar Backdrop */}
+      {isSidebarOpen && (
+        <div
+          onClick={() => setIsSidebarOpen(false)}
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs md:hidden"
+        />
+      )}
+
+      {/* 2. Partner Left Navigation Sidebar */}
+      <aside
+        className={`fixed md:sticky top-0 left-0 h-screen w-64 bg-[#0F172A] text-white flex flex-col z-40 shrink-0 transition-transform duration-200 ease-in-out border-r border-[#1E293B] ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
+        {/* Sidebar Header */}
+        <div className="h-16 px-5 border-b border-[#1E293B] flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center font-bold shadow-xs">
+              <Building2 className="w-4 h-4 text-white" />
+            </div>
+            <div className="min-w-0">
+              <h2 className="text-xs font-bold text-white tracking-tight truncate">
+                Consortium Tech
+              </h2>
+              <span className="text-[10px] text-blue-400 font-semibold block uppercase tracking-wider">
                 JV Partner Portal
               </span>
             </div>
-            <p className="text-[11px] text-[#64748B]">Authenticated Collaboration Workspace (Section 5/6)</p>
+          </div>
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="md:hidden p-1 text-slate-400 hover:text-white"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Partner Identity Card */}
+        <div className="p-4 border-b border-[#1E293B] bg-[#0B132B]/50">
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse"></span>
+            <span className="text-[10px] font-bold text-[#4ADE80] uppercase tracking-wider">
+              Layer-2 Authenticated
+            </span>
+          </div>
+          <div className="text-[11px] text-slate-200 font-semibold truncate">
+            Consortium Technology Partners
+          </div>
+          <div className="text-[10px] font-mono text-slate-400 mt-0.5">
+            Tender: TDR-2026-EU-089
           </div>
         </div>
 
-        {/* Right Header Badges & Profile */}
-        <div className="flex items-center gap-3 md:gap-6">
-          {/* User Profile */}
-          <div className="flex items-center gap-3">
-            <div className="text-right hidden sm:block">
-              <p className="text-xs font-bold text-[#0F172A]">Elena Rostova</p>
-              <p className="text-[10px] text-[#64748B]">Partner Compliance Lead</p>
-            </div>
-            <div className="w-8 h-8 rounded-full bg-[#1E293B] text-white flex items-center justify-center font-bold text-xs ring-2 ring-[#2563EB]/20">
-              ER
-            </div>
+        {/* Sidebar Navigation Items */}
+        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1 text-xs">
+          <div className="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            Workspace
           </div>
 
-          <div className="flex items-center gap-1">
-            <Link
-              to="/tenders/TDR-2026-EU-089/partners"
-              className="px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#475569] text-xs font-medium flex items-center gap-1.5 transition-colors"
-              title="Return to Internal Command Center"
+          <a
+            href="#tender-context"
+            onClick={() => {
+              setActiveNav('tender');
+              setIsSidebarOpen(false);
+            }}
+            className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+              activeNav === 'tender'
+                ? 'bg-[#2563EB] text-white font-semibold shadow-xs'
+                : 'text-slate-300 hover:bg-[#1E293B] hover:text-white'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Gavel className="w-4 h-4" />
+              <span>Tender Specs</span>
+            </div>
+            <span className="text-[10px] font-mono opacity-80">T-11d</span>
+          </a>
+
+          {flaggedDoc && (
+            <a
+              href="#action-required"
+              onClick={() => {
+                setActiveNav('revisions');
+                setIsSidebarOpen(false);
+              }}
+              className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+                activeNav === 'revisions'
+                  ? 'bg-[#D97706] text-white font-semibold shadow-xs'
+                  : 'text-amber-400 hover:bg-[#1E293B]'
+              }`}
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Internal View</span>
-            </Link>
-          </div>
-        </div>
-      </header>
+              <div className="flex items-center gap-2.5">
+                <AlertTriangle className="w-4 h-4" />
+                <span>Action Required</span>
+              </div>
+              <span className="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded">
+                1 Urgent
+              </span>
+            </a>
+          )}
 
-      {/* Main Page Workspace */}
-      <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1600px] w-full mx-auto space-y-6">
-        {/* 1. Tender Context & Layer-2 Security Card */}
-        <section className="bg-white border border-[#E2E8F0] rounded-xl shadow-xs overflow-hidden">
-          <div className="bg-[#F8FAFC] border-b border-[#E2E8F0] px-5 py-4 flex flex-wrap items-center justify-between gap-3">
+          <a
+            href="#document-hub"
+            onClick={() => {
+              setActiveNav('documents');
+              setIsSidebarOpen(false);
+            }}
+            className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+              activeNav === 'documents'
+                ? 'bg-[#2563EB] text-white font-semibold shadow-xs'
+                : 'text-slate-300 hover:bg-[#1E293B] hover:text-white'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Folder className="w-4 h-4" />
+              <span>Document Hub</span>
+            </div>
+            <span className="text-[10px] font-mono text-slate-400 bg-[#1E293B] px-1.5 py-0.5 rounded">
+              {documents.length}
+            </span>
+          </a>
+
+          <div className="pt-3 px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            Compliance & Tasks
+          </div>
+
+          <a
+            href="#deliverables"
+            onClick={() => {
+              setActiveNav('deliverables');
+              setIsSidebarOpen(false);
+            }}
+            className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+              activeNav === 'deliverables'
+                ? 'bg-[#2563EB] text-white font-semibold shadow-xs'
+                : 'text-slate-300 hover:bg-[#1E293B] hover:text-white'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <CheckSquare className="w-4 h-4" />
+              <span>Deliverables</span>
+            </div>
+            <span className="text-[10px] font-mono text-slate-400 bg-[#1E293B] px-1.5 py-0.5 rounded">
+              {tasks.filter((t) => t.completed).length}/{tasks.length}
+            </span>
+          </a>
+
+          <a
+            href="#tor-extraction"
+            onClick={() => {
+              setActiveNav('tor');
+              setIsSidebarOpen(false);
+            }}
+            className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+              activeNav === 'tor'
+                ? 'bg-[#2563EB] text-white font-semibold shadow-xs'
+                : 'text-slate-300 hover:bg-[#1E293B] hover:text-white'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <FileText className="w-4 h-4" />
+              <span>TOR Extraction</span>
+            </div>
+            <span className="text-[10px] font-bold text-blue-300 bg-blue-500/20 px-1.5 py-0.5 rounded">
+              {torPercentage}%
+            </span>
+          </a>
+
+          <a
+            href="#secure-comms"
+            onClick={() => {
+              setActiveNav('comms');
+              setIsSidebarOpen(false);
+            }}
+            className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+              activeNav === 'comms'
+                ? 'bg-[#2563EB] text-white font-semibold shadow-xs'
+                : 'text-slate-300 hover:bg-[#1E293B] hover:text-white'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <MessageSquare className="w-4 h-4" />
+              <span>Prime Comms</span>
+            </div>
+            <span className="w-2 h-2 rounded-full bg-[#22C55E]" />
+          </a>
+        </div>
+
+        {/* Sidebar Bottom Security Card */}
+        <div className="p-4 border-t border-[#1E293B] bg-[#0B132B]/40 space-y-3">
+          <div className="p-2.5 rounded-lg bg-[#1E293B]/70 border border-[#334155] flex items-start gap-2 text-[10px] text-slate-300">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#38BDF8] shrink-0 mt-0.5" />
+            <div>
+              <span className="font-bold text-white block">Layer-2 Hard Barrier</span>
+              <span className="text-slate-400">Financial BoQ &amp; Margins Sealed</span>
+            </div>
+          </div>
+
+          <Link
+            to="/tenders/TDR-2026-EU-089/partners"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-slate-200 text-xs font-semibold transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Internal Command</span>
+          </Link>
+        </div>
+      </aside>
+
+      {/* 3. Right Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+        {/* Top Partner Header */}
+        <header className="bg-white border-b border-[#E2E8F0] shadow-xs h-16 sticky top-0 z-30 px-4 md:px-8 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="md:hidden p-2 rounded-lg text-[#64748B] hover:bg-[#F1F5F9] transition-colors"
+              title="Open Navigation"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-sm md:text-base font-bold text-[#0F172A] tracking-tight">
+                  Consortium Technology Partners Ltd.
+                </h1>
+                <span className="hidden sm:inline-block text-xs text-[#94A3B8]">•</span>
+                <span className="hidden sm:inline-block text-xs font-semibold text-[#2563EB]">
+                  JV Partner Portal
+                </span>
+              </div>
+              <p className="text-[11px] text-[#64748B]">Authenticated Collaboration Workspace (Section 5/6)</p>
+            </div>
+          </div>
+
+          {/* Right Profile & Actions */}
+          <div className="flex items-center gap-3 md:gap-6">
+            <div className="flex items-center gap-3">
+              <div className="text-right hidden sm:block">
+                <p className="text-xs font-bold text-[#0F172A]">Elena Rostova</p>
+                <p className="text-[10px] text-[#64748B]">Partner Compliance Lead</p>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-[#1E293B] text-white flex items-center justify-center font-bold text-xs ring-2 ring-[#2563EB]/20">
+                ER
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <Link
+                to="/tenders/TDR-2026-EU-089/partners"
+                className="px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#475569] text-xs font-medium flex items-center gap-1.5 transition-colors"
+                title="Return to Internal Command Center"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">Internal View</span>
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Page Workspace */}
+        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1600px] w-full mx-auto space-y-6">
+          {/* 1. Tender Context & Layer-2 Security Card */}
+          <section id="tender-context" className="bg-white border border-[#E2E8F0] rounded-xl shadow-xs overflow-hidden scroll-mt-20">
+            <div className="bg-[#F8FAFC] border-b border-[#E2E8F0] px-5 py-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <span className="bg-[#0F172A] text-white font-mono text-xs px-2.5 py-1 rounded font-semibold tracking-wider">
                 TDR-2026-EU-089
@@ -401,7 +620,7 @@ export const PartnerPortalPage: React.FC = () => {
 
         {/* 2. Action Required Re-Upload Notice (Amber Callout Card) */}
         {flaggedDoc && (
-          <section className="bg-[#FFFBEB] border border-[#FDE68A] rounded-xl shadow-xs p-5 relative overflow-hidden">
+          <section id="action-required" className="bg-[#FFFBEB] border border-[#FDE68A] rounded-xl shadow-xs p-5 relative overflow-hidden scroll-mt-20">
             <div className="absolute top-0 left-0 w-1.5 h-full bg-[#F59E0B]" />
             <div className="flex items-start gap-4 ml-1">
               <div className="p-2 rounded-lg bg-[#FEF3C7] text-[#D97706] shrink-0">
@@ -452,7 +671,7 @@ export const PartnerPortalPage: React.FC = () => {
         {/* 3. Two-Column Workspace (Document Hub vs Context/Comms) */}
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
           {/* Left Column: Document Contribution Hub (8 Cols) */}
-          <div className="xl:col-span-8 space-y-4">
+          <div id="document-hub" className="xl:col-span-8 space-y-4 scroll-mt-20">
             <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-xs overflow-hidden flex flex-col">
               {/* Header */}
               <div className="border-b border-[#E2E8F0] px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 bg-[#F8FAFC]">
@@ -619,7 +838,7 @@ export const PartnerPortalPage: React.FC = () => {
           {/* Right Column: Context, Deliverables & Comms (4 Cols) */}
           <div className="xl:col-span-4 space-y-6">
             {/* 1. Assigned Deliverables */}
-            <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-xs overflow-hidden">
+            <div id="deliverables" className="bg-white border border-[#E2E8F0] rounded-xl shadow-xs overflow-hidden scroll-mt-20">
               <div className="border-b border-[#E2E8F0] px-4 py-3 bg-[#F8FAFC] flex items-center justify-between">
                 <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
                   Assigned Deliverables
@@ -682,7 +901,7 @@ export const PartnerPortalPage: React.FC = () => {
             </div>
 
             {/* 2. TOR Extraction Checklist (Technical) */}
-            <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-xs overflow-hidden">
+            <div id="tor-extraction" className="bg-white border border-[#E2E8F0] rounded-xl shadow-xs overflow-hidden scroll-mt-20">
               <div className="border-b border-[#E2E8F0] px-4 py-3 bg-[#F8FAFC] flex items-center justify-between">
                 <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
                   TOR Extraction (Technical)
@@ -733,7 +952,7 @@ export const PartnerPortalPage: React.FC = () => {
             </div>
 
             {/* 3. Secure Comms Thread with Prime Lead */}
-            <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-xs overflow-hidden flex flex-col h-[340px]">
+            <div id="secure-comms" className="bg-white border border-[#E2E8F0] rounded-xl shadow-xs overflow-hidden flex flex-col h-[340px] scroll-mt-20">
               <div className="border-b border-[#E2E8F0] px-4 py-3 bg-[#F8FAFC] flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-[#2563EB]" />
@@ -789,6 +1008,7 @@ export const PartnerPortalPage: React.FC = () => {
           </div>
         </div>
       </main>
+    </div>
 
       {/* --- MODAL 1: Upload Certified Revision (v1.1) --- */}
       {isReuploadModalOpen && (
