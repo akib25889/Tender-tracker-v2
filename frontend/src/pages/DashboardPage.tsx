@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FolderGit2,
@@ -8,6 +8,11 @@ import {
   Plus,
   FileWarning,
   ExternalLink,
+  Search,
+  RotateCcw,
+  CheckCircle2,
+  X,
+  Filter,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -16,9 +21,21 @@ import { ReadinessBar } from '../components/ui/ReadinessBar';
 import { Card } from '../components/ui/Card';
 import { TenderStage } from '../types/tender';
 
+export type UrgentFilterMode =
+  | 'ALL_URGENT'
+  | 'CLOSING_SOON'
+  | 'BLOCKERS'
+  | 'MISSING_DOCS'
+  | 'LOW_READINESS'
+  | 'CRITICAL';
+
 export const DashboardPage: React.FC = () => {
   const { tenders } = useTenders();
-  const [filterMode, setFilterMode] = useState<'ALL_URGENT' | 'CLOSING_SOON' | 'BLOCKERS'>('ALL_URGENT');
+  const [filterMode, setFilterMode] = useState<UrgentFilterMode>('ALL_URGENT');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedStage, setSelectedStage] = useState<string>('ALL');
+  const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+  const [excludeArchived, setExcludeArchived] = useState<boolean>(true);
 
   // Dynamic live operational metric calculations
   const activeTenders = tenders.filter(
@@ -36,12 +53,113 @@ export const DashboardPage: React.FC = () => {
         )
       : 0;
 
-  // Filter Attention Queue based on filterMode
-  const urgentQueue = tenders.filter((t) => {
-    if (filterMode === 'CLOSING_SOON') return t.daysRemaining <= 4;
-    if (filterMode === 'BLOCKERS') return t.blockers.length > 0;
-    return t.daysRemaining <= 7 || t.blockers.length > 0 || t.priority === 'CRITICAL';
-  });
+  const categories = useMemo(() => {
+    return Array.from(new Set(tenders.map((t) => t.category).filter(Boolean))).sort();
+  }, [tenders]);
+
+  const baseUrgentPool = useMemo(() => {
+    return tenders.filter((t) => {
+      if (excludeArchived && (t.stage === 'ARCHIVED' || t.stage === 'LOST' || t.stage === 'DECLINED')) {
+        return false;
+      }
+      return true;
+    });
+  }, [tenders, excludeArchived]);
+
+  const allUrgentCount = useMemo(() => {
+    return baseUrgentPool.filter(
+      (t) =>
+        (t.daysRemaining > 0 && t.daysRemaining <= 7) ||
+        t.blockers.length > 0 ||
+        t.priority === 'CRITICAL' ||
+        (t.missingDocumentsCount || 0) > 0
+    ).length;
+  }, [baseUrgentPool]);
+
+  const closingSoonCount = useMemo(() => {
+    return baseUrgentPool.filter((t) => t.daysRemaining > 0 && t.daysRemaining <= 4).length;
+  }, [baseUrgentPool]);
+
+  const blockersCount = useMemo(() => {
+    return baseUrgentPool.filter((t) => t.blockers.length > 0).length;
+  }, [baseUrgentPool]);
+
+  const missingDocsCount = useMemo(() => {
+    return baseUrgentPool.filter((t) => (t.missingDocumentsCount || 0) > 0).length;
+  }, [baseUrgentPool]);
+
+  const lowReadinessCount = useMemo(() => {
+    return baseUrgentPool.filter((t) => (t.readinessScore || 0) < 50).length;
+  }, [baseUrgentPool]);
+
+  const criticalCount = useMemo(() => {
+    return baseUrgentPool.filter((t) => t.priority === 'CRITICAL').length;
+  }, [baseUrgentPool]);
+
+  const urgentQueue = useMemo(() => {
+    return baseUrgentPool.filter((t) => {
+      // 1. Mode filter
+      let matchesMode = false;
+      if (filterMode === 'CLOSING_SOON') {
+        matchesMode = t.daysRemaining > 0 && t.daysRemaining <= 4;
+      } else if (filterMode === 'BLOCKERS') {
+        matchesMode = t.blockers.length > 0;
+      } else if (filterMode === 'MISSING_DOCS') {
+        matchesMode = (t.missingDocumentsCount || 0) > 0;
+      } else if (filterMode === 'LOW_READINESS') {
+        matchesMode = (t.readinessScore || 0) < 50;
+      } else if (filterMode === 'CRITICAL') {
+        matchesMode = t.priority === 'CRITICAL';
+      } else {
+        // ALL_URGENT
+        matchesMode =
+          (t.daysRemaining > 0 && t.daysRemaining <= 7) ||
+          t.blockers.length > 0 ||
+          t.priority === 'CRITICAL' ||
+          (t.missingDocumentsCount || 0) > 0;
+      }
+      if (!matchesMode) return false;
+
+      // 2. Stage filter
+      if (selectedStage !== 'ALL' && t.stage !== selectedStage) {
+        return false;
+      }
+
+      // 3. Category filter
+      if (selectedCategory !== 'ALL' && t.category !== selectedCategory) {
+        return false;
+      }
+
+      // 4. Search query
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchesSearch =
+          t.title.toLowerCase().includes(q) ||
+          t.id.toLowerCase().includes(q) ||
+          (t.referenceNo && t.referenceNo.toLowerCase().includes(q)) ||
+          t.organization.toLowerCase().includes(q) ||
+          t.category.toLowerCase().includes(q);
+        if (!matchesSearch) return false;
+      }
+
+      return true;
+    });
+  }, [baseUrgentPool, filterMode, selectedStage, selectedCategory, searchQuery]);
+
+  const hasActiveFilters =
+    filterMode !== 'ALL_URGENT' ||
+    searchQuery.trim() !== '' ||
+    selectedStage !== 'ALL' ||
+    selectedCategory !== 'ALL' ||
+    !excludeArchived;
+
+  const resetFilters = () => {
+    setFilterMode('ALL_URGENT');
+    setSearchQuery('');
+    setSelectedStage('ALL');
+    setSelectedCategory('ALL');
+    setExcludeArchived(true);
+  };
 
   const stages: { stage: TenderStage; label: string }[] = [
     { stage: 'DISCOVERED', label: '1. Bid Discovery' },
@@ -214,42 +332,180 @@ export const DashboardPage: React.FC = () => {
         title="Tenders Requiring Immediate Intervention"
         subtitle="Ranked by deadline proximity, missing statutory credentials, and compliance blockers"
         headerAction={
-          <div className="flex items-center gap-1.5">
-            <div className="flex items-center p-0.5 bg-[#F1F5F9] rounded-lg text-xs">
+          <div className="flex flex-wrap items-center gap-1.5 justify-end">
+            <div className="flex items-center p-0.5 bg-[#F1F5F9] rounded-lg text-xs overflow-x-auto max-w-full">
               <button
                 onClick={() => setFilterMode('ALL_URGENT')}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
                   filterMode === 'ALL_URGENT'
                     ? 'bg-white text-[#0F172A] shadow-xs font-semibold'
                     : 'text-[#64748B] hover:text-[#0F172A]'
                 }`}
               >
-                All Urgent ({tenders.filter((t) => t.daysRemaining <= 7 || t.blockers.length > 0).length})
+                All Urgent ({allUrgentCount})
               </button>
               <button
                 onClick={() => setFilterMode('CLOSING_SOON')}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
                   filterMode === 'CLOSING_SOON'
                     ? 'bg-white text-[#0F172A] shadow-xs font-semibold'
                     : 'text-[#64748B] hover:text-[#0F172A]'
                 }`}
               >
-                Closing &le; 4d
+                Closing &le; 4d ({closingSoonCount})
               </button>
               <button
                 onClick={() => setFilterMode('BLOCKERS')}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
                   filterMode === 'BLOCKERS'
                     ? 'bg-white text-[#0F172A] shadow-xs font-semibold'
                     : 'text-[#64748B] hover:text-[#0F172A]'
                 }`}
               >
-                Blockers ({tenders.filter((t) => t.blockers.length > 0).length})
+                Blockers ({blockersCount})
+              </button>
+              <button
+                onClick={() => setFilterMode('MISSING_DOCS')}
+                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                  filterMode === 'MISSING_DOCS'
+                    ? 'bg-white text-[#0F172A] shadow-xs font-semibold'
+                    : 'text-[#64748B] hover:text-[#0F172A]'
+                }`}
+              >
+                Missing Docs ({missingDocsCount})
+              </button>
+              <button
+                onClick={() => setFilterMode('LOW_READINESS')}
+                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                  filterMode === 'LOW_READINESS'
+                    ? 'bg-white text-[#0F172A] shadow-xs font-semibold'
+                    : 'text-[#64748B] hover:text-[#0F172A]'
+                }`}
+              >
+                Low Readiness ({lowReadinessCount})
+              </button>
+              <button
+                onClick={() => setFilterMode('CRITICAL')}
+                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                  filterMode === 'CRITICAL'
+                    ? 'bg-white text-[#0F172A] shadow-xs font-semibold'
+                    : 'text-[#64748B] hover:text-[#0F172A]'
+                }`}
+              >
+                Critical ({criticalCount})
               </button>
             </div>
           </div>
         }
       >
+        {/* Interactive Filter Toolbar */}
+        <div className="flex flex-wrap items-center justify-between gap-2.5 px-4 py-2.5 bg-[#F8FAFC] border-b border-[#F1F5F9] -mt-5 -mx-5 mb-5 text-xs">
+          <div className="flex flex-wrap items-center gap-2 flex-1 min-w-[280px]">
+            <div className="flex items-center gap-1 text-[#64748B] shrink-0 font-medium">
+              <Filter className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">Filters:</span>
+            </div>
+
+            {/* Quick Search */}
+            <div className="relative flex-1 min-w-[160px] max-w-xs">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+              <input
+                type="text"
+                placeholder="Search urgent tenders..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-7 py-1 text-xs rounded-md border border-[#E2E8F0] bg-white text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A] cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+
+            {/* Stage Dropdown */}
+            <select
+              value={selectedStage}
+              onChange={(e) => setSelectedStage(e.target.value)}
+              className="px-2 py-1 text-xs rounded-md border border-[#E2E8F0] bg-white text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+            >
+              <option value="ALL">All Stages</option>
+              {stages.map((s) => (
+                <option key={s.stage} value={s.stage}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+
+            {/* Category Dropdown */}
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-2 py-1 text-xs rounded-md border border-[#E2E8F0] bg-white text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+            >
+              <option value="ALL">All Categories</option>
+              {categories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+
+            {/* Exclude Archived Toggle */}
+            <button
+              type="button"
+              onClick={() => setExcludeArchived(!excludeArchived)}
+              className={`px-2.5 py-1 text-xs rounded-md border font-medium transition-colors cursor-pointer ${
+                excludeArchived
+                  ? 'bg-white border-[#CBD5E1] text-[#2563EB] shadow-xs'
+                  : 'bg-white/60 border-dashed border-[#CBD5E1] text-[#64748B]'
+              }`}
+              title={excludeArchived ? 'Archived tenders are excluded. Click to include.' : 'Archived tenders are included. Click to exclude.'}
+            >
+              {excludeArchived ? '✓ Active Only' : 'Include Archived'}
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2.5 shrink-0">
+            <span className="text-[11px] font-mono text-[#64748B]">
+              Showing <strong className="text-[#0F172A]">{urgentQueue.length}</strong> of {baseUrgentPool.length}
+            </span>
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="flex items-center gap-1 text-[11px] font-semibold text-[#DC2626] hover:underline cursor-pointer"
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>Reset Filters</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {urgentQueue.length === 0 ? (
+          <div className="py-12 text-center space-y-2">
+            <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto opacity-80" />
+            <p className="text-sm font-semibold text-[#0F172A]">
+              No urgent tenders matching current filters
+            </p>
+            <p className="text-xs text-[#64748B]">
+              All opportunities under this criteria are on schedule and cleared of blockers.
+            </p>
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#2563EB] bg-[#EFF6FF] rounded-lg hover:underline mt-2 cursor-pointer"
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>Reset All Filters</span>
+            </button>
+          </div>
+        ) : (
         <div className="divide-y divide-[#F1F5F9] -mx-5 -my-5">
           {urgentQueue.map((tender) => (
             <div
@@ -324,6 +580,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           ))}
         </div>
+        )}
       </Card>
     </div>
   );
