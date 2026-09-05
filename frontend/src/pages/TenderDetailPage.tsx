@@ -258,7 +258,7 @@ export const TenderDetailPage: React.FC = () => {
 
         {/* 6-STAGE GATE VISUAL RIBBON & ADVANCEMENT CONTROLS */}
         <div className="mt-6 pt-2">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 sm:mb-6">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wide">
                 Current Lifecycle Stage:
@@ -274,12 +274,12 @@ export const TenderDetailPage: React.FC = () => {
             </div>
 
             {/* Advance / Back Controls */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5 flex-wrap">
               {currentStageIndex > 0 && tender.stage !== 'ARCHIVED' && (
                 <button
                   type="button"
                   onClick={() => updateTenderStage(tender.id, stageKeys[currentStageIndex - 1])}
-                  className="px-3 py-1.5 text-xs font-semibold text-[#475569] bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] rounded-lg shadow-2xs flex items-center gap-1.5 transition-colors"
+                  className="px-3.5 py-1.5 text-xs font-semibold text-[#475569] bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] rounded-lg shadow-2xs flex items-center gap-1.5 transition-colors"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Back to {stages[currentStageIndex - 1]?.label.split('. ')[1]}</span>
@@ -290,7 +290,7 @@ export const TenderDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => updateTenderStage(tender.id, stageKeys[currentStageIndex + 1])}
-                  className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#2563EB] hover:bg-[#1D4ED8] rounded-lg shadow-xs flex items-center gap-1.5 transition-colors"
+                  className="px-4 py-1.5 text-xs font-semibold text-white bg-[#2563EB] hover:bg-[#1D4ED8] rounded-lg shadow-xs flex items-center gap-1.5 transition-colors"
                 >
                   <span>Advance to {stages[currentStageIndex + 1]?.label.split('. ')[1]?.toUpperCase()}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -317,7 +317,7 @@ export const TenderDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => restoreTender(tender.id)}
-                  className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#2563EB] hover:bg-[#1D4ED8] rounded-lg shadow-xs flex items-center gap-1.5 transition-colors"
+                  className="px-4 py-1.5 text-xs font-semibold text-white bg-[#2563EB] hover:bg-[#1D4ED8] rounded-lg shadow-xs flex items-center gap-1.5 transition-colors"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Restore Tender</span>
@@ -327,7 +327,7 @@ export const TenderDetailPage: React.FC = () => {
           </div>
 
           {/* 6-Stage Gate Visual Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
             {stages.map((st, idx) => {
               const isPast = currentStageIndex > idx;
               const isCurrent = currentStageIndex === idx;
@@ -335,7 +335,7 @@ export const TenderDetailPage: React.FC = () => {
               return (
                 <div
                   key={st.stage}
-                  className={`p-2.5 rounded-xl border flex flex-col justify-between transition-all ${
+                  className={`p-3 rounded-xl border flex flex-col justify-between min-h-[64px] transition-all ${
                     isCurrent
                       ? 'border-[#2563EB] bg-[#EFF6FF] shadow-xs'
                       : isPast
@@ -356,7 +356,7 @@ export const TenderDetailPage: React.FC = () => {
                     )}
                   </div>
                   <span
-                    className={`text-[9px] font-medium mt-1 ${
+                    className={`text-[9px] font-medium mt-1.5 ${
                       isCurrent ? 'text-[#2563EB] font-semibold' : isPast ? 'text-[#059669]' : 'text-[#64748B]'
                     }`}
                   >
