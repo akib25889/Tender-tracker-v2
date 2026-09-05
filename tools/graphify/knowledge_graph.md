@@ -37,7 +37,7 @@
 | `screen:tender_summary` | Formal 3-Page Tender Document Summary | `/registry/summary/{id}` | `registry` |
 | `screen:archive` | Archived Non-Participating Records | `/archive` | `archive` |
 | `screen:organizations` | Organizations - Procuring Entity Hierarchy | `/tools/organizations` | `tools` |
-| `screen:permissions` | Access & Permissions Matrix | `/permissions` | `security` |
+| `screen:permissions` | Access & Permissions Matrix | `/tools/permissions` | `tools` |
 
 ## 3. Database Entities & Relationships
 

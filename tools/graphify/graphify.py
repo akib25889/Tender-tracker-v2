@@ -206,8 +206,8 @@ def extract_project_nodes():
         {
             "id": "screen:permissions",
             "name": "Access & Permissions Matrix",
-            "route": "/permissions",
-            "module": "security",
+            "route": "/tools/permissions",
+            "module": "tools",
         },
     ]
 

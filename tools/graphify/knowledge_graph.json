@@ -194,8 +194,8 @@
       "id": "screen:permissions",
       "name": "Access & Permissions Matrix",
       "type": "screen",
-      "route": "/permissions",
-      "module": "security"
+      "route": "/tools/permissions",
+      "module": "tools"
     },
     {
       "id": "entity:users",

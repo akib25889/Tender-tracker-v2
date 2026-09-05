@@ -35,7 +35,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
   const newDiscoveredCount = tenders.filter((t) => t.stage === 'DISCOVERED').length;
   const archivedCount = tenders.filter((t) => t.stage === 'ARCHIVED').length;
 
-  const isToolsRoute = location.pathname.startsWith('/tools');
+  const isToolsRoute = location.pathname.startsWith('/tools') || location.pathname.startsWith('/permissions');
   const [isToolsOpen, setIsToolsOpen] = useState<boolean>(() => isToolsRoute);
 
   useEffect(() => {
@@ -120,15 +120,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       icon: Building2,
       badge: undefined,
     },
-  ];
-
-  const systemItems = [
     {
       label: 'Access & Permissions',
-      path: '/permissions',
+      path: '/tools/permissions',
       icon: KeyRound,
       badge: 'Master',
     },
+  ];
+
+  const systemItems = [
     {
       label: 'Notifications',
       path: '/notifications',

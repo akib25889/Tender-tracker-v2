@@ -130,8 +130,12 @@ export const router = createBrowserRouter([
         element: <SettingsPage />,
       },
       {
-        path: 'permissions',
+        path: 'tools/permissions',
         element: <MasterPermissionsPage />,
+      },
+      {
+        path: 'permissions',
+        element: <Navigate to="/tools/permissions" replace />,
       },
       {
         path: 'tools/organizations',
