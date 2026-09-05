@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -14,6 +14,7 @@ import {
   Bell,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   ShieldCheck,
   Archive,
   MessageSquare,
@@ -33,6 +34,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
   const { tenders } = useTenders();
   const newDiscoveredCount = tenders.filter((t) => t.stage === 'DISCOVERED').length;
   const archivedCount = tenders.filter((t) => t.stage === 'ARCHIVED').length;
+
+  const isToolsRoute = location.pathname.startsWith('/tools');
+  const [isToolsOpen, setIsToolsOpen] = useState<boolean>(() => isToolsRoute);
+
+  useEffect(() => {
+    if (isToolsRoute) {
+      setIsToolsOpen(true);
+    }
+  }, [isToolsRoute]);
 
   const navItems = [
     {
@@ -218,44 +228,112 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
           </nav>
         </div>
 
-        {/* Tools & Addons Module */}
-        <div className="px-3 pb-4">
-          {!collapsed && (
-            <div className="px-2 pb-2 text-[10px] font-semibold tracking-wider uppercase text-[#64748B] flex items-center gap-1.5">
-              <Wrench className="w-3 h-3 text-[#64748B]" />
-              <span>Tools & Addons</span>
+        {/* Tools & Addons Dropdown Module */}
+        <div className="px-3 pb-3">
+          {collapsed ? (
+            <div className="relative group/mini">
+              <button
+                type="button"
+                onClick={() => setIsToolsOpen(!isToolsOpen)}
+                className={`w-full flex items-center justify-center p-2 rounded-lg text-sm transition-colors ${
+                  isToolsRoute
+                    ? 'bg-[#1E293B] text-white'
+                    : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
+                }`}
+                title="Tools & Addons"
+              >
+                <Wrench className={`w-4 h-4 ${isToolsRoute ? 'text-[#38BDF8]' : 'text-[#94A3B8]'}`} />
+              </button>
+
+              {/* Popover on hover in collapsed mode */}
+              <div className="absolute left-full top-0 ml-2 hidden group-hover/mini:block z-50 bg-[#0F172A] border border-[#1E293B] rounded-xl shadow-xl p-2 w-48 animate-scaleIn">
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#64748B] px-2 py-1 flex items-center gap-1.5 border-b border-[#1E293B] mb-1">
+                  <Wrench className="w-3 h-3 text-[#38BDF8]" />
+                  <span>Tools & Addons</span>
+                </div>
+                {toolsItems.map((item) => {
+                  const Icon = item.icon;
+                  const isMatch = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+                  return (
+                    <NavLink
+                      key={item.path}
+                      to={item.path}
+                      className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                        isMatch
+                          ? 'bg-[#2563EB] text-white font-semibold'
+                          : 'text-[#94A3B8] hover:bg-[#1E293B] hover:text-white'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                      <span>{item.label}</span>
+                    </NavLink>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <div>
+              <button
+                type="button"
+                onClick={() => setIsToolsOpen(!isToolsOpen)}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors group ${
+                  isToolsRoute
+                    ? 'bg-[#1E293B] text-white font-semibold'
+                    : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
+                }`}
+              >
+                <div className="flex items-center gap-3 truncate">
+                  <Wrench
+                    className={`w-4 h-4 shrink-0 transition-colors ${
+                      isToolsRoute ? 'text-[#38BDF8]' : 'text-[#94A3B8] group-hover:text-white'
+                    }`}
+                  />
+                  <span className="truncate">Tools &amp; Addons</span>
+                </div>
+                <ChevronDown
+                  className={`w-4 h-4 shrink-0 text-[#64748B] group-hover:text-white transition-transform duration-200 ${
+                    isToolsOpen ? 'transform rotate-180 text-white' : ''
+                  }`}
+                />
+              </button>
+
+              {isToolsOpen && (
+                <div className="mt-1 ml-4 pl-3 border-l border-[#334155] space-y-1 animate-fadeIn">
+                  {toolsItems.map((item) => {
+                    const Icon = item.icon;
+                    const isMatch = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+
+                    return (
+                      <NavLink
+                        key={item.path}
+                        to={item.path}
+                        className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors group ${
+                          isMatch
+                            ? 'bg-[#2563EB] text-white font-semibold shadow-xs'
+                            : 'text-[#94A3B8] hover:bg-[#1E293B] hover:text-white'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 truncate">
+                          <Icon
+                            className={`w-3.5 h-3.5 shrink-0 transition-colors ${
+                              isMatch ? 'text-white' : 'text-[#94A3B8] group-hover:text-white'
+                            }`}
+                          />
+                          <span className="truncate">{item.label}</span>
+                        </div>
+
+                        {item.badge && (
+                          <span className="px-1.5 py-0.2 rounded-full bg-[#1E293B] text-[#F8FAFC] font-mono text-[10px] font-semibold">
+                            {item.badge}
+                          </span>
+                        )}
+                      </NavLink>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
-          <nav className="space-y-1">
-            {toolsItems.map((item) => {
-              const Icon = item.icon;
-              const isMatch = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
-
-              return (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors group ${
-                    isMatch
-                      ? 'bg-[#1E293B] text-white font-semibold'
-                      : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
-                  }`}
-                  title={collapsed ? item.label : undefined}
-                >
-                  <div className="flex items-center gap-3 truncate">
-                    <Icon className="w-4 h-4 shrink-0 text-[#94A3B8] group-hover:text-white transition-colors" />
-                    {!collapsed && <span className="truncate">{item.label}</span>}
-                  </div>
-
-                  {!collapsed && item.badge && (
-                    <span className="px-1.5 py-0.2 rounded-full bg-[#1E293B] text-[#F8FAFC] font-mono text-[11px] font-semibold">
-                      {item.badge}
-                    </span>
-                  )}
-                </NavLink>
-              );
-            })}
-          </nav>
         </div>
       </div>
 
