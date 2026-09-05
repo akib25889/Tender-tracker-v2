@@ -151,31 +151,9 @@ export const OrganizationsPage: React.FC = () => {
         );
       });
 
-      const awarded = matchedTenders.filter((t) => t.stage === 'AWARDED').length;
-      const lost = matchedTenders.filter((t) => t.stage === 'LOST').length;
-      const evaluated = awarded + lost;
-      const winRate = evaluated > 0 ? Math.round((awarded / evaluated) * 100) : (awarded > 0 ? 50 : 0);
-      const totalVal = matchedTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
-
-      const opportunityScore = Math.min(
-        98,
-        Math.max(
-          35,
-          Math.round(
-            winRate * 0.45 +
-              (org.priority === 'CRITICAL' ? 35 : org.priority === 'HIGH' ? 25 : 15) +
-              (matchedTenders.length > 0 ? 15 : 5)
-          )
-        )
-      );
-
       return {
         ...org,
         linkedBidsCount: matchedTenders.length,
-        awardedCount: awarded,
-        winRate,
-        totalVal,
-        opportunityScore,
       };
     });
   }, [organizations, tenders]);
@@ -215,19 +193,6 @@ export const OrganizationsPage: React.FC = () => {
 
     return { roots: parentMap['ROOT'] || [], parentMap };
   }, [orgStats]);
-
-  const getPriorityBadge = (p: string) => {
-    switch (p) {
-      case 'CRITICAL':
-        return 'bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]';
-      case 'HIGH':
-        return 'bg-[#ECFDF5] text-[#059669] border-[#A7F3D0]';
-      case 'MEDIUM':
-        return 'bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]';
-      default:
-        return 'bg-[#F1F5F9] text-[#64748B] border-[#E2E8F0]';
-    }
-  };
 
   const getTypeIcon = (typeCode: string) => {
     if (typeCode.startsWith('UN_')) return <Globe className="w-3.5 h-3.5 text-[#2563EB]" />;
@@ -309,19 +274,6 @@ export const OrganizationsPage: React.FC = () => {
               <span className="text-[#64748B]">Bids:</span>
               <span className="font-bold text-[#0F172A]">{node.linkedBidsCount}</span>
             </div>
-
-            <div className="hidden sm:flex items-center gap-1 text-[11px]">
-              <span className="text-[#64748B]">Score:</span>
-              <span className="font-mono font-bold text-[#2563EB]">{node.opportunityScore}</span>
-            </div>
-
-            <span
-              className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${getPriorityBadge(
-                node.priority
-              )}`}
-            >
-              {node.priority}
-            </span>
 
             <button
               type="button"
@@ -553,8 +505,6 @@ export const OrganizationsPage: React.FC = () => {
                     <th className="py-3 px-3">Parent Organization</th>
                     <th className="py-3 px-3">Country</th>
                     <th className="py-3 px-3 text-center">Linked Bids</th>
-                    <th className="py-3 px-3 text-center">Opportunity Score</th>
-                    <th className="py-3 px-3 text-center">Monitoring Priority</th>
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -607,30 +557,6 @@ export const OrganizationsPage: React.FC = () => {
 
                         <td className="py-3 px-3 text-center font-mono font-bold text-[#0F172A]">
                           {org.linkedBidsCount}
-                        </td>
-
-                        <td className="py-3 px-3 text-center">
-                          <div className="flex items-center justify-center gap-2">
-                            <div className="w-14 h-1.5 bg-[#E2E8F0] rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-[#2563EB] rounded-full"
-                                style={{ width: `${org.opportunityScore}%` }}
-                              />
-                            </div>
-                            <span className="font-mono font-bold text-[#0F172A] text-[11px]">
-                              {org.opportunityScore}
-                            </span>
-                          </div>
-                        </td>
-
-                        <td className="py-3 px-3 text-center">
-                          <span
-                            className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${getPriorityBadge(
-                              org.priority
-                            )}`}
-                          >
-                            {org.priority}
-                          </span>
                         </td>
 
                         <td className="py-3 px-4 text-right">
