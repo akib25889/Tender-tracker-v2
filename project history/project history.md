@@ -38,13 +38,15 @@
     - Added dedicated responsive navigation sidebar with mobile drawer support and quick-jump anchor links.
   - **Time-Bounded Partner Access & Expiry Controls (`TenderPartnersTab.tsx`):**
     - Implemented configurable partner access duration in days (`7 days`, `14 days`, `30 days`, `60 days`, `90 days`, or custom days) with real-time expiration date calculation and status badges (`Active`, `Expired`, `Revoked`).
-  - **Sidebar & Tools Navigation Enhancements (`Sidebar.tsx`):**
-    - Streamlined Tools & Addons navigation: removed "Master" prefix from "Access & Permissions" (renamed to "Permissions").
-    - Added direct navigation link for "Archive" under Tools & Addons menu.
-  - **Tender Detail Workspace Gauge & Spacing Refinements (`TenderDetailPage.tsx`):**
-    - Fixed cramped "SUBMISSION READINESS85%" layout: expanded container width, added `gap-3`, `justify-between`, and dynamic color-coded percentage pill badge.
-    - Fixed `missingDocumentsCount || 8` falsy fallback bug using proper nullish coalescing `?? 0`.
-    - Expanded vertical spacing between stage action buttons and the 6 lifecycle cards (`mb-5 sm:mb-6`, increased card padding, grid gaps).
+  - **Collapsed Sidebar Geometric Centering & Icon Alignment (`Sidebar.tsx`):**
+    - Locked all 14 navigation icons, branding elements, and controls (Shield Logo, Dashboard, Bid Discovery, Registry, Pipeline, My Tasks, Calendar, Vault, Team, Chat, Analytics, Tools Wrench, Settings Gear, and Minimizer Chevron) onto a pixel-perfect **40px vertical center axis** in collapsed mode.
+    - Replaced the cramped top header (which previously squeezed a 32px logo and 28px chevron side-by-side) with a centered `w-9 h-9` branding button that smoothly transitions to `ChevronRight` on hover.
+    - Symmetrized active tile highlights (`py-2.5 px-0 justify-center`) with equal 20px margins, eliminating previous 16px leftward bias.
+    - Added subtle notification indicator dots (pulsating red for urgent deadlines, blue for new intake) with native browser tooltips.
+  - **Dashboard Attention Queue Multi-Facet Filtering & Search (`DashboardPage.tsx`):**
+    - Expanded quick triage vectors to 6 pill filters with dynamic live counts: `All Urgent`, `Closing ≤ 4d`, `Blockers`, `Missing Docs` (missing credential vault uploads), `Low Readiness` ($<50\%$), and `Critical` (executive priority).
+    - Introduced full interactive filter toolbar: real-time search input with clear button, 6-gate Stage dropdown, corporate Category dropdown, and `✓ Active Only` toggle (preventing archived/non-participating bids from cluttering the urgent queue by default).
+    - Added live result counter (`Showing X of Y`) and 1-click filter reset.
   - **Knowledge Graph Synchronization:**
     - Re-indexed Graphify knowledge graph (`tools/graphify/graphify.py`), tracking 54 nodes and 32 edges.
 

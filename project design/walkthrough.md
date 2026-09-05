@@ -85,6 +85,17 @@ The Tender Command Center is an enterprise-grade procurement lifecycle managemen
 - **Falsy Fallback Fix**: Replaced `missingDocumentsCount || 8` with nullish coalescing `?? 0`.
 - **Button-to-Card Spacing**: Increased vertical clearance (`mb-5 sm:mb-6`) and padding between lifecycle action controls and 6-gate step cards.
 
+### E. Collapsed Sidebar Geometric Centering & Icon Alignment (`Sidebar.tsx`)
+- **Pixel-Perfect 40px Vertical Axis**: Locked all 14 icons, branding logo, and controls onto the exact geometric center of the collapsed sidebar ($x = 40\text{px}$).
+- **Interactive Branding Badge**: Top header renders a centered `w-9 h-9` blue shield button with seamless hover transition to `ChevronRight` for 1-click expansion.
+- **Symmetric Active Highlight Containers**: Fixed the previous leftward offset with balanced padding (`py-2.5 px-0 justify-center`) and equal 20px horizontal margins.
+- **Pulsating Notification Dots**: Subtle indicator dots for urgent deadlines (red) and new intake (blue) with native browser tooltips.
+
+### F. Dashboard Attention Queue Multi-Facet Filtering & Search (`DashboardPage.tsx`)
+- **6 Live-Counted Triage Pills**: Instant one-click filtering by `All Urgent (8)`, `Closing ≤ 4d (4)`, `Blockers (2)`, `Missing Docs (5)`, `Low Readiness (4)`, and `Critical (2)`.
+- **Interactive Filter Toolbar**: Full-featured secondary toolbar with real-time keyword search (ID, Title, Organization, SOW Category), 6-gate Stage dropdown, Category dropdown, and `✓ Active Only` toggle excluding non-participating archived records.
+- **Graceful Empty State & Reset**: Clear confirmation state with a 1-click filter reset button when no tenders match active criteria.
+
 ---
 
 ## 3. Backend REST API Directory

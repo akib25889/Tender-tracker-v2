@@ -52,7 +52,6 @@ export const DashboardPage: React.FC = () => {
           tenders.reduce((acc, t) => acc + (t.readinessScore || 0), 0) / tenders.length
         )
       : 0;
-
   const categories = useMemo(() => {
     return Array.from(new Set(tenders.map((t) => t.category).filter(Boolean))).sort();
   }, [tenders]);
