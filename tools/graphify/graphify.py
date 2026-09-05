@@ -209,6 +209,18 @@ def extract_project_nodes():
             "route": "/tools/permissions",
             "module": "tools",
         },
+        {
+            "id": "screen:shared_portal",
+            "name": "Shared Document Vault Portal",
+            "route": "/shared/:token",
+            "module": "documents",
+        },
+        {
+            "id": "screen:partner_portal",
+            "name": "Joint Venture Partner Portal",
+            "route": "/partner/portal",
+            "module": "collaboration",
+        },
     ]
 
     for sc in screens:
@@ -431,6 +443,16 @@ def extract_project_nodes():
             "screen:permissions",
             "entity:users",
             "GOVERNS_ROLE_PERMISSIONS",
+        ),
+        (
+            "screen:shared_portal",
+            "entity:documents",
+            "VALIDATES_SHARED_TOKEN",
+        ),
+        (
+            "screen:partner_portal",
+            "entity:tenders",
+            "COLLABORATES_ON_TENDER",
         ),
     ]
     for src, tgt, rel in screen_entity_map:

@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.8.0  
+**Current Version:** 2.9.0  
 **Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -17,7 +17,36 @@
 | **M2** | **Backend Core & Database Schema** | **Completed** | FastAPI application structure, SQLAlchemy models, SQLite & MySQL 8.4 dual-mode, JWT/bcrypt authentication, local disk storage vault (HDD / SSD), and REST APIs. |
 | **M3** | **Storage Vault & Document Security** | **Completed** | Local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation, safe folder relocation. |
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 24-screen routing. |
+| **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+### [2026-09-06] — Version 2.9.0: Comprehensive CSS-Only Dark Mode, JV Partner Portal, Access Duration Controls & Workspace Polish
+- **Category:** Design System, Accessibility (WCAG AA), Security & Partner Governance, UI/UX Refinement
+- **Summary:**
+  - **Comprehensive CSS-Only Dark Theme Overhaul (`frontend/src/index.css`):**
+    - **Zero Markup Touched:** Followed strict constraints — zero HTML or JSX components were modified to achieve full dark theme compliance.
+    - **Tailwind v4 Bracket Escaping Resolution:** Diagnosed and eliminated the compiler escaping defect where `[class*="text-\\[\\#0F172A\\]"]` produced quadrupled backslashes in CSS output, rendering text invisible. Implemented unescaped dual selectors (`[class*="text-[#0F172A]"], .text-\[\#0F172A\]`), completely restoring high-contrast readability.
+    - **Design Token Surface Elevation:** Established structured CSS custom properties across `:root`, `.dark`, and `@media (prefers-color-scheme: dark)`: `--bg-canvas` (`#0B0F17`), `--bg-surface` (`#131B28`), `--bg-surface-raised` (`#1A2436`), `--bg-subtle` (`#172030`), `--bg-muted` (`#212D42`), `--bg-hover` (`#1E2A3E`), `--bg-input` (`#101724`), and `--bg-dropdown` (`#151E2E`).
+    - **WCAG AA Typography Contrast:** High-contrast text tokens (`--text-primary: #F1F5F9` on dark canvas provides $\ge 14:1$ contrast ratio; `--text-secondary: #CBD5E1` $\ge 9:1$; `--text-muted: #94A3B8` $\ge 4.8:1$).
+    - **Elimination of 258+ Blinding Light-Pastel Patches:** Overrode all light-pastel alert and badge backgrounds (`#EFF6FF`, `#FEF2F2`, `#F0FDF4`, `#FFFBEB`, `#ECFDF5`, `#FEE2E2`, etc.) with rich translucent dark tints (18% alpha) with luminous borders and high-contrast text.
+    - **Interactive & Nested States:** Added dark focus rings, table row hover highlights (`--bg-hover`), dark form inputs/selects, elevated dialog backdrops (`rgba(0,0,0,0.72)` + blur), and custom slim dark scrollbars.
+    - **Automatic System Dark Mode Fallback:** Integrated `@media (prefers-color-scheme: dark)` so that standalone external routes (e.g. `/partner/portal`, `/shared/:token`) render in dark mode automatically even outside `<AppLayout />`.
+    - **Visual Audit Verification:** Evaluated and captured all 25 screens via Playwright headless testing.
+  - **JV Partner Portal Full Production Implementation (`PartnerPortalPage.tsx`):**
+    - Built comprehensive authenticated collaboration workspace for Joint Venture partners based on Stitch design specifications.
+    - Features: Layer-2 hard boundary security cards, action-required document re-upload workflows (certified revision with CA auditor verification), multi-category document contribution hub (`Statutory`, `Technical`, `Legal`), live SHA-256 hash generation, TOR technical requirement extraction checklist, deliverable progress tracker, and persistent prime contractor communications.
+    - Added dedicated responsive navigation sidebar with mobile drawer support and quick-jump anchor links.
+  - **Time-Bounded Partner Access & Expiry Controls (`TenderPartnersTab.tsx`):**
+    - Implemented configurable partner access duration in days (`7 days`, `14 days`, `30 days`, `60 days`, `90 days`, or custom days) with real-time expiration date calculation and status badges (`Active`, `Expired`, `Revoked`).
+  - **Sidebar & Tools Navigation Enhancements (`Sidebar.tsx`):**
+    - Streamlined Tools & Addons navigation: removed "Master" prefix from "Access & Permissions" (renamed to "Permissions").
+    - Added direct navigation link for "Archive" under Tools & Addons menu.
+  - **Tender Detail Workspace Gauge & Spacing Refinements (`TenderDetailPage.tsx`):**
+    - Fixed cramped "SUBMISSION READINESS85%" layout: expanded container width, added `gap-3`, `justify-between`, and dynamic color-coded percentage pill badge.
+    - Fixed `missingDocumentsCount || 8` falsy fallback bug using proper nullish coalescing `?? 0`.
+    - Expanded vertical spacing between stage action buttons and the 6 lifecycle cards (`mb-5 sm:mb-6`, increased card padding, grid gaps).
+  - **Knowledge Graph Synchronization:**
+    - Re-indexed Graphify knowledge graph (`tools/graphify/graphify.py`), tracking 54 nodes and 32 edges.
 
 ### [2026-09-05] — Version 2.8.0: Proposal Workspace Redesign, Tools & Addons Module, Organizations Hierarchy & Deterministic Lockfile
 - **Category:** UI/UX Redesign, Master Catalog Architecture, Enterprise Navigation, Environment Reproducibility

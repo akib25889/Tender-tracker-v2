@@ -1,4 +1,4 @@
-# Walkthrough — TenderTracker Command Center (v2.8.0)
+# Walkthrough — TenderTracker Command Center (v2.9.0)
 
 The Tender Command Center is an enterprise-grade procurement lifecycle management system built with **FastAPI**, **MySQL 8.4 LTS**, and **React 18+ (Vite, TypeScript, Tailwind CSS)**, adhering strictly to **Ponytail** generation-time optimization and **Graphify** knowledge graph retrieval.
 
@@ -29,7 +29,7 @@ The Tender Command Center is an enterprise-grade procurement lifecycle managemen
 - **Clean Blank Date Inputs:** No unwanted fallback dates — Clarification Deadline, Bid Opening Date, Contract Start, and Published Date stay clean and blank until entered.
 - **Estimated Net Value Control:** Dedicated input fields in Tab 1 and Tab 2, with automatic elimination of default mock budgets.
 
-### C. 24 Operational Modules & Screen Directory
+### C. 25 Operational Modules & Screen Directory
 
 1. **Tender Command Center Dashboard ([`DashboardPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/DashboardPage.tsx))**: Real-time KPI ribbons, clickable 6-gate breakdown cards leading into the filtered pipeline, and zero-money attention queue.
 2. **Tender Registry & Data Entry ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx))**: Full-page 5-tab console matching official RFP specifications.
@@ -39,45 +39,51 @@ The Tender Command Center is an enterprise-grade procurement lifecycle managemen
 6. **Compliance Matrix ([`TenderRequirementsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderRequirementsTab.tsx))**: Clause status toggling, blocker alert banners, and direct vault document linking.
 7. **Tender Task Board ([`TenderTasksTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderTasksTab.tsx))**: 4-column deliverable board (`To Do`, `In Progress`, `Under Review`, `Completed`) with inline assignee dropdown.
 8. **Document Vault ([`TenderDocumentsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx))**: Category filtering, direct file download, custom folder lifecycle, and master library linking.
-9. **Master Document Library ([`MasterDocumentVaultPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MasterDocumentVaultPage.tsx))**: Central corporate credential vault with 4-tier RBAC access control.
-10. **Review & Sign-Off ([`TenderReviewTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderReviewTab.tsx))**: 4-tier sequential gatekeeper workflow.
-11. **Submission Ledger ([`TenderSubmissionTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderSubmissionTab.tsx))**: Portal reference confirmation and final workspace lock.
-12. **Outcome & Debrief ([`TenderResultTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderResultTab.tsx))**: Contract won/lost debrief logger feeding the analytics suite.
-13. **My Tasks ([`MyTasksPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MyTasksPage.tsx))**: Cross-tender personal deliverable checklist.
-14. **Team Allocation ([`TeamAllocationPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TeamAllocationPage.tsx))**: Department workload capacity distribution.
-15. **Calendar ([`CalendarPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/CalendarPage.tsx))**: Toggle between **Timeline** (chronological list with 7/14-day filters) and **Grid** (interactive monthly calendar with colour-coded deadline chips, prev/next navigation).
-16. **Report & Analytics ([`ReportsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ReportsPage.tsx))**: 3-mode intelligence console (Basic, General, Advance) covering executive summaries, domain distribution, client capture telemetry, and extensible metric frameworks.
-17. **Real-Time Alert Center ([`NotificationsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/NotificationsPage.tsx))**: Live alerts from `/api/alerts` — critical deadline warnings (≤48h), requirement blockers, pending Tier 3/4 executive sign-offs, expired partner share links. Refresh button, severity-coloured unread dots, category filter tabs. Header bell shows live numbered badge (polled every 60s).
-18. **Master Permissions ([`MasterPermissionsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MasterPermissionsPage.tsx))**: 5-tab authorization control centre — Live Diagnostic Simulator, JV Partner Ceilings, Role Baselines, Security Blockers, Audit Trail.
-19. **Partner Portal ([`PartnerPortalPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/PartnerPortalPage.tsx))**: Token-authenticated, credential-less portal interface for Joint Venture partners to review allocated opportunities and contribute statutory documents.
-20. **Team Chat ([`ChatDiscussionsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ChatDiscussionsPage.tsx))**: Cross-team channels and proposal-specific threads.
-21. **Settings ([`SettingsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/SettingsPage.tsx))**: Storage vault directory configuration and SLA thresholds.
-22. **Archived Tenders ([`ArchivePage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ArchivePage.tsx))**: Repository of soft-deleted and archived bids with restore and permanent purge capabilities.
-23. **Shared Document Vault Portal ([`SharedDocumentPortalPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/SharedDocumentPortalPage.tsx))**: Tokenized external portal for single-document verification and download without dashboard login.
-24. **Organizations Hierarchy & Catalog ([`OrganizationsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/OrganizationsPage.tsx))**: Procuring entity master catalog, interactive parent-child hierarchy tree view, directory table view, and creation modal under the Tools & Addons module.
+9. **JV Partner Collaboration Hub ([`TenderPartnersTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderPartnersTab.tsx))**: Time-bounded partner access duration controls (7–90 days), active expiry dates, and revoked access controls.
+10. **Master Document Library ([`MasterDocumentVaultPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MasterDocumentVaultPage.tsx))**: Central corporate credential vault with 4-tier RBAC access control.
+11. **Review & Sign-Off ([`TenderReviewTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderReviewTab.tsx))**: 4-tier sequential gatekeeper workflow.
+12. **Submission Ledger ([`TenderSubmissionTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderSubmissionTab.tsx))**: Portal reference confirmation and final workspace lock.
+13. **Outcome & Debrief ([`TenderResultTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderResultTab.tsx))**: Contract won/lost debrief logger feeding the analytics suite.
+14. **My Tasks ([`MyTasksPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MyTasksPage.tsx))**: Cross-tender personal deliverable checklist.
+15. **Team Allocation ([`TeamAllocationPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TeamAllocationPage.tsx))**: Department workload capacity distribution.
+16. **Calendar ([`CalendarPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/CalendarPage.tsx))**: Toggle between **Timeline** (chronological list with 7/14-day filters) and **Grid** (interactive monthly calendar with colour-coded deadline chips, prev/next navigation).
+17. **Report & Analytics ([`ReportsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ReportsPage.tsx))**: 3-mode intelligence console (Basic, General, Advance) covering executive summaries, domain distribution, client capture telemetry, and extensible metric frameworks.
+18. **Real-Time Alert Center ([`NotificationsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/NotificationsPage.tsx))**: Live alerts from `/api/alerts` — critical deadline warnings (≤48h), requirement blockers, pending Tier 3/4 executive sign-offs, expired partner share links. Header bell shows live numbered badge.
+19. **Permissions & Access Control Matrix ([`MasterPermissionsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MasterPermissionsPage.tsx))**: 5-tab authorization control centre — Live Diagnostic Simulator, JV Partner Ceilings, Role Baselines, Security Blockers, Audit Trail.
+20. **Joint Venture Partner Collaboration Portal ([`PartnerPortalPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/PartnerPortalPage.tsx))**: Comprehensive authenticated collaboration workspace for Joint Venture partners with Layer-2 hard security isolation, auditor re-upload workflows, and TOR checklist.
+21. **Team Chat ([`ChatDiscussionsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ChatDiscussionsPage.tsx))**: Cross-team channels and proposal-specific threads.
+22. **Settings ([`SettingsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/SettingsPage.tsx))**: Storage vault directory configuration and SLA thresholds.
+23. **Archived Tenders ([`ArchivePage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ArchivePage.tsx))**: Repository of soft-deleted and archived bids with restore and permanent purge capabilities.
+24. **Shared Document Vault Portal ([`SharedDocumentPortalPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/SharedDocumentPortalPage.tsx))**: Tokenized external portal for single-document verification and download without dashboard login.
+25. **Organizations Hierarchy & Catalog ([`OrganizationsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/OrganizationsPage.tsx))**: Procuring entity master catalog, interactive parent-child hierarchy tree view, directory table view, and creation modal under the Tools & Addons module.
 
 ---
 
-## 2. Key Release Features (v2.8.0)
+## 2. Key Release Features (v2.9.0)
 
-### A. Proposal Workspace Redesign
-- Redesigned `/tenders/:id` implementing the `project design/stitch_tender_lifecycle_command_center (3)/` specification.
-- **6-Gate Visual Pipeline:** Step-by-step progress ribbon showing status from Discovered to Submitted.
-- **2x3 Specification Matrix:** Reference number, procurement portal, estimated net value, submission countdown, SOW category, and target entity.
-- **Scope Synopsis & Technical Tags:** Statement of work synopsis with categorized requirement chips.
-- **Compliance Sentinel Gatekeeper:** Tracks mandatory qualifications with dynamic cleared tally (e.g. `2 / 8 Cleared`), gatekeeper progress bar, and status pills.
+### A. Comprehensive CSS-Only Dark Mode Theme (WCAG AA Compliant)
+- **Zero Markup Touched**: All dark styling implemented strictly within `frontend/src/index.css` without altering any HTML, JSX, or component hierarchies.
+- **Resolved Tailwind v4 Escaping Defect**: Identified and eliminated compiler quadruple-escaping on bracketed selectors (`[class*="text-\\[\\#0F172A\\]"]`) using dual unescaped selectors (`[class*="text-[#0F172A]"], .text-\[\#0F172A\]`), restoring crisp text contrast.
+- **Structured Surface Elevation**: Applied consistent token variables (`--bg-canvas: #0B0F17`, `--bg-surface: #131B28`, `--bg-surface-raised: #1A2436`, `--bg-subtle: #172030`, `--bg-muted: #212D42`, `--bg-hover: #1E2A3E`, `--bg-input: #101724`, `--bg-dropdown: #151E2E`).
+- **Eliminated 258+ Harsh Pastel Backgrounds**: Replaced all light-pastel alert, chip, and badge backgrounds with rich translucent tints (18% alpha) with luminous borders.
+- **Automatic System Dark Mode Detection**: Added native `@media (prefers-color-scheme: dark)` fallback for standalone external pages like `/partner/portal` and `/shared/:token`.
 
-### B. Tools & Addons Module & Organizations Hierarchy
-- Dedicated `/tools/organizations` master directory for managing procuring authorities and partner agencies.
-- Tree hierarchy view with recursive node toggle and tabular directory view.
-- Re-architected sidebar navigation featuring an interactive collapsible accordion dropdown for Tools & Addons with route-aware active state and collapsed flyout.
+### B. Joint Venture Partner Collaboration Portal (`/partner/portal` & `/tools/partner-portal`)
+- Built authenticated collaboration environment for consortium partners based on Stitch design specifications.
+- **Layer-2 Security Isolation**: Enforces hard boundaries ensuring external partners only see assigned scopes.
+- **CA Auditor Certified Document Workflows**: Dedicated re-upload workflow for audited financial statements and certifications.
+- **TOR Extraction Checklist**: Granular compliance breakdown for partner deliverables.
+- **Document Hub**: Multi-category contribution vault (`Statutory`, `Technical`, `Legal`) with SHA-256 cryptographic verification.
 
-### C. Master Permissions & Token Vault Sharing
-- Enterprise RBAC control matrix (`/permissions`) with 5 diagnostic tabs.
-- Reusable document vault share token portal (`/shared/:token`) allowing credential verification for external auditors.
+### C. Time-Bounded Partner Access Duration Sentinel (`/tenders/:id/partners`)
+- Configurable partner access duration intervals (`7 days`, `14 days`, `30 days`, `60 days`, `90 days`, or custom days).
+- Real-time expiration date calculation with active status badges (`Active`, `Expired`, `Revoked`).
+- Instant access revocation controls for bid security compliance.
 
-### D. Deterministic Environment Hardening
-- Complete `backend/requirements-lock.txt` pinning all transitive dependencies, compiler flags, and exact versions for zero-drift deployments.
+### D. Workspace UI Density & Spacing Refinements (`/tenders/:id`)
+- **Submission Readiness Gauge**: Expanded container width, added responsive percentage pill badge, and resolved text crowding.
+- **Falsy Fallback Fix**: Replaced `missingDocumentsCount || 8` with nullish coalescing `?? 0`.
+- **Button-to-Card Spacing**: Increased vertical clearance (`mb-5 sm:mb-6`) and padding between lifecycle action controls and 6-gate step cards.
 
 ---
 
@@ -97,7 +103,7 @@ The Tender Command Center is an enterprise-grade procurement lifecycle managemen
 
 ---
 
-## 4. Verification Results (v2.8.0)
+## 4. Verification Results (v2.9.0)
 
 ```
 python run_all_tests.py
@@ -105,12 +111,14 @@ python run_all_tests.py
   Gate 1/4 — Database Health Check ........ ✓ PASS
   Gate 2/4 — Backend Pytest Suite ......... ✓ PASS  29/29 passed
   Gate 3/4 — Frontend TypeScript Check .... ✓ PASS  0 errors
-  Gate 4/4 — Knowledge Graph Sync ......... ✓ PASS  52 nodes, 30 edges
+  Gate 4/4 — Knowledge Graph Sync ......... ✓ PASS  54 nodes, 32 edges
 
   Result: 4/4 gates passed
 ```
 
 - **29/29 Pytest Tests Passing:** Full integration test suite passing with zero deprecation warnings.
 - **0 TypeScript Errors:** Strict type checking across Vite and TypeScript compiler.
-- **Knowledge Graph In Sync:** 52 nodes and 30 edges correctly verified.
+- **Knowledge Graph In Sync:** 54 nodes and 32 edges correctly verified.
 - **Production Build Clean:** Vite tree-shaken and bundled with zero warnings.
+- **Dark Mode Visual Verification:** All 25 operational screens captured and verified via Playwright headless testing for WCAG AA compliance.
+

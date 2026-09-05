@@ -198,6 +198,20 @@
       "module": "tools"
     },
     {
+      "id": "screen:shared_portal",
+      "name": "Shared Document Vault Portal",
+      "type": "screen",
+      "route": "/shared/:token",
+      "module": "documents"
+    },
+    {
+      "id": "screen:partner_portal",
+      "name": "Joint Venture Partner Portal",
+      "type": "screen",
+      "route": "/partner/portal",
+      "module": "collaboration"
+    },
+    {
       "id": "entity:users",
       "name": "users",
       "type": "db_table",
@@ -486,6 +500,16 @@
       "source": "screen:permissions",
       "target": "entity:users",
       "relation": "GOVERNS_ROLE_PERMISSIONS"
+    },
+    {
+      "source": "screen:shared_portal",
+      "target": "entity:documents",
+      "relation": "VALIDATES_SHARED_TOKEN"
+    },
+    {
+      "source": "screen:partner_portal",
+      "target": "entity:tenders",
+      "relation": "COLLABORATES_ON_TENDER"
     }
   ]
 }

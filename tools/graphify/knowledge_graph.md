@@ -38,6 +38,8 @@
 | `screen:archive` | Archived Non-Participating Records | `/archive` | `archive` |
 | `screen:organizations` | Organizations - Procuring Entity Hierarchy | `/tools/organizations` | `tools` |
 | `screen:permissions` | Access & Permissions Matrix | `/tools/permissions` | `tools` |
+| `screen:shared_portal` | Shared Document Vault Portal | `/shared/:token` | `documents` |
+| `screen:partner_portal` | Joint Venture Partner Portal | `/partner/portal` | `collaboration` |
 
 ## 3. Database Entities & Relationships
 
@@ -100,3 +102,5 @@
 - `screen:chat_discussions` ──[PERSISTS_CHANNEL_CHAT]──> `entity:chat_channel_messages`
 - `screen:organizations` ──[MANAGES_PROCURING_ENTITIES]──> `entity:organizations`
 - `screen:permissions` ──[GOVERNS_ROLE_PERMISSIONS]──> `entity:users`
+- `screen:shared_portal` ──[VALIDATES_SHARED_TOKEN]──> `entity:documents`
+- `screen:partner_portal` ──[COLLABORATES_ON_TENDER]──> `entity:tenders`

@@ -1,4 +1,4 @@
-# TenderTracker Command Center (v2.8.0)
+# TenderTracker Command Center (v2.9.0)
 
 [![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF?logo=vite)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://reactjs.org/)
@@ -50,7 +50,7 @@ Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Kn
 
 ---
 
-## 🖥️ Screen & Route Directory (24 Modules)
+## 🖥️ Screen & Route Directory (25 Modules)
 
 | Screen ID | Screen Name | Route | Module |
 | :--- | :--- | :--- | :--- |
@@ -64,6 +64,7 @@ Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Kn
 | `screen:tender_requirements` | Compliance & Requirements Matrix | `/tenders/{id}/requirements` | `compliance` |
 | `screen:tender_tasks` | Tender Task Board | `/tenders/{id}/tasks` | `tasks` |
 | `screen:tender_documents` | Tender Document Vault & Custom Folders | `/tenders/{id}/documents` | `documents` |
+| `screen:tender_partners` | JV Partner Collaboration & Allocation Hub | `/tenders/{id}/partners` | `collaboration` |
 | `screen:master_documents` | Master Reusable Document Vault & Permissions | `/documents` | `documents` |
 | `screen:tender_review` | Review & Sign-Off Workflow | `/tenders/{id}/review` | `review` |
 | `screen:tender_submission` | Submission Ledger | `/tenders/{id}/submission` | `submission` |
@@ -73,21 +74,26 @@ Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Kn
 | `screen:team_allocation` | Team Workload & RBAC Access Matrix | `/team` | `team` |
 | `screen:calendar` | Tender Calendar & Deadline Schedule | `/calendar` | `calendar` |
 | `screen:reports` | Report & Analytics (Basic, General, Advance) | `/reports` | `analytics` |
-| `screen:archive` | Archived Non-Participating Records | `/archive` | `archive` |
+| `screen:archive` | Archived Non-Participating Records | `/tools/archive` | `archive` |
 | `screen:notifications` | Real-Time Operational Alert Center | `/notifications` | `notifications` |
 | `screen:organizations` | Organizations — Procuring Entity Catalog & Tree | `/tools/organizations` | `tools` |
-| `screen:permissions` | Master Permissions & Access Control Matrix | `/permissions` | `security` |
+| `screen:permissions` | Permissions & Access Control Matrix | `/tools/permissions` | `tools` |
 | `screen:shared_portal` | Tokenized Shared Document Portal | `/shared/:token` | `documents` |
+| `screen:partner_portal` | Joint Venture Partner Collaboration Portal | `/partner/portal` | `collaboration` |
 | `screen:settings` | Settings & System Configuration | `/settings` | `settings` |
 
 ---
 
 ## ⚡ Architecture & Optimization Engines
 
+- **Comprehensive CSS-Only Dark Mode Theme (WCAG AA Compliant)**: Full dark surface elevation hierarchy (`--bg-canvas`: `#0B0F17`, `--bg-surface`: `#131B28`, `--bg-surface-raised`: `#1A2436`), high-contrast typography tokens ($\ge 14:1$ contrast ratio), rich translucent alert tints (18% alpha), dark inputs and focus rings, and unescaped dual selectors (`[class*="text-[#0F172A]"], .text-\[\#0F172A\]`) solving Tailwind v4 bracket escaping defects. Includes native `@media (prefers-color-scheme: dark)` fallback for standalone external portals.
+- **Joint Venture Partner Collaboration Portal (`/partner/portal` & `/tools/partner-portal`)**: Production-ready partner workspace with Layer-2 hard security boundaries, CA auditor verified document re-upload workflows, statutory/technical/legal contribution vault, real-time SHA-256 integrity hash verification, TOR extraction checklist, and prime contractor message stream.
+- **Time-Bounded Partner Access Duration Sentinel (`/tenders/:id/partners`)**: Enforceable duration-based partner access limits (7, 14, 30, 60, 90 days or custom days) with real-time expiration date computation, dynamic status badges (`Active`, `Expired`, `Revoked`), and immediate access revocation controls.
+- **Workspace UI Density & Spacing Polish (`/tenders/:id`)**: Resolved submission readiness gauge crowding with responsive percentage badge, eliminated falsy fallback counts, and expanded vertical spacing between lifecycle action buttons and stage gate cards.
 - **Interactive Command Palette (`Ctrl + Shift + K` / `⌘⇧K`)**: Omnipresent modal indexing tenders, deliverables, vault files, team members, and system pages with keyboard auto-navigation.
 - **Enhanced Proposal Workspace (`/tenders/:id`)**: High-density command center featuring a 6-Gate visual step ribbon, 2x3 Tender Specification Matrix (Country, e-GP Portal, Authority, Reference with 1-click copy, dual USD/BDT Crore valuation, earnest money BG validity), technical Scope Synopsis, and the **Compliance Sentinel** gatekeeper checklist (`2 / 8 Cleared`).
 - **Tools & Addons Module & Organizations Hierarchy (`/tools/organizations`)**: Master procuring entity catalog for Bangladesh Government bodies, UN agencies, and Multilateral Banks with infinite-depth hierarchy tree, directory table, duplicate detection, and collapsible sidebar dropdown navigation.
-- **Master Permissions & Reusable Document Vault Sharing (`/permissions` & `/shared/:token`)**: Granular 4-tier document authorization ceilings with tokenized public links, expiry controls, and watermarked downloads.
+- **Permissions & Reusable Document Vault Sharing (`/tools/permissions` & `/shared/:token`)**: Granular 4-tier document authorization ceilings with tokenized public links, expiry controls, and watermarked downloads.
 - **Partner Portal Direct Login (`/login`)**: Dual-mode authentication switcher enabling Joint Venture and consortium partners to log in securely with watermarked cryptographic isolation.
 - **Automated Email Notification Dispatcher (`/settings`)**: Configurable SMTP relay integration with deadline escalation (≤48h) and gatekeeper sign-off triggers.
 - **Batch CSV/JSON Pipeline Ingestion (`/tenders`)**: Direct drag-and-drop batch tender import with pre-validation and interactive preview table.
@@ -102,7 +108,7 @@ Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Kn
 - **Unified Verification Runner (`run_all_tests.py`)**: One-command script executing all 4 quality gates — DB health, pytest backend, TypeScript type-check, and knowledge graph sync — with coloured pass/fail output.
 - **Deterministic Production Lockfile (`requirements-lock.txt`)**: Exact pip-frozen dependency declarations guaranteeing byte-for-byte reproducible Docker and server deployments.
 - **Ponytail ("Lazy Senior Dev")**: Generation-time optimization enforcing the 7-Step Decision Ladder to minimize code bloat, avoid over-engineering, and maintain radical conciseness.
-- **Graphify**: Precomputed knowledge graph (`tools/graphify/graphify.py`) indexing 52 nodes and 30 edges across routes, screens, entities, and storage paths for instant, low-token context retrieval.
+- **Graphify**: Precomputed knowledge graph (`tools/graphify/graphify.py`) indexing 54 nodes and 32 edges across routes, screens, entities, and storage paths for instant, low-token context retrieval.
 - **Dual-Mode Database Architecture (SQLite Dev / MySQL 8.4 Prod)**: Embedded SQLite (`tender_tracker.db`) provides instant, zero-setup local development and automated testing without requiring a local MySQL installation. Fully production-ready for MySQL 8.4 LTS via SQLAlchemy with zero code changes.
 - **Local Disk Storage (HDD / SSD)**: Direct local server filesystem storage under `storage/tenders/{TDR-ID}/...` with streaming 1 MB chunk uploads and SHA-256 cryptographic hashing.
 
@@ -154,10 +160,11 @@ Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Kn
 | `test_api_integration.py` (11 tests) | ✅ 11/11 pass |
 | `test_authorization_engine.py` (15 tests) | ✅ 15/15 pass |
 | `test_sharing_and_isolation.py` (3 tests) | ✅ 3/3 pass |
-| **Total** | **✅ 29/29 pass** |
+| **Total Pytest Suite** | **✅ 29/29 pass** |
 | TypeScript `tsc -b` | ✅ 0 errors |
 | Production `npm run build` | ✅ Clean |
-| Knowledge graph | ✅ 49 nodes, 28 edges |
+| Knowledge graph | ✅ 54 nodes, 32 edges |
+| Dark Mode Visual Audit (Playwright) | ✅ 25/25 screens verified (WCAG AA) |
 
 ---
 
