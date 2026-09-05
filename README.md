@@ -1,4 +1,4 @@
-# TenderTracker Command Center (v2.7.0)
+# TenderTracker Command Center (v2.8.0)
 
 [![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF?logo=vite)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://reactjs.org/)
@@ -35,7 +35,7 @@ uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```bash
 python run_all_tests.py
 ```
-Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Knowledge graph sync.
+Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Knowledge graph sync.
 
 ---
 
@@ -50,7 +50,7 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 
 ---
 
-## 🖥️ Screen & Route Directory (21 Modules)
+## 🖥️ Screen & Route Directory (24 Modules)
 
 | Screen ID | Screen Name | Route | Module |
 | :--- | :--- | :--- | :--- |
@@ -75,6 +75,9 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 | `screen:reports` | Report & Analytics (Basic, General, Advance) | `/reports` | `analytics` |
 | `screen:archive` | Archived Non-Participating Records | `/archive` | `archive` |
 | `screen:notifications` | Real-Time Operational Alert Center | `/notifications` | `notifications` |
+| `screen:organizations` | Organizations — Procuring Entity Catalog & Tree | `/tools/organizations` | `tools` |
+| `screen:permissions` | Master Permissions & Access Control Matrix | `/permissions` | `security` |
+| `screen:shared_portal` | Tokenized Shared Document Portal | `/shared/:token` | `documents` |
 | `screen:settings` | Settings & System Configuration | `/settings` | `settings` |
 
 ---
@@ -82,6 +85,9 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 ## ⚡ Architecture & Optimization Engines
 
 - **Interactive Command Palette (`Ctrl + Shift + K` / `⌘⇧K`)**: Omnipresent modal indexing tenders, deliverables, vault files, team members, and system pages with keyboard auto-navigation.
+- **Enhanced Proposal Workspace (`/tenders/:id`)**: High-density command center featuring a 6-Gate visual step ribbon, 2x3 Tender Specification Matrix (Country, e-GP Portal, Authority, Reference with 1-click copy, dual USD/BDT Crore valuation, earnest money BG validity), technical Scope Synopsis, and the **Compliance Sentinel** gatekeeper checklist (`2 / 8 Cleared`).
+- **Tools & Addons Module & Organizations Hierarchy (`/tools/organizations`)**: Master procuring entity catalog for Bangladesh Government bodies, UN agencies, and Multilateral Banks with infinite-depth hierarchy tree, directory table, duplicate detection, and collapsible sidebar dropdown navigation.
+- **Master Permissions & Reusable Document Vault Sharing (`/permissions` & `/shared/:token`)**: Granular 4-tier document authorization ceilings with tokenized public links, expiry controls, and watermarked downloads.
 - **Partner Portal Direct Login (`/login`)**: Dual-mode authentication switcher enabling Joint Venture and consortium partners to log in securely with watermarked cryptographic isolation.
 - **Automated Email Notification Dispatcher (`/settings`)**: Configurable SMTP relay integration with deadline escalation (≤48h) and gatekeeper sign-off triggers.
 - **Batch CSV/JSON Pipeline Ingestion (`/tenders`)**: Direct drag-and-drop batch tender import with pre-validation and interactive preview table.
@@ -94,8 +100,9 @@ Executes: DB health → Pytest suite (25 tests) → TypeScript type-check → Kn
 - **Real-Time Operational Alert Center (`/notifications`)**: Live `/api/alerts` endpoint synthesises critical deadline warnings (≤48h), requirement blockers, pending Tier 3/4 executive sign-offs, and expired partner share links. Live numbered badge on header bell.
 - **Interactive Monthly Calendar Grid (`/calendar`)**: Toggle between chronological Timeline and interactive monthly Grid view with colour-coded deadline chips per day and prev/next month navigation.
 - **Unified Verification Runner (`run_all_tests.py`)**: One-command script executing all 4 quality gates — DB health, pytest backend, TypeScript type-check, and knowledge graph sync — with coloured pass/fail output.
+- **Deterministic Production Lockfile (`requirements-lock.txt`)**: Exact pip-frozen dependency declarations guaranteeing byte-for-byte reproducible Docker and server deployments.
 - **Ponytail ("Lazy Senior Dev")**: Generation-time optimization enforcing the 7-Step Decision Ladder to minimize code bloat, avoid over-engineering, and maintain radical conciseness.
-- **Graphify**: Precomputed knowledge graph (`tools/graphify/graphify.py`) indexing routes, screens, entities, and storage paths for instant, low-token context retrieval.
+- **Graphify**: Precomputed knowledge graph (`tools/graphify/graphify.py`) indexing 52 nodes and 30 edges across routes, screens, entities, and storage paths for instant, low-token context retrieval.
 - **Dual-Mode Database Architecture (SQLite Dev / MySQL 8.4 Prod)**: Embedded SQLite (`tender_tracker.db`) provides instant, zero-setup local development and automated testing without requiring a local MySQL installation. Fully production-ready for MySQL 8.4 LTS via SQLAlchemy with zero code changes.
 - **Local Disk Storage (HDD / SSD)**: Direct local server filesystem storage under `storage/tenders/{TDR-ID}/...` with streaming 1 MB chunk uploads and SHA-256 cryptographic hashing.
 

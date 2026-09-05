@@ -1,4 +1,4 @@
-# Walkthrough — TenderTracker Command Center (v2.6.0)
+# Walkthrough — TenderTracker Command Center (v2.8.0)
 
 The Tender Command Center is an enterprise-grade procurement lifecycle management system built with **FastAPI**, **MySQL 8.4 LTS**, and **React 18+ (Vite, TypeScript, Tailwind CSS)**, adhering strictly to **Ponytail** generation-time optimization and **Graphify** knowledge graph retrieval.
 
@@ -29,13 +29,13 @@ The Tender Command Center is an enterprise-grade procurement lifecycle managemen
 - **Clean Blank Date Inputs:** No unwanted fallback dates — Clarification Deadline, Bid Opening Date, Contract Start, and Published Date stay clean and blank until entered.
 - **Estimated Net Value Control:** Dedicated input fields in Tab 1 and Tab 2, with automatic elimination of default mock budgets.
 
-### C. 21 Operational Modules & Screen Directory
+### C. 24 Operational Modules & Screen Directory
 
 1. **Tender Command Center Dashboard ([`DashboardPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/DashboardPage.tsx))**: Real-time KPI ribbons, clickable 6-gate breakdown cards leading into the filtered pipeline, and zero-money attention queue.
 2. **Tender Registry & Data Entry ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx))**: Full-page 5-tab console matching official RFP specifications.
 3. **Pipeline Registry ([`TenderListPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderListPage.tsx))**: Multi-facet filter bar, direct row **Edit** and **Delete** actions, bulk delete bar, full JSON dataset export, and batch CSV/JSON ingestion.
 4. **Bid Discovery Queue (`/tenders?stage=DISCOVERED`)**: Auto-filtered queue dedicated to incoming opportunities with quick discovery banners and active sidebar counts.
-5. **Proposal Workspace ([`TenderDetailPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderDetailPage.tsx))**: Interactive 6-gate progression bar, quick Edit/Delete actions, and conditionally hidden Estimated Net Value widget.
+5. **Proposal Workspace ([`TenderDetailPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderDetailPage.tsx))**: Redesigned lifecycle workspace with 6-gate ribbon, 2x3 specification matrix, scope synopsis, Compliance Sentinel, and live team stream.
 6. **Compliance Matrix ([`TenderRequirementsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderRequirementsTab.tsx))**: Clause status toggling, blocker alert banners, and direct vault document linking.
 7. **Tender Task Board ([`TenderTasksTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderTasksTab.tsx))**: 4-column deliverable board (`To Do`, `In Progress`, `Under Review`, `Completed`) with inline assignee dropdown.
 8. **Document Vault ([`TenderDocumentsTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderDocumentsTab.tsx))**: Category filtering, direct file download, custom folder lifecycle, and master library linking.
@@ -52,34 +52,32 @@ The Tender Command Center is an enterprise-grade procurement lifecycle managemen
 19. **Partner Portal ([`PartnerPortalPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/PartnerPortalPage.tsx))**: Token-authenticated, credential-less portal interface for Joint Venture partners to review allocated opportunities and contribute statutory documents.
 20. **Team Chat ([`ChatDiscussionsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ChatDiscussionsPage.tsx))**: Cross-team channels and proposal-specific threads.
 21. **Settings ([`SettingsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/SettingsPage.tsx))**: Storage vault directory configuration and SLA thresholds.
+22. **Archived Tenders ([`ArchivePage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ArchivePage.tsx))**: Repository of soft-deleted and archived bids with restore and permanent purge capabilities.
+23. **Shared Document Vault Portal ([`SharedDocumentPortalPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/SharedDocumentPortalPage.tsx))**: Tokenized external portal for single-document verification and download without dashboard login.
+24. **Organizations Hierarchy & Catalog ([`OrganizationsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/OrganizationsPage.tsx))**: Procuring entity master catalog, interactive parent-child hierarchy tree view, directory table view, and creation modal under the Tools & Addons module.
 
 ---
 
-## 2. Key Release Features (v2.6.0)
+## 2. Key Release Features (v2.8.0)
 
-### A. Scope of Work (SOW) Standard
-- Full-form terminology **"Scope of Work (SOW)"** applied across all user interfaces, document vault tabs, compliance matrix headers, and technical specifications, eliminating ambiguous jargon.
+### A. Proposal Workspace Redesign
+- Redesigned `/tenders/:id` implementing the `project design/stitch_tender_lifecycle_command_center (3)/` specification.
+- **6-Gate Visual Pipeline:** Step-by-step progress ribbon showing status from Discovered to Submitted.
+- **2x3 Specification Matrix:** Reference number, procurement portal, estimated net value, submission countdown, SOW category, and target entity.
+- **Scope Synopsis & Technical Tags:** Statement of work synopsis with categorized requirement chips.
+- **Compliance Sentinel Gatekeeper:** Tracks mandatory qualifications with dynamic cleared tally (e.g. `2 / 8 Cleared`), gatekeeper progress bar, and status pills.
 
-### B. Partner Portal Login & Authentication
-- Tokenized partner authentication via `/partner/login` and `/partner/portal?token=...`.
-- Enables external Joint Venture (JV) collaborators to securely submit statutory credentials and view tender deliverables without requiring internal corporate directory access.
+### B. Tools & Addons Module & Organizations Hierarchy
+- Dedicated `/tools/organizations` master directory for managing procuring authorities and partner agencies.
+- Tree hierarchy view with recursive node toggle and tabular directory view.
+- Re-architected sidebar navigation featuring an interactive collapsible accordion dropdown for Tools & Addons with route-aware active state and collapsed flyout.
 
-### C. Analysis & Scope Tab Archival
-- Complete mathematical decision models (4-pillar weighted score, SVG radar geometry, pWin calculation, Gatekeeper Recommendation) archived and documented in [`docs/future_implementations/tender_analysis_and_scope_workspace.md`](file:///h:/Tender%20tracker%20v2/docs/future_implementations/tender_analysis_and_scope_workspace.md).
-- The tab and its child route have been cleanly decoupled from the active proposal workspace, keeping the UI streamlined and focused on verified requirements and task deliverables.
+### C. Master Permissions & Token Vault Sharing
+- Enterprise RBAC control matrix (`/permissions`) with 5 diagnostic tabs.
+- Reusable document vault share token portal (`/shared/:token`) allowing credential verification for external auditors.
 
-### D. SMTP Email Notification Dispatcher
-- Robust email notification service in `backend/app/services/email_service.py` supporting TLS/SSL SMTP servers.
-- Automatic email alerts for critical deadline cutoffs (≤48h) and pending executive sign-offs.
-- Live test connection and dispatch endpoint: `POST /api/notifications/test-email`.
-
-### E. Batch Pipeline Ingestion (CSV / JSON Import)
-- High-throughput batch import endpoint `POST /api/tenders/batch-import` with automated schema mapping, field validation, and collision resistance.
-- Interactive modal UI in `BatchImportModal.tsx` featuring file drag-and-drop, real-time preview table, and instant pipeline intake.
-
-### F. AI Scope Extractor Archival
-- Complete architectural blueprint and technical design documented for future implementation in [`docs/future_implementations/ai_scope_extraction_and_summarizer.md`](file:///h:/Tender%20tracker%20v2/docs/future_implementations/ai_scope_extraction_and_summarizer.md).
-- Active codebase completely cleansed of speculative AI endpoints, buttons, and badges to ensure zero runtime dependencies or cognitive clutter.
+### D. Deterministic Environment Hardening
+- Complete `backend/requirements-lock.txt` pinning all transitive dependencies, compiler flags, and exact versions for zero-drift deployments.
 
 ---
 
@@ -95,23 +93,24 @@ The Tender Command Center is an enterprise-grade procurement lifecycle managemen
 | `dashboard` | `/api/dashboard` | `/stats`, `/reports/analytics` |
 | `permissions` | `/api/permissions` | RBAC engine, partner orgs, audit trail |
 | `alerts` | `/api/alerts` | Live operational alerts (DEADLINE, BLOCKER, APPROVAL, VAULT) |
-| **`notifications`** | **`/api/notifications`** | **`POST /test-email` (SMTP notification verification)** |
+| `notifications` | `/api/notifications` | `POST /test-email` (SMTP notification verification) |
 
 ---
 
-## 4. Verification Results (v2.6.0)
+## 4. Verification Results (v2.8.0)
 
 ```
 python run_all_tests.py
 
   Gate 1/4 — Database Health Check ........ ✓ PASS
-  Gate 2/4 — Backend Pytest Suite ......... ✓ PASS  25/25 passed
+  Gate 2/4 — Backend Pytest Suite ......... ✓ PASS  29/29 passed
   Gate 3/4 — Frontend TypeScript Check .... ✓ PASS  0 errors
-  Gate 4/4 — Knowledge Graph Sync ......... ✓ PASS  46 nodes, 24 edges
+  Gate 4/4 — Knowledge Graph Sync ......... ✓ PASS  52 nodes, 30 edges
 
   Result: 4/4 gates passed
 ```
 
-- **25/25 Pytest Tests Passing:** Full integration test suite passing with zero deprecation warnings.
+- **29/29 Pytest Tests Passing:** Full integration test suite passing with zero deprecation warnings.
 - **0 TypeScript Errors:** Strict type checking across Vite and TypeScript compiler.
+- **Knowledge Graph In Sync:** 52 nodes and 30 edges correctly verified.
 - **Production Build Clean:** Vite tree-shaken and bundled with zero warnings.

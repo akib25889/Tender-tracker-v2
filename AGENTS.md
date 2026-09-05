@@ -25,7 +25,7 @@ Before writing any new component, helper, API endpoint, or refactor, traverse th
 To avoid token bloat and excessive full-file re-reads:
 
 - Consult [`tools/graphify/knowledge_graph.md`](file:///h:/Tender%20tracker%20v2/tools/graphify/knowledge_graph.md) and [`tools/graphify/knowledge_graph.json`](file:///h:/Tender%20tracker%20v2/tools/graphify/knowledge_graph.json) for:
-  - Screen-to-route mappings (17 core screens)
+  - Screen-to-route mappings (24 core screens)
   - 6-gate tender lifecycle stages
   - Database schema entities
   - Local file storage vault directory paths

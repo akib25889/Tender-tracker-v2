@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.7.0  
+**Current Version:** 2.8.0  
 **Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -16,8 +16,30 @@
 | **M1** | **Repository & Agent Tooling** | **Completed** | Git repository initialized, linked to GitHub, `.gitignore` & directory scaffolding, Ponytail & Graphify integration. |
 | **M2** | **Backend Core & Database Schema** | **Completed** | FastAPI application structure, SQLAlchemy models, SQLite & MySQL 8.4 dual-mode, JWT/bcrypt authentication, local disk storage vault (HDD / SSD), and REST APIs. |
 | **M3** | **Storage Vault & Document Security** | **Completed** | Local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation, safe folder relocation. |
-| **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 18-screen routing. |
+| **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 24-screen routing. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+### [2026-09-05] — Version 2.8.0: Proposal Workspace Redesign, Tools & Addons Module, Organizations Hierarchy & Deterministic Lockfile
+- **Category:** UI/UX Redesign, Master Catalog Architecture, Enterprise Navigation, Environment Reproducibility
+- **Summary:**
+  - **Proposal Workspace Full Redesign (`/tenders/:id`):**
+    - Directly aligned with `project design/stitch_tender_lifecycle_command_center (3)/` production blueprint.
+    - **6-Gate Lifecycle Progress Ribbon:** Sequential visual pipeline showing gates `01. Discovered`, `02. Preparation`, `03. Approved`, `04. In Review`, `05. Finalized`, `06. Submitted` with stage-specific badge highlights and active completion states.
+    - **2x3 Specification Matrix & Identity Header:** Key tender metadata cards displaying Reference Number, Procurement Portal, Financial Value, Submission Deadline with dynamic countdown, SOW Corporate Category, and Target Organization.
+    - **Scope Synopsis Card:** SOW statement, key objectives, and structured technical requirement tags.
+    - **Compliance Sentinel Gatekeeper:** Mandatory qualification tracker with real-time cleared tally (e.g. `2 / 8 Cleared`), gatekeeper progress bar, and document status badges (`CLEARED`, `VERIFIED`, `PENDING_REVIEW`, `FLAGGED_EXPIRED`).
+    - **Live Team Stream:** Real-time chronological discussion stream integrated with channel chat.
+  - **Tools & Addons Module & Organizations Hierarchy (`/tools/organizations`):**
+    - **Procuring Entity Master Catalog:** Searchable directory table and interactive parent-child hierarchy tree view with expand/collapse nodes.
+    - **Enterprise Hierarchy Management:** Full CRUD modal for adding ministry, department, regional, or agency organizations with parent entity linking, contact details, procurement portal URLs, and duplicate code/name prevention.
+    - **Dropdown Sidebar Navigation:** Re-architected sidebar navigation into an interactive collapsible accordion dropdown for "Tools & Addons" with nested sub-items (`Organizations`), route-aware auto-expansion, and collapsed flyout popover.
+  - **Master Permissions & Reusable Document Vault Sharing:**
+    - **Master Permissions (`/permissions`):** Central role-based access control matrix covering Super Admin, Lead Estimator, Compliance Officer, and External Auditor permissions across all 24 modules.
+    - **Vault Token Sharing (`/shared/:token`):** Secure token-based public portal for sharing verified corporate credentials with external partners without granting dashboard login.
+  - **Deterministic Environment Hardening:**
+    - Generated exact `backend/requirements-lock.txt` pinning all transitive Python packages, hashes, and versions to prevent environment drift or version incompatibility.
+  - **Knowledge Graph Synchronization:**
+    - Updated Graphify index to 52 nodes and 30 edges, cataloging all 24 screens, database entities, and storage paths.
 
 ### [2026-09-04] — Version 2.7.0: Schema Expansion (22 Tables), Settings Persistence, Legal Submissions & DB-Backed Channel Chat
 - **Category:** Database Architecture, Full-Stack Persistence, Team Communications, Governance
