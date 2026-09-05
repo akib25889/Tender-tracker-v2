@@ -28,6 +28,7 @@ import {
   Landmark,
   ShieldAlert,
   Building,
+  CheckCircle2,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -218,20 +219,39 @@ export const TenderDetailPage: React.FC = () => {
               </span>
             </div>
 
-            <div className="space-y-1.5 min-w-[150px]">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
+            <div className="space-y-1.5 min-w-[200px] sm:min-w-[220px]">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] whitespace-nowrap">
                   Submission Readiness
                 </span>
-                <span className="font-bold font-mono text-[#2563EB]">
+                <span
+                  className={`font-mono text-xs font-bold px-2 py-0.5 rounded border shrink-0 ${
+                    tender.readinessScore >= 75
+                      ? 'bg-[#DCFCE7] text-[#15803D] border-[#BBF7D0]'
+                      : tender.readinessScore >= 50
+                      ? 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]'
+                      : tender.readinessScore >= 40
+                      ? 'bg-[#FEF3C7] text-[#B45309] border-[#FDE68A]'
+                      : 'bg-[#FEE2E2] text-[#B91C1C] border-[#FECACA]'
+                  }`}
+                >
                   {tender.readinessScore}%
                 </span>
               </div>
               <ReadinessBar score={tender.readinessScore} showLabel={false} />
-              <span className="text-[10px] font-medium text-[#64748B] flex items-center gap-1">
-                <AlertTriangle className="w-3 h-3 text-[#D97706]" />
-                {tender.missingDocumentsCount || 8} Mandatory Docs Missing
-              </span>
+              {(tender.missingDocumentsCount ?? 0) > 0 ? (
+                <span className="text-[10px] font-medium text-[#B45309] flex items-center gap-1.5">
+                  <AlertTriangle className="w-3.5 h-3.5 text-[#D97706] shrink-0" />
+                  <span>
+                    {tender.missingDocumentsCount} Mandatory Doc{tender.missingDocumentsCount === 1 ? '' : 's'} Missing
+                  </span>
+                </span>
+              ) : (
+                <span className="text-[10px] font-medium text-[#15803D] flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A] shrink-0" />
+                  <span>All Mandatory Docs Ready</span>
+                </span>
+              )}
             </div>
           </div>
         </div>
