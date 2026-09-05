@@ -197,6 +197,18 @@ def extract_project_nodes():
             "route": "/archive",
             "module": "archive",
         },
+        {
+            "id": "screen:organizations",
+            "name": "Organizations - Procuring Entity Hierarchy",
+            "route": "/tools/organizations",
+            "module": "tools",
+        },
+        {
+            "id": "screen:permissions",
+            "name": "Access & Permissions Matrix",
+            "route": "/permissions",
+            "module": "security",
+        },
     ]
 
     for sc in screens:
@@ -302,6 +314,12 @@ def extract_project_nodes():
             "type": "db_table",
             "desc": "Persistent department channel discussions and collaboration streams",
         },
+        {
+            "id": "entity:organizations",
+            "name": "organizations",
+            "type": "db_table",
+            "desc": "Procuring entities, hierarchy trees, parent links, aliases, portal URLs",
+        },
     ]
     nodes.extend(entities)
 
@@ -403,6 +421,16 @@ def extract_project_nodes():
             "screen:chat_discussions",
             "entity:chat_channel_messages",
             "PERSISTS_CHANNEL_CHAT",
+        ),
+        (
+            "screen:organizations",
+            "entity:organizations",
+            "MANAGES_PROCURING_ENTITIES",
+        ),
+        (
+            "screen:permissions",
+            "entity:users",
+            "GOVERNS_ROLE_PERMISSIONS",
         ),
     ]
     for src, tgt, rel in screen_entity_map:

@@ -184,6 +184,20 @@
       "module": "archive"
     },
     {
+      "id": "screen:organizations",
+      "name": "Organizations - Procuring Entity Hierarchy",
+      "type": "screen",
+      "route": "/tools/organizations",
+      "module": "tools"
+    },
+    {
+      "id": "screen:permissions",
+      "name": "Access & Permissions Matrix",
+      "type": "screen",
+      "route": "/permissions",
+      "module": "security"
+    },
+    {
       "id": "entity:users",
       "name": "users",
       "type": "db_table",
@@ -272,6 +286,12 @@
       "name": "chat_channel_messages",
       "type": "db_table",
       "desc": "Persistent department channel discussions and collaboration streams"
+    },
+    {
+      "id": "entity:organizations",
+      "name": "organizations",
+      "type": "db_table",
+      "desc": "Procuring entities, hierarchy trees, parent links, aliases, portal URLs"
     },
     {
       "id": "storage:root",
@@ -456,6 +476,16 @@
       "source": "screen:chat_discussions",
       "target": "entity:chat_channel_messages",
       "relation": "PERSISTS_CHANNEL_CHAT"
+    },
+    {
+      "source": "screen:organizations",
+      "target": "entity:organizations",
+      "relation": "MANAGES_PROCURING_ENTITIES"
+    },
+    {
+      "source": "screen:permissions",
+      "target": "entity:users",
+      "relation": "GOVERNS_ROLE_PERMISSIONS"
     }
   ]
 }

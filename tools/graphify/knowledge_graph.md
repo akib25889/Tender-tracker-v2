@@ -36,6 +36,8 @@
 | `screen:chat_discussions` | Team Chat & Tender Discussions | `/discussions` | `collaboration` |
 | `screen:tender_summary` | Formal 3-Page Tender Document Summary | `/registry/summary/{id}` | `registry` |
 | `screen:archive` | Archived Non-Participating Records | `/archive` | `archive` |
+| `screen:organizations` | Organizations - Procuring Entity Hierarchy | `/tools/organizations` | `tools` |
+| `screen:permissions` | Access & Permissions Matrix | `/permissions` | `security` |
 
 ## 3. Database Entities & Relationships
 
@@ -54,6 +56,7 @@
 - **`system_settings`**: NVMe storage vault paths, SLA alert thresholds, and SMTP gateway configurations
 - **`tender_submissions`**: Official portal submission references, receipt checksums, and lock timestamps
 - **`chat_channel_messages`**: Persistent department channel discussions and collaboration streams
+- **`organizations`**: Procuring entities, hierarchy trees, parent links, aliases, portal URLs
 
 ## 4. Local File Storage Vault
 
@@ -95,3 +98,5 @@
 - `screen:settings` ──[MANAGES_TAXONOMIES]──> `entity:tender_categories`
 - `screen:tender_submission` ──[RECORDS_SUBMISSION_PROOF]──> `entity:tender_submissions`
 - `screen:chat_discussions` ──[PERSISTS_CHANNEL_CHAT]──> `entity:chat_channel_messages`
+- `screen:organizations` ──[MANAGES_PROCURING_ENTITIES]──> `entity:organizations`
+- `screen:permissions` ──[GOVERNS_ROLE_PERMISSIONS]──> `entity:users`
