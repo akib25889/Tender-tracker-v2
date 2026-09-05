@@ -144,31 +144,42 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
     >
       {/* Top Header / Branding with Minimizer Button */}
       <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
-        <div className="h-14 px-3 flex items-center justify-between border-b border-[#1E293B] shrink-0">
-          <div className="flex items-center gap-2.5 overflow-hidden min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center text-white shrink-0 shadow-sm">
-              <ShieldCheck className="w-4 h-4" />
-            </div>
-            {!collapsed && (
-              <div className="flex flex-col min-w-0">
-                <span className="font-display font-bold text-sm text-white tracking-tight leading-none truncate">
-                  TenderTracker
-                </span>
-                <span className="text-[10px] font-semibold text-[#94A3B8] uppercase tracking-wider mt-1 truncate">
-                  Command Center
-                </span>
+        <div className={`h-14 ${collapsed ? 'flex items-center justify-center px-0' : 'px-3 flex items-center justify-between'} border-b border-[#1E293B] shrink-0`}>
+          {collapsed ? (
+            <button
+              onClick={onToggle}
+              className="relative w-9 h-9 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] flex items-center justify-center text-white shadow-sm transition-all group cursor-pointer"
+              title="Expand sidebar"
+            >
+              <ShieldCheck className="w-4 h-4 group-hover:hidden transition-transform" />
+              <ChevronRight className="w-4 h-4 hidden group-hover:block transition-transform" />
+            </button>
+          ) : (
+            <>
+              <div className="flex items-center gap-2.5 overflow-hidden min-w-0">
+                <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center text-white shrink-0 shadow-sm">
+                  <ShieldCheck className="w-4 h-4" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="font-display font-bold text-sm text-white tracking-tight leading-none truncate">
+                    TenderTracker
+                  </span>
+                  <span className="text-[10px] font-semibold text-[#94A3B8] uppercase tracking-wider mt-1 truncate">
+                    Command Center
+                  </span>
+                </div>
               </div>
-            )}
-          </div>
 
-          {/* Minimizer Button */}
-          <button
-            onClick={onToggle}
-            className="p-1.5 rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#1E293B] transition-colors shrink-0"
-            title={collapsed ? 'Expand sidebar' : 'Minimize sidebar'}
-          >
-            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          </button>
+              {/* Minimizer Button */}
+              <button
+                onClick={onToggle}
+                className="p-1.5 rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#1E293B] transition-colors shrink-0 cursor-pointer"
+                title="Minimize sidebar"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+            </>
+          )}
         </div>
 
         {/* Command Navigation */}
@@ -189,19 +200,35 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
                 <NavLink
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors group ${
+                  className={`flex items-center ${
+                    collapsed ? 'justify-center px-0 py-2.5' : 'justify-between px-3 py-2'
+                  } rounded-lg text-sm font-medium transition-colors group relative ${
                     isMatch
                       ? 'bg-[#1E293B] text-white font-semibold'
                       : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
                   }`}
-                  title={collapsed ? item.label : undefined}
+                  title={
+                    collapsed
+                      ? item.badge || item.urgentBadge
+                        ? `${item.label} (${item.urgentBadge || item.badge})`
+                        : item.label
+                      : undefined
+                  }
                 >
-                  <div className="flex items-center gap-3 truncate">
+                  <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} truncate`}>
                     <Icon className="w-4 h-4 shrink-0 text-[#94A3B8] group-hover:text-white transition-colors" />
                     {!collapsed && <span className="truncate">{item.label}</span>}
                   </div>
 
-                  {!collapsed && (
+                  {collapsed ? (
+                    (item.urgentBadge || item.badge) && (
+                      <span
+                        className={`absolute top-1.5 right-2 w-2 h-2 rounded-full ${
+                          item.urgentBadge ? 'bg-[#EF4444] animate-pulse' : 'bg-[#3B82F6]'
+                        }`}
+                      />
+                    )
+                  ) : (
                     <>
                       {item.urgentBadge && (
                         <span className="px-1.5 py-0.5 rounded-full bg-[#FEF2F2] text-[#B91C1C] font-mono text-[10px] font-bold">
@@ -228,7 +255,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
               <button
                 type="button"
                 onClick={() => setIsToolsOpen(!isToolsOpen)}
-                className={`w-full flex items-center justify-center p-2 rounded-lg text-sm transition-colors ${
+                className={`w-full flex items-center justify-center py-2.5 px-0 rounded-lg text-sm transition-colors cursor-pointer ${
                   isToolsRoute
                     ? 'bg-[#1E293B] text-white'
                     : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
@@ -341,7 +368,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors group ${
+                  `flex items-center ${
+                    collapsed ? 'justify-center px-0 py-2.5' : 'justify-between px-3 py-2'
+                  } rounded-lg text-sm font-medium transition-colors group relative ${
                     isActive
                       ? 'bg-[#1E293B] text-white font-semibold'
                       : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
@@ -349,7 +378,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
                 }
                 title={collapsed ? item.label : undefined}
               >
-                <div className="flex items-center gap-3 truncate">
+                <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} truncate`}>
                   <Icon className="w-4 h-4 shrink-0 text-[#94A3B8] group-hover:text-white" />
                   {!collapsed && <span className="truncate">{item.label}</span>}
                 </div>
@@ -366,7 +395,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
         {/* Sidebar Minimizer Bar at Bottom */}
         <button
           onClick={onToggle}
-          className="w-full flex items-center justify-center py-2 px-3 rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#1E293B] transition-colors"
+          className={`w-full flex items-center justify-center ${
+            collapsed ? 'py-2.5 px-0' : 'py-2 px-3'
+          } rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#1E293B] transition-colors cursor-pointer`}
           title={collapsed ? 'Expand sidebar' : 'Minimize sidebar'}
         >
           {collapsed ? (
