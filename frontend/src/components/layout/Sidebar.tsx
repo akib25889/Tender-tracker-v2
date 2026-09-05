@@ -18,6 +18,8 @@ import {
   Archive,
   MessageSquare,
   KeyRound,
+  Building2,
+  Wrench,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 
@@ -101,6 +103,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
     },
   ];
 
+  const toolsItems = [
+    {
+      label: 'Organizations',
+      path: '/tools/organizations',
+      icon: Building2,
+      badge: undefined,
+    },
+  ];
+
   const systemItems = [
     {
       label: 'Access & Permissions',
@@ -129,8 +140,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       }`}
     >
       {/* Top Header / Branding with Minimizer Button */}
-      <div className="flex flex-col">
-        <div className="h-14 px-3 flex items-center justify-between border-b border-[#1E293B]">
+      <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+        <div className="h-14 px-3 flex items-center justify-between border-b border-[#1E293B] shrink-0">
           <div className="flex items-center gap-2.5 overflow-hidden min-w-0">
             <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center text-white shrink-0 shadow-sm">
               <ShieldCheck className="w-4 h-4" />
@@ -200,6 +211,46 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
                         </span>
                       )}
                     </>
+                  )}
+                </NavLink>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Tools & Addons Module */}
+        <div className="px-3 pb-4">
+          {!collapsed && (
+            <div className="px-2 pb-2 text-[10px] font-semibold tracking-wider uppercase text-[#64748B] flex items-center gap-1.5">
+              <Wrench className="w-3 h-3 text-[#64748B]" />
+              <span>Tools & Addons</span>
+            </div>
+          )}
+          <nav className="space-y-1">
+            {toolsItems.map((item) => {
+              const Icon = item.icon;
+              const isMatch = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors group ${
+                    isMatch
+                      ? 'bg-[#1E293B] text-white font-semibold'
+                      : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
+                  }`}
+                  title={collapsed ? item.label : undefined}
+                >
+                  <div className="flex items-center gap-3 truncate">
+                    <Icon className="w-4 h-4 shrink-0 text-[#94A3B8] group-hover:text-white transition-colors" />
+                    {!collapsed && <span className="truncate">{item.label}</span>}
+                  </div>
+
+                  {!collapsed && item.badge && (
+                    <span className="px-1.5 py-0.2 rounded-full bg-[#1E293B] text-[#F8FAFC] font-mono text-[11px] font-semibold">
+                      {item.badge}
+                    </span>
                   )}
                 </NavLink>
               );

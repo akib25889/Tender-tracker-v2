@@ -266,3 +266,17 @@ export interface TenderCategory {
   color_badge?: string;
   created_at?: string;
 }
+
+export interface Organization {
+  id: string;
+  name: string;
+  shortName?: string;
+  type: string;
+  parentId?: string | null;
+  country: string;
+  website?: string;
+  priority: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  aliases?: string[];
+  description?: string;
+  createdAt?: string;
+}

@@ -24,6 +24,7 @@ import { ChatDiscussionsPage } from './pages/ChatDiscussionsPage';
 import { MasterPermissionsPage } from './pages/MasterPermissionsPage';
 import { TenderPartnersTab } from './pages/tender-tabs/TenderPartnersTab';
 import { SharedDocumentPortalPage } from './pages/SharedDocumentPortalPage';
+import { OrganizationsPage } from './pages/OrganizationsPage';
 
 export const router = createBrowserRouter([
   {
@@ -131,6 +132,14 @@ export const router = createBrowserRouter([
       {
         path: 'permissions',
         element: <MasterPermissionsPage />,
+      },
+      {
+        path: 'tools/organizations',
+        element: <OrganizationsPage />,
+      },
+      {
+        path: 'organizations',
+        element: <Navigate to="/tools/organizations" replace />,
       },
       {
         path: '*',

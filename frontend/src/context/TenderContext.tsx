@@ -15,10 +15,12 @@ import {
   ReusableDocument,
   DocumentAccessLevel,
   TenderCategory,
+  Organization,
 } from '../types/tender';
 import { MOCK_TENDERS } from '../mock/tenders';
 import { TEAM_PROFILES } from '../mock/users';
 import { INITIAL_REUSABLE_DOCUMENTS } from '../mock/reusableDocuments';
+import { INITIAL_ORGANIZATIONS } from '../mock/organizations';
 
 export type CurrencyMode = 'USD' | 'BDT';
 
@@ -107,6 +109,11 @@ interface TenderContextType {
   updateCategory: (id: number, updates: { name?: string; description?: string; color_badge?: string }) => Promise<TenderCategory | null>;
   deleteCategory: (id: number) => Promise<boolean>;
   refreshCategories: () => Promise<void>;
+  // Organization Master Directory
+  organizations: Organization[];
+  addOrganization: (orgData: Omit<Organization, 'id'>) => Organization;
+  updateOrganization: (id: string, updates: Partial<Organization>) => void;
+  deleteOrganization: (id: string) => void;
   // Modal states
   isNewTenderModalOpen: boolean;
   setIsNewTenderModalOpen: (open: boolean) => void;
@@ -314,6 +321,44 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       setCategories((prev) => prev.filter((c) => c.id !== id));
       return true;
     }
+  };
+
+  // Organizations State & Persistence
+  const [organizations, setOrganizations] = useState<Organization[]>(() => {
+    const saved = localStorage.getItem('tendertracker_organizations_v1');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse organizations from localStorage', e);
+      }
+    }
+    return INITIAL_ORGANIZATIONS;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('tendertracker_organizations_v1', JSON.stringify(organizations));
+  }, [organizations]);
+
+  const addOrganization = (orgData: Omit<Organization, 'id'>): Organization => {
+    const newId = `ORG-${Date.now().toString(36).toUpperCase()}`;
+    const newOrg: Organization = {
+      ...orgData,
+      id: newId,
+      createdAt: new Date().toISOString(),
+    };
+    setOrganizations((prev) => [newOrg, ...prev]);
+    return newOrg;
+  };
+
+  const updateOrganization = (id: string, updates: Partial<Organization>) => {
+    setOrganizations((prev) =>
+      prev.map((o) => (o.id === id ? { ...o, ...updates } : o))
+    );
+  };
+
+  const deleteOrganization = (id: string) => {
+    setOrganizations((prev) => prev.filter((o) => o.id !== id));
   };
 
   useEffect(() => {
@@ -1163,6 +1208,10 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         updateCategory,
         deleteCategory,
         refreshCategories,
+        organizations,
+        addOrganization,
+        updateOrganization,
+        deleteOrganization,
         isNewTenderModalOpen,
         setIsNewTenderModalOpen,
         uploadFolderTarget,
