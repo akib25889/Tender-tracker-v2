@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ShieldCheck,
-  Lock,
   FileText,
   Upload,
   Eye,
@@ -319,15 +318,6 @@ export const PartnerPortalPage: React.FC = () => {
 
         {/* Right Header Badges & Profile */}
         <div className="flex items-center gap-3 md:gap-6">
-          <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#F0FDF4] border border-[#BBF7D0]">
-            <Lock className="w-3.5 h-3.5 text-[#15803D]" />
-            <span className="text-[11px] font-bold text-[#15803D] uppercase tracking-wide">
-              Token Session Active (23h)
-            </span>
-          </div>
-
-          <div className="h-6 w-px bg-[#E2E8F0] hidden sm:block" />
-
           {/* User Profile */}
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">

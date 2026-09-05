@@ -11,6 +11,7 @@ import {
   Unlock,
   RefreshCw,
   ExternalLink,
+  Clock,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 
@@ -49,12 +50,31 @@ export const TenderPartnersTab: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [selectedPartnerForCeiling, setSelectedPartnerForCeiling] = useState<TenderPartner | null>(null);
+  const [selectedPartnerForAccess, setSelectedPartnerForAccess] = useState<TenderPartner | null>(null);
+  const [extendEndDate, setExtendEndDate] = useState('');
+
+  // Helpers for access duration
+  const calculateRemainingDays = (endDateStr?: string) => {
+    if (!endDateStr) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const end = new Date(endDateStr);
+    end.setHours(0, 0, 0, 0);
+    const diffTime = end.getTime() - today.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  const getFutureDateString = (days: number) => {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.toISOString().split('T')[0];
+  };
 
   // Form State for Assigning
   const [selectedOrgId, setSelectedOrgId] = useState('');
   const [partnerType, setPartnerType] = useState('JV_PARTNER');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [endDate, setEndDate] = useState(() => getFutureDateString(14));
   const [notes, setNotes] = useState('');
 
   const fetchTenderPartners = async () => {
@@ -162,6 +182,31 @@ export const TenderPartnersTab: React.FC = () => {
       }
     } catch (err) {
       console.error('Failed to update ceiling:', err);
+    }
+  };
+
+  const handleSaveAccessDuration = async (partner: TenderPartner, newEndDate: string) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/permissions/partners/${partner.organization_id}/assign`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tender_id: tender.id,
+          partner_type: partner.partner_type,
+          start_date: partner.start_date || new Date().toISOString().split('T')[0],
+          end_date: newEndDate || undefined,
+          notes: partner.notes || undefined,
+        }),
+      });
+
+      if (res.ok) {
+        fetchTenderPartners();
+        setSelectedPartnerForAccess(null);
+      } else {
+        alert('Failed to update access duration.');
+      }
+    } catch (err) {
+      console.error('Failed to update access duration:', err);
     }
   };
 
@@ -297,7 +342,7 @@ export const TenderPartnersTab: React.FC = () => {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-4 text-xs text-[#64748B]">
+                    <div className="flex items-center gap-3 text-xs text-[#64748B] flex-wrap">
                       <span className="font-mono text-[11px] text-[#2563EB]">{partner.organization_id}</span>
                       {partner.country && <span>📍 {partner.country}</span>}
                       {partner.contact_email && (
@@ -306,6 +351,41 @@ export const TenderPartnersTab: React.FC = () => {
                           {partner.contact_email}
                         </span>
                       )}
+
+                      {/* Access Duration Pill */}
+                      {(() => {
+                        const days = calculateRemainingDays(partner.end_date);
+                        if (!partner.end_date) {
+                          return (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded border border-[#E2E8F0]">
+                              <Clock className="w-3 h-3 text-[#94A3B8]" />
+                              Access: Indefinite
+                            </span>
+                          );
+                        }
+                        if (days !== null && days < 0) {
+                          return (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#B91C1C] bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FECACA]">
+                              <Clock className="w-3 h-3 text-[#EF4444]" />
+                              Access Expired ({partner.end_date})
+                            </span>
+                          );
+                        }
+                        if (days !== null && days <= 2) {
+                          return (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#B45309] bg-[#FFFBEB] px-2 py-0.5 rounded border border-[#FDE68A]">
+                              <Clock className="w-3 h-3 text-[#F59E0B]" />
+                              {days === 0 ? 'Expires Today' : `${days} Day Left`} ({partner.end_date})
+                            </span>
+                          );
+                        }
+                        return (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#15803D] bg-[#F0FDF4] px-2 py-0.5 rounded border border-[#BBF7D0]">
+                            <Clock className="w-3 h-3 text-[#16A34A]" />
+                            {days} Days Access Left (Expires {partner.end_date})
+                          </span>
+                        );
+                      })()}
                     </div>
                   </div>
 
@@ -340,6 +420,17 @@ export const TenderPartnersTab: React.FC = () => {
 
                   {/* Right: Actions */}
                   <div className="flex items-center gap-2 self-end lg:self-center">
+                    <button
+                      onClick={() => {
+                        setSelectedPartnerForAccess(partner);
+                        setExtendEndDate(partner.end_date || getFutureDateString(14));
+                      }}
+                      className="px-2.5 py-1.5 text-xs font-semibold bg-white hover:bg-[#F1F5F9] text-[#0F172A] border border-[#E2E8F0] rounded-lg shadow-2xs transition-colors flex items-center gap-1"
+                      title="Configure or extend access duration"
+                    >
+                      <Clock className="w-3 h-3 text-[#2563EB]" />
+                      <span>Set Duration</span>
+                    </button>
                     <Link
                       to="/partner/portal"
                       className="px-2.5 py-1.5 text-xs font-semibold bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#2563EB] border border-[#BFDBFE] rounded-lg shadow-2xs transition-colors flex items-center gap-1"
@@ -427,6 +518,62 @@ export const TenderPartnersTab: React.FC = () => {
                 </select>
               </div>
 
+              {/* Access Duration Presets */}
+              <div className="space-y-1.5 bg-[#F8FAFC] p-3 rounded-lg border border-[#E2E8F0]">
+                <div className="flex items-center justify-between">
+                  <label className="block font-bold text-[#0F172A] text-xs flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-[#2563EB]" />
+                    <span>Access Duration (Days)</span>
+                  </label>
+                  {endDate && (
+                    <span className="text-[11px] font-bold text-[#2563EB]">
+                      {(() => {
+                        const days = calculateRemainingDays(endDate);
+                        return days !== null && days >= 0 ? `${days} Days Access Granted` : 'Custom Date';
+                      })()}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                  {[
+                    { label: '3 Days', days: 3 },
+                    { label: '7 Days', days: 7 },
+                    { label: '14 Days', days: 14 },
+                    { label: '30 Days', days: 30 },
+                    { label: 'Tender Deadline', days: 11 },
+                  ].map((preset) => (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      onClick={() => {
+                        const newEnd = getFutureDateString(preset.days);
+                        setEndDate(newEnd);
+                        if (!startDate) setStartDate(new Date().toISOString().split('T')[0]);
+                      }}
+                      className={`px-2.5 py-1 text-xs font-semibold rounded-lg border transition-colors ${
+                        endDate === getFutureDateString(preset.days)
+                          ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-2xs'
+                          : 'bg-white text-[#475569] border-[#CBD5E1] hover:bg-[#F1F5F9]'
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setEndDate('')}
+                    className={`px-2.5 py-1 text-xs font-semibold rounded-lg border transition-colors ${
+                      !endDate
+                        ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-2xs'
+                        : 'bg-white text-[#475569] border-[#CBD5E1] hover:bg-[#F1F5F9]'
+                    }`}
+                  >
+                    Indefinite
+                  </button>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-[#475569] mb-1">Start Date</label>
@@ -438,7 +585,7 @@ export const TenderPartnersTab: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#475569] mb-1">End Date</label>
+                  <label className="block font-semibold text-[#475569] mb-1">Expiration / End Date</label>
                   <input
                     type="date"
                     value={endDate}
@@ -476,6 +623,113 @@ export const TenderPartnersTab: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Set Access Duration & Expiration */}
+      {selectedPartnerForAccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-xl shadow-2xl border border-[#E2E8F0] max-w-md w-full overflow-hidden">
+            <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-[#2563EB]" />
+                <div>
+                  <h3 className="font-bold text-sm text-[#0F172A]">Set Partner Access Duration</h3>
+                  <p className="text-[11px] text-[#64748B]">{selectedPartnerForAccess.organization_name}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedPartnerForAccess(null)}
+                className="text-[#94A3B8] hover:text-[#0F172A]"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4 text-xs">
+              {/* Current Status Box */}
+              <div className="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[#64748B]">Current Expiration:</span>
+                  <span className="font-mono font-bold text-[#0F172A]">
+                    {selectedPartnerForAccess.end_date || 'None (Indefinite)'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-[#64748B]">Remaining Validity:</span>
+                  <span className="font-semibold text-[#2563EB]">
+                    {(() => {
+                      const days = calculateRemainingDays(selectedPartnerForAccess.end_date);
+                      if (!selectedPartnerForAccess.end_date) return 'Indefinite';
+                      if (days !== null && days < 0) return 'Expired';
+                      return `${days} Days`;
+                    })()}
+                  </span>
+                </div>
+              </div>
+
+              {/* Quick Extend Buttons */}
+              <div>
+                <label className="block font-bold text-[#0F172A] mb-1.5">Quick Grant / Extend Duration</label>
+                <div className="grid grid-cols-4 gap-2">
+                  {[3, 7, 14, 30].map((days) => (
+                    <button
+                      key={days}
+                      type="button"
+                      onClick={() => setExtendEndDate(getFutureDateString(days))}
+                      className={`p-2 rounded-lg border text-center transition-colors ${
+                        extendEndDate === getFutureDateString(days)
+                          ? 'bg-[#0F172A] text-white border-[#0F172A]'
+                          : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
+                      }`}
+                    >
+                      <div className="font-bold text-xs">+{days}</div>
+                      <div className="text-[10px] opacity-80">Days</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Custom End Date Picker */}
+              <div>
+                <label className="block font-semibold text-[#475569] mb-1">Set Specific Expiration Date</label>
+                <input
+                  type="date"
+                  value={extendEndDate}
+                  onChange={(e) => setExtendEndDate(e.target.value)}
+                  className="w-full px-3 py-2 border border-[#CBD5E1] rounded-lg text-xs"
+                />
+              </div>
+
+              {/* Computed Summary */}
+              {extendEndDate && (
+                <div className="p-2.5 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-between text-[11px]">
+                  <span className="text-[#1D4ED8]">New Access Window:</span>
+                  <span className="font-bold text-[#1D4ED8]">
+                    {calculateRemainingDays(extendEndDate)} Days Access (Until {extendEndDate})
+                  </span>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedPartnerForAccess(null)}
+                  className="px-3 py-1.5 text-xs text-[#64748B] hover:bg-[#F1F5F9] rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSaveAccessDuration(selectedPartnerForAccess, extendEndDate)}
+                  className="px-4 py-1.5 text-xs font-semibold bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg shadow-xs transition-colors"
+                >
+                  Save Access Duration
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
