@@ -123,7 +123,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       label: 'Access & Permissions',
       path: '/tools/permissions',
       icon: KeyRound,
-      badge: 'Master',
+      badge: undefined,
     },
   ];
 

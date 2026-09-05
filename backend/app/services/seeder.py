@@ -575,7 +575,7 @@ def seed_database(db: Session):
         ("partner.manage", "Manage JV & Consortium Partners", "partner", "manage"),
         (
             "permission.manage",
-            "Master Access Control & Ceilings",
+            "Access Control & Ceilings",
             "permission",
             "manage",
         ),

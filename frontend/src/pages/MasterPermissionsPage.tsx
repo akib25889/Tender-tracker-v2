@@ -45,7 +45,7 @@ const STANDARD_PERMISSIONS = [
   { code: 'financial.edit', name: 'Edit Commercial Pricing Model', module: 'financial', icon: AlertTriangle, sensitive: true },
   { code: 'submission.submit', name: 'Execute Portal Bid Submission', module: 'submission', icon: ShieldAlert, sensitive: true },
   { code: 'partner.manage', name: 'Manage JV & Consortium Partners', module: 'partner', icon: Building2 },
-  { code: 'permission.manage', name: 'Master Access Control & Ceilings', module: 'permission', icon: Shield },
+  { code: 'permission.manage', name: 'Access Control & Ceilings', module: 'permission', icon: Shield },
 ];
 
 export const MasterPermissionsPage: React.FC = () => {
@@ -370,7 +370,7 @@ export const MasterPermissionsPage: React.FC = () => {
             </div>
             <div>
               <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
-                Master Permission &amp; Access Control Center
+                Access &amp; Permissions Control Center
               </h1>
               <p className="text-xs text-[#64748B]">
                 Centralized 4-layer authorization engine, partner permission ceilings, and immutable security audit trail.
