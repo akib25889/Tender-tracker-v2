@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import {
   Users,
   Building2,
-  ShieldCheck,
   Plus,
   Trash2,
   Mail,
@@ -255,36 +254,6 @@ export const TenderPartnersTab: React.FC = () => {
             <Plus className="w-4 h-4" />
             <span>Assign Partner</span>
           </button>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#64748B]">Assigned Partners</span>
-            <Users className="w-4 h-4 text-[#2563EB]" />
-          </div>
-          <div className="mt-2 text-2xl font-bold text-[#0F172A]">{assignedPartners.length}</div>
-          <div className="mt-1 text-[11px] text-[#64748B]">Active JV & Consortium participants</div>
-        </div>
-
-        <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#64748B]">Security Boundary</span>
-            <ShieldCheck className="w-4 h-4 text-[#10B981]" />
-          </div>
-          <div className="mt-2 text-2xl font-bold text-[#10B981]">Layer 2 Enforced</div>
-          <div className="mt-1 text-[11px] text-[#64748B]">Unassigned orgs hard-blocked (403/404)</div>
-        </div>
-
-        <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#64748B]">Financial Protection</span>
-            <Lock className="w-4 h-4 text-[#F59E0B]" />
-          </div>
-          <div className="mt-2 text-2xl font-bold text-[#F59E0B]">Ceilings Active</div>
-          <div className="mt-1 text-[11px] text-[#64748B]">Financial & Commercial data sealed</div>
         </div>
       </div>
 
