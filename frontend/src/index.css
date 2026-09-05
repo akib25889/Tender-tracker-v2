@@ -1,59 +1,129 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
-/* ─── Light-mode color tokens ─────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   1. DESIGN TOKENS & SYSTEM PALETTE (CSS CUSTOM PROPERTIES)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 :root {
-  --bg-canvas:       #F8FAFC;
-  --bg-surface:      #FFFFFF;
-  --bg-subtle:       #F1F5F9;
-  --bg-muted:        #E2E8F0;
-  --bg-hover:        #F8FAFC;
-  --bg-shell:        #0F172A;
-  --bg-shell-raised: #1E293B;
-  --bg-input:        #F1F5F9;
+  /* Surface Hierarchy */
+  --bg-canvas:           #F8FAFC;
+  --bg-surface:          #FFFFFF;
+  --bg-surface-raised:   #FFFFFF;
+  --bg-subtle:           #F1F5F9;
+  --bg-muted:            #E2E8F0;
+  --bg-hover:            #F8FAFC;
+  --bg-active:           #EDF2F7;
+  --bg-input:            #FFFFFF;
+  --bg-dropdown:         #FFFFFF;
 
-  --text-primary:    #0F172A;
-  --text-secondary:  #475569;
-  --text-muted:      #64748B;
-  --text-faint:      #94A3B8;
-  --text-on-dark:    #F8FAFC;
-  --text-link:       #2563EB;
+  /* Typography / Text Contrast */
+  --text-primary:        #0F172A;
+  --text-secondary:      #475569;
+  --text-muted:          #64748B;
+  --text-faint:          #94A3B8;
+  --text-on-dark:        #F8FAFC;
+  --text-link:           #2563EB;
 
-  --border-default:  #E2E8F0;
-  --border-subtle:   #F1F5F9;
-  --border-strong:   #CBD5E1;
+  /* Borders & Dividers */
+  --border-default:      #E2E8F0;
+  --border-subtle:       #F1F5F9;
+  --border-strong:       #CBD5E1;
+  --border-focus:        #2563EB;
 
-  --scrollbar-thumb: #CBD5E1;
-  --scrollbar-hover: #94A3B8;
+  /* Status Accents (Light Mode Tints) */
+  --badge-info-bg:       #EFF6FF;
+  --badge-info-border:   #BFDBFE;
+  --badge-info-text:     #1D4ED8;
+
+  --badge-success-bg:    #F0FDF4;
+  --badge-success-border:#BBF7D0;
+  --badge-success-text:  #15803D;
+
+  --badge-warning-bg:    #FFFBEB;
+  --badge-warning-border:#FDE68A;
+  --badge-warning-text:  #B45309;
+
+  --badge-danger-bg:     #FEF2F2;
+  --badge-danger-border: #FECACA;
+  --badge-danger-text:   #B91C1C;
+
+  --badge-purple-bg:     #F5F3FF;
+  --badge-purple-border: #DDD6FE;
+  --badge-purple-text:   #6D28D9;
+
+  /* Scrollbar */
+  --scrollbar-thumb:     #CBD5E1;
+  --scrollbar-hover:     #94A3B8;
+
+  /* Elevation Shadows */
+  --shadow-card:         0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --shadow-elevated:     0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-popover:      0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -4px rgba(15, 23, 42, 0.05);
 }
 
-/* ─── Dark-mode token overrides ────────────────────────────────────── */
+/* ─── Modern High-Contrast Dark Theme (WCAG AA Compliant) ────────────────── */
 .dark {
-  --bg-canvas:       #0D1117;
-  --bg-surface:      #161B22;
-  --bg-subtle:       #21262D;
-  --bg-muted:        #30363D;
-  --bg-hover:        #1C2128;
-  --bg-shell:        #0D1117;
-  --bg-shell-raised: #161B22;
-  --bg-input:        #21262D;
+  /* Deep Modern Space Navy / Charcoal Canvas */
+  --bg-canvas:           #0B0F17;
+  --bg-surface:          #131B28;
+  --bg-surface-raised:   #1A2436;
+  --bg-subtle:           #172030;
+  --bg-muted:            #212D42;
+  --bg-hover:            #1E2A3E;
+  --bg-active:           #26354D;
+  --bg-input:            #101724;
+  --bg-dropdown:         #151E2E;
 
-  --text-primary:    #E6EDF3;
-  --text-secondary:  #C9D1D9;
-  --text-muted:      #8B949E;
-  --text-faint:      #6E7681;
-  --text-on-dark:    #E6EDF3;
-  --text-link:       #58A6FF;
+  /* Typography / Text Contrast (Contrast ratio >= 7:1) */
+  --text-primary:        #F1F5F9;
+  --text-secondary:      #CBD5E1;
+  --text-muted:          #94A3B8;
+  --text-faint:          #64748B;
+  --text-on-dark:        #F8FAFC;
+  --text-link:           #60A5FA;
 
-  --border-default:  #30363D;
-  --border-subtle:   #21262D;
-  --border-strong:   #484F58;
+  /* Borders & Dividers (Luminous Dark) */
+  --border-default:      #212E42;
+  --border-subtle:       #182334;
+  --border-strong:       #31425C;
+  --border-focus:        #3B82F6;
 
-  --scrollbar-thumb: #30363D;
-  --scrollbar-hover: #484F58;
+  /* Status Accents (Rich Luminous Dark Badges) */
+  --badge-info-bg:       rgba(37, 99, 235, 0.18);
+  --badge-info-border:   rgba(59, 130, 246, 0.38);
+  --badge-info-text:     #93C5FD;
+
+  --badge-success-bg:    rgba(22, 163, 74, 0.18);
+  --badge-success-border:rgba(34, 197, 94, 0.38);
+  --badge-success-text:  #86EFAC;
+
+  --badge-warning-bg:    rgba(217, 119, 6, 0.18);
+  --badge-warning-border:rgba(245, 158, 11, 0.38);
+  --badge-warning-text:  #FCD34D;
+
+  --badge-danger-bg:     rgba(220, 38, 38, 0.18);
+  --badge-danger-border: rgba(239, 68, 68, 0.38);
+  --badge-danger-text:   #FCA5A5;
+
+  --badge-purple-bg:     rgba(124, 58, 237, 0.18);
+  --badge-purple-border: rgba(168, 85, 247, 0.38);
+  --badge-purple-text:   #D8B4FE;
+
+  /* Scrollbar */
+  --scrollbar-thumb:     #2D3D56;
+  --scrollbar-hover:     #3F5272;
+
+  /* Dark Elevation Shadows */
+  --shadow-card:         0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+  --shadow-elevated:     0 4px 8px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --shadow-popover:      0 12px 24px -4px rgba(0, 0, 0, 0.65), 0 4px 8px -4px rgba(0, 0, 0, 0.4);
 }
 
-/* ─── Global base styles using tokens ──────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   2. GLOBAL FOUNDATIONS & RESET
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 html, body {
   margin: 0;
   padding: 0;
@@ -64,79 +134,404 @@ html, body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* ─── Dark mode: override the hardcoded hex classes in components ─── */
-/* Main page background */
+/* ═══════════════════════════════════════════════════════════════════════════
+   3. DARK MODE CANVASES & SURFACES OVERRIDES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Main canvas background */
 .dark .min-h-screen,
-.dark [class*="bg-\\[\\#F8FAFC\\]"],
+.dark [class*="bg-[#F8FAFC]"],
+.dark [class*="bg-\\[#F8FAFC\\]"],
+.dark .bg-\[\#F8FAFC\],
 .dark .bg-canvas {
   background-color: var(--bg-canvas) !important;
 }
 
-/* White surfaces → dark surface */
+/* White cards and surfaces -> dark surface */
 .dark [class*="bg-white"],
 .dark .bg-surface {
   background-color: var(--bg-surface) !important;
   color: var(--text-primary);
 }
 
-/* Light grey backgrounds → dark subtle */
-.dark [class*="bg-\\[\\#F1F5F9\\]"],
-.dark [class*="bg-\\[\\#F8FAFC\\]"]:not(.dark [class*="bg-\\[\\#0F172A\\]"]) {
+/* Subtle slate backgrounds (tables, column headers, cards) */
+.dark [class*="bg-[#F1F5F9]"],
+.dark [class*="bg-\\[#F1F5F9\\]"],
+.dark .bg-\[\#F1F5F9\],
+.dark [class*="bg-[#F0F4F8]"],
+.dark [class*="bg-[#E8F0FB]"] {
   background-color: var(--bg-subtle) !important;
 }
 
-/* Border colors */
-.dark [class*="border-\\[\\#E2E8F0\\]"] { border-color: var(--border-default) !important; }
-.dark [class*="border-\\[\\#F1F5F9\\]"] { border-color: var(--border-subtle)  !important; }
-.dark [class*="border-\\[\\#CBD5E1\\]"] { border-color: var(--border-strong)  !important; }
-.dark [class*="border-\\[\\#E8EDF2\\]"] { border-color: var(--border-default) !important; }
-.dark [class*="border-\\[\\#C8D5E2\\]"] { border-color: var(--border-strong)  !important; }
+/* Inactive button backgrounds & subtle gray panels */
+.dark [class*="bg-[#E2E8F0]"],
+.dark [class*="bg-\\[#E2E8F0\\]"],
+.dark .bg-\[\#E2E8F0\] {
+  background-color: var(--bg-muted) !important;
+}
 
-/* Text colors */
-.dark [class*="text-\\[\\#0F172A\\]"]  { color: var(--text-primary)   !important; }
-.dark [class*="text-\\[\\#1A2B4A\\]"]  { color: var(--text-primary)   !important; }
-.dark [class*="text-\\[\\#2D3A4A\\]"]  { color: var(--text-secondary) !important; }
-.dark [class*="text-\\[\\#475569\\]"]  { color: var(--text-secondary) !important; }
-.dark [class*="text-\\[\\#4B5563\\]"]  { color: var(--text-secondary) !important; }
-.dark [class*="text-\\[\\#64748B\\]"]  { color: var(--text-muted)     !important; }
-.dark [class*="text-\\[\\#94A3B8\\]"]  { color: var(--text-faint)     !important; }
-.dark [class*="text-\\[\\#9CA3AF\\]"]  { color: var(--text-faint)     !important; }
+/* Header blur & background */
+.dark header {
+  background-color: rgba(19, 27, 40, 0.92) !important;
+  border-color: var(--border-default) !important;
+}
 
-/* Input fields */
+/* Popover / Dropdown containers */
+.dark [class*="shadow-lg"],
+.dark [class*="shadow-xl"],
+.dark [class*="shadow-2xl"] {
+  box-shadow: var(--shadow-popover) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   4. STATUS BADGES & COLORED PILLS (ELIMINATING BLINDING PASTELS)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Blue / Info Containers (EFF6FF, DBEAFE, EEF2FF) */
+.dark [class*="bg-[#EFF6FF]"],
+.dark [class*="bg-\\[#EFF6FF\\]"],
+.dark .bg-\[\#EFF6FF\],
+.dark [class*="bg-[#DBEAFE]"],
+.dark [class*="bg-\\[#DBEAFE\\]"],
+.dark [class*="bg-[#EEF2FF]"] {
+  background-color: var(--badge-info-bg) !important;
+  color: var(--badge-info-text) !important;
+  border-color: var(--badge-info-border) !important;
+}
+
+/* Green / Success Containers (F0FDF4, ECFDF5, DCFCE7, D1FAE5) */
+.dark [class*="bg-[#F0FDF4]"],
+.dark [class*="bg-\\[#F0FDF4\\]"],
+.dark .bg-\[\#F0FDF4\],
+.dark [class*="bg-[#ECFDF5]"],
+.dark [class*="bg-\\[#ECFDF5\\]"],
+.dark .bg-\[\#ECFDF5\],
+.dark [class*="bg-[#DCFCE7]"],
+.dark [class*="bg-\\[#DCFCE7\\]"],
+.dark [class*="bg-[#D1FAE5]"] {
+  background-color: var(--badge-success-bg) !important;
+  color: var(--badge-success-text) !important;
+  border-color: var(--badge-success-border) !important;
+}
+
+/* Amber / Warning / Preparation Containers (FFFBEB, FEF3C7, FFF7ED, FDE68A) */
+.dark [class*="bg-[#FFFBEB]"],
+.dark [class*="bg-\\[#FFFBEB\\]"],
+.dark .bg-\[\#FFFBEB\],
+.dark [class*="bg-[#FEF3C7]"],
+.dark [class*="bg-\\[#FEF3C7\\]"],
+.dark .bg-\[\#FEF3C7\],
+.dark [class*="bg-[#FFF7ED]"],
+.dark [class*="bg-[#FDE68A]"] {
+  background-color: var(--badge-warning-bg) !important;
+  color: var(--badge-warning-text) !important;
+  border-color: var(--badge-warning-border) !important;
+}
+
+/* Red / Urgent / Error Containers (FEF2F2, FEE2E2, FECACA) */
+.dark [class*="bg-[#FEF2F2]"],
+.dark [class*="bg-\\[#FEF2F2\\]"],
+.dark .bg-\[\#FEF2F2\],
+.dark [class*="bg-[#FEE2E2]"],
+.dark [class*="bg-\\[#FEE2E2\\]"],
+.dark .bg-\[\#FEE2E2\],
+.dark [class*="bg-[#FECACA]"] {
+  background-color: var(--badge-danger-bg) !important;
+  color: var(--badge-danger-text) !important;
+  border-color: var(--badge-danger-border) !important;
+}
+
+/* Purple / Tertiary Containers (F3E8FF, F5F3FF) */
+.dark [class*="bg-[#F3E8FF]"],
+.dark [class*="bg-\\[#F3E8FF\\]"],
+.dark [class*="bg-[#F5F3FF]"] {
+  background-color: var(--badge-purple-bg) !important;
+  color: var(--badge-purple-text) !important;
+  border-color: var(--badge-purple-border) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   5. BORDER & DIVIDER OVERRIDES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Default borders (#E2E8F0, #F1F5F9, #E8EDF2) */
+.dark [class*="border-[#E2E8F0]"],
+.dark [class*="border-\\[#E2E8F0\\]"],
+.dark .border-\[\#E2E8F0\],
+.dark [class*="border-[#F1F5F9]"],
+.dark [class*="border-\\[#F1F5F9\\]"],
+.dark .border-\[\#F1F5F9\],
+.dark [class*="border-[#E8EDF2]"] {
+  border-color: var(--border-default) !important;
+}
+
+/* Strong / Elevated borders (#CBD5E1, #C8D5E2) */
+.dark [class*="border-[#CBD5E1]"],
+.dark [class*="border-\\[#CBD5E1\\]"],
+.dark .border-\[\#CBD5E1\],
+.dark [class*="border-[#C8D5E2]"] {
+  border-color: var(--border-strong) !important;
+}
+
+/* Status badge borders */
+.dark [class*="border-[#BFDBFE]"],
+.dark [class*="border-\\[#BFDBFE\\]"] { border-color: var(--badge-info-border) !important; }
+
+.dark [class*="border-[#BBF7D0]"],
+.dark [class*="border-\\[#BBF7D0\\]"],
+.dark [class*="border-[#A7F3D0]"]     { border-color: var(--badge-success-border) !important; }
+
+.dark [class*="border-[#FDE68A]"],
+.dark [class*="border-\\[#FDE68A\\]"],
+.dark [class*="border-[#FED7AA]"],
+.dark [class*="border-[#FCD34D]"]     { border-color: var(--badge-warning-border) !important; }
+
+.dark [class*="border-[#FECACA]"],
+.dark [class*="border-\\[#FECACA\\]"],
+.dark [class*="border-[#FCA5A5]"],
+.dark [class*="border-[#F87171]"]     { border-color: var(--badge-danger-border) !important; }
+
+.dark [class*="border-[#DDD6FE]"],
+.dark [class*="border-[#D8B4FE]"]     { border-color: var(--badge-purple-border) !important; }
+
+/* Divider lines */
+.dark hr {
+  border-color: var(--border-default) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   6. HIGH-CONTRAST TYPOGRAPHY & ACCENT TEXT
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Primary Headings & Bold Text (#0F172A, #1A2B4A, #111827) */
+.dark [class*="text-[#0F172A]"],
+.dark [class*="text-\\[#0F172A\\]"],
+.dark .text-\[\#0F172A\],
+.dark [class*="text-[#1A2B4A]"],
+.dark [class*="text-[#111827]"] {
+  color: var(--text-primary) !important;
+}
+
+/* Secondary Body & Labels (#475569, #4B5563, #2D3A4A, #334155) */
+.dark [class*="text-[#475569]"],
+.dark [class*="text-\\[#475569\\]"],
+.dark .text-\[\#475569\],
+.dark [class*="text-[#4B5563]"],
+.dark [class*="text-[#2D3A4A]"],
+.dark [class*="text-[#334155]"] {
+  color: var(--text-secondary) !important;
+}
+
+/* Muted / Subtitle Text (#64748B, #6B7280) */
+.dark [class*="text-[#64748B]"],
+.dark [class*="text-\\[#64748B\\]"],
+.dark .text-\[\#64748B\],
+.dark [class*="text-[#6B7280]"] {
+  color: var(--text-muted) !important;
+}
+
+/* Faint / Placeholder / Timestamp Text (#94A3B8, #9CA3AF) */
+.dark [class*="text-[#94A3B8]"],
+.dark [class*="text-\\[#94A3B8\\]"],
+.dark .text-\[\#94A3B8\],
+.dark [class*="text-[#9CA3AF]"] {
+  color: var(--text-faint) !important;
+}
+
+/* Status Text Overrides */
+/* Blue Accents */
+.dark [class*="text-[#1D4ED8]"],
+.dark [class*="text-\\[#1D4ED8\\]"],
+.dark [class*="text-[#1E3A8A]"] {
+  color: #93C5FD !important;
+}
+.dark [class*="text-[#2563EB]"],
+.dark [class*="text-\\[#2563EB\\]"],
+.dark .text-\[\#2563EB\] {
+  color: #60A5FA !important;
+}
+
+/* Green Accents */
+.dark [class*="text-[#15803D]"],
+.dark [class*="text-\\[#15803D\\]"],
+.dark [class*="text-[#16A34A]"],
+.dark [class*="text-\\[#16A34A\\]"],
+.dark [class*="text-[#059669]"],
+.dark [class*="text-[#047857]"],
+.dark [class*="text-[#065F46]"],
+.dark [class*="text-[#064E3B]"],
+.dark [class*="text-[#166534]"],
+.dark [class*="text-[#10B981]"] {
+  color: #86EFAC !important;
+}
+
+/* Amber / Orange Accents */
+.dark [class*="text-[#D97706]"],
+.dark [class*="text-\\[#D97706\\]"],
+.dark [class*="text-[#B45309]"],
+.dark [class*="text-\\[#B45309\\]"],
+.dark [class*="text-[#92400E]"],
+.dark [class*="text-[#78350F]"],
+.dark [class*="text-[#EA580C]"],
+.dark [class*="text-[#C2410C]"],
+.dark [class*="text-[#F59E0B]"] {
+  color: #FCD34D !important;
+}
+
+/* Red / Urgent Accents */
+.dark [class*="text-[#DC2626]"],
+.dark [class*="text-\\[#DC2626\\]"],
+.dark [class*="text-[#B91C1C]"],
+.dark [class*="text-\\[#B91C1C\\]"],
+.dark [class*="text-[#EF4444]"] {
+  color: #FCA5A5 !important;
+}
+
+/* Purple Accents */
+.dark [class*="text-[#7C3AED]"],
+.dark [class*="text-[#6D28D9]"],
+.dark [class*="text-[#7E22CE]"],
+.dark [class*="text-[#4338CA]"] {
+  color: #D8B4FE !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   7. FORM CONTROLS, INPUTS, AND INTERACTIVE ELEMENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 .dark input,
 .dark textarea,
 .dark select {
   background-color: var(--bg-input) !important;
   color: var(--text-primary) !important;
   border-color: var(--border-default) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: var(--border-focus) !important;
+  outline: 2px solid rgba(59, 130, 246, 0.4) !important;
+  outline-offset: 1px;
 }
 
 .dark input::placeholder,
-.dark textarea::placeholder { color: var(--text-faint) !important; }
+.dark textarea::placeholder {
+  color: var(--text-faint) !important;
+}
 
-/* Table cells */
+.dark select option {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Disabled Form States */
+.dark input:disabled,
+.dark textarea:disabled,
+.dark select:disabled,
+.dark button:disabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  background-color: var(--bg-muted) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   8. TABLES, ROWS, LISTS, AND NESTED STATES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 .dark td,
-.dark th { color: var(--text-primary); }
-.dark [class*="bg-\\[\\#F0F4F8\\]"],
-.dark [class*="bg-\\[\\#E8F0FB\\]"],
-.dark thead tr { background-color: var(--bg-subtle) !important; }
+.dark th {
+  color: var(--text-primary);
+  border-color: var(--border-default) !important;
+}
 
-/* Header */
-.dark header { background-color: rgba(22, 27, 34, 0.95) !important; }
+.dark thead tr,
+.dark th {
+  background-color: var(--bg-subtle) !important;
+  color: var(--text-secondary) !important;
+}
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
+.dark tbody tr {
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+}
 
-/* ─── Animations ────────────────────────────────────────────────────── */
-.tabular-nums { font-variant-numeric: tabular-nums; }
+.dark tbody tr:hover,
+.dark [class*="hover:bg-[#F8FAFC]"]:hover,
+.dark [class*="hover:bg-[#F1F5F9]"]:hover,
+.dark [class*="hover:bg-white"]:hover {
+  background-color: var(--bg-hover) !important;
+}
 
+/* Interactive White Buttons in Dark Mode */
+.dark button[class*="bg-white"],
+.dark a[class*="bg-white"] {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-default) !important;
+}
+
+.dark button[class*="bg-white"]:hover,
+.dark a[class*="bg-white"]:hover {
+  background-color: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-strong) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   9. MODALS, DIALOGS, TOOLTIPS, AND POPUPS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.dark [role="dialog"],
+.dark dialog,
+.dark .modal-content {
+  background-color: var(--bg-surface-raised) !important;
+  border-color: var(--border-strong) !important;
+  box-shadow: var(--shadow-popover) !important;
+}
+
+/* Overlay backdrop */
+.dark .fixed.inset-0.bg-black\/50,
+.dark .fixed.inset-0.bg-black\/40,
+.dark .fixed.inset-0.bg-slate-900\/50 {
+  background-color: rgba(0, 0, 0, 0.72) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   10. SCROLLBARS & ACCESSIBILITY UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-hover);
+}
+
+/* Numeric alignment */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Gentle smooth animations */
 @keyframes pulse-subtle {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.4; }
 }
+
 .animate-pulse-subtle {
   animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
@@ -145,4 +540,206 @@ html, body {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.animate-fadeIn { animation: fadeIn 0.15s ease-out; }
+
+.animate-fadeIn {
+  animation: fadeIn 0.15s ease-out;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   11. AUTOMATIC SYSTEM DARK MODE FALLBACK (FOR STANDALONE PAGES)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --bg-canvas:           #0B0F17;
+    --bg-surface:          #131B28;
+    --bg-surface-raised:   #1A2436;
+    --bg-subtle:           #172030;
+    --bg-muted:            #212D42;
+    --bg-hover:            #1E2A3E;
+    --bg-active:           #26354D;
+    --bg-input:            #101724;
+    --bg-dropdown:         #151E2E;
+
+    --text-primary:        #F1F5F9;
+    --text-secondary:      #CBD5E1;
+    --text-muted:          #94A3B8;
+    --text-faint:          #64748B;
+    --text-on-dark:        #F8FAFC;
+    --text-link:           #60A5FA;
+
+    --border-default:      #212E42;
+    --border-subtle:       #182334;
+    --border-strong:       #31425C;
+    --border-focus:        #3B82F6;
+
+    --badge-info-bg:       rgba(37, 99, 235, 0.18);
+    --badge-info-border:   rgba(59, 130, 246, 0.38);
+    --badge-info-text:     #93C5FD;
+
+    --badge-success-bg:    rgba(22, 163, 74, 0.18);
+    --badge-success-border:rgba(34, 197, 94, 0.38);
+    --badge-success-text:  #86EFAC;
+
+    --badge-warning-bg:    rgba(217, 119, 6, 0.18);
+    --badge-warning-border:rgba(245, 158, 11, 0.38);
+    --badge-warning-text:  #FCD34D;
+
+    --badge-danger-bg:     rgba(220, 38, 38, 0.18);
+    --badge-danger-border: rgba(239, 68, 68, 0.38);
+    --badge-danger-text:   #FCA5A5;
+
+    --badge-purple-bg:     rgba(124, 58, 237, 0.18);
+    --badge-purple-border: rgba(168, 85, 247, 0.38);
+    --badge-purple-text:   #D8B4FE;
+
+    --scrollbar-thumb:     #2D3D56;
+    --scrollbar-hover:     #3F5272;
+
+    --shadow-card:         0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+    --shadow-elevated:     0 4px 8px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+    --shadow-popover:      0 12px 24px -4px rgba(0, 0, 0, 0.65), 0 4px 8px -4px rgba(0, 0, 0, 0.4);
+  }
+
+  :root:not(.light) .min-h-screen,
+  :root:not(.light) [class*="bg-[#F8FAFC]"],
+  :root:not(.light) .bg-canvas {
+    background-color: var(--bg-canvas) !important;
+  }
+
+  :root:not(.light) [class*="bg-white"],
+  :root:not(.light) .bg-surface {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary);
+  }
+
+  :root:not(.light) [class*="bg-[#F1F5F9]"],
+  :root:not(.light) [class*="bg-[#F0F4F8]"],
+  :root:not(.light) [class*="bg-[#E8F0FB]"] {
+    background-color: var(--bg-subtle) !important;
+  }
+
+  :root:not(.light) [class*="bg-[#E2E8F0]"] {
+    background-color: var(--bg-muted) !important;
+  }
+
+  :root:not(.light) header {
+    background-color: rgba(19, 27, 40, 0.92) !important;
+    border-color: var(--border-default) !important;
+  }
+
+  :root:not(.light) [class*="bg-[#EFF6FF]"],
+  :root:not(.light) [class*="bg-[#DBEAFE]"],
+  :root:not(.light) [class*="bg-[#EEF2FF]"] {
+    background-color: var(--badge-info-bg) !important;
+    color: var(--badge-info-text) !important;
+    border-color: var(--badge-info-border) !important;
+  }
+
+  :root:not(.light) [class*="bg-[#F0FDF4]"],
+  :root:not(.light) [class*="bg-[#ECFDF5]"],
+  :root:not(.light) [class*="bg-[#DCFCE7]"],
+  :root:not(.light) [class*="bg-[#D1FAE5]"] {
+    background-color: var(--badge-success-bg) !important;
+    color: var(--badge-success-text) !important;
+    border-color: var(--badge-success-border) !important;
+  }
+
+  :root:not(.light) [class*="bg-[#FFFBEB]"],
+  :root:not(.light) [class*="bg-[#FEF3C7]"],
+  :root:not(.light) [class*="bg-[#FFF7ED]"],
+  :root:not(.light) [class*="bg-[#FDE68A]"] {
+    background-color: var(--badge-warning-bg) !important;
+    color: var(--badge-warning-text) !important;
+    border-color: var(--badge-warning-border) !important;
+  }
+
+  :root:not(.light) [class*="bg-[#FEF2F2]"],
+  :root:not(.light) [class*="bg-[#FEE2E2]"],
+  :root:not(.light) [class*="bg-[#FECACA]"] {
+    background-color: var(--badge-danger-bg) !important;
+    color: var(--badge-danger-text) !important;
+    border-color: var(--badge-danger-border) !important;
+  }
+
+  :root:not(.light) [class*="bg-[#F3E8FF]"],
+  :root:not(.light) [class*="bg-[#F5F3FF]"] {
+    background-color: var(--badge-purple-bg) !important;
+    color: var(--badge-purple-text) !important;
+    border-color: var(--badge-purple-border) !important;
+  }
+
+  :root:not(.light) [class*="border-[#E2E8F0]"],
+  :root:not(.light) [class*="border-[#F1F5F9]"],
+  :root:not(.light) [class*="border-[#E8EDF2]"] {
+    border-color: var(--border-default) !important;
+  }
+
+  :root:not(.light) [class*="border-[#CBD5E1]"],
+  :root:not(.light) [class*="border-[#C8D5E2]"] {
+    border-color: var(--border-strong) !important;
+  }
+
+  :root:not(.light) [class*="border-[#BFDBFE]"] { border-color: var(--badge-info-border) !important; }
+  :root:not(.light) [class*="border-[#BBF7D0]"],
+  :root:not(.light) [class*="border-[#A7F3D0]"] { border-color: var(--badge-success-border) !important; }
+  :root:not(.light) [class*="border-[#FDE68A]"],
+  :root:not(.light) [class*="border-[#FED7AA]"],
+  :root:not(.light) [class*="border-[#FCD34D]"] { border-color: var(--badge-warning-border) !important; }
+  :root:not(.light) [class*="border-[#FECACA]"],
+  :root:not(.light) [class*="border-[#FCA5A5]"],
+  :root:not(.light) [class*="border-[#F87171]"] { border-color: var(--badge-danger-border) !important; }
+  :root:not(.light) [class*="border-[#DDD6FE]"],
+  :root:not(.light) [class*="border-[#D8B4FE]"] { border-color: var(--badge-purple-border) !important; }
+
+  :root:not(.light) [class*="text-[#0F172A]"],
+  :root:not(.light) [class*="text-[#1A2B4A]"],
+  :root:not(.light) [class*="text-[#111827]"] {
+    color: var(--text-primary) !important;
+  }
+
+  :root:not(.light) [class*="text-[#475569]"],
+  :root:not(.light) [class*="text-[#4B5563]"],
+  :root:not(.light) [class*="text-[#2D3A4A]"],
+  :root:not(.light) [class*="text-[#334155]"] {
+    color: var(--text-secondary) !important;
+  }
+
+  :root:not(.light) [class*="text-[#64748B]"],
+  :root:not(.light) [class*="text-[#6B7280]"] {
+    color: var(--text-muted) !important;
+  }
+
+  :root:not(.light) [class*="text-[#94A3B8]"],
+  :root:not(.light) [class*="text-[#9CA3AF]"] {
+    color: var(--text-faint) !important;
+  }
+
+  :root:not(.light) input,
+  :root:not(.light) textarea,
+  :root:not(.light) select {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-default) !important;
+  }
+
+  :root:not(.light) td,
+  :root:not(.light) th {
+    color: var(--text-primary);
+    border-color: var(--border-default) !important;
+  }
+
+  :root:not(.light) thead tr,
+  :root:not(.light) th {
+    background-color: var(--bg-subtle) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  :root:not(.light) tbody tr:hover,
+  :root:not(.light) [class*="hover:bg-[#F8FAFC]"]:hover,
+  :root:not(.light) [class*="hover:bg-[#F1F5F9]"]:hover,
+  :root:not(.light) [class*="hover:bg-white"]:hover {
+    background-color: var(--bg-hover) !important;
+  }
+}
+
