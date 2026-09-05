@@ -25,6 +25,7 @@ import { MasterPermissionsPage } from './pages/MasterPermissionsPage';
 import { TenderPartnersTab } from './pages/tender-tabs/TenderPartnersTab';
 import { SharedDocumentPortalPage } from './pages/SharedDocumentPortalPage';
 import { OrganizationsPage } from './pages/OrganizationsPage';
+import { PartnerPortalPage } from './pages/PartnerPortalPage';
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ export const router = createBrowserRouter([
   {
     path: '/shared/:token',
     element: <SharedDocumentPortalPage />,
+  },
+  {
+    path: '/partner/portal',
+    element: <PartnerPortalPage />,
   },
   {
     path: '/',
@@ -144,6 +149,14 @@ export const router = createBrowserRouter([
       {
         path: 'organizations',
         element: <Navigate to="/tools/organizations" replace />,
+      },
+      {
+        path: 'tools/partner-portal',
+        element: <PartnerPortalPage />,
+      },
+      {
+        path: 'partner-portal',
+        element: <Navigate to="/partner/portal" replace />,
       },
       {
         path: '*',

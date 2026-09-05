@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import {
   Users,
   Building2,
@@ -10,6 +10,7 @@ import {
   Lock,
   Unlock,
   RefreshCw,
+  ExternalLink,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 
@@ -194,6 +195,14 @@ export const TenderPartnersTab: React.FC = () => {
           >
             <RefreshCw className="w-4 h-4" />
           </button>
+          <Link
+            to="/partner/portal"
+            className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#0F172A] hover:bg-[#1E293B] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+            title="Launch external collaborative partner portal"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>Launch JV Portal</span>
+          </Link>
           <button
             onClick={() => setShowAssignModal(true)}
             className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
@@ -331,6 +340,14 @@ export const TenderPartnersTab: React.FC = () => {
 
                   {/* Right: Actions */}
                   <div className="flex items-center gap-2 self-end lg:self-center">
+                    <Link
+                      to="/partner/portal"
+                      className="px-2.5 py-1.5 text-xs font-semibold bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#2563EB] border border-[#BFDBFE] rounded-lg shadow-2xs transition-colors flex items-center gap-1"
+                      title="Open JV Partner Portal for this organization"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      <span>Portal View</span>
+                    </Link>
                     <button
                       onClick={() => setSelectedPartnerForCeiling(partner)}
                       className="px-2.5 py-1.5 text-xs font-semibold bg-white hover:bg-[#F1F5F9] text-[#0F172A] border border-[#E2E8F0] rounded-lg shadow-2xs transition-colors"
