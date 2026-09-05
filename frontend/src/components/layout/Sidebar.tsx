@@ -104,12 +104,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       icon: BarChart3,
       badge: undefined,
     },
-    {
-      label: 'Archived Records',
-      path: '/archive',
-      icon: Archive,
-      badge: archivedCount > 0 ? `${archivedCount}` : undefined,
-    },
   ];
 
   const toolsItems = [
@@ -124,6 +118,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       path: '/tools/permissions',
       icon: KeyRound,
       badge: undefined,
+    },
+    {
+      label: 'Archive',
+      path: '/tools/archive',
+      icon: Archive,
+      badge: archivedCount > 0 ? `${archivedCount}` : undefined,
     },
   ];
 

@@ -62,7 +62,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'archive',
-        element: <ArchivedTendersPage />,
+        element: <Navigate to="/tools/archive" replace />,
       },
       {
         path: 'tenders',
@@ -149,6 +149,10 @@ export const router = createBrowserRouter([
       {
         path: 'organizations',
         element: <Navigate to="/tools/organizations" replace />,
+      },
+      {
+        path: 'tools/archive',
+        element: <ArchivedTendersPage />,
       },
       {
         path: 'tools/partner-portal',

@@ -284,7 +284,7 @@ export const CommandPaletteModal: React.FC = () => {
       icon: Archive,
       onSelect: () => {
         setIsCommandPaletteOpen(false);
-        navigate('/archive');
+        navigate('/tools/archive');
       },
     },
     {
