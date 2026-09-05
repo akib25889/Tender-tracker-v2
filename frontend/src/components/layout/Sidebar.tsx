@@ -11,7 +11,6 @@ import {
   Users,
   BarChart3,
   Settings,
-  Bell,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
@@ -129,12 +128,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
   ];
 
   const systemItems = [
-    {
-      label: 'Notifications',
-      path: '/notifications',
-      icon: Bell,
-      badge: '8',
-    },
     {
       label: 'Settings',
       path: '/settings',
