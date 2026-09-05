@@ -118,12 +118,49 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
 @router.put("/{tender_id}", response_model=TenderOut)
 def update_tender(tender_id: str, updates: TenderUpdate, db: Session = Depends(get_db)):
     tender = db.query(Tender).filter(Tender.id == tender_id).first()
+    update_data = updates.model_dump(exclude_unset=True)
+
     if not tender:
         raise HTTPException(status_code=404, detail="Tender not found")
+        tender = Tender(
+            id=tender_id,
+            title=update_data.get("title", f"Tender {tender_id}"),
+            organization=update_data.get("organization", "Procuring Authority"),
+            country=update_data.get("country", "Bangladesh"),
+            category=update_data.get("category", "General"),
+            reference_no=update_data.get("reference_no", ""),
+            estimated_value=update_data.get("estimated_value"),
+            stage=update_data.get("stage", "DISCOVERED"),
+            decision=update_data.get("decision", "PENDING"),
+            priority=update_data.get("priority", "MEDIUM"),
+            submission_deadline=update_data.get("submission_deadline"),
+            readiness_score=update_data.get("readiness_score", 0),
+        )
+        db.add(tender)
+        db.flush()
 
     update_data = updates.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(tender, field, value)
+        tiers = [
+            (1, "Technical Architecture", "EXECUTIVE_MANAGER"),
+            (2, "Financial Feasibility", "SENIOR_MANAGER"),
+            (3, "Legal & Governance", "TENDER_ANALYST"),
+            (4, "Executive Sign-Off", "BUSINESS_HEAD"),
+        ]
+        for num, name, role in tiers:
+            db.add(
+                TenderReviewTier(
+                    tender_id=tender.id,
+                    tier_number=num,
+                    tier_name=name,
+                    role_required=role,
+                    sign_off_status="PENDING",
+                )
+            )
+    else:
+        for field, value in update_data.items():
+            setattr(tender, field, value)
 
     db.commit()
     db.refresh(tender)

@@ -245,8 +245,77 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const refreshTendersFromBackend = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/tenders');
+      if (res.ok) {
+        const dbTenders = await res.json();
+        if (Array.isArray(dbTenders) && dbTenders.length > 0) {
+          setTenders((prev) => {
+            const map = new Map(prev.map((t) => [t.id, t]));
+            for (const dbt of dbTenders) {
+              const existing = map.get(dbt.id);
+              if (existing) {
+                map.set(dbt.id, {
+                  ...existing,
+                  stage: (dbt.stage as TenderStage) || existing.stage,
+                  title: dbt.title || existing.title,
+                  category: dbt.category || existing.category,
+                  estimatedValue:
+                    dbt.estimated_value !== undefined && dbt.estimated_value !== null
+                      ? dbt.estimated_value
+                      : existing.estimatedValue,
+                  submissionDeadline: dbt.submission_deadline || existing.submissionDeadline,
+                  readinessScore:
+                    dbt.readiness_score !== undefined && dbt.readiness_score !== null
+                      ? dbt.readiness_score
+                      : existing.readinessScore,
+                  decision: (dbt.decision as DecisionStatus) || existing.decision,
+                  priority: dbt.priority || existing.priority,
+                });
+              } else {
+                map.set(dbt.id, {
+                  id: dbt.id,
+                  referenceNo: dbt.reference_no || '',
+                  title: dbt.title,
+                  organization: dbt.organization || 'Procuring Authority',
+                  country: dbt.country || 'Bangladesh',
+                  category: dbt.category || 'General',
+                  estimatedValue: dbt.estimated_value || 0,
+                  stage: (dbt.stage as TenderStage) || 'DISCOVERED',
+                  decision: (dbt.decision as DecisionStatus) || 'PENDING',
+                  priority: dbt.priority || 'MEDIUM',
+                  submissionDeadline: dbt.submission_deadline || '',
+                  daysRemaining: dbt.days_remaining || 0,
+                  hoursRemaining: dbt.hours_remaining || 0,
+                  readinessScore: dbt.readiness_score || 0,
+                  missingDocumentsCount: 0,
+                  completedTasksCount: dbt.tasks ? dbt.tasks.filter((tk: any) => tk.status === 'DONE').length : 0,
+                  totalTasksCount: dbt.tasks ? dbt.tasks.length : 0,
+                  leadOwner: {
+                    name: dbt.lead_owner_name || 'Sarah Jenkins',
+                    role: dbt.lead_owner_role || 'Business Head',
+                  },
+                  blockers: [],
+                  tasks: [],
+                  requirements: [],
+                  documents: [],
+                  reviews: [],
+                });
+              }
+            }
+            return Array.from(map.values());
+          });
+        }
+      }
+    } catch {
+      // Backend unavailable, retain current state
+    }
+  };
+
   useEffect(() => {
     refreshCategories();
+    refreshTendersFromBackend();
   }, []);
 
   const addCategory = async (categoryData: { name: string; description?: string; color_badge?: string }): Promise<TenderCategory | null> => {

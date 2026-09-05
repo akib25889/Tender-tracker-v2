@@ -53,7 +53,6 @@ export const TenderDetailPage: React.FC = () => {
 
   const [copiedRef, setCopiedRef] = useState(false);
   const [showFullSummaryDoc, setShowFullSummaryDoc] = useState(false);
-  const [isAiScanning, setIsAiScanning] = useState(false);
 
   // Find the tender or fallback to the first tender
   const tender = tenders.find((t) => t.id === id) || tenders[0];
@@ -87,14 +86,6 @@ export const TenderDetailPage: React.FC = () => {
     navigator.clipboard.writeText(textToCopy);
     setCopiedRef(true);
     setTimeout(() => setCopiedRef(false), 2000);
-  };
-
-  const handleAiScan = () => {
-    setIsAiScanning(true);
-    setTimeout(() => {
-      setIsAiScanning(false);
-      alert('AI Document Scan completed: 14 mandatory technical specifications verified against RFP criteria.');
-    }, 1200);
   };
 
   const subNavTabs = [
@@ -433,15 +424,6 @@ export const TenderDetailPage: React.FC = () => {
                     >
                       <Printer className="w-3 h-3 text-[#64748B]" />
                       <span>Print / PDF</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleAiScan}
-                      disabled={isAiScanning}
-                      className="px-2.5 py-1 text-xs font-semibold text-[#1D4ED8] bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-md transition-colors flex items-center gap-1.5"
-                    >
-                      <Sparkles className={`w-3 h-3 text-[#2563EB] ${isAiScanning ? 'animate-spin' : ''}`} />
-                      <span>{isAiScanning ? 'Scanning...' : 'AI Re-Scan'}</span>
                     </button>
                   </div>
                 </div>
