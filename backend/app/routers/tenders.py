@@ -103,6 +103,7 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
         lead_owner_name=tender_in.lead_owner_name,
         lead_owner_role=tender_in.lead_owner_role,
         summary_json=tender_in.summary_json,
+        important_clauses=[c.model_dump() for c in (tender_in.important_clauses or [])],
     )
     db.add(db_tender)
     db.flush()

@@ -19,6 +19,7 @@ import {
   MessageSquare,
   KeyRound,
   Building2,
+  Landmark,
   Wrench,
   Award,
 } from 'lucide-react';
@@ -109,9 +110,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
 
   const toolsItems = [
     {
+      label: 'Company Profiles',
+      path: '/tools/company-profiles',
+      icon: Building2,
+      badge: undefined,
+    },
+    {
       label: 'Organizations',
       path: '/tools/organizations',
-      icon: Building2,
+      icon: Landmark,
       badge: undefined,
     },
     {

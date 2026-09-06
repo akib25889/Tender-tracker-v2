@@ -27,10 +27,12 @@ from app.models.permission import ResourceShare, PartnerOrganization
 from app.services.authorization import AuthorizationService
 from app.schemas.document import (
     DocumentOut,
+    DocumentUpdate,
     FolderCreate,
     FolderOut,
     ReusableDocCreate,
     ReusableDocOut,
+    ReusableDocUpdate,
     LinkReusableRequest,
     ResourceShareCreate,
     ResourceShareOut,
@@ -621,3 +623,81 @@ def download_shared_file(token: str, db: Session = Depends(get_db)):
         filename=filename or "document.bin",
         media_type="application/octet-stream",
     )
+
+
+@router.patch("/documents/{doc_id}", response_model=DocumentOut)
+def update_tender_document(
+    doc_id: str,
+    payload: DocumentUpdate,
+    db: Session = Depends(get_db),
+):
+    doc = db.query(TenderDocument).filter(TenderDocument.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    if payload.folder is not None:
+        doc.folder = payload.folder
+    if payload.access_level is not None:
+        doc.access_level = payload.access_level
+    if payload.company_name is not None:
+        doc.company_name = payload.company_name
+    if payload.company_role is not None:
+        doc.company_role = payload.company_role
+    if payload.is_jv_partner is not None:
+        doc.is_jv_partner = payload.is_jv_partner
+    db.commit()
+    db.refresh(doc)
+    return doc
+
+
+@router.delete("/documents/{doc_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_tender_document(doc_id: str, db: Session = Depends(get_db)):
+    doc = db.query(TenderDocument).filter(TenderDocument.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    if doc.file_path and os.path.exists(doc.file_path):
+        try:
+            os.remove(doc.file_path)
+        except OSError:
+            pass
+    db.delete(doc)
+    db.commit()
+    return None
+
+
+@router.patch("/reusable-documents/{doc_id}", response_model=ReusableDocOut)
+def update_reusable_document(
+    doc_id: str,
+    payload: ReusableDocUpdate,
+    db: Session = Depends(get_db),
+):
+    doc = db.query(ReusableDocument).filter(ReusableDocument.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Reusable document not found")
+    if payload.name is not None:
+        doc.name = payload.name
+    if payload.category is not None:
+        doc.category = payload.category
+    if payload.access_level is not None:
+        doc.access_level = payload.access_level
+    if payload.expiry_date is not None:
+        doc.expiry_date = payload.expiry_date
+    if payload.description is not None:
+        doc.description = payload.description
+    db.commit()
+    db.refresh(doc)
+    return doc
+
+
+@router.delete("/reusable-documents/{doc_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_reusable_document(doc_id: str, db: Session = Depends(get_db)):
+    doc = db.query(ReusableDocument).filter(ReusableDocument.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Reusable document not found")
+    if doc.file_path and os.path.exists(doc.file_path):
+        try:
+            os.remove(doc.file_path)
+        except OSError:
+            pass
+    db.delete(doc)
+    db.commit()
+    return None

@@ -14,6 +14,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   FileText,
+  BookOpen,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import {
@@ -22,8 +23,10 @@ import {
   TenderPersonnelReq,
   TenderHardwareReq,
   TenderRiskPoint,
+  ImportantClause,
 } from '../types/tender';
 import { ExportDropdown } from '../components/ui/ExportDropdown';
+import { ImportantClausesManager } from '../components/tender/ImportantClausesManager';
 
 const CLASSIFICATIONS: TenderClassification[] = [
   'SOFTWARE / IT RELATED',
@@ -50,7 +53,7 @@ export const TenderRegistryPage: React.FC = () => {
   }, [editIdFromUrl, tenders]);
 
   const [activeEditorTab, setActiveEditorTab] = useState<
-    'BASIC' | 'SCOPE' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS'
+    'BASIC' | 'SCOPE' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS' | 'CLAUSES'
   >('BASIC');
 
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -59,6 +62,10 @@ export const TenderRegistryPage: React.FC = () => {
   // Form State initialized from currently selected tender
   const selectedTender =
     tenders.find((t) => t.id === selectedTenderId) || tenders[0];
+
+  const [importantClauses, setImportantClauses] = useState<ImportantClause[]>(
+    selectedTender?.importantClauses || []
+  );
 
   const [classification, setClassification] = useState<TenderClassification>(
     selectedTender?.summary?.classification || 'SOFTWARE / IT RELATED'
@@ -481,6 +488,7 @@ export const TenderRegistryPage: React.FC = () => {
       ]
     );
     setNotes(selectedTender.summary?.notes || '');
+    setImportantClauses(selectedTender.importantClauses || []);
   }, [selectedTenderId]);
 
   const filteredTenders = tenders.filter((t) => {
@@ -609,6 +617,7 @@ export const TenderRegistryPage: React.FC = () => {
         managementHighlights: management.filter((m) => m.trim().length > 0),
         notes,
       },
+      importantClauses,
     });
 
     setSaveSuccess(true);
@@ -767,6 +776,15 @@ export const TenderRegistryPage: React.FC = () => {
                               : `${t.currency || '$'} ${(t.estimatedValue / 1000000).toFixed(1)}M`}
                           </span>
                         )}
+                        {t.importantClauses && t.importantClauses.length > 0 && (
+                          <span
+                            className="bg-indigo-50 text-indigo-700 font-semibold px-1.5 py-0.5 rounded border border-indigo-100 flex items-center gap-1"
+                            title={`${t.importantClauses.length} Important Clauses Marked`}
+                          >
+                            <BookOpen className="w-2.5 h-2.5" />
+                            {t.importantClauses.length}
+                          </span>
+                        )}
                         <span className="bg-[#F1F5F9] px-1.5 py-0.5 rounded">
                           Due {new Date(t.submissionDeadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                         </span>
@@ -916,6 +934,19 @@ export const TenderRegistryPage: React.FC = () => {
             >
               <AlertTriangle className="w-3.5 h-3.5" />
               <span>5. Dates, Risks &amp; Notes</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveEditorTab('CLAUSES')}
+              className={`flex items-center gap-1.5 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
+                activeEditorTab === 'CLAUSES'
+                  ? 'border-[#2563EB] text-[#2563EB]'
+                  : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>6. Important Clauses ({importantClauses.length})</span>
             </button>
           </div>
 
@@ -1742,6 +1773,17 @@ export const TenderRegistryPage: React.FC = () => {
                     className="w-full p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
                   />
                 </div>
+              </div>
+            )}
+
+            {/* TAB 6: IMPORTANT CLAUSES & CITATIONS */}
+            {activeEditorTab === 'CLAUSES' && (
+              <div className="space-y-4 animate-fadeIn">
+                <ImportantClausesManager
+                  clauses={importantClauses}
+                  onChange={setImportantClauses}
+                  tenderDocuments={selectedTender?.documents}
+                />
               </div>
             )}
 

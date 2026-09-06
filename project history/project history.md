@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.9.0  
+**Current Version:** 2.10.0  
 **Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -16,9 +16,47 @@
 | **M1** | **Repository & Agent Tooling** | **Completed** | Git repository initialized, linked to GitHub, `.gitignore` & directory scaffolding, Ponytail & Graphify integration. |
 | **M2** | **Backend Core & Database Schema** | **Completed** | FastAPI application structure, SQLAlchemy models, SQLite & MySQL 8.4 dual-mode, JWT/bcrypt authentication, local disk storage vault (HDD / SSD), and REST APIs. |
 | **M3** | **Storage Vault & Document Security** | **Completed** | Local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation, safe folder relocation. |
-| **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 24-screen routing. |
+| **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 26-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
-| **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+| **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 34 tests), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+### [2026-09-07] — Version 2.10.0: Corporate Profile Management System, Multi-Company Entities, Project Experience Credentials & Clause Reference Marking
+- **Category:** Corporate Governance, Master Data Management, Tender Compliance & Eligibility, Full-Stack Persistence
+- **Summary:**
+  - **Company Profile Management System (`/tools/company-profiles` & `company_profiles` table):**
+    - **Multi-Company Bidding Architecture:** Centralized corporate profile hub supporting both **Lead Bidders** (*PrimeTech Solutions Ltd.*) and **JV Partners** (*DataCore Systems Ltd.*, *Apex Global Engineering*).
+    - **Comprehensive Corporate Schema:**
+      - *Corporate Identity:* Legal registered name, trade name, bidding role (`LEAD_BIDDER`, `JV_PARTNER`, `SUBCONTRACTOR`), entity type, registration number, incorporation date, country, corporate status (`ACTIVE`, `VERIFIED`), and scope of business.
+      - *Statutory & Tax Credentials:* e-TIN number, BIN/VAT registration number, municipal trade license number & expiration date with validity indicators, issuing authority, taxes circle & zone, RJSC return year, and IRC/ERC certificates.
+      - *Registered Office & Contacts:* Legal registered address, operational engineering center address, official tender email, billing email, telephone/hotline, and official website.
+      - *Focal Point & Authorized Signatory:* Dedicated focal tender liaison officer (name, title, direct phone, email) and legal power of attorney holder (name, title, NID/passport, board resolution/power of attorney deed reference).
+      - *Banking & Financial Solvency:* Principal scheduled bank & branch, exact account name & number, routing number, SWIFT/BIC code, audited 3-year average annual turnovers in BDT and USD, available bank solvency credit lines, paid-up capital, authorized share capital, external credit rating (e.g. `AA+` by CRISL), and credit rating validity date.
+      - *Accreditations & Workforce:* ISO 9001/27001/14001 and CMMI maturity certifications, industry memberships (BASIS, FBCCI), total permanent employee count, certified professional engineers count, and core technical competence tags.
+      - *Dynamic Custom Fields:* Unlimited dynamic custom attributes (`[{"id", "name", "value"}]`) for tender-specific RFP compliance (e.g. DLMS Conformance, Ministry Quotas, Environmental Clearances).
+  - **Standardized Top-of-Field Action Toolbar (`[📋 Copy] [✏️ Edit] [🗑️ Delete]`):**
+    - Built consistent top-of-field toolbar for both standard and dynamic custom fields.
+    - **Copy:** Instant clipboard copy with visual `"Copied!"` badge and system toast notification.
+    - **Edit:** Inline editing of field name and value with immediate database persistence.
+    - **Delete:** Clears standard fields or permanently deletes custom fields with confirmation.
+  - **Dedicated 6-Tab Command Center (`CompanyProfilesPage.tsx`):**
+    - *Overview & Identity*, *Statutory & Tax*, *Banking & Financials*, *Accreditations & Workforce*, *Custom Fields*, and *Linked Credentials & Vault Docs*.
+    - **Fast RFP Export:** `"Copy Tender Profile Summary"` button generates a complete markdown/text block with all company data formatted for immediate pasting into tender bid submission documents.
+    - **Company Switcher & Search:** Horizontal quick-switch slider with role filter chips (`All`, `Lead Bidders`, `JV Partners`) and real-time search by company name, TIN, or registration number.
+    - **Add Company Profile Modal:** Dialog to register new JV partner entities in one step.
+  - **Company Project Experience Credentials (`company_project_credentials`):**
+    - Experience ledger supporting contract titles, client names, contract values, currencies, and verified Work Order (WO) and Completion Certificate (CC) file uploads.
+    - Computes and stores cryptographic SHA-256 hashes and file sizes, with direct linking into tender statutory document folders (`02_company_statutory_documents`).
+  - **Tender Clause Marking with Document Reference:**
+    - Structured clause tracking during tender intake (`clause_title`, `category`, `criticality`, `doc_reference`, `doc_file_name`, `page_number`, `clause_text`, `implication`).
+    - Stored as JSON in `tenders.important_clauses` and rendered in tender summary and proposals.
+  - **Database Persistence & API Audit:**
+    - Audited all 24+ SQLAlchemy database models and verified 100% active table existence in SQLite and MySQL.
+    - Added missing document lifecycle endpoints: `PATCH /api/documents/{id}`, `DELETE /api/documents/{id}`, `PATCH /api/reusable-documents/{id}`, `DELETE /api/reusable-documents/{id}`, and recorded shares in `resource_shares`.
+  - **Test Suite Expansion & Verification:**
+    - Added `test_17_company_profiles_crud` to `backend/tests/test_api_integration.py`.
+    - All **17 test suites (34 integration tests) passing** (100% green).
+    - Frontend production build (`npm run build`) succeeded with 0 errors (1,889 modules transformed).
+    - Re-indexed Graphify knowledge graph (54 nodes, 32 edges).
 
 ### [2026-09-06] — Version 2.9.0: Comprehensive CSS-Only Dark Mode, JV Partner Portal, Access Duration Controls & Workspace Polish
 - **Category:** Design System, Accessibility (WCAG AA), Security & Partner Governance, UI/UX Refinement

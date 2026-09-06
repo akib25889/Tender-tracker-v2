@@ -19,6 +19,7 @@ import {
   TenderCategory,
   Organization,
   CompanyProjectCredential,
+  CompanyProfile,
 } from '../types/tender';
 import { MOCK_TENDERS } from '../mock/tenders';
 import { TEAM_PROFILES } from '../mock/users';
@@ -136,6 +137,12 @@ interface TenderContextType {
   uploadProjectWorkOrder: (projectId: string, file: File) => Promise<CompanyProjectCredential | null>;
   uploadProjectCompletionCert: (projectId: string, file: File) => Promise<CompanyProjectCredential | null>;
   linkProjectToTender: (projectId: string, tenderId: string, targetFolder: string) => Promise<{ status: string; message: string } | null>;
+  // Company Profiles
+  companyProfiles: CompanyProfile[];
+  refreshCompanyProfiles: () => Promise<void>;
+  addCompanyProfile: (profileData: Partial<CompanyProfile>) => Promise<CompanyProfile | null>;
+  updateCompanyProfile: (id: string, updates: Partial<CompanyProfile>) => Promise<CompanyProfile | null>;
+  deleteCompanyProfile: (id: string) => Promise<boolean>;
   // Modal states
   isNewTenderModalOpen: boolean;
   setIsNewTenderModalOpen: (open: boolean) => void;
@@ -449,6 +456,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                 reviews: dbReviews,
                 decisionMatrix: dbMatrix,
                 summary: dbSummary,
+                importantClauses: Array.isArray(dbt.important_clauses)
+                  ? dbt.important_clauses
+                  : existing?.importantClauses || [],
               });
             }
             return Array.from(map.values());
@@ -684,6 +694,72 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     return null;
   };
 
+  // Company Profiles
+  const [companyProfiles, setCompanyProfiles] = useState<CompanyProfile[]>([]);
+
+  const refreshCompanyProfiles = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/companies/profiles');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setCompanyProfiles(data);
+        }
+      }
+    } catch {}
+  };
+
+  const addCompanyProfile = async (profileData: Partial<CompanyProfile>): Promise<CompanyProfile | null> => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/companies/profiles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(profileData),
+      });
+      if (res.ok) {
+        const created = await res.json();
+        await refreshCompanyProfiles();
+        return created;
+      }
+    } catch (e) {
+      console.error('Failed to create company profile:', e);
+    }
+    return null;
+  };
+
+  const updateCompanyProfile = async (id: string, updates: Partial<CompanyProfile>): Promise<CompanyProfile | null> => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/companies/profiles/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        await refreshCompanyProfiles();
+        return updated;
+      }
+    } catch (e) {
+      console.error('Failed to update company profile:', e);
+    }
+    return null;
+  };
+
+  const deleteCompanyProfile = async (id: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/companies/profiles/${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        await refreshCompanyProfiles();
+        return true;
+      }
+    } catch (e) {
+      console.error('Failed to delete company profile:', e);
+    }
+    return false;
+  };
+
   useEffect(() => {
     refreshCategories();
     refreshTendersFromBackend();
@@ -691,6 +767,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     refreshTeamMembers();
     refreshReusableDocuments();
     refreshCompanyProjects();
+    refreshCompanyProfiles();
   }, []);
 
   const addCategory = async (categoryData: { name: string; description?: string; color_badge?: string }): Promise<TenderCategory | null> => {
@@ -946,6 +1023,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         { tierNumber: 4, name: 'Executive Gatekeeper Sign-Off', reviewer: 'Sarah Jenkins', status: 'WAITING', comments: 'Pending review' },
       ],
       summary: tenderData.summary,
+      importantClauses: tenderData.importantClauses || [],
     };
 
     // Persist new tender to FastAPI backend
@@ -974,6 +1052,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         lead_owner_name: newTender.leadOwner?.name,
         lead_owner_role: newTender.leadOwner?.role,
         summary_json: newTender.summary ? JSON.stringify(newTender.summary) : null,
+        important_clauses: newTender.importantClauses || [],
       }),
     }).catch(() => {});
 
@@ -994,6 +1073,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                     ? Number(tenderData.estimatedValue)
                     : t.estimatedValue,
                 summary: { ...t.summary, ...tenderData.summary },
+                importantClauses: tenderData.importantClauses !== undefined ? tenderData.importantClauses : t.importantClauses,
               }
             : t
         );
@@ -1019,6 +1099,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (updates.priority !== undefined) payload.priority = updates.priority;
     if (updates.submissionDeadline !== undefined) payload.submission_deadline = updates.submissionDeadline;
     if (updates.readinessScore !== undefined) payload.readiness_score = updates.readinessScore;
+    if (updates.importantClauses !== undefined) payload.important_clauses = updates.importantClauses;
 
     if (Object.keys(payload).length > 0) {
       fetch(`http://127.0.0.1:8000/api/tenders/${id}`, {
@@ -1302,6 +1383,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     docId: string,
     targetFolder: string
   ) => {
+    fetch(`http://127.0.0.1:8000/api/documents/documents/${docId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ folder: targetFolder }),
+    }).catch(() => {});
+
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -1509,6 +1596,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const updateDocumentAccess = (docId: string, newAccess: DocumentAccessLevel) => {
+    fetch(`http://127.0.0.1:8000/api/documents/reusable-documents/${docId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_level: newAccess }),
+    }).catch(() => {});
+
     setReusableDocuments((prev) =>
       prev.map((d) => (d.id === docId ? { ...d, accessLevel: newAccess } : d))
     );
@@ -1519,6 +1612,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     docId: string,
     newAccess: DocumentAccessLevel
   ) => {
+    fetch(`http://127.0.0.1:8000/api/documents/documents/${docId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_level: newAccess }),
+    }).catch(() => {});
+
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -1748,6 +1847,27 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       createdAt: new Date().toISOString(),
     };
 
+    fetch(`http://127.0.0.1:8000/api/documents/documents/${docId}/share`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        shared_with_type: options.email ? 'USER' : 'PUBLIC',
+        recipient_email: options.email,
+        can_view: true,
+        can_download: options.permission === 'DOWNLOAD_ALLOWED',
+        expires_in_days: 7,
+      }),
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.token) {
+          setSharedLinks((prev) =>
+            prev.map((l) => (l.id === link.id ? { ...l, token: data.token } : l))
+          );
+        }
+      })
+      .catch(() => {});
+
     setSharedLinks((prev) => [link, ...prev]);
     return link;
   };
@@ -1811,6 +1931,11 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         uploadProjectWorkOrder,
         uploadProjectCompletionCert,
         linkProjectToTender,
+        companyProfiles,
+        refreshCompanyProfiles,
+        addCompanyProfile,
+        updateCompanyProfile,
+        deleteCompanyProfile,
         isNewTenderModalOpen,
         setIsNewTenderModalOpen,
         uploadFolderTarget,

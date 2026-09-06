@@ -258,6 +258,29 @@ export interface Tender {
   deletedFolders?: string[];
   archivedFromStage?: TenderStage;
   archivedAt?: string;
+  importantClauses?: ImportantClause[];
+}
+
+export type ClauseCriticality = 'CRITICAL' | 'HIGH' | 'MEDIUM';
+
+export type ClauseCategory =
+  | 'FINANCIAL'
+  | 'LEGAL_RISK'
+  | 'TECHNICAL_MANDATORY'
+  | 'ELIGIBILITY'
+  | 'PENALTY'
+  | 'OTHER';
+
+export interface ImportantClause {
+  id: string;
+  clause_title: string;
+  category: ClauseCategory | string;
+  criticality: ClauseCriticality | string;
+  doc_reference: string;
+  doc_file_name?: string;
+  page_number?: string;
+  clause_text: string;
+  implication?: string;
 }
 
 export interface PipelineSummary {
@@ -320,3 +343,78 @@ export interface CompanyProjectCredential {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface CustomCompanyField {
+  id: string;
+  name: string;
+  value: string;
+}
+
+export interface CompanyProfile {
+  id: string;
+  legal_name: string;
+  trade_name: string;
+  company_role: 'LEAD_BIDDER' | 'JV_PARTNER' | 'SUBCONTRACTOR' | string;
+  entity_type: string;
+  registration_no?: string;
+  incorporation_date?: string;
+  country: string;
+  status: 'ACTIVE' | 'VERIFIED' | 'INACTIVE' | string;
+  business_nature?: string;
+  logo_url?: string;
+
+  // Statutory & Tax
+  tin_number?: string;
+  bin_vat_number?: string;
+  trade_license_no?: string;
+  trade_license_expiry?: string;
+  trade_license_issuer?: string;
+  tax_circle_zone?: string;
+  rjsc_return_year?: string;
+  irc_erc_no?: string;
+
+  // Office & Contacts
+  registered_address?: string;
+  operational_address?: string;
+  official_email?: string;
+  billing_email?: string;
+  phone?: string;
+  fax?: string;
+  website?: string;
+
+  contact_person_name?: string;
+  contact_person_title?: string;
+  contact_person_phone?: string;
+  contact_person_email?: string;
+  signatory_name?: string;
+  signatory_title?: string;
+  signatory_nid?: string;
+  power_of_attorney_ref?: string;
+
+  // Banking & Financials
+  bank_name?: string;
+  bank_branch?: string;
+  bank_account_name?: string;
+  bank_account_no?: string;
+  routing_no?: string;
+  swift_code?: string;
+  audited_turnover_bdt: number;
+  audited_turnover_usd: number;
+  bank_solvency_limit_bdt: number;
+  paid_up_capital_bdt: number;
+  authorized_capital_bdt: number;
+  credit_rating?: string;
+  credit_rating_validity?: string;
+
+  // Certifications & Capacity
+  certifications?: string[];
+  core_competencies?: string[];
+  total_employees: number;
+  certified_engineers: number;
+
+  // Dynamic Custom Fields
+  custom_fields: CustomCompanyField[];
+  created_at?: string;
+  updated_at?: string;
+}
+

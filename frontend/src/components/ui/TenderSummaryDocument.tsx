@@ -243,6 +243,62 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
         </Section>
       )}
 
+      {/* IMPORTANT CLAUSES & DOCUMENT REFERENCES */}
+      {(tender.importantClauses?.length ?? 0) > 0 && (
+        <Section title="Important Clauses &amp; Document References">
+          <div className="space-y-3">
+            {tender.importantClauses!.map((clause, idx) => (
+              <div
+                key={clause.id || idx}
+                className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs space-y-1.5"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-bold text-[#0F172A] text-sm">
+                    {clause.clause_title}
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                      clause.criticality === 'CRITICAL'
+                        ? 'bg-rose-100 text-rose-700'
+                        : clause.criticality === 'HIGH'
+                        ? 'bg-amber-100 text-amber-700'
+                        : 'bg-sky-100 text-sky-700'
+                    }`}
+                  >
+                    {clause.criticality}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 text-[11px] text-[#2563EB] font-mono">
+                  <span>📄 {clause.doc_file_name || 'Tender Dossier'}</span>
+                  <span>•</span>
+                  <span>Ref: {clause.doc_reference}</span>
+                  {clause.page_number && (
+                    <>
+                      <span>•</span>
+                      <span>{clause.page_number}</span>
+                    </>
+                  )}
+                </div>
+
+                {clause.clause_text && (
+                  <p className="text-[#334155] italic border-l-2 border-[#94A3B8] pl-2.5 py-0.5">
+                    “{clause.clause_text}”
+                  </p>
+                )}
+
+                {clause.implication && (
+                  <div className="text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded p-1.5">
+                    <span className="font-bold">Strategic Compliance Action: </span>
+                    <span>{clause.implication}</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </Section>
+      )}
+
       {/* IMPORTANT FOR MANAGEMENT */}
       {(s?.managementHighlights?.length ?? 0) > 0 && (
         <Section title="Important for Management">

@@ -63,6 +63,12 @@ def run_migrations():
                             "ALTER TABLE tenders ADD COLUMN estimated_value_bdt FLOAT DEFAULT 0.0"
                         )
                     )
+                if "important_clauses" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN important_clauses JSON DEFAULT '[]'"
+                        )
+                    )
                 # Migrations for tender_documents
                 td_result = conn.execute(
                     text("PRAGMA table_info(tender_documents)")
@@ -121,6 +127,7 @@ def run_migrations():
                             ("exchange_rate_to_bdt", "FLOAT DEFAULT 122.0"),
                             ("exchange_rate_date", "VARCHAR(50) DEFAULT ''"),
                             ("estimated_value_bdt", "FLOAT DEFAULT 0.0"),
+                            ("important_clauses", "JSON DEFAULT NULL"),
                         ],
                     ),
                     (

@@ -14,6 +14,7 @@ from app.models.setting import SystemSetting
 from app.models.chat import ChatChannelMessage
 from app.models.organization import Organization
 from app.models.company_credential import CompanyProjectCredential
+from app.models.company_profile import CompanyProfile
 from app.models.permission import (
     Permission,
     PartnerOrganization,
@@ -38,6 +39,7 @@ __all__ = [
     "TenderDocument",
     "ReusableDocument",
     "CompanyProjectCredential",
+    "CompanyProfile",
     "TenderRequirement",
     "TenderReviewTier",
     "TenderComment",

@@ -7,6 +7,7 @@ from app.models.tender import Tender, TenderDecisionMatrix, TenderCategory
 from app.models.task import TenderTask
 from app.models.document import TenderDocument, ReusableDocument
 from app.models.company_credential import CompanyProjectCredential
+from app.models.company_profile import CompanyProfile
 from app.models.requirement import TenderRequirement
 from app.models.review import TenderReviewTier
 from app.models.comment import TenderComment
@@ -750,9 +751,21 @@ def seed_database(db: Session):
                 completion_cert_size="1.8 MB",
                 completion_cert_sha256="ca978112ca1bbdcafac231b39a23dc4da786081cd1e14eed647f431a39e5047a",
                 custom_fields=[
-                    {"id": "cf-1", "name": "Supervising Consultant", "value": "SMEC International Pty Ltd"},
-                    {"id": "cf-2", "name": "Key Technology Stack", "value": "DWDM 100G, Cisco ASR 9000, Corning SMF-28e"},
-                    {"id": "cf-3", "name": "Client Focal Contact", "value": "Engr. M. Rahman (Project Director), +880-1711-XXXXXX"},
+                    {
+                        "id": "cf-1",
+                        "name": "Supervising Consultant",
+                        "value": "SMEC International Pty Ltd",
+                    },
+                    {
+                        "id": "cf-2",
+                        "name": "Key Technology Stack",
+                        "value": "DWDM 100G, Cisco ASR 9000, Corning SMF-28e",
+                    },
+                    {
+                        "id": "cf-3",
+                        "name": "Client Focal Contact",
+                        "value": "Engr. M. Rahman (Project Director), +880-1711-XXXXXX",
+                    },
                 ],
             ),
             CompanyProjectCredential(
@@ -771,8 +784,16 @@ def seed_database(db: Session):
                 completion_cert_filename="ICTD_Performance_Certificate_Accepted.pdf",
                 completion_cert_size="1.4 MB",
                 custom_fields=[
-                    {"id": "cf-4", "name": "Security Compliance Standard", "value": "ISO 27001:2022 & NIST CSF Level 3"},
-                    {"id": "cf-5", "name": "SLA Guaranteed Uptime", "value": "99.982% Financial Uptime Guarantee"},
+                    {
+                        "id": "cf-4",
+                        "name": "Security Compliance Standard",
+                        "value": "ISO 27001:2022 & NIST CSF Level 3",
+                    },
+                    {
+                        "id": "cf-5",
+                        "name": "SLA Guaranteed Uptime",
+                        "value": "99.982% Financial Uptime Guarantee",
+                    },
                 ],
             ),
             CompanyProjectCredential(
@@ -791,12 +812,202 @@ def seed_database(db: Session):
                 completion_cert_filename="DESCO_Final_Acceptance_Certificate_2025.pdf",
                 completion_cert_size="2.1 MB",
                 custom_fields=[
-                    {"id": "cf-6", "name": "JV Equity & Quota Share", "value": "40% Technical & Automation Share"},
-                    {"id": "cf-7", "name": "Smart Meters Deployed", "value": "250,000 Cellular NB-IoT Smart Meters"},
+                    {
+                        "id": "cf-6",
+                        "name": "JV Equity & Quota Share",
+                        "value": "40% Technical & Automation Share",
+                    },
+                    {
+                        "id": "cf-7",
+                        "name": "Smart Meters Deployed",
+                        "value": "250,000 Cellular NB-IoT Smart Meters",
+                    },
                 ],
             ),
         ]
         for p in initial_projects:
             db.add(p)
+
+    # 13. Seed Company Profiles if not present
+    if db.query(CompanyProfile).count() == 0:
+        initial_profiles = [
+            CompanyProfile(
+                id="COMP-PRIMETECH",
+                legal_name="PrimeTech Solutions Limited",
+                trade_name="PrimeTech Ltd",
+                company_role="LEAD_BIDDER",
+                entity_type="Private Limited Company",
+                registration_no="C-114829/2014",
+                incorporation_date="2014-03-15",
+                country="Bangladesh",
+                status="VERIFIED",
+                business_nature="Enterprise Systems Integration, Optical Fiber Backbone Construction, Cloud Infrastructure, and Mission-Critical Turnkey Solutions.",
+                logo_url="/assets/logos/primetech.png",
+                # Statutory & Tax
+                tin_number="817294029148",
+                bin_vat_number="001849204-0101",
+                trade_license_no="TRAD/DNCC/049281/2025",
+                trade_license_expiry="2026-06-30",
+                trade_license_issuer="Dhaka North City Corporation (Zone-03)",
+                tax_circle_zone="Circle-114 (Companies), Taxes Zone-06, Dhaka",
+                rjsc_return_year="2025",
+                irc_erc_no="IRC-BD-2940194",
+                # Registered Office & Communication
+                registered_address="Level 11 & 12, Prime Tower, Plot 42, Road 11, Block D, Banani C/A, Dhaka-1213, Bangladesh",
+                operational_address="Technology Center, Sector-03, Uttara, Dhaka-1230, Bangladesh",
+                official_email="bids@primetech.com.bd",
+                billing_email="accounts@primetech.com.bd",
+                phone="+880-2-9824001",
+                fax="+880-2-9824005",
+                website="https://www.primetech.com.bd",
+                # Focal Person & Authorized Signatory
+                contact_person_name="Mahmudur Rahman, PMP",
+                contact_person_title="Vice President, Tender Capture & Public Bids",
+                contact_person_phone="+880-1711-849201",
+                contact_person_email="m.rahman@primetech.com.bd",
+                signatory_name="Engr. K. M. Shamsuddin",
+                signatory_title="Managing Director & Chief Executive Officer",
+                signatory_nid="19822694109400012",
+                power_of_attorney_ref="Board Resolution 2024/09 & Registered General Power of Attorney No. 4410",
+                # Banking & Financials
+                bank_name="Eastern Bank PLC",
+                bank_branch="Gulshan Corporate Branch, Dhaka",
+                bank_account_name="PrimeTech Solutions Limited - Tender & Operational A/C",
+                bank_account_no="1041060284910",
+                routing_no="095261452",
+                swift_code="EBLDBDDH",
+                audited_turnover_bdt=185000000.0,
+                audited_turnover_usd=1516393.0,
+                bank_solvency_limit_bdt=75000000.0,
+                paid_up_capital_bdt=50000000.0,
+                authorized_capital_bdt=100000000.0,
+                credit_rating="AA+ (Long Term) / ST-1 (Short Term)",
+                credit_rating_validity="2026-11-30",
+                # Certifications & Capacity
+                certifications=[
+                    "ISO 9001:2015 (Quality Management System)",
+                    "ISO 27001:2022 (Information Security Management System)",
+                    "ISO 14001:2015 (Environmental Management System)",
+                    "CMMI Maturity Level 3 (Dev v2.0)",
+                    "BASIS Member No. G-842",
+                    "FBCCI Associate Corporate Member No. 2019-114",
+                ],
+                core_competencies=[
+                    "DWDM & Optical Fiber Backbone EPC",
+                    "Tier-III/Tier-IV Cloud Data Center Deployments",
+                    "Security Operations Center (SOC) & Cyber Defense",
+                    "National Smart Grid SCADA & Automation",
+                    "Enterprise ERP & e-Governance Portal Development",
+                ],
+                total_employees=142,
+                certified_engineers=46,
+                # Dynamic Custom Fields
+                custom_fields=[
+                    {
+                        "id": "cf-pt-1",
+                        "name": "Bidding Entity Classification",
+                        "value": "Lead Bidder / Consortium Principal Contractor",
+                    },
+                    {
+                        "id": "cf-pt-2",
+                        "name": "BAPA Registration No",
+                        "value": "BAPA-EPC-2022-841",
+                    },
+                    {
+                        "id": "cf-pt-3",
+                        "name": "Default Tender Security Bank Guarantee Provider",
+                        "value": "Eastern Bank PLC & City Bank PLC (Irrevocable & On-Demand)",
+                    },
+                    {
+                        "id": "cf-pt-4",
+                        "name": "Audit Firm of Record",
+                        "value": "A. Qasem & Co. Chartered Accountants (Member Firm of BDO International)",
+                    },
+                ],
+            ),
+            CompanyProfile(
+                id="COMP-DATACORE",
+                legal_name="DataCore Systems Limited",
+                trade_name="DataCore Systems Ltd",
+                company_role="JV_PARTNER",
+                entity_type="Private Limited Company",
+                registration_no="C-148291/2018",
+                incorporation_date="2018-09-22",
+                country="Bangladesh",
+                status="VERIFIED",
+                business_nature="Smart Grid Automation, AMI Infrastructure, Industrial IoT Sensor Networks, and SCADA Engineering.",
+                logo_url="/assets/logos/datacore.png",
+                # Statutory & Tax
+                tin_number="649102849103",
+                bin_vat_number="002948102-0202",
+                trade_license_no="TRAD/DSCC/019284/2025",
+                trade_license_expiry="2026-06-30",
+                trade_license_issuer="Dhaka South City Corporation (Zone-05)",
+                tax_circle_zone="Circle-082 (Companies), Taxes Zone-04, Dhaka",
+                rjsc_return_year="2025",
+                irc_erc_no="IRC-BD-8491022",
+                # Registered Office & Communication
+                registered_address="Suite 802, High-Tech Tower, Karwan Bazar, Dhaka-1215, Bangladesh",
+                operational_address="Smart Grid Lab & Testing Center, Mirpur DOHS, Dhaka-1216, Bangladesh",
+                official_email="jv-tenders@datacoresystems.com",
+                billing_email="finance@datacoresystems.com",
+                phone="+880-2-8149202",
+                fax="+880-2-8149203",
+                website="https://www.datacoresystems.com",
+                # Focal Person & Authorized Signatory
+                contact_person_name="Tanvir Hossain, CISA",
+                contact_person_title="Director, Government Solutions & Strategic Partnerships",
+                contact_person_phone="+880-1819-204910",
+                contact_person_email="tanvir.h@datacoresystems.com",
+                signatory_name="S. M. Nazmul Huda",
+                signatory_title="Chief Executive Officer",
+                signatory_nid="19862691029400088",
+                power_of_attorney_ref="Power of Attorney Deed No. 1092 / Certified RJSC Resolution",
+                # Banking & Financials
+                bank_name="The City Bank PLC",
+                bank_branch="Principal Branch, Dilkusha, Dhaka",
+                bank_account_name="DataCore Systems Limited",
+                bank_account_no="3101849201001",
+                routing_no="225260142",
+                swift_code="CIBLBDDH",
+                audited_turnover_bdt=92000000.0,
+                audited_turnover_usd=754098.0,
+                bank_solvency_limit_bdt=35000000.0,
+                paid_up_capital_bdt=25000000.0,
+                authorized_capital_bdt=50000000.0,
+                credit_rating="A+ (Long Term)",
+                credit_rating_validity="2026-10-15",
+                # Certifications & Capacity
+                certifications=[
+                    "ISO 9001:2015 (Quality Management System)",
+                    "ISO 27001:2022 (ISMS Certification)",
+                    "BASIS Corporate Member No. M-1092",
+                    "BCS (Bangladesh Computer Samity) Member",
+                ],
+                core_competencies=[
+                    "AMI / Smart Metering Protocol Integration (DLMS/COSEM)",
+                    "Substation Automation & DNP3 / IEC 61850 Architecture",
+                    "Industrial IoT Gateways & Edge Computing",
+                    "Power Distribution SCADA Operations",
+                ],
+                total_employees=68,
+                certified_engineers=28,
+                # Dynamic Custom Fields
+                custom_fields=[
+                    {
+                        "id": "cf-dc-1",
+                        "name": "JV Agreement Quota Capacity",
+                        "value": "Up to 49% Joint Venture Equity Participation",
+                    },
+                    {
+                        "id": "cf-dc-2",
+                        "name": "DLMS/COSEM Compliance Lab Certificate",
+                        "value": "Certified DLMS Conformance ID #2024-819",
+                    },
+                ],
+            ),
+        ]
+        for cp in initial_profiles:
+            db.add(cp)
 
     db.commit()

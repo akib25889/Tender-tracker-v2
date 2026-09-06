@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
 import { DocumentAccessLevel, ReusableDocument } from '../types/tender';
@@ -80,6 +80,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
     tenders,
     setActiveDocForShare,
     companyProjects,
+    companyProfiles,
   } = useTenders();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -241,6 +242,17 @@ export const MasterDocumentVaultPage: React.FC = () => {
             {companyProjects.length}
           </span>
         </button>
+
+        <Link
+          to="/tools/company-profiles"
+          className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all text-[#64748B] hover:text-[#0F172A] hover:bg-white/60"
+        >
+          <Building2 className="w-4 h-4 text-purple-600" />
+          <span>Full Company Profiles &amp; Financials</span>
+          <span className="text-[10px] font-mono bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-bold border border-purple-200">
+            {companyProfiles.length}
+          </span>
+        </Link>
       </div>
 
       {activeLibraryTab === 'PROJECT_CREDENTIALS' ? (

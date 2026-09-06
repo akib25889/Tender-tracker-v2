@@ -10,6 +10,7 @@ import {
   AlertTriangle,
   ChevronRight,
   ChevronLeft,
+  BookOpen,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 import {
@@ -18,7 +19,9 @@ import {
   TenderPersonnelReq,
   TenderHardwareReq,
   TenderRiskPoint,
+  ImportantClause,
 } from '../../types/tender';
+import { ImportantClausesManager } from '../tender/ImportantClausesManager';
 
 const CLASSIFICATIONS: TenderClassification[] = [
   'SOFTWARE / IT RELATED',
@@ -38,8 +41,10 @@ export const NewTenderModal: React.FC = () => {
   } = useTenders();
 
   const [activeTab, setActiveTab] = useState<
-    'BASIC' | 'SCOPE' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS'
+    'BASIC' | 'SCOPE' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS' | 'CLAUSES'
   >('BASIC');
+
+  const [importantClauses, setImportantClauses] = useState<ImportantClause[]>([]);
 
   // Classification
   const [classification, setClassification] =
@@ -391,6 +396,7 @@ export const NewTenderModal: React.FC = () => {
         managementHighlights: management.filter((m) => m.trim().length > 0),
         notes,
       },
+      importantClauses,
     });
 
     setIsNewTenderModalOpen(false);
@@ -488,6 +494,19 @@ export const NewTenderModal: React.FC = () => {
           >
             <AlertTriangle className="w-3.5 h-3.5" />
             <span>5. Dates &amp; Risks</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('CLAUSES')}
+            className={`flex items-center gap-2 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
+              activeTab === 'CLAUSES'
+                ? 'border-[#2563EB] text-[#2563EB]'
+                : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>6. Clauses &amp; Citations ({importantClauses.length})</span>
           </button>
         </div>
 
@@ -1668,6 +1687,16 @@ export const NewTenderModal: React.FC = () => {
             </div>
           )}
 
+          {/* TAB 6: IMPORTANT CLAUSES & CITATIONS */}
+          {activeTab === 'CLAUSES' && (
+            <div className="space-y-4 animate-fadeIn">
+              <ImportantClausesManager
+                clauses={importantClauses}
+                onChange={setImportantClauses}
+              />
+            </div>
+          )}
+
           {/* Modal Footer Controls */}
           <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between shrink-0 bg-white">
             <div className="flex items-center gap-2">
@@ -1675,12 +1704,20 @@ export const NewTenderModal: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    const tabs: ('BASIC' | 'SCOPE' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS')[] = [
+                    const tabs: (
+                      | 'BASIC'
+                      | 'SCOPE'
+                      | 'ELIGIBILITY'
+                      | 'STAFFING'
+                      | 'RISKS'
+                      | 'CLAUSES'
+                    )[] = [
                       'BASIC',
                       'SCOPE',
                       'ELIGIBILITY',
                       'STAFFING',
                       'RISKS',
+                      'CLAUSES',
                     ];
                     const idx = tabs.indexOf(activeTab);
                     if (idx > 0) setActiveTab(tabs[idx - 1]);
@@ -1692,16 +1729,24 @@ export const NewTenderModal: React.FC = () => {
                 </button>
               )}
 
-              {activeTab !== 'RISKS' && (
+              {activeTab !== 'CLAUSES' && (
                 <button
                   type="button"
                   onClick={() => {
-                    const tabs: ('BASIC' | 'SCOPE' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS')[] = [
+                    const tabs: (
+                      | 'BASIC'
+                      | 'SCOPE'
+                      | 'ELIGIBILITY'
+                      | 'STAFFING'
+                      | 'RISKS'
+                      | 'CLAUSES'
+                    )[] = [
                       'BASIC',
                       'SCOPE',
                       'ELIGIBILITY',
                       'STAFFING',
                       'RISKS',
+                      'CLAUSES',
                     ];
                     const idx = tabs.indexOf(activeTab);
                     if (idx < tabs.length - 1) setActiveTab(tabs[idx + 1]);

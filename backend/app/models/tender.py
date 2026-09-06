@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, String, Float, Integer, Text, DateTime, ForeignKey
+from sqlalchemy import Column, String, Float, Integer, Text, DateTime, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -28,6 +28,7 @@ class Tender(Base):
     lead_owner_name = Column(String(100), nullable=True, default="Sarah Jenkins")
     lead_owner_role = Column(String(100), nullable=True, default="Business Head")
     summary_json = Column(Text, nullable=True)
+    important_clauses = Column(JSON, nullable=True, default=list)
     archived_from_stage = Column(String(50), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(

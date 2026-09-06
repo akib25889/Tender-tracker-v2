@@ -675,3 +675,311 @@ def test_14_company_project_credentials_and_custom_fields():
     # Clean up
     client.delete(f"/api/companies/projects/{proj_id}")
     client.delete(f"/api/tenders/{tender_id}")
+
+
+def test_15_tender_important_clauses_with_doc_reference():
+    tender_id = "TDR-CLAUSES-TEST-01"
+    client.delete(f"/api/tenders/{tender_id}")
+
+    clauses_payload = [
+        {
+            "id": "clause-01",
+            "clause_title": "Bid Security Bank Guarantee Requirement",
+            "category": "FINANCIAL",
+            "criticality": "CRITICAL",
+            "doc_reference": "Section 2 (ITB) Clause 14.1",
+            "doc_file_name": "RFP_Volume_1_ITB.pdf",
+            "page_number": "Page 28",
+            "clause_text": "The Bidder shall furnish as part of its Bid, a Bid Security in the amount of BDT 2,500,000 in the form of an unconditional and irrevocable Bank Guarantee from any scheduled bank of Bangladesh.",
+            "implication": "Mandatory blocker. Must initiate Bank Guarantee application 10 days before tender submission deadline.",
+        },
+        {
+            "id": "clause-02",
+            "clause_title": "Liquidated Damages & Maximum Delay Cap",
+            "category": "PENALTY",
+            "criticality": "HIGH",
+            "doc_reference": "Section 4 (GCC) Clause 27.1 & PCC Clause 19",
+            "doc_file_name": "Tender_Document_GCC_PCC.pdf",
+            "page_number": "Page 64",
+            "clause_text": "Liquidated damages shall apply at 0.5% of the contract price per week of delay up to a maximum deduction of 10% of the total contract price.",
+            "implication": "High risk. Project schedule must include 3 weeks buffer to prevent LD deduction.",
+        },
+    ]
+
+    create_res = client.post(
+        "/api/tenders",
+        json={
+            "id": tender_id,
+            "title": "National Data Center High Availability Expansion",
+            "organization": "Bangladesh Computer Council",
+            "country": "Bangladesh",
+            "category": "Information Technology",
+            "estimated_value": 35000000.0,
+            "currency": "BDT",
+            "stage": "PREPARATION",
+            "priority": "HIGH",
+            "important_clauses": clauses_payload,
+        },
+    )
+    assert create_res.status_code == 201
+    tender_data = create_res.json()
+    assert len(tender_data["important_clauses"]) == 2
+    assert (
+        tender_data["important_clauses"][0]["doc_reference"]
+        == "Section 2 (ITB) Clause 14.1"
+    )
+    assert (
+        tender_data["important_clauses"][0]["doc_file_name"] == "RFP_Volume_1_ITB.pdf"
+    )
+    assert tender_data["important_clauses"][0]["criticality"] == "CRITICAL"
+
+    # Verify retrieval via GET
+    get_res = client.get(f"/api/tenders/{tender_id}")
+    assert get_res.status_code == 200
+    retrieved = get_res.json()
+    assert len(retrieved["important_clauses"]) == 2
+    assert retrieved["important_clauses"][1]["category"] == "PENALTY"
+    assert retrieved["important_clauses"][1]["page_number"] == "Page 64"
+
+    # Add a third clause via PUT
+    updated_clauses = clauses_payload + [
+        {
+            "id": "clause-03",
+            "clause_title": "Manufacturer Authorization Form (MAF)",
+            "category": "TECHNICAL_MANDATORY",
+            "criticality": "CRITICAL",
+            "doc_reference": "Section 3 (Evaluation) Clause 4.2(b)",
+            "doc_file_name": "TOR_Specifications.pdf",
+            "page_number": "Page 42",
+            "clause_text": "Bidders must submit direct OEM Manufacturer's Authorization Form for all active routing and firewall hardware.",
+            "implication": "Must obtain signoff from Cisco / Fortinet OEM regional team prior to bid packaging.",
+        }
+    ]
+
+    put_res = client.put(
+        f"/api/tenders/{tender_id}",
+        json={"important_clauses": updated_clauses},
+    )
+    assert put_res.status_code == 200
+    updated_data = put_res.json()
+    assert len(updated_data["important_clauses"]) == 3
+    assert (
+        updated_data["important_clauses"][2]["clause_title"]
+        == "Manufacturer Authorization Form (MAF)"
+    )
+
+    # Clean up
+    client.delete(f"/api/tenders/{tender_id}")
+
+
+def test_16_document_update_delete_and_sharing_to_db():
+    tender_id = "TDR-DOC-TEST-01"
+    client.delete(f"/api/tenders/{tender_id}")
+
+    # 1. Create a test tender
+    create_res = client.post(
+        "/api/tenders",
+        json={
+            "id": tender_id,
+            "title": "Document Lifecycle and Sharing Integration",
+            "organization": "Cabinet Division",
+            "country": "Bangladesh",
+            "category": "Governance",
+            "stage": "PREPARATION",
+            "priority": "HIGH",
+        },
+    )
+    assert create_res.status_code == 201
+
+    # 2. Upload document
+    upload_res = client.post(
+        f"/api/tenders/{tender_id}/documents/upload",
+        data={
+            "folder": "01_original_tender_documents",
+            "access_level": "ALL_TEAM",
+        },
+        files={
+            "file": ("Legal_Charter.pdf", b"Legal Charter content", "application/pdf")
+        },
+    )
+    assert upload_res.status_code == 201
+    doc_data = upload_res.json()
+    doc_id = doc_data["id"]
+
+    # 3. PATCH document (move folder and elevate access)
+    patch_res = client.patch(
+        f"/api/documents/{doc_id}",
+        json={
+            "folder": "02_company_statutory_documents",
+            "access_level": "MANAGEMENT_ONLY",
+        },
+    )
+    assert patch_res.status_code == 200
+    patched_data = patch_res.json()
+    assert patched_data["folder"] == "02_company_statutory_documents"
+    assert patched_data["access_level"] == "MANAGEMENT_ONLY"
+
+    # 4. Share document (creates record in resource_shares table)
+    share_res = client.post(
+        f"/api/documents/{doc_id}/share",
+        json={
+            "shared_with_type": "USER",
+            "recipient_email": "auditor@external-review.org",
+            "can_download": True,
+            "expires_in_days": 7,
+        },
+    )
+    assert share_res.status_code == 200
+    share_data = share_res.json()
+    assert share_data["recipient_email"] == "auditor@external-review.org"
+    assert share_data["token"] is not None
+
+    # 5. Delete document
+    del_doc_res = client.delete(f"/api/documents/{doc_id}")
+    assert del_doc_res.status_code == 204
+
+    # 6. Test reusable document lifecycle (create, patch, delete)
+    rud_res = client.post(
+        "/api/reusable-documents",
+        json={
+            "name": "Global_Quality_Audit_2026.pdf",
+            "category": "Certifications",
+            "access_level": "ALL_TEAM",
+        },
+    )
+    assert rud_res.status_code == 201
+    rud_data = rud_res.json()
+    rud_id = rud_data["id"]
+
+    rud_patch_res = client.patch(
+        f"/api/reusable-documents/{rud_id}",
+        json={"access_level": "EXECUTIVE_ONLY"},
+    )
+    assert rud_patch_res.status_code == 200
+    assert rud_patch_res.json()["access_level"] == "EXECUTIVE_ONLY"
+
+    rud_del_res = client.delete(f"/api/reusable-documents/{rud_id}")
+    assert rud_del_res.status_code == 204
+
+    # Clean up tender
+    client.delete(f"/api/tenders/{tender_id}")
+
+
+def test_17_company_profiles_crud():
+    # 1. Verify GET /api/companies/profiles
+    list_res = client.get("/api/companies/profiles")
+    assert list_res.status_code == 200
+    profiles = list_res.json()
+    assert len(profiles) >= 2
+    pt = next((p for p in profiles if p["id"] == "COMP-PRIMETECH"), None)
+    assert pt is not None
+    assert pt["company_role"] == "LEAD_BIDDER"
+    assert pt["tin_number"] == "817294029148"
+    assert pt["bank_name"] == "Eastern Bank PLC"
+    assert len(pt["custom_fields"]) >= 4
+
+    # 2. Verify GET specific profile
+    single_res = client.get("/api/companies/profiles/COMP-PRIMETECH")
+    assert single_res.status_code == 200
+    assert single_res.json()["legal_name"] == "PrimeTech Solutions Limited"
+
+    # 3. Create new Company Profile (JV Partner)
+    test_id = "COMP-TEST-APEX"
+    client.delete(f"/api/companies/profiles/{test_id}")
+
+    create_payload = {
+        "id": test_id,
+        "legal_name": "Apex Global Engineering Ltd",
+        "trade_name": "Apex Engineering",
+        "company_role": "JV_PARTNER",
+        "entity_type": "Private Limited Company",
+        "registration_no": "C-998811/2019",
+        "incorporation_date": "2019-05-10",
+        "country": "Bangladesh",
+        "status": "ACTIVE",
+        "business_nature": "High-Voltage Substation Infrastructure & Civil Engineering Works",
+        "tin_number": "918237461928",
+        "bin_vat_number": "003829103-0303",
+        "trade_license_no": "TRAD/DNCC/088192/2025",
+        "trade_license_expiry": "2026-06-30",
+        "trade_license_issuer": "Dhaka North City Corporation",
+        "registered_address": "House 14, Road 3, Sector 9, Uttara, Dhaka",
+        "official_email": "tenders@apex-eng.com.bd",
+        "phone": "+880-2-8921040",
+        "bank_name": "Standard Chartered Bank",
+        "bank_branch": "Gulshan Branch",
+        "bank_account_no": "018291039481",
+        "routing_no": "195260192",
+        "swift_code": "SCBLBDDH",
+        "audited_turnover_bdt": 45000000.0,
+        "audited_turnover_usd": 368852.0,
+        "bank_solvency_limit_bdt": 20000000.0,
+        "credit_rating": "A- (Long Term)",
+        "certifications": ["ISO 9001:2015", "IEB Corporate Member"],
+        "core_competencies": ["132/33kV Substation EPC", "Transmission Line Towers"],
+        "total_employees": 52,
+        "certified_engineers": 18,
+        "custom_fields": [
+            {
+                "id": "cf-apex-1",
+                "name": "Civil Work License Category",
+                "value": "Grade-1 Building & Electrical Contractor",
+            },
+            {
+                "id": "cf-apex-2",
+                "name": "Heavy Machinery Fleet Count",
+                "value": "12 Hydraulic Cranes & Piling Rigs",
+            },
+        ],
+    }
+
+    create_res = client.post("/api/companies/profiles", json=create_payload)
+    assert create_res.status_code == 201
+    created = create_res.json()
+    assert created["id"] == test_id
+    assert created["legal_name"] == "Apex Global Engineering Ltd"
+    assert len(created["custom_fields"]) == 2
+
+    # 4. PUT update Company Profile
+    update_res = client.put(
+        f"/api/companies/profiles/{test_id}",
+        json={
+            "bank_solvency_limit_bdt": 25000000.0,
+            "status": "VERIFIED",
+            "custom_fields": [
+                {
+                    "id": "cf-apex-1",
+                    "name": "Civil Work License Category",
+                    "value": "Grade-1 Building & Electrical Contractor (Special Class)",
+                },
+                {
+                    "id": "cf-apex-2",
+                    "name": "Heavy Machinery Fleet Count",
+                    "value": "15 Hydraulic Cranes & Piling Rigs",
+                },
+                {
+                    "id": "cf-apex-3",
+                    "name": "Environmental Safety Rating",
+                    "value": "Green Category Department of Environment",
+                },
+            ],
+        },
+    )
+    assert update_res.status_code == 200
+    updated = update_res.json()
+    assert updated["bank_solvency_limit_bdt"] == 25000000.0
+    assert updated["status"] == "VERIFIED"
+    assert len(updated["custom_fields"]) == 3
+
+    # 5. Search filtering
+    filter_res = client.get("/api/companies/profiles?search=Apex")
+    assert filter_res.status_code == 200
+    assert any(p["id"] == test_id for p in filter_res.json())
+
+    # 6. DELETE Company Profile
+    del_res = client.delete(f"/api/companies/profiles/{test_id}")
+    assert del_res.status_code == 204
+
+    # Verify 404 after delete
+    get_del = client.get(f"/api/companies/profiles/{test_id}")
+    assert get_del.status_code == 404

@@ -21,6 +21,7 @@ from app.routers import (
     organizations,
     requirements,
     company_credentials,
+    company_profiles,
 )
 
 
@@ -73,6 +74,7 @@ app.include_router(chat.router, prefix=settings.API_V1_STR)
 app.include_router(organizations.router, prefix=settings.API_V1_STR)
 app.include_router(requirements.router, prefix=settings.API_V1_STR)
 app.include_router(company_credentials.router, prefix=settings.API_V1_STR)
+app.include_router(company_profiles.router, prefix=settings.API_V1_STR)
 
 
 @app.get(f"{settings.API_V1_STR}/health", tags=["Health"])

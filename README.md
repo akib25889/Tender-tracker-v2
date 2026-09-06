@@ -1,4 +1,4 @@
-# TenderTracker Command Center (v2.9.0)
+# TenderTracker Command Center (v2.10.0)
 
 [![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF?logo=vite)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://reactjs.org/)
@@ -35,7 +35,7 @@ uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```bash
 python run_all_tests.py
 ```
-Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Knowledge graph sync.
+Executes: DB health → Pytest suite (34 tests) → TypeScript type-check → Knowledge graph sync.
 
 ---
 
@@ -50,7 +50,7 @@ Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Kn
 
 ---
 
-## 🖥️ Screen & Route Directory (25 Modules)
+## 🖥️ Screen & Route Directory (26 Modules)
 
 | Screen ID | Screen Name | Route | Module |
 | :--- | :--- | :--- | :--- |
@@ -66,6 +66,8 @@ Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Kn
 | `screen:tender_documents` | Tender Document Vault & Custom Folders | `/tenders/{id}/documents` | `documents` |
 | `screen:tender_partners` | JV Partner Collaboration & Allocation Hub | `/tenders/{id}/partners` | `collaboration` |
 | `screen:master_documents` | Master Reusable Document Vault & Permissions | `/documents` | `documents` |
+| `screen:company_credentials` | Company Project Credentials (WO & CC) | `/documents?tab=credentials` | `credentials` |
+| `screen:company_profiles` | Corporate Entities & Company Profiles | `/tools/company-profiles` | `tools` |
 | `screen:tender_review` | Review & Sign-Off Workflow | `/tenders/{id}/review` | `review` |
 | `screen:tender_submission` | Submission Ledger | `/tenders/{id}/submission` | `submission` |
 | `screen:tender_result` | Outcome & Debrief Ledger | `/tenders/{id}/result` | `result` |
@@ -86,6 +88,10 @@ Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Kn
 
 ## ⚡ Architecture & Optimization Engines
 
+- **Corporate Entities & Company Profiles Command Center (`/tools/company-profiles`)**: Dedicated multi-entity management hub for Lead Bidders (*PrimeTech Solutions Ltd.*) and Joint Venture Partners (*DataCore Systems Ltd.*). Stores comprehensive legal identities, statutory & tax credentials (e-TIN, BIN/VAT, Trade License), registered offices, authorized attorney signatories, banking standing (3-year audited turnovers in BDT & USD, available bank solvency credit lines, credit ratings), accreditations (ISO 9001/27001, BASIS), and workforce statistics. Includes one-click **"Copy Tender Profile Summary"** text generation for instantaneous tender bid form population.
+- **Top-of-Field Action Toolbar & Dynamic Custom Fields**: Standardized interactive `[📋 Copy] [✏️ Edit] [🗑️ Delete]` toolbar positioned directly on top of all profile and credential fields for instant clipboard copying with toast confirmation and inline database persistence. Supports unlimited dynamic custom fields for tender-specific RFP compliance.
+- **Company Project Experience Credentials (`/documents?tab=credentials`)**: Dedicated past project credentials ledger tracking contracts, client names, values, and direct uploads for certified Work Orders and Completion Certificates with SHA-256 verification and tender linking.
+- **Tender Clause Marking with Document Reference**: Structured clause compliance tagging (`clause_title`, `category`, `criticality`, `doc_reference`, `doc_file_name`, `page_number`, `clause_text`, `implication`) during tender registry, summary, and proposal review.
 - **Comprehensive CSS-Only Dark Mode Theme (WCAG AA Compliant)**: Full dark surface elevation hierarchy (`--bg-canvas`: `#0B0F17`, `--bg-surface`: `#131B28`, `--bg-surface-raised`: `#1A2436`), high-contrast typography tokens ($\ge 14:1$ contrast ratio), rich translucent alert tints (18% alpha), dark inputs and focus rings, and unescaped dual selectors (`[class*="text-[#0F172A]"], .text-\[\#0F172A\]`) solving Tailwind v4 bracket escaping defects. Includes native `@media (prefers-color-scheme: dark)` fallback for standalone external portals.
 - **Dashboard Multi-Facet Attention Queue & Triage Filters (`/dashboard`)**: 6 live-counted triage vectors (`All Urgent`, `Closing ≤ 4d`, `Blockers`, `Missing Docs`, `Low Readiness <50%`, and `Critical`) paired with an interactive filter toolbar (instant keyword search by ID/Title/Entity, 6-gate Stage dropdown, SOW Category dropdown, and `✓ Active Only` toggle excluding non-participating archived records).
 - **Collapsed Sidebar Geometric Centering & Icon Alignment (`Sidebar.tsx`)**: Locked all 14 navigation icons, branding elements, and controls onto a pixel-perfect 40px vertical center axis with symmetric active highlight containers, interactive hover expand transitions, and subtle notification indicator dots.

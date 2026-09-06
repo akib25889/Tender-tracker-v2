@@ -26,6 +26,7 @@ import { TenderPartnersTab } from './pages/tender-tabs/TenderPartnersTab';
 import { SharedDocumentPortalPage } from './pages/SharedDocumentPortalPage';
 import { OrganizationsPage } from './pages/OrganizationsPage';
 import { PartnerPortalPage } from './pages/PartnerPortalPage';
+import { CompanyProfilesPage } from './pages/CompanyProfilesPage';
 
 export const router = createBrowserRouter([
   {
@@ -153,6 +154,14 @@ export const router = createBrowserRouter([
       {
         path: 'tools/archive',
         element: <ArchivedTendersPage />,
+      },
+      {
+        path: 'tools/company-profiles',
+        element: <CompanyProfilesPage />,
+      },
+      {
+        path: 'companies',
+        element: <Navigate to="/tools/company-profiles" replace />,
       },
       {
         path: 'tools/partner-portal',

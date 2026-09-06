@@ -38,6 +38,22 @@ class DocumentOut(BaseModel):
         from_attributes = True
 
 
+class DocumentUpdate(BaseModel):
+    folder: Optional[str] = None
+    access_level: Optional[str] = None
+    company_name: Optional[str] = None
+    company_role: Optional[str] = None
+    is_jv_partner: Optional[bool] = None
+
+
+class ReusableDocUpdate(BaseModel):
+    name: Optional[str] = None
+    category: Optional[str] = None
+    access_level: Optional[str] = None
+    expiry_date: Optional[str] = None
+    description: Optional[str] = None
+
+
 class ReusableDocCreate(BaseModel):
     name: str
     category: str = "Company Statutory"

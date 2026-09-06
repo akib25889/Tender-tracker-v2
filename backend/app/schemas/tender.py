@@ -70,6 +70,21 @@ class DecisionMatrixOut(BaseModel):
         from_attributes = True
 
 
+class ImportantClauseSchema(BaseModel):
+    id: str
+    clause_title: str
+    category: str = "FINANCIAL"
+    criticality: str = "CRITICAL"
+    doc_reference: str
+    doc_file_name: Optional[str] = None
+    page_number: Optional[str] = None
+    clause_text: str
+    implication: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
 class TenderBase(BaseModel):
     reference_no: Optional[str] = ""
     title: str
@@ -91,6 +106,7 @@ class TenderBase(BaseModel):
     lead_owner_name: Optional[str] = "Sarah Jenkins"
     lead_owner_role: Optional[str] = "Business Head"
     summary_json: Optional[str] = None
+    important_clauses: Optional[List[ImportantClauseSchema]] = []
 
 
 class TenderCreate(TenderBase):
@@ -118,6 +134,7 @@ class TenderUpdate(BaseModel):
     lead_owner_name: Optional[str] = None
     lead_owner_role: Optional[str] = None
     summary_json: Optional[str] = None
+    important_clauses: Optional[List[ImportantClauseSchema]] = None
     archived_from_stage: Optional[str] = None
 
 

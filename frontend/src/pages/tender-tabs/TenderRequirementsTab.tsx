@@ -4,10 +4,17 @@ import { Card } from '../../components/ui/Card';
 import { useTenders } from '../../context/TenderContext';
 import { CheckCircle2, AlertTriangle, FileText } from 'lucide-react';
 import { RequirementStatus } from '../../types/tender';
+import { ImportantClausesManager } from '../../components/tender/ImportantClausesManager';
 
 export const TenderRequirementsTab: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { tenders, toggleRequirementStatus, setUploadFolderTarget, setActiveTenderIdForModal } = useTenders();
+  const {
+    tenders,
+    toggleRequirementStatus,
+    setUploadFolderTarget,
+    setActiveTenderIdForModal,
+    updateTender,
+  } = useTenders();
   const tender = tenders.find((t) => t.id === id) || tenders[0];
 
   const [filter, setFilter] = useState<'ALL' | 'VERIFIED' | 'BLOCKER'>('ALL');
@@ -163,6 +170,15 @@ export const TenderRequirementsTab: React.FC = () => {
           </table>
         </div>
       </Card>
+
+      {/* Important Marked Clauses Section */}
+      <ImportantClausesManager
+        clauses={tender.importantClauses || []}
+        onChange={(updatedClauses) =>
+          updateTender(tender.id, { importantClauses: updatedClauses })
+        }
+        tenderDocuments={tender.documents}
+      />
     </div>
   );
 };
