@@ -39,6 +39,23 @@ class SignOffRequest(BaseModel):
     status: str = "APPROVED"
 
 
+class DecisionMatrixIn(BaseModel):
+    technical_score: Optional[float] = None
+    financial_score: Optional[float] = None
+    team_score: Optional[float] = None
+    sla_score: Optional[float] = None
+    composite_score: Optional[float] = None
+    technical: Optional[float] = None
+    financial: Optional[float] = None
+    team: Optional[float] = None
+    sla: Optional[float] = None
+    aggregateScore: Optional[float] = None
+    threshold: float = 70.0
+    status: str = "PENDING"
+    decision: Optional[str] = None
+    rationale: Optional[str] = None
+
+
 class DecisionMatrixOut(BaseModel):
     technical_score: float = 0.0
     financial_score: float = 0.0
@@ -60,6 +77,10 @@ class TenderBase(BaseModel):
     country: str
     category: str
     estimated_value: Optional[float] = None
+    currency: str = "USD"
+    exchange_rate_to_bdt: Optional[float] = 122.0
+    exchange_rate_date: Optional[str] = None
+    estimated_value_bdt: Optional[float] = None
     stage: str = "DISCOVERED"
     decision: str = "PENDING"
     priority: str = "MEDIUM"
@@ -83,6 +104,10 @@ class TenderUpdate(BaseModel):
     country: Optional[str] = None
     category: Optional[str] = None
     estimated_value: Optional[float] = None
+    currency: Optional[str] = None
+    exchange_rate_to_bdt: Optional[float] = None
+    exchange_rate_date: Optional[str] = None
+    estimated_value_bdt: Optional[float] = None
     stage: Optional[str] = None
     decision: Optional[str] = None
     priority: Optional[str] = None

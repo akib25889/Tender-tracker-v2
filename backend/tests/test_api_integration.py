@@ -343,3 +343,335 @@ def test_11_chat_channels_lifecycle():
     assert verify_res.status_code == 200
     contents = [m["content"] for m in verify_res.json()]
     assert payload["content"] in contents
+
+
+def test_12_tender_currency_and_exchange_rate():
+    test_id = "TDR-CURRENCY-TEST-01"
+    # Ensure clean slate
+    client.delete(f"/api/tenders/{test_id}")
+
+    # 1. Create tender in EUR with manual rate
+    payload = {
+        "id": test_id,
+        "title": "EU Climate Informatics Surveillance Platform",
+        "organization": "European Environment Agency (EEA)",
+        "country": "Denmark",
+        "category": "Cloud Infrastructure",
+        "estimated_value": 2500000.0,
+        "currency": "EUR",
+        "exchange_rate_to_bdt": 133.5,
+        "exchange_rate_date": "2026-03-01",
+        "stage": "DISCOVERED",
+        "priority": "HIGH",
+    }
+    create_res = client.post("/api/tenders", json=payload)
+    assert create_res.status_code == 201
+    created = create_res.json()
+    assert created["id"] == test_id
+    assert created["currency"] == "EUR"
+    assert created["exchange_rate_to_bdt"] == 133.5
+    assert created["exchange_rate_date"] == "2026-03-01"
+    assert created["estimated_value_bdt"] == 333750000.0
+
+    # 2. Retrieve tender and verify persistence in DB
+    get_res = client.get(f"/api/tenders/{test_id}")
+    assert get_res.status_code == 200
+    data = get_res.json()
+    assert data["currency"] == "EUR"
+    assert data["exchange_rate_to_bdt"] == 133.5
+    assert data["estimated_value_bdt"] == 333750000.0
+
+    # 3. Update tender to BDT
+    update_res = client.put(
+        f"/api/tenders/{test_id}",
+        json={
+            "currency": "BDT",
+            "exchange_rate_to_bdt": 1.0,
+            "estimated_value": 5000000.0,
+        },
+    )
+    assert update_res.status_code == 200
+    updated = update_res.json()
+    assert updated["currency"] == "BDT"
+    assert updated["exchange_rate_to_bdt"] == 1.0
+    assert updated["estimated_value_bdt"] == 5000000.0
+
+    # Clean up
+    client.delete(f"/api/tenders/{test_id}")
+
+
+def test_13_multi_company_document_disambiguation_and_jv():
+    test_id = "TDR-MULTICOMPANY-01"
+    # Ensure clean slate
+    client.delete(f"/api/tenders/{test_id}")
+
+    # 1. Create a tender with JV participation
+    payload = {
+        "id": test_id,
+        "title": "National High-Speed Fiber Backbone EPC",
+        "organization": "Bangladesh Telecommunications Company (BTCL)",
+        "country": "Bangladesh",
+        "category": "Telecommunications",
+        "estimated_value": 45000000.0,
+        "currency": "BDT",
+        "stage": "PREPARATION",
+        "priority": "CRITICAL",
+    }
+    create_res = client.post("/api/tenders", json=payload)
+    assert create_res.status_code == 201
+
+    # 2. Upload Trade_License_2026.pdf as Lead Bidder (PrimeTech Ltd)
+    lead_file_content = b"PrimeTech Ltd Statutory Trade License 2026 - Official Copy"
+    upload_lead_res = client.post(
+        f"/api/tenders/{test_id}/documents/upload",
+        data={
+            "folder": "02_company_statutory_documents",
+            "company_name": "PrimeTech Ltd",
+            "company_role": "LEAD_BIDDER",
+            "is_jv_partner": False,
+        },
+        files={
+            "file": ("Trade_License_2026.pdf", lead_file_content, "application/pdf")
+        },
+    )
+    assert upload_lead_res.status_code == 201
+    lead_doc = upload_lead_res.json()
+    assert lead_doc["name"] == "Trade_License_2026.pdf"
+    assert lead_doc["company_name"] == "PrimeTech Ltd"
+    assert lead_doc["company_role"] == "LEAD_BIDDER"
+    assert lead_doc["is_jv_partner"] is False
+
+    # 3. Upload identical filename Trade_License_2026.pdf as JV Partner (DataCore Systems Ltd)
+    jv_file_content = (
+        b"DataCore Systems Ltd Statutory Trade License 2026 - JV Partner Official"
+    )
+    upload_jv_res = client.post(
+        f"/api/tenders/{test_id}/documents/upload",
+        data={
+            "folder": "02A_jv_partner_credentials",
+            "company_name": "DataCore Systems Ltd",
+            "company_role": "JV_PARTNER",
+            "is_jv_partner": True,
+        },
+        files={"file": ("Trade_License_2026.pdf", jv_file_content, "application/pdf")},
+    )
+    assert upload_jv_res.status_code == 201
+    jv_doc = upload_jv_res.json()
+    assert jv_doc["name"] == "Trade_License_2026.pdf"
+    assert jv_doc["company_name"] == "DataCore Systems Ltd"
+    assert jv_doc["company_role"] == "JV_PARTNER"
+    assert jv_doc["is_jv_partner"] is True
+
+    # 4. Verify disk isolation: both physical files must exist in their own company folders and contain distinct content
+    lead_disk_path = (
+        Path(settings.STORAGE_ROOT)
+        / "tenders"
+        / test_id
+        / "02_company_statutory_documents"
+        / "PrimeTech_Ltd"
+        / "Trade_License_2026.pdf"
+    )
+    jv_disk_path = (
+        Path(settings.STORAGE_ROOT)
+        / "tenders"
+        / test_id
+        / "02A_jv_partner_credentials"
+        / "DataCore_Systems_Ltd"
+        / "Trade_License_2026.pdf"
+    )
+    assert lead_disk_path.exists()
+    assert jv_disk_path.exists()
+    assert lead_disk_path != jv_disk_path
+    assert lead_disk_path.read_bytes() == lead_file_content
+    assert jv_disk_path.read_bytes() == jv_file_content
+
+    # 5. Verify tender documents endpoint returns both documents with company metadata
+    docs_res = client.get(f"/api/tenders/{test_id}/documents")
+    assert docs_res.status_code == 200
+    docs = docs_res.json()
+    assert len(docs) >= 2
+    doc_names = [d["name"] for d in docs]
+    assert doc_names.count("Trade_License_2026.pdf") == 2
+
+    # 6. Test reusable master document creation with JV partner ownership and linking
+    reusable_payload = {
+        "name": "DataCore_ISO_27001_Master_Certificate.pdf",
+        "category": "Certifications & ISO",
+        "company_name": "DataCore Systems Ltd",
+        "company_role": "JV_PARTNER",
+        "is_jv_partner": True,
+        "access_level": "ALL_TEAM",
+        "size": "1.8 MB",
+    }
+    create_reusable_res = client.post("/api/reusable-documents", json=reusable_payload)
+    assert create_reusable_res.status_code == 201
+    reusable_doc = create_reusable_res.json()
+    assert reusable_doc["company_name"] == "DataCore Systems Ltd"
+    assert reusable_doc["is_jv_partner"] is True
+
+    # Link reusable into tender's JV folder
+    link_res = client.post(
+        f"/api/tenders/{test_id}/link-reusable",
+        json={
+            "reusable_doc_id": reusable_doc["id"],
+            "target_folder": "02A_jv_partner_credentials",
+        },
+    )
+    assert link_res.status_code == 201
+    linked_doc = link_res.json()
+    assert linked_doc["name"] == "DataCore_ISO_27001_Master_Certificate.pdf"
+    assert linked_doc["company_name"] == "DataCore Systems Ltd"
+    assert linked_doc["folder"] == "02A_jv_partner_credentials"
+    assert linked_doc["is_jv_partner"] is True
+
+    # Clean up
+    client.delete(f"/api/tenders/{test_id}")
+
+
+def test_14_company_project_credentials_and_custom_fields():
+    # 1. Fetch seeded projects
+    get_res = client.get("/api/companies/projects")
+    assert get_res.status_code == 200
+    projects = get_res.json()
+    assert len(projects) >= 3
+
+    # Filter by company
+    lead_res = client.get("/api/companies/projects?company_name=PrimeTech%20Ltd")
+    assert lead_res.status_code == 200
+    lead_projs = lead_res.json()
+    assert all(p["company_name"] == "PrimeTech Ltd" for p in lead_projs)
+
+    # 2. Create a new Project Credential with dynamic custom fields
+    new_project_payload = {
+        "company_name": "PrimeTech Ltd",
+        "company_role": "LEAD_BIDDER",
+        "project_title": "Rooftop Solar SCADA & Energy Storage Microgrid",
+        "client_name": "Sustainable and Renewable Energy Development Authority (SREDA)",
+        "contract_value": 18500000.0,
+        "currency": "BDT",
+        "start_date": "2024-03-01",
+        "completion_date": "2025-08-31",
+        "role_in_project": "EPC Turnkey Prime Contractor",
+        "custom_fields": [
+            {
+                "id": "cf-test-1",
+                "name": "Supervising Consultant",
+                "value": "Fichtner GmbH & Co. KG",
+            },
+            {
+                "id": "cf-test-2",
+                "name": "Battery Storage Capacity",
+                "value": "2.5 MWh Lithium Iron Phosphate",
+            },
+        ],
+    }
+    create_res = client.post("/api/companies/projects", json=new_project_payload)
+    assert create_res.status_code == 201
+    created_proj = create_res.json()
+    proj_id = created_proj["id"]
+    assert created_proj["project_title"] == new_project_payload["project_title"]
+    assert len(created_proj["custom_fields"]) == 2
+    assert created_proj["custom_fields"][0]["name"] == "Supervising Consultant"
+
+    # 3. Update project details and dynamic custom fields (edit & delete fields)
+    update_payload = {
+        "contract_value": 19200000.0,
+        "custom_fields": [
+            {
+                "id": "cf-test-1",
+                "name": "Lead Consultant",
+                "value": "Fichtner GmbH (Berlin)",
+            },
+            {
+                "id": "cf-test-3",
+                "name": "Inverter Topology",
+                "value": "SMA Sunny Central 2500-EV",
+            },
+        ],
+    }
+    update_res = client.put(f"/api/companies/projects/{proj_id}", json=update_payload)
+    assert update_res.status_code == 200
+    updated_proj = update_res.json()
+    assert updated_proj["contract_value"] == 19200000.0
+    assert len(updated_proj["custom_fields"]) == 2
+    assert updated_proj["custom_fields"][0]["name"] == "Lead Consultant"
+
+    # 4. Upload Work Order file
+    wo_content = (
+        b"SREDA Official Work Order for Microgrid EPC Contract - Signed by Chairman"
+    )
+    upload_wo_res = client.post(
+        f"/api/companies/projects/{proj_id}/upload-work-order",
+        files={
+            "file": ("SREDA_WO_Microgrid_Signed.pdf", wo_content, "application/pdf")
+        },
+    )
+    assert upload_wo_res.status_code == 200
+    proj_with_wo = upload_wo_res.json()
+    assert proj_with_wo["work_order_filename"] == "SREDA_WO_Microgrid_Signed.pdf"
+    assert proj_with_wo["work_order_sha256"] is not None
+
+    # 5. Upload Completion Certificate file
+    cc_content = (
+        b"SREDA Final Commercial Operational Acceptance and Performance Certificate"
+    )
+    upload_cc_res = client.post(
+        f"/api/companies/projects/{proj_id}/upload-completion-cert",
+        files={
+            "file": (
+                "SREDA_Final_Completion_Certificate.pdf",
+                cc_content,
+                "application/pdf",
+            )
+        },
+    )
+    assert upload_cc_res.status_code == 200
+    proj_with_cc = upload_cc_res.json()
+    assert (
+        proj_with_cc["completion_cert_filename"]
+        == "SREDA_Final_Completion_Certificate.pdf"
+    )
+    assert proj_with_cc["completion_cert_sha256"] is not None
+
+    # 6. Link project credential into a tender submission dossier
+    tender_id = "TDR-SUBMISSION-TEST-01"
+    client.delete(f"/api/tenders/{tender_id}")
+    client.post(
+        "/api/tenders",
+        json={
+            "id": tender_id,
+            "title": "National Renewable Energy Microgrid Framework",
+            "organization": "Power Division, MPEMR",
+            "country": "Bangladesh",
+            "category": "Renewable Energy",
+            "estimated_value": 75000000.0,
+            "currency": "BDT",
+            "stage": "PREPARATION",
+            "priority": "HIGH",
+        },
+    )
+
+    link_res = client.post(
+        f"/api/companies/projects/{proj_id}/link-to-tender",
+        json={
+            "tender_id": tender_id,
+            "target_folder": "03_technical_proposal",
+        },
+    )
+    assert link_res.status_code == 200
+    link_data = link_res.json()
+    assert link_data["status"] == "success"
+    assert link_data["linked_documents_count"] >= 3  # WO + CC + Factsheet
+
+    # Verify documents appear in tender proposal
+    tender_docs_res = client.get(f"/api/tenders/{tender_id}/documents")
+    assert tender_docs_res.status_code == 200
+    tender_docs = tender_docs_res.json()
+    doc_names = [d["name"] for d in tender_docs]
+    assert any("Work Order" in name for name in doc_names)
+    assert any("Completion Certificate" in name for name in doc_names)
+    assert any("Credential Dossier" in name for name in doc_names)
+
+    # Clean up
+    client.delete(f"/api/companies/projects/{proj_id}")
+    client.delete(f"/api/tenders/{tender_id}")

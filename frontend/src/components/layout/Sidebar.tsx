@@ -20,6 +20,7 @@ import {
   KeyRound,
   Building2,
   Wrench,
+  Award,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 
@@ -117,6 +118,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       label: 'Access & Permissions',
       path: '/tools/permissions',
       icon: KeyRound,
+      badge: undefined,
+    },
+    {
+      label: 'Company Credentials',
+      path: '/documents?tab=credentials',
+      icon: Award,
       badge: undefined,
     },
     {

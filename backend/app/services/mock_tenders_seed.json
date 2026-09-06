@@ -1,0 +1,879 @@
+[
+  {
+    "id": "TDR-PRC0190428",
+    "referenceNo": "PRC0190428",
+    "title": "Development of the African Credit and Investment Risk (ACRI) Digital Ratings Platform",
+    "organization": "UNDP",
+    "country": "Ghana and Côte d'Ivoire (pilot markets)",
+    "category": "Software / IT Related",
+    "estimatedValue": 0,
+    "stage": "PREPARATION",
+    "decision": "GO",
+    "priority": "HIGH",
+    "submissionDeadline": "2026-09-15T23:59:59Z",
+    "daysRemaining": 12,
+    "hoursRemaining": 288,
+    "readinessScore": 78,
+    "missingDocumentsCount": 0,
+    "completedTasksCount": 8,
+    "totalTasksCount": 14,
+    "leadOwner": {
+      "name": "Sarah Jenkins",
+      "role": "Senior Bid Operations Director"
+    },
+    "scannerConfidence": 97,
+    "blockers": [],
+    "decisionMatrix": {
+      "technical": 9.4,
+      "financial": 8.9,
+      "team": 9,
+      "sla": 8.8,
+      "aggregateScore": 9,
+      "rationale": "Strategic pan-African digital financial infrastructure tender. Excellent capabilities alignment in cloud, algorithmic risk ratings, and SME DealRoom architectures.",
+      "decidedAt": "2026-09-01"
+    },
+    "summary": {
+      "classification": "SOFTWARE / IT RELATED",
+      "projectName": "Domestic Credit Ratings",
+      "tenderIdDisplay": "Tender ID Not specified",
+      "shortTitle": "ACRI Digital Ratings Platform",
+      "portal": "UNDP Quantum Supplier Portal",
+      "publishedDate": "",
+      "submissionTime": "23:59:59 (US Eastern Time)",
+      "mainIdea": "This is a SOFTWARE / IT RELATED tender. UNDP is seeking a consulting firm to design, develop, test, deploy, operate and support the African Credit and Investment Risk (ACRI) Digital Ratings Platform. The project requires a secure, scalable, web-based platform for assessing credit and investment risk of African SMEs and connecting verified investment opportunities with qualified capital providers. The platform includes an ACRI Investment DealRoom and an ACRI Ratings Engine using data-driven and algorithmic approaches.",
+      "commercial": {
+        "tenderSecurity": "Not specified in the tender documents.",
+        "contractPeriod": "Approximately 6 months from contract signature.",
+        "tenderDocPrice": "Not specified in the tender documents.",
+        "performanceSecurity": "Not specified in the tender documents."
+      },
+      "technicalReqs": [
+        "Requirements validation, solution architecture, software development and database/data model development.",
+        "Development of the ACRI Investment DealRoom for registration, verification, qualification, opportunity submission, search, matching, controlled disclosure and deal lifecycle management.",
+        "Development of an Expert Review Module for SME and investment opportunity evaluation, governance workflow, audit trail and rating version control.",
+        "Development of an ACRI Ratings Engine using data modelling, AI/ML, training datasets, model development, validation, backtesting and explainability.",
+        "API development, data integration, testing, QA, deployment, training, documentation, knowledge transfer and handover."
+      ],
+      "technologyMentioned": [
+        "Web-based digital solution",
+        "API-first application architecture",
+        "Application Programming Interface (API)",
+        "Artificial Intelligence (AI)",
+        "Machine Learning (ML)",
+        "Data analytics and algorithmic ratings",
+        "Event-processing layer",
+        "Structured and unstructured data integration",
+        "Development, test and production environments",
+        "Specific programming language, framework, database platform, cloud provider, or technology stack: Not specifically stated in the tender documents."
+      ],
+      "operationalReqs": [
+        "Platform operation and support",
+        "System testing and deployment",
+        "Post-deployment support",
+        "User training and knowledge transfer",
+        "Technical documentation and project handover",
+        "Data integration and management",
+        "Monitoring, reporting, quality assurance and risk management"
+      ],
+      "eligibility": {
+        "generalExperience": "Relevant experience in enterprise software development, web-based digital platforms, systems integration, API development, data sourcing/integration/management, AI, ML and data analytics.",
+        "similarExperience": "Relevant experience in financial, credit-rating, investment-risk or comparable analytical platforms. Experience in African markets or comparable environments is specifically requested in the technical proposal.",
+        "similarProjectValue": "Comparable assignments: the technical proposal format requests at least three comparable assignments completed within the last five years. Form F requests similar assignments successfully completed within the last three years and satisfactory performance statements from the top three clients or more.",
+        "avgTurnover": "Financial information required: annual turnover for the last three years, audited financial statements, balance sheets and income statements.",
+        "financialResources": "Minimum turnover amount: Not specified in the available tender documents. Minimum financial resource requirement: Not specified in the tender documents.",
+        "certification": "",
+        "localPresence": ""
+      },
+      "jv": {
+        "participation": "Permitted, as the tender includes a Joint Venture/Consortium/Association form.",
+        "jvAgreement": "A signed Letter of Intent to form a JV or a JV/Consortium/Association Agreement is required if applicable.",
+        "memberRules": "All JV members must be jointly and severally liable for contract performance.",
+        "leadMember": "A leading partner with authority to bind the JV must be identified.",
+        "localPartner": "Not specified in the tender documents."
+      },
+      "submissionDocuments": [
+        "Form C — Technical Proposal Submission",
+        "Form D — Proposer Information",
+        "Form E — Joint Venture/Consortium/Association Information, if applicable",
+        "Form F — Eligibility and Qualification",
+        "Form G — Technical Proposal",
+        "Form H — CVs of Proposed Key Personnel",
+        "Form I — Statements of Exclusivity and Availability for Key Personnel",
+        "Form J — Financial Proposal Submission",
+        "Form K — Financial Proposal",
+        "Supporting documents establishing compliance with eligibility, qualification and evaluation requirements",
+        "Financial Proposal Submission Rule: The Financial Proposal must be submitted separately through the Commercial Section of the UNDP Quantum system."
+      ],
+      "personnel": [
+        {
+          "position": "Project and technical personnel",
+          "qualification": "Not specifically stated by individual position",
+          "experience": "Relevant expertise collectively required",
+          "qty": "Not specified"
+        },
+        {
+          "position": "Software / Platform Experts",
+          "qualification": "Not specifically stated",
+          "experience": "Software and platform development expertise",
+          "qty": "Not specified"
+        },
+        {
+          "position": "Data / AI / ML Experts",
+          "qualification": "Not specifically stated",
+          "experience": "Data, AI and Machine Learning expertise",
+          "qty": "Not specified"
+        },
+        {
+          "position": "Financial / Credit / Investment Risk Experts",
+          "qualification": "Not specifically stated",
+          "experience": "Financial, credit and/or investment-risk expertise",
+          "qty": "Not specified"
+        }
+      ],
+      "dates": {
+        "contractStart": "01 October 2026",
+        "submissionDeadline": "15 September 2026",
+        "clarificationDeadline": "",
+        "openingDate": ""
+      },
+      "risks": [
+        {
+          "type": "Tender Requirement",
+          "text": "The project requires development of both a digital investment DealRoom and an algorithmic SME Ratings Engine."
+        },
+        {
+          "type": "Tender Requirement",
+          "text": "The tender documents contain a potential difference between comparable assignment experience periods: five years in the Technical Proposal format and three years in Form F."
+        },
+        {
+          "type": "Tender Requirement",
+          "text": "The bidder must demonstrate expertise across enterprise software, AI/ML, data analytics, systems integration and financial/credit/investment-risk areas."
+        },
+        {
+          "type": "Tender Requirement",
+          "text": "Experience in African markets or comparable environments is specifically requested."
+        },
+        {
+          "type": "Analyst Observation",
+          "text": "The combination of enterprise software, financial risk analytics and AI/ML makes comparable project evidence particularly important."
+        }
+      ],
+      "managementHighlights": [
+        "Relevance: Strong Software/IT tender involving enterprise software, AI/ML, APIs, data integration and analytics.",
+        "Main opportunity: Development of a complete digital platform consisting of an Investment DealRoom and SME Ratings Engine.",
+        "Major experience requirement: At least three comparable assignments must be demonstrated.",
+        "Key capability requirement: The proposed team must combine software development, AI/ML, data and financial/credit/investment-risk expertise.",
+        "Important market requirement: Experience in African markets or comparable environments should be demonstrated.",
+        "Deadline: 15 September 2026, 23:59:59 US Eastern Time."
+      ],
+      "notes": ""
+    },
+    "tasks": [
+      {
+        "id": "TSK-ACRI-01",
+        "title": "Form F & Past Comparable Assignment Verification (5 vs 3 Year Audit)",
+        "assignee": "Elena Rostova",
+        "priority": "CRITICAL",
+        "deadline": "Sep 08",
+        "status": "IN_PROGRESS"
+      },
+      {
+        "id": "TSK-ACRI-02",
+        "title": "ACRI DealRoom & Algorithmic Ratings Engine Architecture Design",
+        "assignee": "Dr. Marcus Vance",
+        "priority": "HIGH",
+        "deadline": "Sep 10",
+        "status": "IN_PROGRESS"
+      },
+      {
+        "id": "TSK-ACRI-03",
+        "title": "CV Drafting for Key Personnel (Platform, AI/ML, Risk Experts)",
+        "assignee": "Sarah Jenkins",
+        "priority": "HIGH",
+        "deadline": "Sep 11",
+        "status": "TODO"
+      },
+      {
+        "id": "TSK-ACRI-04",
+        "title": "Form J & K Financial Proposal Segregation for Quantum Portal",
+        "assignee": "Tariq Al-Mansoor",
+        "priority": "CRITICAL",
+        "deadline": "Sep 14",
+        "status": "TODO"
+      }
+    ],
+    "requirements": [
+      {
+        "id": "REQ-ACRI-01",
+        "title": "Form C to Form K Submission Package",
+        "category": "Statutory & Submission Forms",
+        "status": "PENDING",
+        "owner": "Elena Rostova"
+      },
+      {
+        "id": "REQ-ACRI-02",
+        "title": "At least 3 comparable digital platform assignments",
+        "category": "Technical Eligibility",
+        "status": "VERIFIED",
+        "owner": "Dr. Marcus Vance"
+      },
+      {
+        "id": "REQ-ACRI-03",
+        "title": "Financial Proposal submitted separately via Quantum Commercial section",
+        "category": "Compliance Rule",
+        "status": "VERIFIED",
+        "owner": "Tariq Al-Mansoor"
+      }
+    ],
+    "documents": [
+      {
+        "id": "DOC-ACRI-01",
+        "name": "UNDP-Quantum-PRC0190428-RFP-Full-Specification.pdf",
+        "folder": "01_original_tender_documents",
+        "revision": "v1.0",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": "4.8 MB",
+        "uploadedAt": "2026-09-02"
+      }
+    ],
+    "reviews": [
+      {
+        "tierNumber": 1,
+        "name": "Technical & Scope Architecture Sign-Off",
+        "reviewer": "Dr. Marcus Vance",
+        "status": "ACTION_REQUIRED",
+        "date": "Pending",
+        "comments": "Architecture drafting for DealRoom & Ratings engine ongoing."
+      },
+      {
+        "tierNumber": 2,
+        "name": "Financial Margin & Pricing Sign-Off",
+        "reviewer": "Tariq Al-Mansoor",
+        "status": "WAITING",
+        "date": "Pending",
+        "comments": "Commercial rate cards in preparation."
+      },
+      {
+        "tierNumber": 3,
+        "name": "Legal & Regulatory Solvency Sign-Off",
+        "reviewer": "Elena Rostova",
+        "status": "WAITING",
+        "date": "Pending",
+        "comments": "JV & Exclusivity statement validation."
+      },
+      {
+        "tierNumber": 4,
+        "name": "Executive Board Gatekeeper Sign-Off",
+        "reviewer": "Sarah Jenkins",
+        "status": "WAITING",
+        "date": "Pending",
+        "comments": "Awaiting prior tiers."
+      }
+    ],
+    "submissionProof": {
+      "portalReference": "UNDP-QUANTUM-PENDING",
+      "status": "PENDING"
+    },
+    "comments": [
+      {
+        "id": "CMT-ACRI-01",
+        "tenderId": "TDR-PRC0190428",
+        "authorName": "Sarah Jenkins",
+        "authorRole": "BUSINESS_HEAD",
+        "authorAvatar": "SJ",
+        "content": "High strategic priority opportunity. Ensure the financial proposal is strictly separated as per UNDP Quantum Commercial Section requirements.",
+        "createdAt": "2026-09-02T10:00:00Z"
+      }
+    ]
+  },
+  {
+    "id": "TDR-2026-EU-089",
+    "referenceNo": "RFP/UNDP/2026/0441",
+    "title": "Enterprise ERP Modernization & Sovereign Cloud Infrastructure",
+    "organization": "UNDP (United Nations Development Programme)",
+    "country": "Switzerland / Regional",
+    "category": "IT & Cloud Infrastructure",
+    "estimatedValue": 14200000,
+    "stage": "PREPARATION",
+    "decision": "GO",
+    "priority": "CRITICAL",
+    "submissionDeadline": "2026-09-06T14:00:00Z",
+    "daysRemaining": 2,
+    "hoursRemaining": 48,
+    "readinessScore": 88,
+    "missingDocumentsCount": 1,
+    "completedTasksCount": 22,
+    "totalTasksCount": 26,
+    "leadOwner": {
+      "name": "Sarah Jenkins",
+      "role": "Senior Bid Operations Director"
+    },
+    "scannerConfidence": 96,
+    "blockers": [
+      "Awaiting Final Bank Guarantee Solvency Seal"
+    ],
+    "decisionMatrix": {
+      "technical": 9.2,
+      "financial": 8.5,
+      "team": 7.8,
+      "sla": 9,
+      "aggregateScore": 8.6,
+      "rationale": "Strong technical fit with proprietary cloud migration tooling. Margin meets 28% threshold.",
+      "decidedAt": "2026-08-30"
+    },
+    "tasks": [
+      {
+        "id": "TSK-101",
+        "title": "Compile Sovereign Cloud Node Architecture Diagram",
+        "assignee": "Dr. Marcus Vance",
+        "priority": "HIGH",
+        "deadline": "Sep 05",
+        "status": "TODO"
+      },
+      {
+        "id": "TSK-102",
+        "title": "Finalize Pricing BOQ Schedule with Subcontractor",
+        "assignee": "Tariq Al-Mansoor",
+        "priority": "CRITICAL",
+        "deadline": "Sep 05",
+        "status": "TODO"
+      },
+      {
+        "id": "TSK-103",
+        "title": "Obtain Notarized Bank Solvency & Performance Letter",
+        "assignee": "Sarah Jenkins",
+        "priority": "CRITICAL",
+        "deadline": "Sep 05",
+        "status": "IN_PROGRESS"
+      },
+      {
+        "id": "TSK-104",
+        "title": "Draft Technical Methodology Section 3: SLA Operations",
+        "assignee": "Elena Rostova",
+        "priority": "MEDIUM",
+        "deadline": "Sep 06",
+        "status": "IN_PROGRESS"
+      },
+      {
+        "id": "TSK-105",
+        "title": "Legal Counsel Review of Liquidated Damages Clause",
+        "assignee": "Elena Rostova",
+        "priority": "HIGH",
+        "deadline": "Sep 06",
+        "status": "REVIEW"
+      },
+      {
+        "id": "TSK-089",
+        "title": "Statutory Tax Clearance & Trade License Upload",
+        "assignee": "Tariq Al-Mansoor",
+        "priority": "LOW",
+        "deadline": "Aug 28",
+        "status": "DONE"
+      }
+    ],
+    "requirements": [
+      {
+        "id": "REQ-01",
+        "title": "Valid Corporate Trade License & Registration",
+        "category": "Statutory Legal",
+        "status": "VERIFIED",
+        "evidenceFile": "02_company_statutory_documents/trade_license_2026.pdf",
+        "owner": "Tariq Al-Mansoor"
+      },
+      {
+        "id": "REQ-02",
+        "title": "Tax Clearance Certificate (Current Fiscal Year)",
+        "category": "Financial Compliance",
+        "status": "VERIFIED",
+        "evidenceFile": "02_company_statutory_documents/tax_clearance_cert_2026.pdf",
+        "owner": "Tariq Al-Mansoor"
+      },
+      {
+        "id": "REQ-03",
+        "title": "Bid Bond / Security Guarantee ($284,000 USD)",
+        "category": "Banking Guarantee",
+        "status": "BLOCKER",
+        "evidenceFile": "04_financial_proposal/draft_bank_guarantee_v2.pdf",
+        "owner": "Sarah Jenkins"
+      },
+      {
+        "id": "REQ-04",
+        "title": "ISO 27001:2022 Security Management Certification",
+        "category": "Technical Quality",
+        "status": "VERIFIED",
+        "evidenceFile": "03_technical_proposal/iso_27001_certificate_audit.pdf",
+        "owner": "Dr. Marcus Vance"
+      },
+      {
+        "id": "REQ-05",
+        "title": "Three Reference Project Letters (> $5M USD each)",
+        "category": "Past Performance",
+        "status": "VERIFIED",
+        "evidenceFile": "03_technical_proposal/past_credentials_bundle.pdf",
+        "owner": "Elena Rostova"
+      }
+    ],
+    "documents": [
+      {
+        "id": "DOC-01",
+        "name": "Official_RFP_Notice_UNDP_2026_0441.pdf",
+        "folder": "01_original_tender_documents",
+        "revision": "v1.0",
+        "sha256": "9a3b7c2d1e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b",
+        "uploadedAt": "2026-08-25",
+        "size": "14.2 MB"
+      },
+      {
+        "id": "DOC-02",
+        "name": "trade_license_2026.pdf",
+        "folder": "02_company_statutory_documents",
+        "revision": "v1.0",
+        "sha256": "8f4c2b9a7d1e3f5c8a7b9c0d1e2f3a4b5c6d7e8f9a0b9a3b7c2d1e4f5a6b7c8d",
+        "uploadedAt": "2026-08-26",
+        "size": "2.1 MB"
+      },
+      {
+        "id": "DOC-03",
+        "name": "Technical_Methodology_ScopeOfWork_v3.pdf",
+        "folder": "03_technical_proposal",
+        "revision": "v3.0",
+        "sha256": "7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c",
+        "uploadedAt": "2026-09-02",
+        "size": "18.4 MB"
+      },
+      {
+        "id": "DOC-04",
+        "name": "commercial_pricing_boq_v2.xlsx",
+        "folder": "04_financial_proposal",
+        "revision": "v2.0",
+        "sha256": "6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b",
+        "uploadedAt": "2026-09-03",
+        "size": "4.8 MB"
+      },
+      {
+        "id": "DOC-05",
+        "name": "Compiled_Submission_Package_PreSeal.pdf",
+        "folder": "05_final_submission_package",
+        "revision": "v1.0",
+        "sha256": "5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a",
+        "uploadedAt": "2026-09-03",
+        "size": "68.0 MB"
+      }
+    ],
+    "reviews": [
+      {
+        "tierNumber": 1,
+        "name": "Technical & Scope Architecture Sign-Off",
+        "reviewer": "Dr. Marcus Vance (Solutions Lead)",
+        "status": "APPROVED",
+        "date": "Sep 02, 2026",
+        "comments": "All 14 technical clauses compliant. High-availability architecture validated against Tier-4 specifications."
+      },
+      {
+        "tierNumber": 2,
+        "name": "Financial Margin & Pricing Sign-Off",
+        "reviewer": "Tariq Al-Mansoor (Finance Lead)",
+        "status": "APPROVED",
+        "date": "Sep 03, 2026",
+        "comments": "Commercial BOQ verified. Model meets 28% gross target margin with inflation variance buffers."
+      },
+      {
+        "tierNumber": 3,
+        "name": "Legal & Regulatory Solvency Sign-Off",
+        "reviewer": "Elena Rostova (Compliance Officer)",
+        "status": "ACTION_REQUIRED",
+        "date": "Pending",
+        "comments": "Bank Guarantee original seal must be uploaded before executive sign-off can be granted."
+      },
+      {
+        "tierNumber": 4,
+        "name": "Executive Board Gatekeeper Sign-Off",
+        "reviewer": "Sarah Jenkins (Bid Operations Director)",
+        "status": "WAITING",
+        "date": "Pending",
+        "comments": "Awaiting Tier 3 clearance before final portal authorization."
+      }
+    ],
+    "submissionProof": {
+      "portalReference": "UNGM-SUB-9941",
+      "status": "PENDING"
+    },
+    "comments": [
+      {
+        "id": "CMT-01",
+        "tenderId": "TDR-2026-EU-089",
+        "authorName": "Sarah Jenkins",
+        "authorRole": "BUSINESS_HEAD",
+        "authorAvatar": "SJ",
+        "content": "Bank solvency guarantee deadline is critical. Tariq, please ensure the notarized seal is delivered by tomorrow 10:00 AM.",
+        "createdAt": "2026-09-02T14:30:00Z"
+      },
+      {
+        "id": "CMT-02",
+        "tenderId": "TDR-2026-EU-089",
+        "authorName": "Dr. Marcus Vance",
+        "authorRole": "EXECUTIVE_MANAGER",
+        "authorAvatar": "MV",
+        "content": "Technical architecture diagrams for the sovereign cluster have been completed and uploaded to the Document Vault under Section 02.",
+        "createdAt": "2026-09-02T16:15:00Z"
+      },
+      {
+        "id": "CMT-03",
+        "tenderId": "TDR-2026-EU-089",
+        "authorName": "Elena Rostova",
+        "authorRole": "TENDER_ANALYST",
+        "authorAvatar": "ER",
+        "content": "Tier 2 review passed. ISO 27001 certificate validity confirmed with certification board.",
+        "createdAt": "2026-09-03T09:40:00Z"
+      }
+    ]
+  },
+  {
+    "id": "TDR-2026-WB-104",
+    "referenceNo": "WB-AFR-2026-IT-901",
+    "title": "Digital Health Records & Telemedicine Network Implementation",
+    "organization": "World Bank Group",
+    "country": "Kenya & East Africa",
+    "category": "Healthcare Systems",
+    "estimatedValue": 8600000,
+    "stage": "INTERNAL_REVIEW",
+    "decision": "GO",
+    "priority": "HIGH",
+    "submissionDeadline": "2026-09-08T18:00:00Z",
+    "daysRemaining": 4,
+    "hoursRemaining": 110,
+    "readinessScore": 92,
+    "missingDocumentsCount": 0,
+    "completedTasksCount": 31,
+    "totalTasksCount": 34,
+    "leadOwner": {
+      "name": "Dr. Marcus Vance",
+      "role": "Technical Solutions Lead"
+    },
+    "scannerConfidence": 94,
+    "blockers": [],
+    "decisionMatrix": {
+      "technical": 9.5,
+      "financial": 8.8,
+      "team": 8.5,
+      "sla": 9.1,
+      "aggregateScore": 9,
+      "rationale": "High priority international healthcare initiative. Strategic multi-year footprint.",
+      "decidedAt": "2026-08-20"
+    },
+    "tasks": [],
+    "requirements": [],
+    "documents": [],
+    "reviews": [
+      {
+        "tierNumber": 1,
+        "name": "Technical & Scope Architecture Sign-Off",
+        "reviewer": "Dr. Marcus Vance",
+        "status": "APPROVED",
+        "date": "Sep 01, 2026",
+        "comments": "Clinical workflow integration signed off."
+      },
+      {
+        "tierNumber": 2,
+        "name": "Financial Margin & Pricing Sign-Off",
+        "reviewer": "Tariq Al-Mansoor",
+        "status": "APPROVED",
+        "date": "Sep 02, 2026",
+        "comments": "Pricing models approved."
+      },
+      {
+        "tierNumber": 3,
+        "name": "Legal & Regulatory Solvency Sign-Off",
+        "reviewer": "Elena Rostova",
+        "status": "APPROVED",
+        "date": "Sep 03, 2026",
+        "comments": "All legal statutory covenants cleared."
+      },
+      {
+        "tierNumber": 4,
+        "name": "Executive Board Gatekeeper Sign-Off",
+        "reviewer": "Sarah Jenkins",
+        "status": "APPROVED",
+        "date": "Sep 03, 2026",
+        "comments": "Board approval package authorized for electronic submission."
+      }
+    ],
+    "submissionProof": {
+      "portalReference": "WB-ePROC-7712",
+      "status": "PENDING"
+    }
+  },
+  {
+    "id": "TDR-2026-ADB-215",
+    "referenceNo": "ADB-TA-9921-REG",
+    "title": "Smart Grid Management & SCADA Cybersecurity Hardening",
+    "organization": "Asian Development Bank (ADB)",
+    "country": "Philippines",
+    "category": "Cybersecurity & Energy",
+    "estimatedValue": 12500000,
+    "stage": "UNDER_ANALYSIS",
+    "decision": "PENDING",
+    "priority": "CRITICAL",
+    "submissionDeadline": "2026-09-05T12:00:00Z",
+    "daysRemaining": 1,
+    "hoursRemaining": 22,
+    "readinessScore": 54,
+    "missingDocumentsCount": 2,
+    "completedTasksCount": 9,
+    "totalTasksCount": 20,
+    "leadOwner": {
+      "name": "Elena Rostova",
+      "role": "Bid Manager"
+    },
+    "scannerConfidence": 91,
+    "blockers": [
+      "Legal Jurisdiction Compliance Clause 4.2 pending review"
+    ],
+    "tasks": [],
+    "requirements": [],
+    "documents": [],
+    "reviews": []
+  },
+  {
+    "id": "TDR-2026-EU-331",
+    "referenceNo": "EC-DG-DIGIT-2026-08",
+    "title": "Cross-Border Automated Identity Verification Architecture",
+    "organization": "European Commission (DG DIGIT)",
+    "country": "Belgium / EU Wide",
+    "category": "Identity & Security",
+    "estimatedValue": 7800000,
+    "stage": "DISCOVERED",
+    "decision": "CONDITIONAL",
+    "priority": "MEDIUM",
+    "submissionDeadline": "2026-09-18T16:00:00Z",
+    "daysRemaining": 14,
+    "hoursRemaining": 340,
+    "readinessScore": 35,
+    "missingDocumentsCount": 1,
+    "completedTasksCount": 4,
+    "totalTasksCount": 18,
+    "leadOwner": {
+      "name": "Tariq Al-Mansoor",
+      "role": "Finance & Compliance Lead"
+    },
+    "scannerConfidence": 89,
+    "blockers": [],
+    "tasks": [],
+    "requirements": [],
+    "documents": [],
+    "reviews": []
+  },
+  {
+    "id": "TDR-2026-MOF-052",
+    "referenceNo": "MOF-PROC-2026-88",
+    "title": "National Tax Portal Migration & Distributed Microservices Scope of Work (SOW)",
+    "organization": "Ministry of Finance & Revenue",
+    "country": "Sovereign / National",
+    "category": "Government Software",
+    "estimatedValue": 5400000,
+    "stage": "PREPARATION",
+    "decision": "GO",
+    "priority": "HIGH",
+    "submissionDeadline": "2026-09-11T17:00:00Z",
+    "daysRemaining": 7,
+    "hoursRemaining": 175,
+    "readinessScore": 71,
+    "missingDocumentsCount": 0,
+    "completedTasksCount": 16,
+    "totalTasksCount": 24,
+    "leadOwner": {
+      "name": "Sarah Jenkins",
+      "role": "Senior Bid Operations Director"
+    },
+    "scannerConfidence": 98,
+    "blockers": [],
+    "tasks": [],
+    "requirements": [],
+    "documents": [],
+    "reviews": []
+  },
+  {
+    "id": "TDR-2026-WHO-044",
+    "referenceNo": "WPRO-2026-RFP-091",
+    "title": "Integrated Health Information Exchange & Disease Surveillance Cloud System",
+    "organization": "World Health Organization (WHO WPRO)",
+    "country": "Fiji & South Pacific Regional",
+    "category": "Healthcare & Cloud Data",
+    "estimatedValue": 6900000,
+    "stage": "PREPARATION",
+    "decision": "GO",
+    "priority": "HIGH",
+    "submissionDeadline": "2026-09-22T15:00:00Z",
+    "daysRemaining": 18,
+    "hoursRemaining": 432,
+    "readinessScore": 68,
+    "missingDocumentsCount": 1,
+    "completedTasksCount": 7,
+    "totalTasksCount": 16,
+    "leadOwner": {
+      "name": "Dr. Marcus Vance",
+      "role": "Head of Technical Architecture & Delivery"
+    },
+    "scannerConfidence": 95,
+    "blockers": [],
+    "decisionMatrix": {
+      "technical": 9.3,
+      "financial": 8.4,
+      "team": 8.6,
+      "sla": 8.9,
+      "aggregateScore": 8.8,
+      "rationale": "HL7 FHIR architecture and cross-island offline synchronization capability matches our existing sovereign healthcare stack.",
+      "decidedAt": "2026-09-02"
+    },
+    "tasks": [
+      {
+        "id": "TSK-WHO-01",
+        "title": "FHIR API Specification & Pacific Island Offline Sync Architecture",
+        "assignee": "Dr. Marcus Vance",
+        "status": "IN_PROGRESS",
+        "priority": "CRITICAL",
+        "deadline": "Sep 12"
+      },
+      {
+        "id": "TSK-WHO-02",
+        "title": "Form D: Manufacturer Authorization for Edge Gateway Appliances",
+        "assignee": "Elena Rostova",
+        "status": "TODO",
+        "priority": "HIGH",
+        "deadline": "Sep 15"
+      }
+    ],
+    "requirements": [
+      {
+        "id": "REQ-WHO-01",
+        "title": "ISO 27799 Health Informatics Security Accreditation",
+        "category": "Statutory Certification",
+        "status": "VERIFIED",
+        "owner": "Elena Rostova"
+      },
+      {
+        "id": "REQ-WHO-02",
+        "title": "Subcontractor Local Presence Warranty in Suva, Fiji",
+        "category": "Legal & Local Presence",
+        "status": "PENDING",
+        "owner": "Tariq Al-Mansoor"
+      }
+    ],
+    "documents": [],
+    "reviews": [
+      {
+        "tierNumber": 1,
+        "name": "Technical Architecture Sign-Off",
+        "reviewer": "Dr. Marcus Vance",
+        "status": "APPROVED",
+        "date": "Sep 03",
+        "comments": "Interoperability verified."
+      },
+      {
+        "tierNumber": 2,
+        "name": "Financial Model Sign-Off",
+        "reviewer": "Tariq Al-Mansoor",
+        "status": "WAITING",
+        "comments": "Awaiting pricing schedule."
+      },
+      {
+        "tierNumber": 3,
+        "name": "Legal & Privacy Sign-Off",
+        "reviewer": "Elena Rostova",
+        "status": "WAITING",
+        "comments": "Pending HIPAA/GDPR assessment."
+      },
+      {
+        "tierNumber": 4,
+        "name": "Executive Approval",
+        "reviewer": "Sarah Jenkins",
+        "status": "WAITING",
+        "comments": "Pending lower tiers."
+      }
+    ]
+  },
+  {
+    "id": "TDR-2026-JICA-118",
+    "referenceNo": "JICA-BD-P108-2026",
+    "title": "Dhaka Smart Water Supply Network SCADA Automation & IoT Metering",
+    "organization": "Japan International Cooperation Agency (JICA / DWASA)",
+    "country": "Bangladesh",
+    "category": "Industrial IoT & SCADA",
+    "estimatedValue": 18500000,
+    "stage": "UNDER_ANALYSIS",
+    "decision": "GO",
+    "priority": "CRITICAL",
+    "submissionDeadline": "2026-09-08T11:00:00Z",
+    "daysRemaining": 4,
+    "hoursRemaining": 96,
+    "readinessScore": 82,
+    "missingDocumentsCount": 0,
+    "completedTasksCount": 14,
+    "totalTasksCount": 18,
+    "leadOwner": {
+      "name": "Tariq Al-Mansoor",
+      "role": "Commercial Pricing & Contracts Director"
+    },
+    "scannerConfidence": 99,
+    "blockers": [],
+    "decisionMatrix": {
+      "technical": 8.8,
+      "financial": 9.1,
+      "team": 8.2,
+      "sla": 8.5,
+      "aggregateScore": 8.7,
+      "rationale": "Major bilateral JICA infrastructure loan project. Partnering with Yokogawa Electric Consortium satisfies Section 3 local experience rules.",
+      "decidedAt": "2026-08-29"
+    },
+    "tasks": [
+      {
+        "id": "TSK-JICA-01",
+        "title": "Consortium Agreement Notarization with JV Co-Lead",
+        "assignee": "Tariq Al-Mansoor",
+        "status": "IN_PROGRESS",
+        "priority": "CRITICAL",
+        "deadline": "Sep 06"
+      }
+    ],
+    "requirements": [
+      {
+        "id": "REQ-JICA-01",
+        "title": "JICA Official Development Assistance (ODA) Debarment Clearances",
+        "category": "Statutory Debarment",
+        "status": "VERIFIED",
+        "owner": "Elena Rostova"
+      }
+    ],
+    "documents": [],
+    "reviews": []
+  },
+  {
+    "id": "TDR-2026-ADB-402",
+    "referenceNo": "ADB-COSO-2026-042",
+    "title": "Central Asian Regional Economic Cooperation (CAREC) Single Window Portal",
+    "organization": "Asian Development Bank (ADB)",
+    "country": "Kazakhstan & Uzbekistan",
+    "category": "Trade & Customs Logistics",
+    "estimatedValue": 9200000,
+    "stage": "DISCOVERED",
+    "decision": "PENDING",
+    "priority": "MEDIUM",
+    "submissionDeadline": "2026-09-28T18:00:00Z",
+    "daysRemaining": 24,
+    "hoursRemaining": 576,
+    "readinessScore": 32,
+    "missingDocumentsCount": 2,
+    "completedTasksCount": 3,
+    "totalTasksCount": 15,
+    "leadOwner": {
+      "name": "Sarah Jenkins",
+      "role": "Director of Procurement & Bid Capture"
+    },
+    "scannerConfidence": 92,
+    "blockers": [],
+    "tasks": [],
+    "requirements": [],
+    "documents": [],
+    "reviews": []
+  }
+]

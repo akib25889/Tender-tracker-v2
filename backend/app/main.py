@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.core.database import Base, engine, SessionLocal
+from app.core.database import Base, engine, SessionLocal, run_migrations
 import app.models  # Ensures all models are registered
 from app.services.seeder import seed_database
 from app.routers import (
@@ -18,6 +18,9 @@ from app.routers import (
     settings as settings_router,
     submissions,
     chat,
+    organizations,
+    requirements,
+    company_credentials,
 )
 
 
@@ -25,6 +28,7 @@ from app.routers import (
 async def lifespan(app: FastAPI):
     # Startup: Initialize tables and seed initial data
     Base.metadata.create_all(bind=engine)
+    run_migrations()
     db = SessionLocal()
     try:
         seed_database(db)
@@ -66,6 +70,9 @@ app.include_router(categories.router, prefix=settings.API_V1_STR)
 app.include_router(settings_router.router, prefix=settings.API_V1_STR)
 app.include_router(submissions.router, prefix=settings.API_V1_STR)
 app.include_router(chat.router, prefix=settings.API_V1_STR)
+app.include_router(organizations.router, prefix=settings.API_V1_STR)
+app.include_router(requirements.router, prefix=settings.API_V1_STR)
+app.include_router(company_credentials.router, prefix=settings.API_V1_STR)
 
 
 @app.get(f"{settings.API_V1_STR}/health", tags=["Health"])

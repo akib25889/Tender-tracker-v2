@@ -78,13 +78,27 @@ export const TenderDocumentsTab: React.FC = () => {
     fileCount: number;
   } | null>(null);
 
+  const isJvTender = Boolean(
+    tender?.summary?.jv?.participation?.toLowerCase().includes('allow') ||
+    tender?.summary?.jv?.leadMember ||
+    tender?.summary?.jv?.localPartner
+  );
+
+  const jvPartnerName =
+    tender?.summary?.jv?.localPartner ||
+    'DataCore Systems Ltd';
+  const leadCompanyName = 'PrimeTech Ltd';
+
   // Modal: Link Reusable Document
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const [selectedReusableDocId, setSelectedReusableDocId] = useState<string>('');
-  const [linkTargetFolder, setLinkTargetFolder] = useState<string>('02_company_statutory_documents');
+  const [linkTargetFolder, setLinkTargetFolder] = useState<string>(
+    isJvTender ? '02A_jv_partner_credentials' : '02_company_statutory_documents'
+  );
   const [linkFilterCategory, setLinkFilterCategory] = useState<string>('ALL');
+  const [companyFilter, setCompanyFilter] = useState<string>('ALL');
 
-  const defaultFolders = [
+  const standardFolders = [
     {
       name: '01_original_tender_documents',
       label: 'Original RFP Notices & Addenda',
@@ -111,9 +125,45 @@ export const TenderDocumentsTab: React.FC = () => {
     },
   ];
 
+  const jvPrioritizedFolders = [
+    {
+      name: '02A_jv_partner_credentials',
+      label: `⭐ JV Partner Credentials (${jvPartnerName})`,
+    },
+    {
+      name: '02B_lead_statutory_documents',
+      label: `🏛️ Lead Bidder Statutory Credentials (${leadCompanyName})`,
+    },
+    {
+      name: '02C_jv_agreement_and_poa',
+      label: '📜 JV Consortium Deed & Power of Attorney',
+    },
+    {
+      name: '01_original_tender_documents',
+      label: 'Original RFP Notices & Addenda',
+    },
+    {
+      name: '03_technical_proposal',
+      label: 'Technical Proposal & Architecture',
+    },
+    {
+      name: '04_financial_proposal',
+      label: 'Financial Proposal & BOQ Tables',
+    },
+    {
+      name: '05_final_submission_package',
+      label: 'Compiled Sealed Submission Package',
+    },
+    {
+      name: '06_submission_receipts',
+      label: 'Official Portal Receipts & Confirmations',
+    },
+  ];
+
   if (!tender) return null;
 
-  const folders = [...defaultFolders, ...(tender.customFolders || [])].filter(
+  const baseFolders = isJvTender ? jvPrioritizedFolders : standardFolders;
+  const folders = [...baseFolders, ...(tender.customFolders || [])].filter(
     (f) => !(tender.deletedFolders || []).includes(f.name)
   );
 
@@ -150,9 +200,15 @@ export const TenderDocumentsTab: React.FC = () => {
     setIsLinkModalOpen(false);
   };
 
-  const displayedDocs = (tender.documents || []).filter(
-    (d) => activeFolderFilter === 'ALL' || d.folder === activeFolderFilter
-  );
+  const displayedDocs = (tender.documents || []).filter((d) => {
+    const matchesFolder = activeFolderFilter === 'ALL' || d.folder === activeFolderFilter;
+    const matchesCompany =
+      companyFilter === 'ALL' ||
+      (companyFilter === 'JV' && (d.isJvPartner || d.companyRole === 'JV_PARTNER')) ||
+      (companyFilter === 'LEAD' && (d.companyRole === 'LEAD_BIDDER' || (!d.isJvPartner && d.companyRole !== 'JV_PARTNER'))) ||
+      d.companyName === companyFilter;
+    return matchesFolder && matchesCompany;
+  });
 
   return (
     <div className="space-y-6">
@@ -365,11 +421,59 @@ export const TenderDocumentsTab: React.FC = () => {
           )
         }
       >
+        {/* Entity / Company Disambiguation Filter Bar */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-2 border-b border-[#F1F5F9]">
+          <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mr-1 shrink-0">
+            Entity Filter:
+          </span>
+          <button
+            type="button"
+            onClick={() => setCompanyFilter('ALL')}
+            className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
+              companyFilter === 'ALL'
+                ? 'bg-[#0F172A] text-white shadow-xs'
+                : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A]'
+            }`}
+          >
+            All Entities ({tender.documents.length})
+          </button>
+          {isJvTender && (
+            <button
+              type="button"
+              onClick={() => setCompanyFilter('JV')}
+              className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 transition-colors ${
+                companyFilter === 'JV'
+                  ? 'bg-purple-700 text-white shadow-xs'
+                  : 'bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100'
+              }`}
+            >
+              <span>⭐ JV: {jvPartnerName}</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/25 font-bold">
+                {tender.documents.filter((d) => d.isJvPartner || d.companyRole === 'JV_PARTNER').length}
+              </span>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setCompanyFilter('LEAD')}
+            className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 transition-colors ${
+              companyFilter === 'LEAD'
+                ? 'bg-blue-700 text-white shadow-xs'
+                : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'
+            }`}
+          >
+            <span>🏛️ Lead: {leadCompanyName}</span>
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/25 font-bold">
+              {tender.documents.filter((d) => !d.isJvPartner && d.companyRole !== 'JV_PARTNER').length}
+            </span>
+          </button>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
-                <th className="py-2.5 px-3">File Name</th>
+                <th className="py-2.5 px-3">File Name &amp; Owning Entity</th>
                 <th className="py-2.5 px-3 w-56">Target Folder (Move / Assign)</th>
                 <th className="py-2.5 px-3 w-44">Access Permission Scope</th>
                 <th className="py-2.5 px-3">Uploaded</th>
@@ -380,7 +484,7 @@ export const TenderDocumentsTab: React.FC = () => {
               {displayedDocs.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="py-8 text-center text-xs text-[#94A3B8]">
-                    No files found in this folder. Click <strong>"+ Upload here"</strong> or <strong>"Link Master Library File"</strong> above to add files.
+                    No files found for this filter. Click <strong>"+ Upload here"</strong> or <strong>"Link Master Library File"</strong> above to add files.
                   </td>
                 </tr>
               ) : (
@@ -388,13 +492,26 @@ export const TenderDocumentsTab: React.FC = () => {
                   const docAccess = doc.accessLevel || 'ALL_TEAM';
                   const hasAccess = hasDocumentAccess(docAccess);
                   const accessBadge = ACCESS_STYLES[docAccess] || ACCESS_STYLES.ALL_TEAM;
+                  const isJvDoc = doc.isJvPartner || doc.companyRole === 'JV_PARTNER';
 
                   return (
                     <tr key={doc.id} className="hover:bg-[#F8FAFC] transition-colors">
                       <td className="py-3 px-3 font-medium text-[#0F172A] max-w-sm">
-                        <div className="flex items-center gap-2 flex-wrap">
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           <FileText className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
-                          <span className="font-semibold truncate">{doc.name}</span>
+                          <span className="font-semibold">{doc.name}</span>
+
+                          {/* Owning Entity Disambiguation Badge */}
+                          {isJvDoc ? (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                              ⭐ JV: {doc.companyName || jvPartnerName}
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                              🏛️ Lead: {doc.companyName || leadCompanyName}
+                            </span>
+                          )}
+
                           {doc.isReusableLink && (
                             <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE]">
                               <LinkIcon className="w-2.5 h-2.5" />
@@ -615,9 +732,19 @@ export const TenderDocumentsTab: React.FC = () => {
                       (d) =>
                         linkFilterCategory === 'ALL' || d.category === linkFilterCategory
                     )
+                    .sort((a, b) => {
+                      if (!isJvTender) return 0;
+                      const aIsJv = a.isJvPartner || a.companyRole === 'JV_PARTNER';
+                      const bIsJv = b.isJvPartner || b.companyRole === 'JV_PARTNER';
+                      if (aIsJv && !bIsJv) return -1;
+                      if (!aIsJv && bIsJv) return 1;
+                      return 0;
+                    })
                     .map((d) => {
                       const isSelected = selectedReusableDocId === d.id;
                       const hasAccess = hasDocumentAccess(d.accessLevel);
+                      const isJv = d.isJvPartner || d.companyRole === 'JV_PARTNER';
+
                       return (
                         <div
                           key={d.id}
@@ -634,9 +761,20 @@ export const TenderDocumentsTab: React.FC = () => {
                             <span className="font-semibold text-[#0F172A] block truncate">
                               {d.name}
                             </span>
-                            <span className="text-[10px] text-[#64748B] block mt-0.5">
-                              {d.category} • {d.size} • {d.revision}
-                            </span>
+                            <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+                              <span className="text-[10px] text-[#64748B]">
+                                {d.category} • {d.size}
+                              </span>
+                              {isJv ? (
+                                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                                  ⭐ JV: {d.companyName || 'JV Partner'}
+                                </span>
+                              ) : (
+                                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                  🏛️ Lead: {d.companyName || 'Lead Bidder'}
+                                </span>
+                              )}
+                            </div>
                           </div>
                           {hasAccess ? (
                             isSelected && <Check className="w-4 h-4 text-[#2563EB] shrink-0 mt-1" />

@@ -23,6 +23,9 @@ class DocumentOut(BaseModel):
     tender_id: str
     name: str
     folder: str
+    company_name: Optional[str] = "PrimeTech Ltd"
+    company_role: Optional[str] = "LEAD_BIDDER"
+    is_jv_partner: bool = False
     size: str
     revision: str
     sha256: str
@@ -38,6 +41,9 @@ class DocumentOut(BaseModel):
 class ReusableDocCreate(BaseModel):
     name: str
     category: str = "Company Statutory"
+    company_name: Optional[str] = "PrimeTech Ltd"
+    company_role: Optional[str] = "LEAD_BIDDER"
+    is_jv_partner: bool = False
     size: str = "2.5 MB"
     expiry_date: Optional[str] = None
     access_level: str = "ALL_TEAM"
@@ -48,6 +54,9 @@ class ReusableDocOut(BaseModel):
     id: str
     name: str
     category: str
+    company_name: Optional[str] = "PrimeTech Ltd"
+    company_role: Optional[str] = "LEAD_BIDDER"
+    is_jv_partner: bool = False
     uploaded_at: str
     expiry_date: Optional[str] = None
     size: str
@@ -63,6 +72,9 @@ class ReusableDocOut(BaseModel):
 class LinkReusableRequest(BaseModel):
     reusable_doc_id: str
     target_folder: str = "02_company_statutory_documents"
+    company_name: Optional[str] = None
+    company_role: Optional[str] = None
+    is_jv_partner: Optional[bool] = None
 
 
 class ResourceShareCreate(BaseModel):

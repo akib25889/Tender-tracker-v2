@@ -92,6 +92,17 @@ export const TenderRegistryPage: React.FC = () => {
       ? selectedTender.estimatedValue
       : ''
   );
+  const [tenderCurrency, setTenderCurrency] = useState<string>(
+    selectedTender?.currency || 'USD'
+  );
+  const [exchangeRateToBdt, setExchangeRateToBdt] = useState<string | number>(
+    selectedTender?.exchangeRateToBdt !== undefined
+      ? selectedTender.exchangeRateToBdt
+      : '122.00'
+  );
+  const [exchangeRateDate, setExchangeRateDate] = useState<string>(
+    selectedTender?.exchangeRateDate || ''
+  );
   const [priority, setPriority] = useState<TenderPriority>(
     selectedTender?.priority || 'HIGH'
   );
@@ -99,6 +110,37 @@ export const TenderRegistryPage: React.FC = () => {
     selectedTender?.category || 'IT & Cloud Infrastructure'
   );
   const [isCustomCategory, setIsCustomCategory] = useState(false);
+
+  const handleCurrencyChange = (newCur: string) => {
+    setTenderCurrency(newCur);
+    if (newCur === 'BDT') {
+      setExchangeRateToBdt('1.0');
+    } else if (newCur === 'USD') {
+      setExchangeRateToBdt('122.00');
+    } else if (newCur === 'EUR') {
+      setExchangeRateToBdt('133.50');
+    } else if (newCur === 'GBP') {
+      setExchangeRateToBdt('158.00');
+    } else if (newCur === 'JPY') {
+      setExchangeRateToBdt('0.82');
+    }
+  };
+
+  const liveBdtValue = useMemo(() => {
+    const val = Number(estimatedValue) || 0;
+    const rate = tenderCurrency === 'BDT' ? 1.0 : (Number(exchangeRateToBdt) || 0);
+    return val * rate;
+  }, [estimatedValue, exchangeRateToBdt, tenderCurrency]);
+
+  const formatBdtPreview = (val: number) => {
+    if (val >= 10000000) {
+      return `≈ ৳${(val / 10000000).toFixed(2)} Crore`;
+    }
+    if (val >= 100000) {
+      return `≈ ৳${(val / 100000).toFixed(2)} Lakh`;
+    }
+    return `≈ ৳${Math.round(val).toLocaleString()}`;
+  };
 
   const availableCategories = useMemo(() => {
     const fromCategories = (categories || []).map((c) => c.name);
@@ -300,6 +342,15 @@ export const TenderRegistryPage: React.FC = () => {
         ? selectedTender.estimatedValue
         : ''
     );
+    setTenderCurrency(selectedTender.currency || 'USD');
+    setExchangeRateToBdt(
+      selectedTender.exchangeRateToBdt !== undefined
+        ? selectedTender.exchangeRateToBdt
+        : selectedTender.currency === 'BDT'
+        ? 1.0
+        : '122.00'
+    );
+    setExchangeRateDate(selectedTender.exchangeRateDate || selectedTender.summary?.publishedDate || '');
     setPriority(selectedTender.priority);
     setCategory(selectedTender.category);
     setIsCustomCategory(false);
@@ -455,6 +506,10 @@ export const TenderRegistryPage: React.FC = () => {
       country: '',
       category: 'IT & Cloud Infrastructure',
       estimatedValue: 0,
+      currency: 'USD',
+      exchangeRateToBdt: 122.0,
+      exchangeRateDate: new Date().toISOString().split('T')[0],
+      estimatedValueBdt: 0,
       stage: 'DISCOVERED',
       priority: 'HIGH',
       submissionDeadline: '',
@@ -502,6 +557,10 @@ export const TenderRegistryPage: React.FC = () => {
       category,
       priority,
       estimatedValue: parsedEstVal,
+      currency: tenderCurrency,
+      exchangeRateToBdt: tenderCurrency === 'BDT' ? 1.0 : (Number(exchangeRateToBdt) || 122.0),
+      exchangeRateDate: exchangeRateDate || publishedDate,
+      estimatedValueBdt: liveBdtValue,
       submissionDeadline: parsedDeadline,
       summary: {
         classification,
@@ -697,12 +756,21 @@ export const TenderRegistryPage: React.FC = () => {
                     </h4>
 
                     <div className="flex items-center justify-between text-[11px] text-[#64748B] mt-2">
-                      <span className="truncate max-w-[140px]">
+                      <span className="truncate max-w-[130px]">
                         {t.organization}
                       </span>
-                      <span className="font-mono text-[10px] bg-[#F1F5F9] px-1.5 py-0.5 rounded">
-                        Due {new Date(t.submissionDeadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                      </span>
+                      <div className="flex items-center gap-1.5 font-mono text-[10px]">
+                        {t.estimatedValue > 0 && (
+                          <span className="text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">
+                            {t.currency === 'BDT'
+                              ? `৳${(t.estimatedValue / 10000000).toFixed(2)} Cr`
+                              : `${t.currency || '$'} ${(t.estimatedValue / 1000000).toFixed(1)}M`}
+                          </span>
+                        )}
+                        <span className="bg-[#F1F5F9] px-1.5 py-0.5 rounded">
+                          Due {new Date(t.submissionDeadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -1075,44 +1143,114 @@ export const TenderRegistryPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-semibold text-[#0F172A] mb-1">
-                      Estimated Net Value ($ USD)
-                    </label>
-                    <input
-                      type="number"
-                      min="0"
-                      step="any"
-                      placeholder="Leave blank if not entry / unannounced"
-                      value={estimatedValue}
-                      onChange={(e) => setEstimatedValue(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] placeholder:text-[#94A3B8]"
-                    />
-                    <span className="text-[10px] text-[#64748B] mt-0.5 block">
-                      Leave blank if not specified. Will not display if not entered.
+                {/* Currency & Financial Valuation */}
+                <div className="p-3.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                      Currency &amp; Financial Valuation
+                    </span>
+                    <span className="text-[11px] font-mono font-bold text-[#2563EB] bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100 shadow-sm">
+                      {formatBdtPreview(liveBdtValue)}
                     </span>
                   </div>
 
-                  <div>
-                    <label className="block font-semibold text-[#0F172A] mb-1">
-                      Operational Priority
-                    </label>
-                    <select
-                      value={priority}
-                      onChange={(e) =>
-                        setPriority(e.target.value as TenderPriority)
-                      }
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
-                    >
-                      <option value="CRITICAL">
-                        CRITICAL (Window &lt; 48h / Urgent Gate)
-                      </option>
-                      <option value="HIGH">HIGH Priority</option>
-                      <option value="MEDIUM">MEDIUM Priority</option>
-                      <option value="LOW">LOW Priority</option>
-                    </select>
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        Tender Currency *
+                      </label>
+                      <select
+                        value={tenderCurrency}
+                        onChange={(e) => handleCurrencyChange(e.target.value)}
+                        className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg font-bold text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      >
+                        <option value="USD">USD ($)</option>
+                        <option value="BDT">BDT (৳)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="JPY">JPY (¥)</option>
+                        <option value="OTHER">Other Currency</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        Net Value ({tenderCurrency})
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        placeholder="Leave blank if unannounced"
+                        value={estimatedValue}
+                        onChange={(e) => setEstimatedValue(e.target.value)}
+                        className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg font-mono font-bold text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] placeholder:font-normal placeholder:text-[#94A3B8]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        Rate vs BDT (At that time) *
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        disabled={tenderCurrency === 'BDT'}
+                        value={tenderCurrency === 'BDT' ? '1.0' : exchangeRateToBdt}
+                        onChange={(e) => setExchangeRateToBdt(e.target.value)}
+                        placeholder="e.g. 122.00"
+                        className={`w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg font-mono text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] ${
+                          tenderCurrency === 'BDT' ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''
+                        }`}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        Rate Fixation Date
+                      </label>
+                      <input
+                        type="date"
+                        value={exchangeRateDate}
+                        onChange={(e) => setExchangeRateDate(e.target.value)}
+                        className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
                   </div>
+
+                  <div className="flex flex-wrap items-center justify-between text-[11px] text-[#64748B] pt-1.5 border-t border-[#E2E8F0]">
+                    <span>
+                      {tenderCurrency === 'BDT'
+                        ? 'Local currency tender (1.0 conversion factor to BDT).'
+                        : `Historical conversion rate of that time: 1 ${tenderCurrency} = ৳${exchangeRateToBdt || '122.00'} BDT`}
+                    </span>
+                    <span className="font-semibold text-slate-700">
+                      Total Equivalent:{' '}
+                      <span className="text-[#2563EB] font-mono">
+                        ৳{Math.round(liveBdtValue).toLocaleString()} BDT
+                      </span>
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">
+                    Operational Priority
+                  </label>
+                  <select
+                    value={priority}
+                    onChange={(e) =>
+                      setPriority(e.target.value as TenderPriority)
+                    }
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                  >
+                    <option value="CRITICAL">
+                      CRITICAL (Window &lt; 48h / Urgent Gate)
+                    </option>
+                    <option value="HIGH">HIGH Priority</option>
+                    <option value="MEDIUM">MEDIUM Priority</option>
+                    <option value="LOW">LOW Priority</option>
+                  </select>
                 </div>
               </div>
             )}

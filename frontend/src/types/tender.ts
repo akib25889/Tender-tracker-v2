@@ -46,6 +46,9 @@ export interface ReusableDocument {
   id: string;
   name: string;
   category: string;
+  companyName?: string;
+  companyRole?: string;
+  isJvPartner?: boolean;
   uploadedAt: string;
   expiryDate?: string;
   size: string;
@@ -59,6 +62,9 @@ export interface TenderDocument {
   id: string;
   name: string;
   folder: string; // e.g. 01_original_tender_documents
+  companyName?: string;
+  companyRole?: string;
+  isJvPartner?: boolean;
   revision: string;
   sha256: string;
   uploadedAt: string;
@@ -219,6 +225,10 @@ export interface Tender {
   country: string;
   category: string;
   estimatedValue: number;
+  currency?: string;
+  exchangeRateToBdt?: number;
+  exchangeRateDate?: string;
+  estimatedValueBdt?: number;
   stage: TenderStage;
   decision: DecisionStatus;
   priority: TenderPriority;
@@ -279,4 +289,34 @@ export interface Organization {
   aliases?: string[];
   description?: string;
   createdAt?: string;
+}
+
+export interface CustomCredentialField {
+  id: string;
+  name: string;
+  value: string;
+}
+
+export interface CompanyProjectCredential {
+  id: string;
+  companyName: string;
+  companyRole: 'LEAD_BIDDER' | 'JV_PARTNER' | 'SUBCONTRACTOR' | string;
+  projectTitle: string;
+  clientName: string;
+  contractValue: number;
+  currency: string;
+  startDate?: string;
+  completionDate?: string;
+  roleInProject: string;
+  workOrderFilename?: string;
+  workOrderPath?: string;
+  workOrderSha256?: string;
+  workOrderSize?: string;
+  completionCertFilename?: string;
+  completionCertPath?: string;
+  completionCertSha256?: string;
+  completionCertSize?: string;
+  customFields: CustomCredentialField[];
+  createdAt?: string;
+  updatedAt?: string;
 }

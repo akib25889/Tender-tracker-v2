@@ -7,7 +7,9 @@ import {
   TaskStatus,
   TenderDocument,
   TenderDecisionMatrix,
+  TenderRequirement,
   RequirementStatus,
+  TenderReviewTier,
   UserProfile,
   UserRole,
   TenderComment,
@@ -16,6 +18,7 @@ import {
   DocumentAccessLevel,
   TenderCategory,
   Organization,
+  CompanyProjectCredential,
 } from '../types/tender';
 import { MOCK_TENDERS } from '../mock/tenders';
 import { TEAM_PROFILES } from '../mock/users';
@@ -42,7 +45,14 @@ interface TenderContextType {
   moveTask: (tenderId: string, taskId: string, newStatus: TaskStatus) => void;
   addDocument: (
     tenderId: string,
-    doc: { name: string; folder: string; size: string }
+    doc: {
+      name: string;
+      folder: string;
+      size: string;
+      companyName?: string;
+      companyRole?: string;
+      isJvPartner?: boolean;
+    }
   ) => void;
   addFolder: (tenderId: string, folder: { name: string; label: string }) => void;
   deleteFolder: (tenderId: string, folderName: string) => void;
@@ -91,6 +101,9 @@ interface TenderContextType {
     name: string;
     category: string;
     size: string;
+    companyName?: string;
+    companyRole?: string;
+    isJvPartner?: boolean;
     expiryDate?: string;
     accessLevel: DocumentAccessLevel;
     description?: string;
@@ -114,6 +127,15 @@ interface TenderContextType {
   addOrganization: (orgData: Omit<Organization, 'id'>) => Organization;
   updateOrganization: (id: string, updates: Partial<Organization>) => void;
   deleteOrganization: (id: string) => void;
+  // Company Project Experience Credentials (WO, CC, and Custom Fields)
+  companyProjects: CompanyProjectCredential[];
+  refreshCompanyProjects: () => Promise<void>;
+  addCompanyProject: (projectData: Partial<CompanyProjectCredential>) => Promise<CompanyProjectCredential | null>;
+  updateCompanyProject: (id: string, updates: Partial<CompanyProjectCredential>) => Promise<CompanyProjectCredential | null>;
+  deleteCompanyProject: (id: string) => Promise<boolean>;
+  uploadProjectWorkOrder: (projectId: string, file: File) => Promise<CompanyProjectCredential | null>;
+  uploadProjectCompletionCert: (projectId: string, file: File) => Promise<CompanyProjectCredential | null>;
+  linkProjectToTender: (projectId: string, tenderId: string, targetFolder: string) => Promise<{ status: string; message: string } | null>;
   // Modal states
   isNewTenderModalOpen: boolean;
   setIsNewTenderModalOpen: (open: boolean) => void;
@@ -255,54 +277,179 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
             const map = new Map(prev.map((t) => [t.id, t]));
             for (const dbt of dbTenders) {
               const existing = map.get(dbt.id);
-              if (existing) {
-                map.set(dbt.id, {
-                  ...existing,
-                  stage: (dbt.stage as TenderStage) || existing.stage,
-                  title: dbt.title || existing.title,
-                  category: dbt.category || existing.category,
-                  estimatedValue:
-                    dbt.estimated_value !== undefined && dbt.estimated_value !== null
-                      ? dbt.estimated_value
-                      : existing.estimatedValue,
-                  submissionDeadline: dbt.submission_deadline || existing.submissionDeadline,
-                  readinessScore:
-                    dbt.readiness_score !== undefined && dbt.readiness_score !== null
-                      ? dbt.readiness_score
-                      : existing.readinessScore,
-                  decision: (dbt.decision as DecisionStatus) || existing.decision,
-                  priority: dbt.priority || existing.priority,
-                });
-              } else {
-                map.set(dbt.id, {
-                  id: dbt.id,
-                  referenceNo: dbt.reference_no || '',
-                  title: dbt.title,
-                  organization: dbt.organization || 'Procuring Authority',
-                  country: dbt.country || 'Bangladesh',
-                  category: dbt.category || 'General',
-                  estimatedValue: dbt.estimated_value || 0,
-                  stage: (dbt.stage as TenderStage) || 'DISCOVERED',
-                  decision: (dbt.decision as DecisionStatus) || 'PENDING',
-                  priority: dbt.priority || 'MEDIUM',
-                  submissionDeadline: dbt.submission_deadline || '',
-                  daysRemaining: dbt.days_remaining || 0,
-                  hoursRemaining: dbt.hours_remaining || 0,
-                  readinessScore: dbt.readiness_score || 0,
-                  missingDocumentsCount: 0,
-                  completedTasksCount: dbt.tasks ? dbt.tasks.filter((tk: any) => tk.status === 'DONE').length : 0,
-                  totalTasksCount: dbt.tasks ? dbt.tasks.length : 0,
-                  leadOwner: {
-                    name: dbt.lead_owner_name || 'Sarah Jenkins',
-                    role: dbt.lead_owner_role || 'Business Head',
-                  },
-                  blockers: [],
-                  tasks: [],
-                  requirements: [],
-                  documents: [],
-                  reviews: [],
-                });
+
+              const dbTasks: TenderTask[] =
+                Array.isArray(dbt.tasks) && dbt.tasks.length > 0
+                  ? dbt.tasks.map((tk: any) => ({
+                      id: tk.id,
+                      title: tk.title,
+                      assignee: tk.assignee,
+                      priority: tk.priority || 'MEDIUM',
+                      deadline: tk.due_date || 'Day 5',
+                      status: tk.status || 'TODO',
+                    }))
+                  : existing
+                  ? existing.tasks
+                  : [];
+
+              const dbReqs: TenderRequirement[] =
+                Array.isArray(dbt.requirements) && dbt.requirements.length > 0
+                  ? dbt.requirements.map((rq: any) => ({
+                      id: rq.id,
+                      title: rq.title,
+                      category: rq.category || 'Statutory',
+                      status: rq.status || 'PENDING',
+                      owner: rq.owner || 'Tariq Al-Mansoor',
+                    }))
+                  : existing
+                  ? existing.requirements
+                  : [];
+
+              const dbDocs: TenderDocument[] =
+                Array.isArray(dbt.documents) && dbt.documents.length > 0
+                  ? dbt.documents.map((doc: any) => ({
+                      id: doc.id,
+                      name: doc.name,
+                      folder: doc.folder,
+                      companyName: doc.company_name || 'PrimeTech Ltd',
+                      companyRole: doc.company_role || 'LEAD_BIDDER',
+                      isJvPartner: Boolean(doc.is_jv_partner),
+                      size: doc.size,
+                      revision: doc.revision || 'v1.0',
+                      sha256: doc.sha256,
+                      uploadedAt: doc.uploaded_at,
+                      accessLevel: doc.access_level || 'ALL_TEAM',
+                      isReusableLink: doc.is_reusable_link,
+                      reusableSourceId: doc.reusable_source_id,
+                    }))
+                  : existing
+                  ? existing.documents
+                  : [];
+
+              const dbReviews: TenderReviewTier[] =
+                Array.isArray(dbt.reviews) && dbt.reviews.length > 0
+                  ? dbt.reviews.map((rv: any) => ({
+                      tierNumber: rv.tier_number,
+                      name: rv.tier_name,
+                      reviewer:
+                        rv.signed_off_by ||
+                        (rv.role_required === 'EXECUTIVE_MANAGER'
+                          ? 'Dr. Marcus Vance'
+                          : rv.role_required === 'SENIOR_MANAGER'
+                          ? 'Tariq Al-Mansoor'
+                          : rv.role_required === 'TENDER_ANALYST'
+                          ? 'Elena Rostova'
+                          : 'Sarah Jenkins'),
+                      status: rv.sign_off_status as any,
+                      date: rv.signed_off_at,
+                      comments: rv.comments || '',
+                    }))
+                  : existing
+                  ? existing.reviews
+                  : [];
+
+              const dbMatrix: TenderDecisionMatrix | undefined = dbt.decision_matrix
+                ? ({
+                    technical: dbt.decision_matrix.technical_score,
+                    financial: dbt.decision_matrix.financial_score,
+                    team: dbt.decision_matrix.team_score,
+                    sla: dbt.decision_matrix.sla_score,
+                    aggregateScore: dbt.decision_matrix.composite_score,
+                    threshold: dbt.decision_matrix.threshold || 70,
+                    rationale: dbt.decision_matrix.rationale || '',
+                  } as any)
+                : existing
+                ? existing.decisionMatrix
+                : undefined;
+
+              let dbSummary = existing ? existing.summary : undefined;
+              if (dbt.summary_json) {
+                try {
+                  dbSummary =
+                    typeof dbt.summary_json === 'string'
+                      ? JSON.parse(dbt.summary_json)
+                      : dbt.summary_json;
+                } catch {}
               }
+
+              const completedTasks = dbTasks.filter((tk) => tk.status === 'DONE').length;
+              const missingDocs = dbReqs.filter((rq) => rq.status !== 'VERIFIED').length;
+              const blockers = dbReqs
+                .filter((rq) => rq.status === 'BLOCKER')
+                .map((rq) => rq.title);
+
+              map.set(dbt.id, {
+                id: dbt.id,
+                referenceNo: dbt.reference_no || (existing ? existing.referenceNo : ''),
+                title: dbt.title || (existing ? existing.title : 'Untitled Opportunity'),
+                organization:
+                  dbt.organization || (existing ? existing.organization : 'Procuring Authority'),
+                country: dbt.country || (existing ? existing.country : 'Bangladesh'),
+                category: dbt.category || (existing ? existing.category : 'General'),
+                estimatedValue:
+                  dbt.estimated_value !== undefined && dbt.estimated_value !== null
+                    ? dbt.estimated_value
+                    : existing
+                    ? existing.estimatedValue
+                    : 0,
+                currency: dbt.currency || (existing ? existing.currency : 'USD'),
+                exchangeRateToBdt:
+                  dbt.exchange_rate_to_bdt !== undefined && dbt.exchange_rate_to_bdt !== null
+                    ? dbt.exchange_rate_to_bdt
+                    : existing
+                    ? existing.exchangeRateToBdt
+                    : 122.0,
+                exchangeRateDate:
+                  dbt.exchange_rate_date || (existing ? existing.exchangeRateDate : ''),
+                estimatedValueBdt:
+                  dbt.estimated_value_bdt !== undefined && dbt.estimated_value_bdt !== null
+                    ? dbt.estimated_value_bdt
+                    : existing
+                    ? existing.estimatedValueBdt
+                    : 0,
+                stage: (dbt.stage as TenderStage) || (existing ? existing.stage : 'DISCOVERED'),
+                decision:
+                  (dbt.decision as DecisionStatus) || (existing ? existing.decision : 'PENDING'),
+                priority: dbt.priority || (existing ? existing.priority : 'MEDIUM'),
+                submissionDeadline:
+                  dbt.submission_deadline || (existing ? existing.submissionDeadline : ''),
+                daysRemaining:
+                  dbt.days_remaining !== undefined
+                    ? dbt.days_remaining
+                    : existing
+                    ? existing.daysRemaining
+                    : 0,
+                hoursRemaining:
+                  dbt.hours_remaining !== undefined
+                    ? dbt.hours_remaining
+                    : existing
+                    ? existing.hoursRemaining
+                    : 0,
+                readinessScore:
+                  dbt.readiness_score !== undefined
+                    ? dbt.readiness_score
+                    : existing
+                    ? existing.readinessScore
+                    : 0,
+                missingDocumentsCount: missingDocs,
+                completedTasksCount: completedTasks,
+                totalTasksCount: dbTasks.length,
+                leadOwner: {
+                  name:
+                    dbt.lead_owner_name ||
+                    (existing ? existing.leadOwner.name : 'Sarah Jenkins'),
+                  role:
+                    dbt.lead_owner_role ||
+                    (existing ? existing.leadOwner.role : 'Business Head'),
+                },
+                blockers,
+                tasks: dbTasks,
+                requirements: dbReqs,
+                documents: dbDocs,
+                reviews: dbReviews,
+                decisionMatrix: dbMatrix,
+                summary: dbSummary,
+              });
             }
             return Array.from(map.values());
           });
@@ -313,9 +460,237 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const refreshOrganizations = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/organizations');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setOrganizations(data);
+        }
+      }
+    } catch {}
+  };
+
+  const refreshTeamMembers = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/auth/team');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setTeamMembers(
+            data.map((u: any) => ({
+              id: u.id,
+              name: u.name,
+              role: u.role,
+              title: u.title,
+              email: u.email,
+              avatar: u.avatar || u.name.slice(0, 2).toUpperCase(),
+              department: u.department,
+              maxCapacity: u.max_capacity,
+            }))
+          );
+        }
+      }
+    } catch {}
+  };
+
+  const refreshReusableDocuments = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/documents/reusable');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setReusableDocuments(
+            data.map((d: any) => ({
+              id: d.id,
+              name: d.name,
+              category: d.category,
+              uploadedAt: d.uploaded_at,
+              expiryDate: d.expiry_date,
+              size: d.size,
+              revision: d.revision,
+              accessLevel: d.access_level,
+              sha256: d.sha256,
+              description: d.description,
+            }))
+          );
+        }
+      }
+    } catch {}
+  };
+
+  const [companyProjects, setCompanyProjects] = useState<CompanyProjectCredential[]>([]);
+
+  const refreshCompanyProjects = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/companies/projects');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setCompanyProjects(
+            data.map((p: any) => ({
+              id: p.id,
+              companyName: p.company_name,
+              companyRole: p.company_role,
+              projectTitle: p.project_title,
+              clientName: p.client_name,
+              contractValue: p.contract_value,
+              currency: p.currency,
+              startDate: p.start_date,
+              completionDate: p.completion_date,
+              roleInProject: p.role_in_project,
+              workOrderFilename: p.work_order_filename,
+              workOrderPath: p.work_order_path,
+              workOrderSha256: p.work_order_sha256,
+              workOrderSize: p.work_order_size,
+              completionCertFilename: p.completion_cert_filename,
+              completionCertPath: p.completion_cert_path,
+              completionCertSha256: p.completion_cert_sha256,
+              completionCertSize: p.completion_cert_size,
+              customFields: Array.isArray(p.custom_fields) ? p.custom_fields : [],
+              createdAt: p.created_at,
+              updatedAt: p.updated_at,
+            }))
+          );
+        }
+      }
+    } catch {}
+  };
+
+  const addCompanyProject = async (projectData: Partial<CompanyProjectCredential>) => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/companies/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          company_name: projectData.companyName || 'PrimeTech Ltd',
+          company_role: projectData.companyRole || 'LEAD_BIDDER',
+          project_title: projectData.projectTitle,
+          client_name: projectData.clientName,
+          contract_value: projectData.contractValue || 0,
+          currency: projectData.currency || 'BDT',
+          start_date: projectData.startDate,
+          completion_date: projectData.completionDate,
+          role_in_project: projectData.roleInProject || 'Prime Contractor',
+          custom_fields: projectData.customFields || [],
+        }),
+      });
+      if (res.ok) {
+        await refreshCompanyProjects();
+        return await res.json();
+      }
+    } catch (e) {
+      console.error('Failed to create company project:', e);
+    }
+    return null;
+  };
+
+  const updateCompanyProject = async (id: string, updates: Partial<CompanyProjectCredential>) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/companies/projects/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          project_title: updates.projectTitle,
+          client_name: updates.clientName,
+          contract_value: updates.contractValue,
+          currency: updates.currency,
+          start_date: updates.startDate,
+          completion_date: updates.completionDate,
+          role_in_project: updates.roleInProject,
+          company_role: updates.companyRole,
+          custom_fields: updates.customFields,
+        }),
+      });
+      if (res.ok) {
+        await refreshCompanyProjects();
+        return await res.json();
+      }
+    } catch (e) {
+      console.error('Failed to update company project:', e);
+    }
+    return null;
+  };
+
+  const deleteCompanyProject = async (id: string) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/companies/projects/${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setCompanyProjects((prev) => prev.filter((p) => p.id !== id));
+        return true;
+      }
+    } catch (e) {
+      console.error('Failed to delete company project:', e);
+    }
+    return false;
+  };
+
+  const uploadProjectWorkOrder = async (projectId: string, file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch(`http://127.0.0.1:8000/api/companies/projects/${projectId}/upload-work-order`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (res.ok) {
+        await refreshCompanyProjects();
+        return await res.json();
+      }
+    } catch (e) {
+      console.error('Failed to upload work order:', e);
+    }
+    return null;
+  };
+
+  const uploadProjectCompletionCert = async (projectId: string, file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch(`http://127.0.0.1:8000/api/companies/projects/${projectId}/upload-completion-cert`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (res.ok) {
+        await refreshCompanyProjects();
+        return await res.json();
+      }
+    } catch (e) {
+      console.error('Failed to upload completion certificate:', e);
+    }
+    return null;
+  };
+
+  const linkProjectToTender = async (projectId: string, tenderId: string, targetFolder: string) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/companies/projects/${projectId}/link-to-tender`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tender_id: tenderId,
+          target_folder: targetFolder,
+        }),
+      });
+      if (res.ok) {
+        await refreshTendersFromBackend();
+        return await res.json();
+      }
+    } catch (e) {
+      console.error('Failed to link project to tender:', e);
+    }
+    return null;
+  };
+
   useEffect(() => {
     refreshCategories();
     refreshTendersFromBackend();
+    refreshOrganizations();
+    refreshTeamMembers();
+    refreshReusableDocuments();
+    refreshCompanyProjects();
   }, []);
 
   const addCategory = async (categoryData: { name: string; description?: string; color_badge?: string }): Promise<TenderCategory | null> => {
@@ -416,17 +791,34 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       id: newId,
       createdAt: new Date().toISOString(),
     };
+
+    fetch('http://127.0.0.1:8000/api/organizations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newOrg),
+    }).catch(() => {});
+
     setOrganizations((prev) => [newOrg, ...prev]);
     return newOrg;
   };
 
   const updateOrganization = (id: string, updates: Partial<Organization>) => {
+    fetch(`http://127.0.0.1:8000/api/organizations/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates),
+    }).catch(() => {});
+
     setOrganizations((prev) =>
       prev.map((o) => (o.id === id ? { ...o, ...updates } : o))
     );
   };
 
   const deleteOrganization = (id: string) => {
+    fetch(`http://127.0.0.1:8000/api/organizations/${id}`, {
+      method: 'DELETE',
+    }).catch(() => {});
+
     setOrganizations((prev) => prev.filter((o) => o.id !== id));
   };
 
@@ -486,6 +878,20 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         ? Number(tenderData.estimatedValue)
         : 0;
 
+    const tenderCurrency = tenderData.currency || 'USD';
+    const tenderRate =
+      tenderData.exchangeRateToBdt !== undefined && tenderData.exchangeRateToBdt !== null
+        ? Number(tenderData.exchangeRateToBdt)
+        : tenderCurrency === 'BDT'
+        ? 1.0
+        : 122.0;
+    const tenderValBdt =
+      tenderData.estimatedValueBdt !== undefined && tenderData.estimatedValueBdt !== null
+        ? Number(tenderData.estimatedValueBdt)
+        : tenderCurrency === 'BDT'
+        ? parsedEstimatedValue
+        : Math.round(parsedEstimatedValue * tenderRate);
+
     const newTender: Tender = {
       id: newId,
       referenceNo: tenderData.referenceNo || '',
@@ -494,6 +900,10 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       country: tenderData.country || '',
       category: tenderData.category || 'IT & Cloud Infrastructure',
       estimatedValue: parsedEstimatedValue,
+      currency: tenderCurrency,
+      exchangeRateToBdt: tenderRate,
+      exchangeRateDate: tenderData.exchangeRateDate || '',
+      estimatedValueBdt: tenderValBdt,
       stage: tenderData.stage || 'DISCOVERED',
       decision: 'PENDING',
       priority: tenderData.priority || 'HIGH',
@@ -550,6 +960,10 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         country: newTender.country,
         category: newTender.category,
         estimated_value: newTender.estimatedValue || 0,
+        currency: newTender.currency,
+        exchange_rate_to_bdt: newTender.exchangeRateToBdt,
+        exchange_rate_date: newTender.exchangeRateDate,
+        estimated_value_bdt: newTender.estimatedValueBdt,
         stage: newTender.stage,
         decision: newTender.decision,
         priority: newTender.priority,
@@ -571,6 +985,10 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
             ? {
                 ...t,
                 ...tenderData,
+                currency: tenderCurrency,
+                exchangeRateToBdt: tenderRate,
+                exchangeRateDate: tenderData.exchangeRateDate !== undefined ? tenderData.exchangeRateDate : t.exchangeRateDate,
+                estimatedValueBdt: tenderValBdt,
                 estimatedValue:
                   tenderData.estimatedValue !== undefined && !isNaN(Number(tenderData.estimatedValue))
                     ? Number(tenderData.estimatedValue)
@@ -592,6 +1010,10 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (updates.country !== undefined) payload.country = updates.country;
     if (updates.category !== undefined) payload.category = updates.category;
     if (updates.estimatedValue !== undefined) payload.estimated_value = updates.estimatedValue;
+    if (updates.currency !== undefined) payload.currency = updates.currency;
+    if (updates.exchangeRateToBdt !== undefined) payload.exchange_rate_to_bdt = updates.exchangeRateToBdt;
+    if (updates.exchangeRateDate !== undefined) payload.exchange_rate_date = updates.exchangeRateDate;
+    if (updates.estimatedValueBdt !== undefined) payload.estimated_value_bdt = updates.estimatedValueBdt;
     if (updates.stage !== undefined) payload.stage = updates.stage;
     if (updates.decision !== undefined) payload.decision = updates.decision;
     if (updates.priority !== undefined) payload.priority = updates.priority;
@@ -683,6 +1105,20 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     decision: DecisionStatus,
     matrix: TenderDecisionMatrix
   ) => {
+    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/decision`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        technical: matrix.technical,
+        financial: matrix.financial,
+        team: matrix.team,
+        sla: matrix.sla,
+        aggregateScore: matrix.aggregateScore,
+        decision,
+        rationale: matrix.rationale,
+      }),
+    }).catch(() => {});
+
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -765,7 +1201,14 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addDocument = (
     tenderId: string,
-    doc: { name: string; folder: string; size: string }
+    doc: {
+      name: string;
+      folder: string;
+      size: string;
+      companyName?: string;
+      companyRole?: string;
+      isJvPartner?: boolean;
+    }
   ) => {
     const hex = '0123456789abcdef';
     let hash = '';
@@ -777,6 +1220,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       id: `DOC-${Math.floor(100 + Math.random() * 900)}`,
       name: doc.name,
       folder: doc.folder,
+      companyName: doc.companyName || 'PrimeTech Ltd',
+      companyRole: doc.companyRole || (doc.isJvPartner ? 'JV_PARTNER' : 'LEAD_BIDDER'),
+      isJvPartner: Boolean(doc.isJvPartner),
       revision: 'v1.0',
       sha256: hash,
       uploadedAt: new Date().toISOString().split('T')[0],
@@ -799,6 +1245,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const addFolder = (tenderId: string, folder: { name: string; label: string }) => {
+    fetch(`http://127.0.0.1:8000/api/documents/tender/${tenderId}/folders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(folder),
+    }).catch(() => {});
+
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -813,6 +1265,10 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const deleteFolder = (tenderId: string, folderName: string) => {
+    fetch(`http://127.0.0.1:8000/api/documents/tender/${tenderId}/folders/${encodeURIComponent(folderName)}`, {
+      method: 'DELETE',
+    }).catch(() => {});
+
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -912,6 +1368,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     reqId: string,
     newStatus: RequirementStatus
   ) => {
+    fetch(`http://127.0.0.1:8000/api/requirements/${reqId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus }),
+    }).catch(() => {});
+
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -1000,6 +1462,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     name: string;
     category: string;
     size: string;
+    companyName?: string;
+    companyRole?: string;
+    isJvPartner?: boolean;
     expiryDate?: string;
     accessLevel: DocumentAccessLevel;
     description?: string;
@@ -1012,6 +1477,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       id: `RUD-${Math.floor(100 + Math.random() * 900)}`,
       name: doc.name,
       category: doc.category,
+      companyName: doc.companyName || 'PrimeTech Ltd',
+      companyRole: doc.companyRole || (doc.isJvPartner ? 'JV_PARTNER' : 'LEAD_BIDDER'),
+      isJvPartner: Boolean(doc.isJvPartner),
       uploadedAt: new Date().toISOString().split('T')[0],
       expiryDate: doc.expiryDate,
       size: doc.size || '2.5 MB',
@@ -1020,6 +1488,23 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       sha256: hash,
       description: doc.description,
     };
+
+    fetch('http://127.0.0.1:8000/api/documents/reusable', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: doc.name,
+        category: doc.category,
+        company_name: doc.companyName || 'PrimeTech Ltd',
+        company_role: doc.companyRole || (doc.isJvPartner ? 'JV_PARTNER' : 'LEAD_BIDDER'),
+        is_jv_partner: Boolean(doc.isJvPartner),
+        size: doc.size || '2.5 MB',
+        expiry_date: doc.expiryDate,
+        access_level: doc.accessLevel || 'ALL_TEAM',
+        description: doc.description,
+      }),
+    }).catch(() => {});
+
     setReusableDocuments((prev) => [newDoc, ...prev]);
   };
 
@@ -1055,10 +1540,17 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     const masterDoc = reusableDocuments.find((d) => d.id === reusableDocId);
     if (!masterDoc) return;
 
+    const docCompanyName = masterDoc.companyName || 'PrimeTech Ltd';
+    const docIsJv = masterDoc.isJvPartner !== undefined ? masterDoc.isJvPartner : targetFolder.toLowerCase().includes('jv');
+    const docCompanyRole = masterDoc.companyRole || (docIsJv ? 'JV_PARTNER' : 'LEAD_BIDDER');
+
     const newDoc: TenderDocument = {
       id: `DOC-LINK-${Math.floor(100 + Math.random() * 900)}`,
       name: masterDoc.name,
       folder: targetFolder,
+      companyName: docCompanyName,
+      companyRole: docCompanyRole,
+      isJvPartner: docIsJv,
       revision: masterDoc.revision,
       sha256: masterDoc.sha256,
       uploadedAt: new Date().toISOString().split('T')[0],
@@ -1067,6 +1559,18 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       reusableSourceId: masterDoc.id,
       accessLevel: masterDoc.accessLevel,
     };
+
+    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/link-reusable`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        reusable_doc_id: reusableDocId,
+        target_folder: targetFolder,
+        company_name: docCompanyName,
+        company_role: docCompanyRole,
+        is_jv_partner: docIsJv,
+      }),
+    }).catch(() => {});
 
     setTenders((prev) =>
       prev.map((t) => {
@@ -1122,7 +1626,25 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       title: member.title || member.role.replace('_', ' '),
       email: member.email,
       avatar: initials || 'TM',
+      department: member.dept,
+      maxCapacity: member.maxCapacity || 5,
     };
+
+    fetch('http://127.0.0.1:8000/api/auth/team', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: member.name,
+        email: member.email,
+        password: 'Password123!',
+        role: member.role,
+        title: member.title || member.role.replace('_', ' '),
+        department: member.dept || 'Bid Operations',
+        max_capacity: member.maxCapacity || 5,
+        avatar: initials || 'TM',
+      }),
+    }).catch(() => {});
+
     const updated = [...teamMembers, newProfile];
     setTeamMembers(updated);
     localStorage.setItem('tendertracker_team_profiles', JSON.stringify(updated));
@@ -1281,6 +1803,14 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         addOrganization,
         updateOrganization,
         deleteOrganization,
+        companyProjects,
+        refreshCompanyProjects,
+        addCompanyProject,
+        updateCompanyProject,
+        deleteCompanyProject,
+        uploadProjectWorkOrder,
+        uploadProjectCompletionCert,
+        linkProjectToTender,
         isNewTenderModalOpen,
         setIsNewTenderModalOpen,
         uploadFolderTarget,

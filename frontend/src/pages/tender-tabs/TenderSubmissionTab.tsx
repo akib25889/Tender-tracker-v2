@@ -72,6 +72,76 @@ export const TenderSubmissionTab: React.FC = () => {
             </div>
           </div>
 
+          {/* Past Project Experience Credentials Dossier for Submission */}
+          <div className="pt-4 border-t border-[#E2E8F0] space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider block">
+                  Project Experience &amp; Performance Credentials (Work Orders &amp; Certificates)
+                </span>
+                <span className="text-[11px] text-[#64748B]">
+                  Statutory past project qualifications required for evaluation and post-qualification audits
+                </span>
+              </div>
+              <a
+                href="/documents?tab=credentials"
+                className="text-xs font-semibold text-[#2563EB] hover:underline"
+              >
+                Manage Company Master Projects →
+              </a>
+            </div>
+
+            {/* List attached credential documents */}
+            {tender.documents.filter(
+              (d) =>
+                d.name.toLowerCase().includes('work order') ||
+                d.name.toLowerCase().includes('completion certificate') ||
+                d.name.toLowerCase().includes('credential dossier') ||
+                d.folder.toLowerCase().includes('statutory') ||
+                d.folder.toLowerCase().includes('jv')
+            ).length === 0 ? (
+              <div className="p-3 bg-white rounded-lg border border-dashed border-[#CBD5E1] text-center text-xs text-[#64748B]">
+                No company project credentials or completion certificates attached yet. You can attach past experience proofs from the{' '}
+                <a href="/documents?tab=credentials" className="text-[#2563EB] font-semibold underline">
+                  Company Project Credentials Library
+                </a>.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {tender.documents
+                  .filter(
+                    (d) =>
+                      d.name.toLowerCase().includes('work order') ||
+                      d.name.toLowerCase().includes('completion certificate') ||
+                      d.name.toLowerCase().includes('credential dossier') ||
+                      d.folder.toLowerCase().includes('statutory') ||
+                      d.folder.toLowerCase().includes('jv')
+                  )
+                  .map((doc) => (
+                    <div
+                      key={doc.id}
+                      className="flex items-center justify-between p-2.5 bg-white border border-[#E2E8F0] rounded-lg text-xs"
+                    >
+                      <div className="min-w-0 pr-2">
+                        <span className="font-semibold text-[#0F172A] block truncate">{doc.name}</span>
+                        <div className="flex items-center gap-1.5 text-[10px] text-[#64748B]">
+                          <span className="font-medium text-[#0F172A]">{doc.companyName || 'PrimeTech Ltd'}</span>
+                          <span>•</span>
+                          <span>{doc.size}</span>
+                          <span>•</span>
+                          <span className="font-mono">{doc.folder}</span>
+                        </div>
+                      </div>
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                        <CheckCircle2 className="w-3 h-3" />
+                        Attached
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
+
           {!submitted ? (
             <form onSubmit={handleSealSubmission} className="pt-2 space-y-3">
               <div>

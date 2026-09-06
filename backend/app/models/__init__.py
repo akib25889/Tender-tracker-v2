@@ -12,6 +12,8 @@ from app.models.review import TenderReviewTier
 from app.models.comment import TenderComment
 from app.models.setting import SystemSetting
 from app.models.chat import ChatChannelMessage
+from app.models.organization import Organization
+from app.models.company_credential import CompanyProjectCredential
 from app.models.permission import (
     Permission,
     PartnerOrganization,
@@ -35,9 +37,11 @@ __all__ = [
     "TenderFolder",
     "TenderDocument",
     "ReusableDocument",
+    "CompanyProjectCredential",
     "TenderRequirement",
     "TenderReviewTier",
     "TenderComment",
+    "Organization",
     "Permission",
     "PartnerOrganization",
     "TenderPartnerAssignment",

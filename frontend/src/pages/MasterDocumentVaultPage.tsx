@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
 import { DocumentAccessLevel, ReusableDocument } from '../types/tender';
+import { CompanyProjectCredentialsManager } from '../components/credentials/CompanyProjectCredentialsManager';
 import {
   FileCheck,
   Plus,
@@ -21,6 +23,7 @@ import {
   DollarSign,
   Scale,
   Share2,
+  Briefcase,
 } from 'lucide-react';
 
 const CATEGORY_ICONS: Record<string, any> = {
@@ -76,16 +79,29 @@ export const MasterDocumentVaultPage: React.FC = () => {
     currentUser,
     tenders,
     setActiveDocForShare,
+    companyProjects,
   } = useTenders();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTab = searchParams.get('tab') === 'credentials' ? 'PROJECT_CREDENTIALS' : 'DOCUMENTS';
+  const [activeLibraryTab, setActiveLibraryTab] = useState<'DOCUMENTS' | 'PROJECT_CREDENTIALS'>(initialTab);
+
+  const handleSwitchTab = (tab: 'DOCUMENTS' | 'PROJECT_CREDENTIALS') => {
+    setActiveLibraryTab(tab);
+    setSearchParams(tab === 'PROJECT_CREDENTIALS' ? { tab: 'credentials' } : {});
+  };
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [selectedAccess, setSelectedAccess] = useState<string>('ALL');
+  const [selectedCompany, setSelectedCompany] = useState<string>('ALL');
 
   // Modal: Add New Reusable Document
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newName, setNewName] = useState('');
   const [newCategory, setNewCategory] = useState('Company Statutory');
+  const [newCompanyName, setNewCompanyName] = useState('PrimeTech Ltd');
+  const [newCompanyRole, setNewCompanyRole] = useState<'LEAD_BIDDER' | 'JV_PARTNER' | 'SUBCONTRACTOR'>('LEAD_BIDDER');
   const [newExpiry, setNewExpiry] = useState('');
   const [newAccess, setNewAccess] = useState<DocumentAccessLevel>('ALL_TEAM');
   const [newDesc, setNewDesc] = useState('');
@@ -110,11 +126,17 @@ export const MasterDocumentVaultPage: React.FC = () => {
       selectedCategory === 'ALL' || doc.category === selectedCategory;
     const matchesAccess =
       selectedAccess === 'ALL' || doc.accessLevel === selectedAccess;
+    const matchesCompany =
+      selectedCompany === 'ALL' ||
+      (selectedCompany === 'JV' && (doc.isJvPartner || doc.companyRole === 'JV_PARTNER')) ||
+      (selectedCompany === 'LEAD' && (!doc.isJvPartner && doc.companyRole !== 'JV_PARTNER')) ||
+      doc.companyName === selectedCompany;
     const matchesSearch =
       doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       doc.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (doc.companyName && doc.companyName.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (doc.description && doc.description.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCategory && matchesAccess && matchesSearch;
+    return matchesCategory && matchesAccess && matchesCompany && matchesSearch;
   });
 
   const handleCreateDocument = (e: React.FormEvent) => {
@@ -124,6 +146,9 @@ export const MasterDocumentVaultPage: React.FC = () => {
     addReusableDocument({
       name: newName.trim(),
       category: newCategory,
+      companyName: newCompanyName.trim() || 'PrimeTech Ltd',
+      companyRole: newCompanyRole,
+      isJvPartner: newCompanyRole === 'JV_PARTNER',
       expiryDate: newExpiry || undefined,
       accessLevel: newAccess,
       size: '2.8 MB',
@@ -131,6 +156,8 @@ export const MasterDocumentVaultPage: React.FC = () => {
     });
 
     setNewName('');
+    setNewCompanyName('PrimeTech Ltd');
+    setNewCompanyRole('LEAD_BIDDER');
     setNewDesc('');
     setNewExpiry('');
     setIsAddModalOpen(false);
@@ -169,18 +196,59 @@ export const MasterDocumentVaultPage: React.FC = () => {
           </p>
         </div>
 
+        {activeLibraryTab === 'DOCUMENTS' && (
+          <button
+            type="button"
+            onClick={() => setIsAddModalOpen(true)}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm self-start sm:self-auto"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Upload Reusable Master File</span>
+          </button>
+        )}
+      </div>
+
+      {/* Primary Vault Mode Switcher: Reusable Documents vs Company Past Projects & Credentials */}
+      <div className="flex items-center gap-1.5 bg-[#F1F5F9] p-1 rounded-xl w-fit border border-[#E2E8F0]">
         <button
           type="button"
-          onClick={() => setIsAddModalOpen(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm self-start sm:self-auto"
+          onClick={() => handleSwitchTab('DOCUMENTS')}
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
+            activeLibraryTab === 'DOCUMENTS'
+              ? 'bg-white text-[#0F172A] shadow-xs'
+              : 'text-[#64748B] hover:text-[#0F172A]'
+          }`}
         >
-          <Plus className="w-4 h-4" />
-          <span>Upload Reusable Master File</span>
+          <FileCheck className="w-4 h-4 text-[#2563EB]" />
+          <span>Statutory &amp; Master Documents</span>
+          <span className="text-[10px] font-mono bg-[#EFF6FF] text-[#2563EB] px-2 py-0.5 rounded-full font-bold">
+            {reusableDocuments.length}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleSwitchTab('PROJECT_CREDENTIALS')}
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
+            activeLibraryTab === 'PROJECT_CREDENTIALS'
+              ? 'bg-white text-[#0F172A] shadow-xs'
+              : 'text-[#64748B] hover:text-[#0F172A]'
+          }`}
+        >
+          <Briefcase className="w-4 h-4 text-emerald-600" />
+          <span>Company Past Projects &amp; Credentials (WO &amp; CC)</span>
+          <span className="text-[10px] font-mono bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-bold border border-emerald-200">
+            {companyProjects.length}
+          </span>
         </button>
       </div>
 
-      {/* KPI Stats Summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {activeLibraryTab === 'PROJECT_CREDENTIALS' ? (
+        <CompanyProjectCredentialsManager />
+      ) : (
+        <>
+          {/* KPI Stats Summary */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-4 space-y-1">
           <div className="flex items-center justify-between text-xs text-[#64748B]">
             <span>Total Master Files</span>
@@ -243,6 +311,21 @@ export const MasterDocumentVaultPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
+            {/* Entity / Partner Filter */}
+            <div className="flex items-center gap-1.5 bg-[#F8FAFC] border border-[#E2E8F0] px-2.5 py-1 rounded-lg text-xs">
+              <Building2 className="w-3.5 h-3.5 text-[#64748B]" />
+              <span className="text-[#64748B] font-medium">Entity:</span>
+              <select
+                value={selectedCompany}
+                onChange={(e) => setSelectedCompany(e.target.value)}
+                className="bg-transparent text-xs font-semibold text-[#0F172A] border-none focus:outline-none cursor-pointer"
+              >
+                <option value="ALL">All Entities</option>
+                <option value="LEAD">🏛️ Lead Bidder (PrimeTech)</option>
+                <option value="JV">⭐ JV Partners</option>
+              </select>
+            </div>
+
             {/* Access Level Filter Dropdown */}
             <div className="flex items-center gap-1.5 bg-[#F8FAFC] border border-[#E2E8F0] px-2.5 py-1 rounded-lg text-xs">
               <Shield className="w-3.5 h-3.5 text-[#64748B]" />
@@ -262,7 +345,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Category Chips */}
+        {/* Category & Entity Chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto pt-2 border-t border-[#F1F5F9]">
           <Filter className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
           <span className="text-xs text-[#64748B] font-medium mr-1">Category:</span>
@@ -307,6 +390,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
             <thead>
               <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
                 <th className="py-3 px-4">Master Document</th>
+                <th className="py-3 px-4">Owning Entity</th>
                 <th className="py-3 px-4">Category</th>
                 <th className="py-3 px-4">Access Permission Scope</th>
                 <th className="py-3 px-4">Validity / Expiry</th>
@@ -316,7 +400,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
             <tbody className="divide-y divide-[#F1F5F9]">
               {filteredDocs.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-xs text-[#94A3B8]">
+                  <td colSpan={6} className="py-8 text-center text-xs text-[#94A3B8]">
                     No reusable documents match your filter. Click "Upload Reusable Master File" to add documents.
                   </td>
                 </tr>
@@ -347,6 +431,18 @@ export const MasterDocumentVaultPage: React.FC = () => {
                             </span>
                           </div>
                         </div>
+                      </td>
+
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        {doc.isJvPartner || doc.companyRole === 'JV_PARTNER' ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs">
+                            ⭐ JV: {doc.companyName || 'JV Partner'}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
+                            🏛️ {doc.companyName || 'PrimeTech Ltd'}
+                          </span>
+                        )}
                       </td>
 
                       <td className="py-3.5 px-4">
@@ -491,6 +587,46 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 />
               </div>
 
+              {/* Owning Entity & Role for Multi-Company Disambiguation */}
+              <div className="grid grid-cols-2 gap-3 p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg">
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">
+                    Owning Entity Role *
+                  </label>
+                  <select
+                    value={newCompanyRole}
+                    onChange={(e) => {
+                      const role = e.target.value as 'LEAD_BIDDER' | 'JV_PARTNER' | 'SUBCONTRACTOR';
+                      setNewCompanyRole(role);
+                      if (role === 'LEAD_BIDDER' && newCompanyName === 'DataCore Systems Ltd') {
+                        setNewCompanyName('PrimeTech Ltd');
+                      } else if (role === 'JV_PARTNER' && newCompanyName === 'PrimeTech Ltd') {
+                        setNewCompanyName('DataCore Systems Ltd');
+                      }
+                    }}
+                    className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  >
+                    <option value="LEAD_BIDDER">🏛️ Lead Bidder</option>
+                    <option value="JV_PARTNER">⭐ JV Partner</option>
+                    <option value="SUBCONTRACTOR">🤝 Subcontractor</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">
+                    Company / Entity Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. PrimeTech Ltd or JV Partner"
+                    value={newCompanyName}
+                    onChange={(e) => setNewCompanyName(e.target.value)}
+                    className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  />
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-[#0F172A] mb-1">
@@ -552,7 +688,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
               </div>
 
               <div className="p-3 bg-[#EFF6FF] border border-[#BFDBFE] rounded-lg text-[11px] text-[#1D4ED8]">
-                <strong>Cross-Project Storage:</strong> Master files are indexed in the corporate repository and can be referenced into any tender proposal without re-uploading.
+                <strong>Multi-Company Storage Isolation:</strong> Files are cataloged with their owning company entity ({newCompanyName || 'Entity'}) to prevent name collisions and allow instant reuse across JV proposals.
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
@@ -609,9 +745,13 @@ export const MasterDocumentVaultPage: React.FC = () => {
                   <span className="font-semibold text-xs text-[#0F172A] block mt-0.5">
                     {docToLink.name}
                   </span>
-                  <span className="text-[11px] text-[#64748B]">
-                    Category: {docToLink.category} • Size: {docToLink.size}
-                  </span>
+                  <div className="flex items-center gap-2 mt-1 text-[11px] text-[#64748B]">
+                    <span>Category: {docToLink.category}</span>
+                    <span>•</span>
+                    <span className="font-semibold text-[#0F172A]">
+                      {docToLink.companyName || 'PrimeTech Ltd'} ({docToLink.companyRole || 'LEAD_BIDDER'})
+                    </span>
+                  </div>
                 </div>
 
                 <div>
@@ -620,7 +760,21 @@ export const MasterDocumentVaultPage: React.FC = () => {
                   </label>
                   <select
                     value={targetTenderId}
-                    onChange={(e) => setTargetTenderId(e.target.value)}
+                    onChange={(e) => {
+                      const newTid = e.target.value;
+                      setTargetTenderId(newTid);
+                      const targetTdr = tenders.find((t) => t.id === newTid);
+                      const hasJv = Boolean(
+                        targetTdr?.summary?.jv?.participation?.toLowerCase().includes('allow') ||
+                        targetTdr?.summary?.jv?.leadMember ||
+                        targetTdr?.summary?.jv?.localPartner ||
+                        docToLink?.isJvPartner ||
+                        docToLink?.companyRole === 'JV_PARTNER'
+                      );
+                      if (hasJv && (docToLink?.isJvPartner || docToLink?.companyRole === 'JV_PARTNER')) {
+                        setTargetFolder('02A_jv_partner_credentials');
+                      }
+                    }}
                     className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-medium focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                   >
                     {tenders.map((t) => (
@@ -640,8 +794,12 @@ export const MasterDocumentVaultPage: React.FC = () => {
                     onChange={(e) => setTargetFolder(e.target.value)}
                     className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-medium focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                   >
+                    {/* JV Partner Folder prioritized at top when JV is detected */}
+                    <option value="02A_jv_partner_credentials" className="font-bold text-amber-700 bg-amber-50">
+                      ⭐ 02A JV Partner Credentials &amp; Statutory Dossier
+                    </option>
                     <option value="02_company_statutory_documents">
-                      📁 02 Company Statutory Credentials
+                      📁 02 Company Statutory Credentials (Lead Bidder)
                     </option>
                     <option value="01_original_tender_documents">
                       📁 01 Original RFP Notices &amp; Addenda
@@ -677,6 +835,8 @@ export const MasterDocumentVaultPage: React.FC = () => {
             )}
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );

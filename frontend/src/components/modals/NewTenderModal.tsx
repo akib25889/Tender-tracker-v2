@@ -32,7 +32,6 @@ export const NewTenderModal: React.FC = () => {
     isNewTenderModalOpen,
     setIsNewTenderModalOpen,
     addTender,
-    currency,
     tenders,
     categories,
     addCategory,
@@ -62,9 +61,45 @@ export const NewTenderModal: React.FC = () => {
   );
   const [submissionTime, setSubmissionTime] = useState('14:00 BST');
   const [estimatedValue, setEstimatedValue] = useState('2500000');
+  const [tenderCurrency, setTenderCurrency] = useState('USD');
+  const [exchangeRateToBdt, setExchangeRateToBdt] = useState('122.00');
+  const [exchangeRateDate, setExchangeRateDate] = useState(
+    new Date().toISOString().split('T')[0]
+  );
   const [priority, setPriority] = useState<TenderPriority>('HIGH');
   const [category, setCategory] = useState('IT & Cloud Infrastructure');
   const [isCustomCategory, setIsCustomCategory] = useState(false);
+
+  const handleCurrencyChange = (newCur: string) => {
+    setTenderCurrency(newCur);
+    if (newCur === 'BDT') {
+      setExchangeRateToBdt('1.0');
+    } else if (newCur === 'USD') {
+      setExchangeRateToBdt('122.00');
+    } else if (newCur === 'EUR') {
+      setExchangeRateToBdt('133.50');
+    } else if (newCur === 'GBP') {
+      setExchangeRateToBdt('158.00');
+    } else if (newCur === 'JPY') {
+      setExchangeRateToBdt('0.82');
+    }
+  };
+
+  const liveBdtValue = useMemo(() => {
+    const val = Number(estimatedValue) || 0;
+    const rate = tenderCurrency === 'BDT' ? 1.0 : (Number(exchangeRateToBdt) || 0);
+    return val * rate;
+  }, [estimatedValue, exchangeRateToBdt, tenderCurrency]);
+
+  const formatBdtPreview = (val: number) => {
+    if (val >= 10000000) {
+      return `≈ ৳${(val / 10000000).toFixed(2)} Crore`;
+    }
+    if (val >= 100000) {
+      return `≈ ৳${(val / 100000).toFixed(2)} Lakh`;
+    }
+    return `≈ ৳${Math.round(val).toLocaleString()}`;
+  };
 
   const availableCategories = useMemo(() => {
     const fromCategories = (categories || []).map((c) => c.name);
@@ -304,6 +339,10 @@ export const NewTenderModal: React.FC = () => {
       country,
       category,
       estimatedValue: Number(estimatedValue) || 1000000,
+      currency: tenderCurrency,
+      exchangeRateToBdt: tenderCurrency === 'BDT' ? 1.0 : (Number(exchangeRateToBdt) || 122.0),
+      exchangeRateDate: exchangeRateDate || publishedDate,
+      estimatedValueBdt: liveBdtValue,
       priority,
       stage: 'DISCOVERED',
       submissionDeadline: new Date(lastDate).toISOString(),
@@ -645,28 +684,100 @@ export const NewTenderModal: React.FC = () => {
                 </div>
               </div>
 
-              {/* Value, Priority, Dates */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
-                    Estimated Net Value ($ USD) *
-                  </label>
-                  <div className="relative">
+              {/* Currency & Financial Valuation */}
+              <div className="p-3.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    Currency &amp; Financial Valuation
+                  </span>
+                  <span className="text-[11px] font-mono font-bold text-[#2563EB] bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100 shadow-sm">
+                    {formatBdtPreview(liveBdtValue)}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      Tender Currency *
+                    </label>
+                    <select
+                      value={tenderCurrency}
+                      onChange={(e) => handleCurrencyChange(e.target.value)}
+                      className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg font-bold text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    >
+                      <option value="USD">USD ($)</option>
+                      <option value="BDT">BDT (৳)</option>
+                      <option value="EUR">EUR (€)</option>
+                      <option value="GBP">GBP (£)</option>
+                      <option value="JPY">JPY (¥)</option>
+                      <option value="OTHER">Other Currency</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      Net Value ({tenderCurrency}) *
+                    </label>
                     <input
                       type="number"
                       required
+                      min="0"
+                      step="any"
                       value={estimatedValue}
                       onChange={(e) => setEstimatedValue(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono font-bold text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      placeholder="e.g. 2500000"
+                      className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg font-mono font-bold text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10px] text-[#64748B]">
-                      {currency === 'BDT'
-                        ? `≈ ৳${((Number(estimatedValue) * 122) / 10000000).toFixed(2)} Cr`
-                        : `$${(Number(estimatedValue) / 1000000).toFixed(2)}M`}
-                    </span>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      Rate vs BDT (At that time) *
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      step="any"
+                      disabled={tenderCurrency === 'BDT'}
+                      value={tenderCurrency === 'BDT' ? '1.0' : exchangeRateToBdt}
+                      onChange={(e) => setExchangeRateToBdt(e.target.value)}
+                      placeholder="e.g. 122.00"
+                      className={`w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg font-mono text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] ${
+                        tenderCurrency === 'BDT' ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''
+                      }`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      Rate Fixation Date
+                    </label>
+                    <input
+                      type="date"
+                      value={exchangeRateDate}
+                      onChange={(e) => setExchangeRateDate(e.target.value)}
+                      className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    />
                   </div>
                 </div>
 
+                <div className="flex flex-wrap items-center justify-between text-[11px] text-[#64748B] pt-1.5 border-t border-[#E2E8F0]">
+                  <span>
+                    {tenderCurrency === 'BDT'
+                      ? 'Local currency tender (1.0 conversion factor to BDT).'
+                      : `Historical conversion rate of that time: 1 ${tenderCurrency} = ৳${exchangeRateToBdt || '122.00'} BDT`}
+                  </span>
+                  <span className="font-semibold text-slate-700">
+                    Total Equivalent:{' '}
+                    <span className="text-[#2563EB] font-mono">
+                      ৳{Math.round(liveBdtValue).toLocaleString()} BDT
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Published Date & Operational Priority */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-semibold text-[#0F172A] mb-1">
                     Published Notice Date
@@ -674,7 +785,10 @@ export const NewTenderModal: React.FC = () => {
                   <input
                     type="date"
                     value={publishedDate}
-                    onChange={(e) => setPublishedDate(e.target.value)}
+                    onChange={(e) => {
+                      setPublishedDate(e.target.value);
+                      if (!exchangeRateDate) setExchangeRateDate(e.target.value);
+                    }}
                     className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                   />
                 </div>

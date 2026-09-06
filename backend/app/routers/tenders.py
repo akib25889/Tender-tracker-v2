@@ -12,6 +12,8 @@ from app.schemas.tender import (
     TenderOut,
     ReviewTierOut,
     SignOffRequest,
+    DecisionMatrixIn,
+    DecisionMatrixOut,
 )
 from app.services.storage import ensure_tender_directories
 
@@ -67,6 +69,18 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
             status_code=400, detail=f"Tender {tender_id} already exists"
         )
 
+    rate = (
+        tender_in.exchange_rate_to_bdt
+        if tender_in.exchange_rate_to_bdt is not None
+        else (1.0 if tender_in.currency == "BDT" else 122.0)
+    )
+    val = tender_in.estimated_value or 0.0
+    val_bdt = (
+        tender_in.estimated_value_bdt
+        if tender_in.estimated_value_bdt is not None
+        else (val if tender_in.currency == "BDT" else round(val * rate, 2))
+    )
+
     db_tender = Tender(
         id=tender_id,
         reference_no=tender_in.reference_no or "",
@@ -75,6 +89,10 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
         country=tender_in.country,
         category=tender_in.category,
         estimated_value=tender_in.estimated_value,
+        currency=tender_in.currency or "USD",
+        exchange_rate_to_bdt=rate,
+        exchange_rate_date=tender_in.exchange_rate_date,
+        estimated_value_bdt=val_bdt,
         stage=tender_in.stage,
         decision=tender_in.decision,
         priority=tender_in.priority,
@@ -118,53 +136,106 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
 @router.put("/{tender_id}", response_model=TenderOut)
 def update_tender(tender_id: str, updates: TenderUpdate, db: Session = Depends(get_db)):
     tender = db.query(Tender).filter(Tender.id == tender_id).first()
-    update_data = updates.model_dump(exclude_unset=True)
-
     if not tender:
         raise HTTPException(status_code=404, detail="Tender not found")
-        tender = Tender(
-            id=tender_id,
-            title=update_data.get("title", f"Tender {tender_id}"),
-            organization=update_data.get("organization", "Procuring Authority"),
-            country=update_data.get("country", "Bangladesh"),
-            category=update_data.get("category", "General"),
-            reference_no=update_data.get("reference_no", ""),
-            estimated_value=update_data.get("estimated_value"),
-            stage=update_data.get("stage", "DISCOVERED"),
-            decision=update_data.get("decision", "PENDING"),
-            priority=update_data.get("priority", "MEDIUM"),
-            submission_deadline=update_data.get("submission_deadline"),
-            readiness_score=update_data.get("readiness_score", 0),
-        )
-        db.add(tender)
-        db.flush()
 
     update_data = updates.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(tender, field, value)
-        tiers = [
-            (1, "Technical Architecture", "EXECUTIVE_MANAGER"),
-            (2, "Financial Feasibility", "SENIOR_MANAGER"),
-            (3, "Legal & Governance", "TENDER_ANALYST"),
-            (4, "Executive Sign-Off", "BUSINESS_HEAD"),
-        ]
-        for num, name, role in tiers:
-            db.add(
-                TenderReviewTier(
-                    tender_id=tender.id,
-                    tier_number=num,
-                    tier_name=name,
-                    role_required=role,
-                    sign_off_status="PENDING",
-                )
+
+    # Auto-calculate estimated_value_bdt if estimated_value, currency, or rate is updated
+    if (
+        "estimated_value" in update_data
+        or "exchange_rate_to_bdt" in update_data
+        or "currency" in update_data
+    ):
+        if "estimated_value_bdt" not in update_data:
+            val = tender.estimated_value or 0.0
+            cur = tender.currency or "USD"
+            rate = (
+                tender.exchange_rate_to_bdt
+                if tender.exchange_rate_to_bdt is not None
+                else (1.0 if cur == "BDT" else 122.0)
             )
-    else:
-        for field, value in update_data.items():
-            setattr(tender, field, value)
+            tender.estimated_value_bdt = val if cur == "BDT" else round(val * rate, 2)
 
     db.commit()
     db.refresh(tender)
     return tender
+
+
+@router.post("/{tender_id}/decision", response_model=DecisionMatrixOut)
+def set_tender_decision(
+    tender_id: str,
+    matrix_in: DecisionMatrixIn,
+    db: Session = Depends(get_db),
+):
+    tender = db.query(Tender).filter(Tender.id == tender_id).first()
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
+
+    # Update decision on tender
+    decision_val = matrix_in.decision or matrix_in.status or "GO"
+    tender.decision = decision_val.upper()
+
+    matrix = (
+        db.query(TenderDecisionMatrix)
+        .filter(TenderDecisionMatrix.tender_id == tender_id)
+        .first()
+    )
+    tech = (
+        matrix_in.technical_score
+        if matrix_in.technical_score is not None
+        else (matrix_in.technical or 0.0)
+    )
+    fin = (
+        matrix_in.financial_score
+        if matrix_in.financial_score is not None
+        else (matrix_in.financial or 0.0)
+    )
+    team = (
+        matrix_in.team_score
+        if matrix_in.team_score is not None
+        else (matrix_in.team or 0.0)
+    )
+    sla = (
+        matrix_in.sla_score
+        if matrix_in.sla_score is not None
+        else (matrix_in.sla or 0.0)
+    )
+    composite = (
+        matrix_in.composite_score
+        if matrix_in.composite_score is not None
+        else (matrix_in.aggregateScore or round((tech + fin + team + sla) / 4.0, 1))
+    )
+
+    if not matrix:
+        matrix = TenderDecisionMatrix(
+            tender_id=tender_id,
+            technical_score=tech,
+            financial_score=fin,
+            team_score=team,
+            sla_score=sla,
+            composite_score=composite,
+            threshold=matrix_in.threshold,
+            status=decision_val.upper(),
+            rationale=matrix_in.rationale,
+        )
+        db.add(matrix)
+    else:
+        matrix.technical_score = tech
+        matrix.financial_score = fin
+        matrix.team_score = team
+        matrix.sla_score = sla
+        matrix.composite_score = composite
+        matrix.threshold = matrix_in.threshold
+        matrix.status = decision_val.upper()
+        if matrix_in.rationale:
+            matrix.rationale = matrix_in.rationale
+
+    db.commit()
+    db.refresh(matrix)
+    return matrix
 
 
 @router.delete("/{tender_id}", status_code=status.HTTP_204_NO_CONTENT)

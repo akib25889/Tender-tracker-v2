@@ -30,6 +30,128 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
+def run_migrations():
+    """Ensure newly introduced columns exist in SQLite / MySQL tables."""
+    from sqlalchemy import text
+
+    try:
+        with engine.connect() as conn:
+            if engine.dialect.name == "sqlite":
+                result = conn.execute(text("PRAGMA table_info(tenders)")).fetchall()
+                existing_cols = {row[1] for row in result}
+                if "currency" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN currency VARCHAR(10) DEFAULT 'USD'"
+                        )
+                    )
+                if "exchange_rate_to_bdt" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN exchange_rate_to_bdt FLOAT DEFAULT 122.0"
+                        )
+                    )
+                if "exchange_rate_date" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN exchange_rate_date VARCHAR(50) DEFAULT ''"
+                        )
+                    )
+                if "estimated_value_bdt" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN estimated_value_bdt FLOAT DEFAULT 0.0"
+                        )
+                    )
+                # Migrations for tender_documents
+                td_result = conn.execute(
+                    text("PRAGMA table_info(tender_documents)")
+                ).fetchall()
+                td_cols = {row[1] for row in td_result}
+                if "company_name" not in td_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tender_documents ADD COLUMN company_name VARCHAR(150) DEFAULT 'PrimeTech Ltd'"
+                        )
+                    )
+                if "company_role" not in td_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tender_documents ADD COLUMN company_role VARCHAR(50) DEFAULT 'LEAD_BIDDER'"
+                        )
+                    )
+                if "is_jv_partner" not in td_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tender_documents ADD COLUMN is_jv_partner BOOLEAN DEFAULT 0"
+                        )
+                    )
+
+                # Migrations for reusable_documents
+                rd_result = conn.execute(
+                    text("PRAGMA table_info(reusable_documents)")
+                ).fetchall()
+                rd_cols = {row[1] for row in rd_result}
+                if "company_name" not in rd_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE reusable_documents ADD COLUMN company_name VARCHAR(150) DEFAULT 'PrimeTech Ltd'"
+                        )
+                    )
+                if "company_role" not in rd_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE reusable_documents ADD COLUMN company_role VARCHAR(50) DEFAULT 'LEAD_BIDDER'"
+                        )
+                    )
+                if "is_jv_partner" not in rd_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE reusable_documents ADD COLUMN is_jv_partner BOOLEAN DEFAULT 0"
+                        )
+                    )
+
+                conn.commit()
+            elif engine.dialect.name == "mysql":
+                for tbl, cols in [
+                    (
+                        "tenders",
+                        [
+                            ("currency", "VARCHAR(10) DEFAULT 'USD'"),
+                            ("exchange_rate_to_bdt", "FLOAT DEFAULT 122.0"),
+                            ("exchange_rate_date", "VARCHAR(50) DEFAULT ''"),
+                            ("estimated_value_bdt", "FLOAT DEFAULT 0.0"),
+                        ],
+                    ),
+                    (
+                        "tender_documents",
+                        [
+                            ("company_name", "VARCHAR(150) DEFAULT 'PrimeTech Ltd'"),
+                            ("company_role", "VARCHAR(50) DEFAULT 'LEAD_BIDDER'"),
+                            ("is_jv_partner", "BOOLEAN DEFAULT FALSE"),
+                        ],
+                    ),
+                    (
+                        "reusable_documents",
+                        [
+                            ("company_name", "VARCHAR(150) DEFAULT 'PrimeTech Ltd'"),
+                            ("company_role", "VARCHAR(50) DEFAULT 'LEAD_BIDDER'"),
+                            ("is_jv_partner", "BOOLEAN DEFAULT FALSE"),
+                        ],
+                    ),
+                ]:
+                    for col, col_def in cols:
+                        try:
+                            conn.execute(
+                                text(f"ALTER TABLE {tbl} ADD COLUMN {col} {col_def}")
+                            )
+                            conn.commit()
+                        except Exception:
+                            pass
+    except Exception as e:
+        print(f"Warning during migration check: {e}")
+
+
 def get_db():
     db = SessionLocal()
     try:

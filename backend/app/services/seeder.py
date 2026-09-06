@@ -1,11 +1,16 @@
+import json
+import os
+from pathlib import Path
 from sqlalchemy.orm import Session
 from app.models.user import User
 from app.models.tender import Tender, TenderDecisionMatrix, TenderCategory
 from app.models.task import TenderTask
 from app.models.document import TenderDocument, ReusableDocument
+from app.models.company_credential import CompanyProjectCredential
 from app.models.requirement import TenderRequirement
 from app.models.review import TenderReviewTier
 from app.models.comment import TenderComment
+from app.models.organization import Organization
 from app.models.permission import (
     Permission,
     PartnerOrganization,
@@ -326,7 +331,239 @@ def seed_database(db: Session):
             )
         db.commit()
 
-    # 3. Seed Primary Tenders if empty
+    # 2.5 Seed Procuring Organizations
+    orgs_file = Path(__file__).parent / "mock_organizations_seed.json"
+    if orgs_file.exists():
+        try:
+            with open(orgs_file, "r", encoding="utf-8") as f:
+                orgs_data = json.load(f)
+                for org in orgs_data:
+                    if (
+                        not db.query(Organization)
+                        .filter(Organization.id == org["id"])
+                        .first()
+                    ):
+                        db.add(
+                            Organization(
+                                id=org["id"],
+                                name=org["name"],
+                                short_name=org.get("shortName"),
+                                type=org.get("type", "GOVERNMENT"),
+                                parent_id=org.get("parentId"),
+                                country=org.get("country", "Bangladesh"),
+                                website=org.get("website"),
+                                priority=org.get("priority", "MEDIUM"),
+                                aliases_json=json.dumps(org.get("aliases", [])),
+                                description=org.get("description"),
+                            )
+                        )
+                db.commit()
+        except Exception as e:
+            print(f"Error seeding organizations: {e}")
+
+    # 3. Seed Primary Tenders (from mock_tenders_seed.json + fallback defaults)
+    tenders_file = Path(__file__).parent / "mock_tenders_seed.json"
+    if tenders_file.exists():
+        try:
+            with open(tenders_file, "r", encoding="utf-8") as f:
+                mock_tenders_data = json.load(f)
+                for t_data in mock_tenders_data:
+                    t_id = t_data["id"]
+                    existing_t = db.query(Tender).filter(Tender.id == t_id).first()
+                    if existing_t:
+                        if not existing_t.summary_json and t_data.get("summary"):
+                            existing_t.summary_json = json.dumps(t_data.get("summary"))
+                        dm = t_data.get("decisionMatrix")
+                        if dm and not existing_t.decision_matrix:
+                            db.add(
+                                TenderDecisionMatrix(
+                                    tender_id=t_id,
+                                    technical_score=dm.get("technical", 0.0),
+                                    financial_score=dm.get("financial", 0.0),
+                                    team_score=dm.get("team", 0.0),
+                                    sla_score=dm.get("sla", 0.0),
+                                    composite_score=dm.get("aggregateScore", 0.0),
+                                    threshold=70.0,
+                                    status=t_data.get("decision", "PENDING"),
+                                    rationale=dm.get("rationale"),
+                                )
+                            )
+                        reqs = t_data.get("requirements", [])
+                        for req in reqs:
+                            if (
+                                not db.query(TenderRequirement)
+                                .filter(TenderRequirement.id == req["id"])
+                                .first()
+                            ):
+                                db.add(
+                                    TenderRequirement(
+                                        id=req["id"],
+                                        tender_id=t_id,
+                                        title=req.get(
+                                            "title", "Compliance Requirement"
+                                        ),
+                                        category=req.get("category", "Statutory"),
+                                        status=req.get("status", "PENDING"),
+                                        owner=req.get("owner", "Tariq Al-Mansoor"),
+                                    )
+                                )
+                    else:
+                        lead = t_data.get("leadOwner", {})
+                        new_t = Tender(
+                            id=t_id,
+                            reference_no=t_data.get("referenceNo", ""),
+                            title=t_data.get("title", "Untitled Tender Opportunity"),
+                            organization=t_data.get(
+                                "organization", "Procuring Authority"
+                            ),
+                            country=t_data.get("country", "Bangladesh"),
+                            category=t_data.get("category", "General"),
+                            estimated_value=(
+                                t_data.get("estimatedValue")
+                                if t_data.get("estimatedValue") is not None
+                                else 0.0
+                            ),
+                            stage=t_data.get("stage", "DISCOVERED"),
+                            decision=t_data.get("decision", "PENDING"),
+                            priority=t_data.get("priority", "MEDIUM"),
+                            submission_deadline=t_data.get("submissionDeadline"),
+                            days_remaining=t_data.get("daysRemaining", 0),
+                            hours_remaining=t_data.get("hoursRemaining", 0),
+                            readiness_score=t_data.get("readinessScore", 0),
+                            lead_owner_name=(
+                                lead.get("name", "Sarah Jenkins")
+                                if isinstance(lead, dict)
+                                else "Sarah Jenkins"
+                            ),
+                            lead_owner_role=(
+                                lead.get("role", "Business Head")
+                                if isinstance(lead, dict)
+                                else "Business Head"
+                            ),
+                            summary_json=(
+                                json.dumps(t_data.get("summary"))
+                                if t_data.get("summary")
+                                else None
+                            ),
+                        )
+                        db.add(new_t)
+                        db.flush()
+                        ensure_tender_directories(t_id)
+
+                        # Decision Matrix
+                        dm = t_data.get("decisionMatrix")
+                        if dm:
+                            db.add(
+                                TenderDecisionMatrix(
+                                    tender_id=t_id,
+                                    technical_score=dm.get("technical", 0.0),
+                                    financial_score=dm.get("financial", 0.0),
+                                    team_score=dm.get("team", 0.0),
+                                    sla_score=dm.get("sla", 0.0),
+                                    composite_score=dm.get("aggregateScore", 0.0),
+                                    threshold=70.0,
+                                    status=t_data.get("decision", "PENDING"),
+                                    rationale=dm.get("rationale"),
+                                )
+                            )
+
+                        # Tasks
+                        tasks = t_data.get("tasks", [])
+                        for tsk in tasks:
+                            db.add(
+                                TenderTask(
+                                    id=tsk["id"],
+                                    tender_id=t_id,
+                                    title=tsk.get("title", "Review Specifications"),
+                                    assignee=tsk.get("assignee", "Sarah Jenkins"),
+                                    status=tsk.get("status", "TODO"),
+                                    priority=tsk.get("priority", "MEDIUM"),
+                                    due_date=tsk.get("deadline"),
+                                )
+                            )
+
+                        # Requirements
+                        reqs = t_data.get("requirements", [])
+                        for req in reqs:
+                            db.add(
+                                TenderRequirement(
+                                    id=req["id"],
+                                    tender_id=t_id,
+                                    title=req.get("title", "Compliance Requirement"),
+                                    category=req.get("category", "Statutory"),
+                                    status=req.get("status", "PENDING"),
+                                    owner=req.get("owner", "Tariq Al-Mansoor"),
+                                )
+                            )
+
+                        # Documents
+                        docs = t_data.get("documents", [])
+                        for doc in docs:
+                            db.add(
+                                TenderDocument(
+                                    id=doc["id"],
+                                    tender_id=t_id,
+                                    name=doc.get("name", "document.pdf"),
+                                    folder=doc.get(
+                                        "folder", "01_original_tender_documents"
+                                    ),
+                                    size=doc.get("size", "1.5 MB"),
+                                    revision=doc.get("revision", "v1.0"),
+                                    sha256=doc.get(
+                                        "sha256",
+                                        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                                    ),
+                                    uploaded_at=doc.get("uploadedAt", "2026-09-01"),
+                                    access_level=doc.get("accessLevel", "ALL_TEAM"),
+                                )
+                            )
+
+                        # Reviews
+                        revs = t_data.get("reviews", [])
+                        if revs:
+                            for rev in revs:
+                                db.add(
+                                    TenderReviewTier(
+                                        tender_id=t_id,
+                                        tier_number=rev.get("tierNumber", 1),
+                                        tier_name=rev.get("name", "Review Tier"),
+                                        role_required="EXECUTIVE_MANAGER",
+                                        sign_off_status=rev.get("status", "PENDING"),
+                                        signed_off_by=rev.get("reviewer"),
+                                        signed_off_at=rev.get("date"),
+                                        comments=rev.get("comments"),
+                                    )
+                                )
+                        else:
+                            tiers = [
+                                (1, "Technical Architecture", "EXECUTIVE_MANAGER"),
+                                (2, "Financial Feasibility", "SENIOR_MANAGER"),
+                                (3, "Legal & Governance", "TENDER_ANALYST"),
+                                (4, "Executive Sign-Off", "BUSINESS_HEAD"),
+                            ]
+                            for num, name, role in tiers:
+                                db.add(
+                                    TenderReviewTier(
+                                        tender_id=t_id,
+                                        tier_number=num,
+                                        tier_name=name,
+                                        role_required=role,
+                                        sign_off_status=(
+                                            "APPROVED"
+                                            if t_data.get("stage") == "SUBMITTED"
+                                            else (
+                                                "ACTION_REQUIRED"
+                                                if num == 1
+                                                else "WAITING"
+                                            )
+                                        ),
+                                    )
+                                )
+                db.commit()
+        except Exception as e:
+            print(f"Error seeding mock tenders: {e}")
+
+    # Fallback seed if database still has no tenders
     if db.query(Tender).count() == 0:
         t1 = Tender(
             id="TDR-2026-EU-089",
@@ -348,203 +585,7 @@ def seed_database(db: Session):
         )
         db.add(t1)
         db.flush()
-
         ensure_tender_directories(t1.id)
-
-        # Tasks for T1
-        db.add(
-            TenderTask(
-                id="TSK-101",
-                tender_id=t1.id,
-                title="Finalize System Architecture Diagram",
-                assignee="Dr. Marcus Vance",
-                status="DONE",
-                priority="HIGH",
-            )
-        )
-        db.add(
-            TenderTask(
-                id="TSK-102",
-                tender_id=t1.id,
-                title="Compile Audited Financial Balance Sheets",
-                assignee="Tariq Al-Mansoor",
-                status="IN_PROGRESS",
-                priority="HIGH",
-            )
-        )
-        db.add(
-            TenderTask(
-                id="TSK-103",
-                tender_id=t1.id,
-                title="Validate GDPR & Security Compliance",
-                assignee="Elena Rostova",
-                status="REVIEW",
-                priority="MEDIUM",
-            )
-        )
-
-        # Review tiers for T1
-        db.add(
-            TenderReviewTier(
-                tender_id=t1.id,
-                tier_number=1,
-                tier_name="Technical Architecture",
-                role_required="EXECUTIVE_MANAGER",
-                sign_off_status="APPROVED",
-                signed_off_by="Dr. Marcus Vance",
-                signed_off_at="2026-09-02",
-            )
-        )
-        db.add(
-            TenderReviewTier(
-                tender_id=t1.id,
-                tier_number=2,
-                tier_name="Financial Feasibility",
-                role_required="SENIOR_MANAGER",
-                sign_off_status="APPROVED",
-                signed_off_by="Tariq Al-Mansoor",
-                signed_off_at="2026-09-03",
-            )
-        )
-        db.add(
-            TenderReviewTier(
-                tender_id=t1.id,
-                tier_number=3,
-                tier_name="Legal & Governance",
-                role_required="TENDER_ANALYST",
-                sign_off_status="PENDING",
-            )
-        )
-        db.add(
-            TenderReviewTier(
-                tender_id=t1.id,
-                tier_number=4,
-                tier_name="Executive Sign-Off",
-                role_required="BUSINESS_HEAD",
-                sign_off_status="PENDING",
-            )
-        )
-
-        # Documents for T1
-        db.add(
-            TenderDocument(
-                id="DOC-01",
-                tender_id=t1.id,
-                name="Official_RFP_Specifications_DIGIT_2026.pdf",
-                folder="01_original_tender_documents",
-                size="4.2 MB",
-                revision="v1.0",
-                sha256="b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0b9a8c7",
-                uploaded_at="2026-08-25",
-                access_level="ALL_TEAM",
-            )
-        )
-
-        # Decision Matrix for T1
-        db.add(
-            TenderDecisionMatrix(
-                tender_id=t1.id,
-                technical_score=90.0,
-                financial_score=85.0,
-                team_score=88.0,
-                sla_score=92.0,
-                composite_score=88.5,
-                threshold=70.0,
-                status="GO",
-                rationale="High strategic alignment with corporate multi-cloud delivery capabilities.",
-            )
-        )
-
-        # T2: ACRI Digital Ratings Platform
-        t2 = Tender(
-            id="TDR-PRC0190428",
-            reference_no="PRC0190428",
-            title="Development of the African Credit and Investment Risk (ACRI) Digital Ratings Platform",
-            organization="United Nations Development Programme (UNDP)",
-            country="Ghana & Côte d'Ivoire",
-            category="Fintech / Web Platform",
-            estimated_value=None,
-            stage="DISCOVERED",
-            decision="PENDING",
-            priority="HIGH",
-            submission_deadline="2026-09-15T23:59:59Z",
-            days_remaining=11,
-            hours_remaining=275,
-            readiness_score=45,
-            lead_owner_name="Sarah Jenkins",
-            lead_owner_role="Business Head",
-        )
-        db.add(t2)
-        db.flush()
-        ensure_tender_directories(t2.id)
-
-        db.add(
-            TenderTask(
-                id="TSK-201",
-                tender_id=t2.id,
-                title="Review UNDP Quantum Portal Guidelines",
-                assignee="Elena Rostova",
-                status="TODO",
-                priority="HIGH",
-            )
-        )
-        db.add(
-            TenderTask(
-                id="TSK-202",
-                tender_id=t2.id,
-                title="Evaluate Local Consortium / JV Partner in Abidjan",
-                assignee="Tariq Al-Mansoor",
-                status="IN_PROGRESS",
-                priority="HIGH",
-            )
-        )
-
-        # T3: WHO Health Information Exchange
-        t3 = Tender(
-            id="TDR-2026-WHO-044",
-            reference_no="WPRO-2026-RFP-091",
-            title="Integrated Health Information Exchange & Disease Surveillance Cloud System",
-            organization="World Health Organization (WHO WPRO)",
-            country="Fiji & South Pacific Regional",
-            category="Healthcare & Cloud Data",
-            estimated_value=6900000.0,
-            stage="PREPARATION",
-            decision="GO",
-            priority="HIGH",
-            submission_deadline="2026-09-22T15:00:00Z",
-            days_remaining=18,
-            hours_remaining=432,
-            readiness_score=68,
-            lead_owner_name="Dr. Marcus Vance",
-            lead_owner_role="Head of Technical Architecture",
-        )
-        db.add(t3)
-        db.flush()
-        ensure_tender_directories(t3.id)
-
-        # T4: JICA Smart Water SCADA
-        t4 = Tender(
-            id="TDR-2026-JICA-118",
-            reference_no="JICA-BD-P108-2026",
-            title="Dhaka Smart Water Supply Network SCADA Automation & IoT Metering",
-            organization="Japan International Cooperation Agency (JICA / DWASA)",
-            country="Bangladesh",
-            category="Industrial IoT & SCADA",
-            estimated_value=18500000.0,
-            stage="UNDER_ANALYSIS",
-            decision="GO",
-            priority="CRITICAL",
-            submission_deadline="2026-09-08T11:00:00Z",
-            days_remaining=4,
-            hours_remaining=96,
-            readiness_score=82,
-            lead_owner_name="Tariq Al-Mansoor",
-            lead_owner_role="Commercial Pricing Director",
-        )
-        db.add(t4)
-        db.flush()
-        ensure_tender_directories(t4.id)
-
         db.commit()
 
     # 4. Seed Standard Permissions Catalog
@@ -687,5 +728,75 @@ def seed_database(db: Session):
                     scope_id="TENDER_ANALYST",
                 )
             )
+
+    # 13. Company Project Experience Credentials (Work Order, Completion Cert, and Dynamic Fields)
+    if not db.query(CompanyProjectCredential).first():
+        initial_projects = [
+            CompanyProjectCredential(
+                id="PROJ-001",
+                company_name="PrimeTech Ltd",
+                company_role="LEAD_BIDDER",
+                project_title="National Optical Fiber Transmission Backbone Network Phase-III",
+                client_name="Bangladesh Telecommunications Company Limited (BTCL)",
+                contract_value=48500000.0,
+                currency="BDT",
+                start_date="2023-01-15",
+                completion_date="2025-06-30",
+                role_in_project="Prime EPC Turnkey Contractor",
+                work_order_filename="BTCL_WO_Optical_Fiber_Turnkey_2023.pdf",
+                work_order_size="3.2 MB",
+                work_order_sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                completion_cert_filename="BTCL_Completion_Certificate_Phase_III.pdf",
+                completion_cert_size="1.8 MB",
+                completion_cert_sha256="ca978112ca1bbdcafac231b39a23dc4da786081cd1e14eed647f431a39e5047a",
+                custom_fields=[
+                    {"id": "cf-1", "name": "Supervising Consultant", "value": "SMEC International Pty Ltd"},
+                    {"id": "cf-2", "name": "Key Technology Stack", "value": "DWDM 100G, Cisco ASR 9000, Corning SMF-28e"},
+                    {"id": "cf-3", "name": "Client Focal Contact", "value": "Engr. M. Rahman (Project Director), +880-1711-XXXXXX"},
+                ],
+            ),
+            CompanyProjectCredential(
+                id="PROJ-002",
+                company_name="PrimeTech Ltd",
+                company_role="LEAD_BIDDER",
+                project_title="Tier-IV Data Center Cloud Migration & Security Operations Center",
+                client_name="Information and Communication Technology (ICT) Division",
+                contract_value=32000000.0,
+                currency="BDT",
+                start_date="2024-02-01",
+                completion_date="2025-11-20",
+                role_in_project="Lead Contractor",
+                work_order_filename="ICTD_WO_DataCenter_SOC_Deployment.pdf",
+                work_order_size="2.6 MB",
+                completion_cert_filename="ICTD_Performance_Certificate_Accepted.pdf",
+                completion_cert_size="1.4 MB",
+                custom_fields=[
+                    {"id": "cf-4", "name": "Security Compliance Standard", "value": "ISO 27001:2022 & NIST CSF Level 3"},
+                    {"id": "cf-5", "name": "SLA Guaranteed Uptime", "value": "99.982% Financial Uptime Guarantee"},
+                ],
+            ),
+            CompanyProjectCredential(
+                id="PROJ-003",
+                company_name="DataCore Systems Ltd",
+                company_role="JV_PARTNER",
+                project_title="Automated Metering Infrastructure & Smart Grid SCADA Integration",
+                client_name="Dhaka Electric Supply Company (DESCO)",
+                contract_value=27500000.0,
+                currency="BDT",
+                start_date="2023-08-10",
+                completion_date="2025-04-15",
+                role_in_project="Joint Venture Technical Partner",
+                work_order_filename="DESCO_AMI_SCADA_WorkOrder_Signed.pdf",
+                work_order_size="4.1 MB",
+                completion_cert_filename="DESCO_Final_Acceptance_Certificate_2025.pdf",
+                completion_cert_size="2.1 MB",
+                custom_fields=[
+                    {"id": "cf-6", "name": "JV Equity & Quota Share", "value": "40% Technical & Automation Share"},
+                    {"id": "cf-7", "name": "Smart Meters Deployed", "value": "250,000 Cellular NB-IoT Smart Meters"},
+                ],
+            ),
+        ]
+        for p in initial_projects:
+            db.add(p)
 
     db.commit()

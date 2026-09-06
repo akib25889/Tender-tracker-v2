@@ -103,6 +103,9 @@ async def upload_tender_document(
     tender_id: str,
     file: UploadFile = File(...),
     folder: str = Form("01_original_tender_documents"),
+    company_name: Optional[str] = Form("PrimeTech Ltd"),
+    company_role: Optional[str] = Form("LEAD_BIDDER"),
+    is_jv_partner: Optional[bool] = Form(False),
     access_level: str = Form("ALL_TEAM"),
     user_id: Optional[str] = Form(None),
     partner_org_id: Optional[str] = Form(None),
@@ -126,7 +129,25 @@ async def upload_tender_document(
                 detail=auth.denial_message or "Document upload forbidden.",
             )
 
-    target_dir = get_tender_storage_dir(tender_id) / folder
+    # Route corporate / statutory documents under their company folder
+    safe_company = (
+        "".join(
+            c if c.isalnum() or c in ("-", "_") else "_"
+            for c in (company_name or "PrimeTech_Ltd")
+        ).strip("_")
+        or "PrimeTech_Ltd"
+    )
+
+    if company_name and (
+        "statutory" in folder.lower()
+        or "jv" in folder.lower()
+        or "credential" in folder.lower()
+        or is_jv_partner
+    ):
+        target_dir = get_tender_storage_dir(tender_id) / folder / safe_company
+    else:
+        target_dir = get_tender_storage_dir(tender_id) / folder
+
     filename, sha256_hash, size_bytes = await save_uploaded_file(file, target_dir)
 
     size_mb = (
@@ -134,7 +155,6 @@ async def upload_tender_document(
         if size_bytes >= 1024 * 1024
         else f"{size_bytes / 1024:.0f} KB"
     )
-    doc_id = f"DOC-{db.query(TenderDocument).count() + 101}"
     doc_id = f"DOC-{uuid.uuid4().hex[:8].upper()}"
 
     doc = TenderDocument(
@@ -142,6 +162,9 @@ async def upload_tender_document(
         tender_id=tender_id,
         name=filename,
         folder=folder,
+        company_name=company_name or "PrimeTech Ltd",
+        company_role=company_role or ("JV_PARTNER" if is_jv_partner else "LEAD_BIDDER"),
+        is_jv_partner=bool(is_jv_partner),
         size=size_mb,
         revision="v1.0",
         sha256=sha256_hash,
@@ -357,7 +380,7 @@ def get_reusable_documents(
     status_code=status.HTTP_201_CREATED,
 )
 def create_reusable_document(doc_in: ReusableDocCreate, db: Session = Depends(get_db)):
-    doc_id = f"RUD-{db.query(ReusableDocument).count() + 101}"
+    doc_id = f"RUD-{uuid.uuid4().hex[:8].upper()}"
 
     import secrets
 
@@ -367,6 +390,9 @@ def create_reusable_document(doc_in: ReusableDocCreate, db: Session = Depends(ge
         id=doc_id,
         name=doc_in.name,
         category=doc_in.category,
+        company_name=doc_in.company_name or "PrimeTech Ltd",
+        company_role=doc_in.company_role or "LEAD_BIDDER",
+        is_jv_partner=bool(doc_in.is_jv_partner),
         uploaded_at=datetime.now().strftime("%Y-%m-%d"),
         expiry_date=doc_in.expiry_date,
         size=doc_in.size,
@@ -400,13 +426,21 @@ def link_reusable_to_tender(
             status_code=404, detail="Tender or Reusable Document not found"
         )
 
-    doc_id = f"DOC-LINK-{db.query(TenderDocument).count() + 101}"
     doc_id = f"DOC-LINK-{uuid.uuid4().hex[:8].upper()}"
     linked_doc = TenderDocument(
         id=doc_id,
         tender_id=tender_id,
         name=master.name,
         folder=req.target_folder,
+        company_name=req.company_name or master.company_name or "PrimeTech Ltd",
+        company_role=req.company_role
+        or master.company_role
+        or ("JV_PARTNER" if ("jv" in req.target_folder.lower()) else "LEAD_BIDDER"),
+        is_jv_partner=(
+            req.is_jv_partner
+            if req.is_jv_partner is not None
+            else (master.is_jv_partner or ("jv" in req.target_folder.lower()))
+        ),
         size=master.size,
         revision=master.revision,
         sha256=master.sha256,
@@ -512,20 +546,30 @@ def validate_shared_token(token: str, db: Session = Depends(get_db)):
     )
     rud = None
     if not doc:
-        rud = db.query(ReusableDocument).filter(ReusableDocument.id == share.resource_id).first()
+        rud = (
+            db.query(ReusableDocument)
+            .filter(ReusableDocument.id == share.resource_id)
+            .first()
+        )
         if not rud:
             raise HTTPException(
                 status_code=404, detail="Associated document no longer exists."
             )
 
-    tender = db.query(Tender).filter(Tender.id == share.tender_id).first() if share.tender_id else None
+    tender = (
+        db.query(Tender).filter(Tender.id == share.tender_id).first()
+        if share.tender_id
+        else None
+    )
 
     return PublicShareValidationOut(
         token=token,
         document_id=doc.id if doc else rud.id,
         document_name=doc.name if doc else rud.name,
         tender_id=doc.tender_id if doc else (share.tender_id or "MASTER_LIBRARY"),
-        tender_title=tender.title if tender else (share.tender_id or "Master Document Library"),
+        tender_title=(
+            tender.title if tender else (share.tender_id or "Master Document Library")
+        ),
         folder=doc.folder if doc else rud.category,
         size=doc.size if doc else rud.size,
         sha256=doc.sha256 if doc else rud.sha256,
@@ -560,7 +604,11 @@ def download_shared_file(token: str, db: Session = Depends(get_db)):
     file_path = doc.file_path if doc else None
     filename = doc.name if doc else None
     if not doc:
-        rud = db.query(ReusableDocument).filter(ReusableDocument.id == share.resource_id).first()
+        rud = (
+            db.query(ReusableDocument)
+            .filter(ReusableDocument.id == share.resource_id)
+            .first()
+        )
         if rud:
             file_path = rud.file_path
             filename = rud.name
@@ -569,5 +617,7 @@ def download_shared_file(token: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Document file not found on disk")
 
     return FileResponse(
-        path=file_path, filename=filename or "document.bin", media_type="application/octet-stream"
+        path=file_path,
+        filename=filename or "document.bin",
+        media_type="application/octet-stream",
     )
