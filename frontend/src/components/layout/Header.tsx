@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Plus, Bell, PanelLeftClose, PanelLeftOpen, Moon, Sun } from 'lucide-react';
+import { Search, Plus, Bell, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { UserRoleSwitcher } from '../ui/UserRoleSwitcher';
 import { useTenders } from '../../context/TenderContext';
@@ -7,15 +7,11 @@ import { useTenders } from '../../context/TenderContext';
 interface HeaderProps {
   sidebarCollapsed: boolean;
   onToggleSidebar?: () => void;
-  theme?: 'light' | 'dark';
-  onToggleTheme?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   sidebarCollapsed,
   onToggleSidebar,
-  theme,
-  onToggleTheme,
 }) => {
   const { setIsCommandPaletteOpen } = useTenders();
   const [unreadCount, setUnreadCount] = useState(0);
@@ -79,21 +75,6 @@ export const Header: React.FC<HeaderProps> = ({
           <Plus className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">New Opportunity</span>
         </Link>
-
-        {/* Dark / Light mode toggle */}
-        {onToggleTheme && (
-          <button
-            onClick={onToggleTheme}
-            className="p-2 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors"
-            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            {theme === 'dark' ? (
-              <Sun className="w-4 h-4 text-[#F59E0B]" />
-            ) : (
-              <Moon className="w-4 h-4" />
-            )}
-          </button>
-        )}
 
         {/* System Alert Bell — live unread badge */}
         <Link

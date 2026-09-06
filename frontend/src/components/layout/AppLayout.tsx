@@ -9,7 +9,7 @@ import { useTheme } from '../../hooks/useTheme';
 
 export const AppLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
 
   return (
     <div className={`min-h-screen bg-[#F8FAFC] ${theme}`}>
@@ -29,8 +29,6 @@ export const AppLayout: React.FC = () => {
         <Header
           sidebarCollapsed={sidebarCollapsed}
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-          theme={theme}
-          onToggleTheme={toggleTheme}
         />
 
         {/* Viewport Content */}

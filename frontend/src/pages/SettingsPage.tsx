@@ -13,11 +13,16 @@ import {
   Edit2,
   AlertCircle,
   X,
+  Sun,
+  Moon,
+  Sparkles,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
+import { useTheme } from '../hooks/useTheme';
 
 export const SettingsPage: React.FC = () => {
   const { categories, addCategory, updateCategory, deleteCategory, tenders } = useTenders();
+  const { theme, setTheme, toggleTheme } = useTheme();
 
   const [vaultPath, setVaultPath] = useState('H:/Tender tracker v2/storage/tenders');
   const [alertThresholdHours, setAlertThresholdHours] = useState(48);
@@ -219,6 +224,118 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
+        {/* Appearance & Workspace Theme */}
+        <Card
+          title="Appearance & Interface Theme"
+          subtitle="Toggle workspace visual mode between Light Workspace and Dark Command Center"
+        >
+          <div className="space-y-4 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Light Theme Card Option */}
+              <button
+                type="button"
+                onClick={() => setTheme('light')}
+                className={`flex items-start gap-3.5 p-4 rounded-xl border text-left transition-all ${
+                  theme === 'light'
+                    ? 'bg-amber-50/70 border-amber-400 ring-2 ring-amber-400/30 shadow-xs'
+                    : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#CBD5E1] hover:bg-white'
+                }`}
+              >
+                <div
+                  className={`p-2.5 rounded-lg shrink-0 transition-colors ${
+                    theme === 'light'
+                      ? 'bg-amber-500 text-white shadow-xs'
+                      : 'bg-[#E2E8F0] text-[#64748B]'
+                  }`}
+                >
+                  <Sun className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-[#0F172A]">
+                      Light Workspace
+                    </span>
+                    {theme === 'light' && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                        Active
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-[#64748B] mt-1">
+                    Clean, bright slate theme tailored for daytime reading, high-key ambient light, and standard document readability.
+                  </p>
+                </div>
+              </button>
+
+              {/* Dark Theme Card Option */}
+              <button
+                type="button"
+                onClick={() => setTheme('dark')}
+                className={`flex items-start gap-3.5 p-4 rounded-xl border text-left transition-all ${
+                  theme === 'dark'
+                    ? 'bg-indigo-950/40 border-indigo-500 ring-2 ring-indigo-500/30 shadow-xs'
+                    : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#CBD5E1] hover:bg-white'
+                }`}
+              >
+                <div
+                  className={`p-2.5 rounded-lg shrink-0 transition-colors ${
+                    theme === 'dark'
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'bg-[#E2E8F0] text-[#64748B]'
+                  }`}
+                >
+                  <Moon className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-[#0F172A]">
+                      Dark Command Center
+                    </span>
+                    {theme === 'dark' && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-900/60 text-indigo-300 border border-indigo-700">
+                        Active
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-[#64748B] mt-1">
+                    High-contrast dark theme (WCAG AA compliant) with deep elevation surfaces and luminous status badges to reduce eye fatigue.
+                  </p>
+                </div>
+              </button>
+            </div>
+
+            {/* Quick Toggle Action Strip */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#2563EB]" />
+                <span className="text-[#64748B]">
+                  Currently active:{' '}
+                  <strong className="text-[#0F172A] capitalize">
+                    {theme === 'dark' ? 'Dark Command Center' : 'Light Workspace'}
+                  </strong>
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="flex items-center justify-center gap-2 px-3.5 py-1.5 bg-white hover:bg-[#F1F5F9] border border-[#CBD5E1] text-[#0F172A] rounded-lg text-xs font-bold shadow-xs transition-colors shrink-0"
+              >
+                {theme === 'dark' ? (
+                  <>
+                    <Sun className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Switch to Light Mode</span>
+                  </>
+                ) : (
+                  <>
+                    <Moon className="w-3.5 h-3.5 text-indigo-600" />
+                    <span>Switch to Dark Mode</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </Card>
+
         {/* Storage Vault Configuration */}
         <Card
           title="Local NVMe Document Vault Configuration"
