@@ -63,9 +63,7 @@ def create_financial_rule(
 )
 def get_financial_rule(rule_id: str, db: Session = Depends(get_db)):
     rule = (
-        db.query(TenderFinancialRule)
-        .filter(TenderFinancialRule.id == rule_id)
-        .first()
+        db.query(TenderFinancialRule).filter(TenderFinancialRule.id == rule_id).first()
     )
     if not rule:
         raise HTTPException(status_code=404, detail="Financial rule not found")
@@ -82,9 +80,7 @@ def update_financial_rule(
     db: Session = Depends(get_db),
 ):
     rule = (
-        db.query(TenderFinancialRule)
-        .filter(TenderFinancialRule.id == rule_id)
-        .first()
+        db.query(TenderFinancialRule).filter(TenderFinancialRule.id == rule_id).first()
     )
     if not rule:
         raise HTTPException(status_code=404, detail="Financial rule not found")
@@ -104,9 +100,7 @@ def update_financial_rule(
 )
 def delete_financial_rule(rule_id: str, db: Session = Depends(get_db)):
     rule = (
-        db.query(TenderFinancialRule)
-        .filter(TenderFinancialRule.id == rule_id)
-        .first()
+        db.query(TenderFinancialRule).filter(TenderFinancialRule.id == rule_id).first()
     )
     if not rule:
         raise HTTPException(status_code=404, detail="Financial rule not found")
@@ -126,7 +120,9 @@ def update_tender_financial_model(
     if not tender:
         raise HTTPException(status_code=404, detail="Tender not found")
 
-    if "financial_model" in model_data and isinstance(model_data["financial_model"], dict):
+    if "financial_model" in model_data and isinstance(
+        model_data["financial_model"], dict
+    ):
         tender.financial_model = model_data["financial_model"]
     else:
         tender.financial_model = model_data

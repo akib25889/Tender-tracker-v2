@@ -1372,7 +1372,9 @@ def test_21_tender_financial_scenarios_and_rules():
         "advance_recovery_method": "PRO_RATA_INVOICE",
         "risk_level": "LOW",
     }
-    r1_res = client.post(f"/api/tenders/{test_tender_id}/financial-rules", json=rule1_payload)
+    r1_res = client.post(
+        f"/api/tenders/{test_tender_id}/financial-rules", json=rule1_payload
+    )
     assert r1_res.status_code == 201
     r1_data = r1_res.json()
     rule_id = r1_data["id"]
@@ -1391,7 +1393,9 @@ def test_21_tender_financial_scenarios_and_rules():
         "penalty_frequency": "WEEKLY",
         "maximum_penalty": 10.0,
     }
-    r2_res = client.post(f"/api/tenders/{test_tender_id}/financial-rules", json=rule2_payload)
+    r2_res = client.post(
+        f"/api/tenders/{test_tender_id}/financial-rules", json=rule2_payload
+    )
     assert r2_res.status_code == 201
 
     # 6. List financial rules for tender
@@ -1401,7 +1405,9 @@ def test_21_tender_financial_scenarios_and_rules():
     assert len(rules) == 2
 
     # Filter by category
-    adv_rules_res = client.get(f"/api/tenders/{test_tender_id}/financial-rules?rule_category=ADVANCE_PAYMENT")
+    adv_rules_res = client.get(
+        f"/api/tenders/{test_tender_id}/financial-rules?rule_category=ADVANCE_PAYMENT"
+    )
     assert adv_rules_res.status_code == 200
     adv_rules = adv_rules_res.json()
     assert len(adv_rules) == 1
@@ -1428,4 +1434,3 @@ def test_21_tender_financial_scenarios_and_rules():
     # Verify deleted
     verify_list = client.get(f"/api/tenders/{test_tender_id}/financial-rules")
     assert len(verify_list.json()) == 1
-

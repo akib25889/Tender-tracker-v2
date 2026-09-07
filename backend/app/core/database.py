@@ -185,9 +185,7 @@ def run_migrations():
                         )
                     )
                 # Ensure tender_financial_rules table exists in SQLite
-                conn.execute(
-                    text(
-                        """
+                conn.execute(text("""
                         CREATE TABLE IF NOT EXISTS tender_financial_rules (
                             id VARCHAR(50) PRIMARY KEY,
                             tender_id VARCHAR(50) NOT NULL,
@@ -222,9 +220,7 @@ def run_migrations():
                             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (tender_id) REFERENCES tenders(id) ON DELETE CASCADE
                         )
-                        """
-                    )
-                )
+                        """))
                 # Migrations for tender_documents
                 td_result = conn.execute(
                     text("PRAGMA table_info(tender_documents)")
