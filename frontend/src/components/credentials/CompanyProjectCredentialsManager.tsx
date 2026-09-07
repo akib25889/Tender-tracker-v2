@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card } from '../ui/Card';
 import { useTenders } from '../../context/TenderContext';
 import { CompanyProjectCredential, CustomCredentialField } from '../../types/tender';
+import { fuzzyMatch } from '../../utils/fuzzySearch';
 import {
   Building2,
   Plus,
@@ -201,16 +202,11 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
     const matchesCompany =
       selectedCompany === 'ALL' ||
       p.companyName.toLowerCase() === selectedCompany.toLowerCase();
-    const matchesSearch =
-      p.projectTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.roleInProject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (p.customFields &&
-        p.customFields.some(
-          (cf) =>
-            cf.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            cf.value.toLowerCase().includes(searchQuery.toLowerCase())
-        ));
+    const cfValues = (p.customFields || []).flatMap((cf) => [cf.name, cf.value]);
+    const matchesSearch = fuzzyMatch(
+      [p.projectTitle, p.clientName, p.roleInProject, ...cfValues],
+      searchQuery
+    );
     return matchesCompany && matchesSearch;
   });
 

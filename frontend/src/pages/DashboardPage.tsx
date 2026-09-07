@@ -20,6 +20,7 @@ import { UrgencyBadge } from '../components/ui/UrgencyBadge';
 import { ReadinessBar } from '../components/ui/ReadinessBar';
 import { Card } from '../components/ui/Card';
 import { TenderStage } from '../types/tender';
+import { fuzzyMatch } from '../utils/fuzzySearch';
 
 export type UrgentFilterMode =
   | 'ALL_URGENT'
@@ -132,13 +133,10 @@ export const DashboardPage: React.FC = () => {
 
       // 4. Search query
       if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const matchesSearch =
-          t.title.toLowerCase().includes(q) ||
-          t.id.toLowerCase().includes(q) ||
-          (t.referenceNo && t.referenceNo.toLowerCase().includes(q)) ||
-          t.organization.toLowerCase().includes(q) ||
-          t.category.toLowerCase().includes(q);
+        const matchesSearch = fuzzyMatch(
+          [t.title, t.id, t.referenceNo, t.organization, t.category],
+          searchQuery
+        );
         if (!matchesSearch) return false;
       }
 

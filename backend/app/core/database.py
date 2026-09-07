@@ -195,7 +195,10 @@ def run_migrations():
                             ("estimated_value_bdt", "FLOAT DEFAULT 0.0"),
                             ("important_clauses", "JSON DEFAULT NULL"),
                             ("procurement_manager_name", "VARCHAR(150) DEFAULT NULL"),
-                            ("procurement_manager_designation", "VARCHAR(150) DEFAULT NULL"),
+                            (
+                                "procurement_manager_designation",
+                                "VARCHAR(150) DEFAULT NULL",
+                            ),
                             ("procurement_manager_email", "VARCHAR(150) DEFAULT NULL"),
                             ("procurement_manager_phone", "VARCHAR(100) DEFAULT NULL"),
                             ("helpline_phone", "VARCHAR(100) DEFAULT NULL"),

@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.10.0  
+**Current Version:** 2.11.0  
 **Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -19,6 +19,43 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 26-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 34 tests), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+### [2026-09-07] — Version 2.11.0: Zero-Dependency Fuzzy Search Engine Across Tender Search Bars
+- **Category:** Search & Discovery, UX Ergonomics, Zero-Dependency Client Optimization (Requirement #18)
+- **Summary:**
+  - **Zero-Dependency Pure TypeScript Fuzzy Search Engine ([`frontend/src/utils/fuzzySearch.ts`](file:///h:/Tender%20tracker%20v2/frontend/src/utils/fuzzySearch.ts)):**
+    - Built ultra-fast, lightweight client-side fuzzy search algorithm without adding external libraries (`fuse.js`), strictly adhering to Ponytail Rule 5.
+    - **Dynamic Matrix Levenshtein Distance:** Computes edit distance to handle single and multi-character transpositions, typos, and insertions/deletions. Sets adaptive distance tolerance (`maxDistance = qLen >= 6 ? 2 : qLen >= 4 ? 1 : 0`) ensuring transposed queries like `"seimens"` reliably match `"Siemens"`.
+    - **Multi-Word & Token Permutations:** Handles queries where keywords appear in arbitrary order (e.g. `"hospital erp"` matches `"Enterprise Resource Planning for City Hospital"`).
+    - **Acronym & Initialism Matching:** Matches initials and acronyms across word boundaries (e.g. `"dtca"` matches `"Dhaka Transport Coordination Authority"`).
+    - **Subsequence Matching & Scoring Hierarchy:** Includes in-order subsequence matching and tiered relevance scoring (Exact = 1000, Prefix = 800, Substring = 600, Acronym = 500, Fuzzy Word = 400, Subsequence = 200).
+    - **Fast-Path O(n) Optimizations:** Bypasses matrix allocations for exact substring matches to guarantee zero typing latency on low-spec hardware.
+  - **Universal Search Bar Upgrades Across Application:**
+    - Replaced rigid `.includes()` substring matching across 7 primary command centers and registries:
+      1. *Tender Pipeline Registry* ([`TenderListPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderListPage.tsx)): searches title, organization, tender ID, reference number, and category.
+      2. *Executive Dashboard* ([`DashboardPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/DashboardPage.tsx)): searches title, ID, reference number, organization, and category.
+      3. *Tender Registry Console* ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx)): searches sidebar tender selector by title, ID, reference number, organization, and category.
+      4. *Master Document Vault* ([`MasterDocumentVaultPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/MasterDocumentVaultPage.tsx)): searches reusable templates and company documents by name, category, company, and description.
+      5. *Company Project Experience Credentials* ([`CompanyProjectCredentialsManager.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/credentials/CompanyProjectCredentialsManager.tsx)): searches work order and completion certificate credentials across title, client, role, and custom fields.
+      6. *Organizations & Authorities Directory* ([`OrganizationsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/OrganizationsPage.tsx)): searches procuring entities across official name, acronym/short name, country, and aliases.
+      7. *Corporate Profiles Directory* ([`CompanyProfilesPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/CompanyProfilesPage.tsx)): searches multi-company corporate entities across legal name, trade name, TIN, registration number, and country.
+      8. *Archived Tenders Ledger* ([`ArchivedTendersPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/ArchivedTendersPage.tsx)): searches archived bids across title, ID, reference number, organization, country, and category.
+  - **Verification & Testing:**
+    - Verified with custom unit test script covering exact, typo, transposition, out-of-order token, and acronym search scenarios (100% pass rate).
+    - TypeScript compilation and Vite production build verified (`npm run build`, 1,890 modules transformed, 0 errors).
+    - Backend integration test suite verified (19 passed, 0 failures).
+- **Relevant Files:**
+  - `frontend/src/utils/fuzzySearch.ts`
+  - `frontend/src/pages/TenderListPage.tsx`
+  - `frontend/src/pages/DashboardPage.tsx`
+  - `frontend/src/pages/TenderRegistryPage.tsx`
+  - `frontend/src/pages/MasterDocumentVaultPage.tsx`
+  - `frontend/src/components/credentials/CompanyProjectCredentialsManager.tsx`
+  - `frontend/src/pages/OrganizationsPage.tsx`
+  - `frontend/src/pages/CompanyProfilesPage.tsx`
+  - `frontend/src/pages/ArchivedTendersPage.tsx`
+
+---
 
 ### [2026-09-07] — Version 2.10.0: Corporate Profile Management System, Multi-Company Entities, Project Experience Credentials & Clause Reference Marking
 - **Category:** Corporate Governance, Master Data Management, Tender Compliance & Eligibility, Full-Stack Persistence
@@ -869,6 +906,15 @@
   *Context:* Bid preparation teams and consortium partners need direct, rapid access to the official client procurement manager (evaluation committee officer) and tender helpline/support desk during clarification and submission windows without having to dig through multi-hundred page tender PDFs.  
   *Decision:* Added structured database columns (`procurement_manager_name`, `procurement_manager_designation`, `procurement_manager_email`, `procurement_manager_phone`, `helpline_phone`, `helpline_email`, `helpline_hours`) to the `tenders` table with SQLite & MySQL auto-migrations. Integrated dual cards into Tab 1 of the Tender Registry console (`/registry`) and the intake modal, with dynamic representations across the Formal 3-Page Tender Summary (`/registry/summary/:id`) and Proposal Workspace overview (`/tenders/:id`).  
   *Impact:* Immediate visibility of key contact personnel and helpdesks across all tender views, with clickable telephone and email links.
+
+- **ADR-009: Zero-Dependency Client-Side Fuzzy Search Engine**  
+  *Context:* Tender titles, reference codes, authority acronyms, and vendor names are frequently typed with typos, character transpositions (e.g. `"seimens"` for `"Siemens"`), missing punctuation, acronyms (`"dtca"` for `"Dhaka Transport Coordination Authority"`), or out-of-order keywords (`"hospital erp"` for `"Enterprise Resource Planning for City Hospital"`). Rigid `.includes()` exact substring matching fails in all these cases, causing perceived data loss and user frustration. However, pulling heavy third-party search libraries (e.g. `fuse.js`) bloats bundle size and violates Ponytail Rule 5.  
+  *Decision:* Implemented a zero-dependency, ultra-lightweight TypeScript fuzzy search engine (`frontend/src/utils/fuzzySearch.ts`):
+  1. *Levenshtein Distance with Adaptive Thresholds:* Matrix-based edit distance supporting single and adjacent transpositions (`maxDistance = qLen >= 6 ? 2 : qLen >= 4 ? 1 : 0`).
+  2. *Acronym & Subsequence Matching:* Character-boundary initial matching and in-order subsequence search.
+  3. *Multi-Word Permutations:* Splits multi-token queries and requires all query tokens to fuzzy-match target words in any order.
+  4. *Tiered Relevance Scoring & O(n) Fast-Path:* Exact/substring matches bypass expensive matrix computations for zero typing latency.  
+  *Impact:* Immediate, fault-tolerant search across Tender Pipeline, Dashboard, Registry, Master Document Vault, Organizations, Company Profiles, Credentials, and Archived Bids with zero new bundle dependencies.
 
 ---
 

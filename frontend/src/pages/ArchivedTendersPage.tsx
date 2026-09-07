@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
+import { fuzzyMatch } from '../utils/fuzzySearch';
 
 export const ArchivedTendersPage: React.FC = () => {
   const { tenders, restoreTender, deleteTender, deleteMultipleTenders, formatCurrency } = useTenders();
@@ -24,13 +25,7 @@ export const ArchivedTendersPage: React.FC = () => {
   const archivedTenders = tenders.filter((t) => t.stage === 'ARCHIVED');
 
   const filtered = archivedTenders.filter((t) => {
-    const q = searchQuery.toLowerCase();
-    return (
-      t.title.toLowerCase().includes(q) ||
-      t.id.toLowerCase().includes(q) ||
-      t.organization.toLowerCase().includes(q) ||
-      t.country.toLowerCase().includes(q)
-    );
+    return fuzzyMatch([t.title, t.id, t.referenceNo, t.organization, t.country, t.category], searchQuery);
   });
 
   const toggleSelect = (id: string) => {

@@ -4,6 +4,7 @@ import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
 import { DocumentAccessLevel, ReusableDocument } from '../types/tender';
 import { CompanyProjectCredentialsManager } from '../components/credentials/CompanyProjectCredentialsManager';
+import { fuzzyMatch } from '../utils/fuzzySearch';
 import {
   FileCheck,
   Plus,
@@ -132,11 +133,10 @@ export const MasterDocumentVaultPage: React.FC = () => {
       (selectedCompany === 'JV' && (doc.isJvPartner || doc.companyRole === 'JV_PARTNER')) ||
       (selectedCompany === 'LEAD' && (!doc.isJvPartner && doc.companyRole !== 'JV_PARTNER')) ||
       doc.companyName === selectedCompany;
-    const matchesSearch =
-      doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (doc.companyName && doc.companyName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (doc.description && doc.description.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesSearch = fuzzyMatch(
+      [doc.name, doc.category, doc.companyName, doc.description],
+      searchQuery
+    );
     return matchesCategory && matchesAccess && matchesCompany && matchesSearch;
   });
 

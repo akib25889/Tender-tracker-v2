@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
+import { fuzzyMatch } from '../utils/fuzzySearch';
 import {
   Building2,
   Plus,
@@ -161,12 +162,10 @@ export const OrganizationsPage: React.FC = () => {
   // Filtered organizations
   const filteredOrgs = useMemo(() => {
     return orgStats.filter((org) => {
-      const matchesSearch =
-        !searchQuery ||
-        org.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (org.shortName && org.shortName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        org.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (org.aliases && org.aliases.some((a) => a.toLowerCase().includes(searchQuery.toLowerCase())));
+      const matchesSearch = fuzzyMatch(
+        [org.name, org.shortName, org.country, ...(org.aliases || [])],
+        searchQuery
+      );
 
       const matchesType =
         selectedTypeFilter === 'ALL' ||

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
 import { CompanyProfile, CustomCompanyField } from '../types/tender';
+import { fuzzyMatch } from '../utils/fuzzySearch';
 import {
   Building2,
   Plus,
@@ -271,12 +272,10 @@ export const CompanyProfilesPage: React.FC = () => {
         (roleFilter === 'LEAD' && c.company_role === 'LEAD_BIDDER') ||
         (roleFilter === 'JV' && c.company_role === 'JV_PARTNER');
 
-      const matchSearch =
-        !searchQuery ||
-        c.legal_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.trade_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (c.registration_no && c.registration_no.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (c.tin_number && c.tin_number.toLowerCase().includes(searchQuery.toLowerCase()));
+      const matchSearch = fuzzyMatch(
+        [c.legal_name, c.trade_name, c.registration_no, c.tin_number, c.country],
+        searchQuery
+      );
 
       return matchRole && matchSearch;
     });

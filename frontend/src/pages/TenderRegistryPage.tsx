@@ -29,6 +29,7 @@ import {
 } from '../types/tender';
 import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { ImportantClausesManager } from '../components/tender/ImportantClausesManager';
+import { fuzzyMatch } from '../utils/fuzzySearch';
 
 const CLASSIFICATIONS: TenderClassification[] = [
   'SOFTWARE / IT RELATED',
@@ -553,12 +554,10 @@ export const TenderRegistryPage: React.FC = () => {
   }, [selectedTenderId]);
 
   const filteredTenders = tenders.filter((t) => {
-    const q = searchQuery.toLowerCase();
-    const matchesQuery =
-      t.title.toLowerCase().includes(q) ||
-      t.id.toLowerCase().includes(q) ||
-      t.referenceNo.toLowerCase().includes(q) ||
-      t.organization.toLowerCase().includes(q);
+    const matchesQuery = fuzzyMatch(
+      [t.title, t.id, t.referenceNo, t.organization, t.category],
+      searchQuery
+    );
     const matchesClass =
       selectedClassificationFilter === 'ALL' ||
       t.summary?.classification === selectedClassificationFilter;

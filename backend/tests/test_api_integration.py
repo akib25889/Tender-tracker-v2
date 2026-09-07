@@ -1065,11 +1065,21 @@ def test_18_document_reupload_request_workflow():
     assert flagged["action_due_date"] == "T-24h"
 
     # 4. Partner re-uploads the certified revision (bumps to v1.1)
-    revision_bytes = b"%PDF-1.4 Mock Manufacturer Authorization Form with Notary Seal Added"
+    revision_bytes = (
+        b"%PDF-1.4 Mock Manufacturer Authorization Form with Notary Seal Added"
+    )
     reupload_submit = client.post(
         f"/api/documents/{doc_id}/resolve-reupload",
-        files={"file": ("MAF_Cisco_Partner_Signed_Notarized_v1.1.pdf", revision_bytes, "application/pdf")},
-        data={"comment": "Notary seal affixed on page 2 by Supreme Court Notary Public."},
+        files={
+            "file": (
+                "MAF_Cisco_Partner_Signed_Notarized_v1.1.pdf",
+                revision_bytes,
+                "application/pdf",
+            )
+        },
+        data={
+            "comment": "Notary seal affixed on page 2 by Supreme Court Notary Public."
+        },
     )
     assert reupload_submit.status_code == 200
     resolved = reupload_submit.json()
@@ -1104,7 +1114,10 @@ def test_19_procurement_manager_and_helpline_details():
     assert create_res.status_code == 201
     created = create_res.json()
     assert created["procurement_manager_name"] == "Engr. Rafiqul Islam"
-    assert created["procurement_manager_designation"] == "Superintending Engineer (Procurement)"
+    assert (
+        created["procurement_manager_designation"]
+        == "Superintending Engineer (Procurement)"
+    )
     assert created["procurement_manager_email"] == "rafiqul.islam@dtca.gov.bd"
     assert created["procurement_manager_phone"] == "+880 1711-234567"
     assert created["helpline_phone"] == "+880 2 9568741"
@@ -1130,9 +1143,10 @@ def test_19_procurement_manager_and_helpline_details():
     assert update_res.status_code == 200
     updated = update_res.json()
     assert updated["procurement_manager_name"] == "Engr. Tanjina Akter"
-    assert updated["procurement_manager_designation"] == "Director (Procurement & Contracts)"
+    assert (
+        updated["procurement_manager_designation"]
+        == "Director (Procurement & Contracts)"
+    )
     assert updated["helpline_phone"] == "16123 (Toll Free Hotline)"
     # Retains previous unchanged fields
     assert updated["helpline_email"] == "helpdesk@dtca.gov.bd"
-
-

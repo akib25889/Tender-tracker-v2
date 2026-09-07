@@ -23,6 +23,7 @@ import { ReadinessBar } from '../components/ui/ReadinessBar';
 import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { ImportTenderModal } from '../components/modals/ImportTenderModal';
 import { TenderStage } from '../types/tender';
+import { fuzzyMatch } from '../utils/fuzzySearch';
 
 export const TenderListPage: React.FC = () => {
   const { tenders, updateTenderStage, archiveTender, restoreTender, deleteTender, deleteMultipleTenders, formatCurrency } = useTenders();
@@ -59,10 +60,10 @@ export const TenderListPage: React.FC = () => {
   };
 
   const filteredTenders = tenders.filter((t) => {
-    const matchesSearch =
-      t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.organization.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.id.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = fuzzyMatch(
+      [t.title, t.organization, t.id, t.referenceNo, t.category],
+      searchQuery
+    );
     const matchesStage =
       selectedStage === 'ALL'
         ? t.stage !== 'ARCHIVED'
