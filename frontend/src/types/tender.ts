@@ -244,6 +244,7 @@ export interface TenderExtendedSummary {
     notes?: string;
   };
   postAward?: PostAwardData;
+  financialModel?: TenderFinancialModel;
 }
 
 export interface PostAwardData {
@@ -295,6 +296,7 @@ export interface Tender {
   tenderSecurityAmount?: number;
   tenderSecurityMethod?: string;
   postAward?: PostAwardData;
+  financialModel?: TenderFinancialModel;
   stage: TenderStage;
   decision: DecisionStatus;
   priority: TenderPriority;
@@ -483,4 +485,123 @@ export interface CompanyProfile {
   created_at?: string;
   updated_at?: string;
 }
+
+// --- Tender Financial Scenarios & Rules Specification Types ---
+
+export type PaymentScenarioType =
+  | 'MILESTONE_BASED'
+  | 'ADVANCE_AND_MILESTONES'
+  | 'ACCEPTANCE_BASED'
+  | 'LUMP_SUM_FINAL';
+
+export interface MilestonePaymentItem {
+  id?: string;
+  milestoneNumber: number;
+  name: string;
+  percentage: number;
+  amount: number;
+  deliverable: string;
+  approvalRequired: boolean;
+  clientReviewDays: number;
+  paymentProcessingDays: number;
+  paymentTrigger: string;
+  invoiceRequirements?: string;
+}
+
+export interface AdvancePaymentConfig {
+  enabled: boolean;
+  percentage: number;
+  amount: number;
+  bankGuaranteeRequired: boolean;
+  bankGuaranteeType?: string;
+  recoveryType: 'PRO_RATA_INVOICE' | 'INTERIM_CERTIFICATES' | 'BALLOON_RECOVERY';
+  recoveryPercentagePerInvoice: number;
+  recoveryStartMilestone?: number;
+}
+
+export interface SubscriptionEscalationTier {
+  year: number;
+  amount: number;
+  rateIncreasePercent: number;
+}
+
+export interface SubscriptionModelConfig {
+  pricingModel: 'FIXED_RECURRING' | 'MULTI_YEAR_ESCALATION' | 'PER_USER_LICENSE' | 'HYBRID_TIERED';
+  billingFrequency: 'MONTHLY' | 'QUARTERLY' | 'ANNUAL';
+  annualBaseFee: number;
+  durationYears: number;
+  annualEscalationRate: number;
+  userCount?: number;
+  feePerUserMonthly?: number;
+  calculatedTcv: number;
+  calculatedAcv: number;
+  escalationTiers?: SubscriptionEscalationTier[];
+}
+
+export interface LiquidatedDamagesConfig {
+  enabled: boolean;
+  rate: number;
+  frequency: 'PER_DAY' | 'PER_WEEK';
+  calculationBasis: 'DELAYED_MILESTONE_VALUE' | 'TOTAL_CONTRACT_VALUE';
+  maxCapPercentage: number;
+  gracePeriodDays?: number;
+}
+
+export interface RetentionMoneyConfig {
+  enabled: boolean;
+  percentage: number;
+  releaseCondition: 'DLP_EXPIRY' | 'FINAL_ACCEPTANCE_50_DLP_50' | 'BG_SUBSTITUTION';
+  dlpMonths: number;
+  interimReleasePercent?: number;
+}
+
+export interface PenaltiesAndDeductionsConfig {
+  liquidatedDamages: LiquidatedDamagesConfig;
+  retentionMoney: RetentionMoneyConfig;
+  slaDeductionRate?: number;
+  taxDeductionAtSourcePercent?: number;
+  vatDeductionAtSourcePercent?: number;
+}
+
+export interface TenderFinancialModel {
+  paymentScenario: PaymentScenarioType;
+  workingCapitalRisk: 'LOW' | 'MEDIUM' | 'HIGH';
+  advancePayment: AdvancePaymentConfig;
+  milestones: MilestonePaymentItem[];
+  subscriptionModel: SubscriptionModelConfig;
+  penaltiesAndDeductions: PenaltiesAndDeductionsConfig;
+}
+
+export interface TenderFinancialRule {
+  id?: string;
+  tenderId: string;
+  ruleCategory: string;
+  ruleType?: string;
+  financialValue?: number;
+  currency?: string;
+  percentage?: number;
+  frequency?: string;
+  paymentTrigger?: string;
+  paymentDueDays?: number;
+  penaltyRate?: number;
+  penaltyFrequency?: string;
+  maximumPenalty?: number;
+  penaltyBasis?: string;
+  retentionPercentage?: number;
+  advancePercentage?: number;
+  advanceRecoveryMethod?: string;
+  subscriptionType?: string;
+  subscriptionFrequency?: string;
+  contractDuration?: string;
+  priceEscalation?: string;
+  taxRate?: number;
+  vatRate?: number;
+  paymentCurrency?: string;
+  liabilityLimit?: string;
+  riskLevel?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  originalClause?: string;
+  sourceDocument?: string;
+  pageNumber?: string;
+}
+
 

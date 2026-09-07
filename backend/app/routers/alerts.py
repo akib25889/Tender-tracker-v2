@@ -154,11 +154,9 @@ def get_alerts(db: Session = Depends(get_db)):
         return None
 
     all_active_tenders = (
-        db.query(Tender)
-        .filter(Tender.stage.notin_(["ARCHIVED", "LOST"]))
-        .all()
+        db.query(Tender).filter(Tender.stage.notin_(["ARCHIVED", "LOST"])).all()
     )
-    today = now.date()
+    today = datetime.now().date()
 
     for t in all_active_tenders:
         # Opening Day reminders (1 day before & on that day)

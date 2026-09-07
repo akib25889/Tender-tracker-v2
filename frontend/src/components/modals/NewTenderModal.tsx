@@ -18,6 +18,7 @@ import {
   ArrowRight,
   Check,
   FileText,
+  CreditCard,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 import {
@@ -27,8 +28,10 @@ import {
   TenderHardwareReq,
   TenderRiskPoint,
   ImportantClause,
+  TenderFinancialModel,
 } from '../../types/tender';
 import { ImportantClausesManager } from '../tender/ImportantClausesManager';
+import { FinancialScenariosEditor } from '../tender/FinancialScenariosEditor';
 
 const CLASSIFICATIONS: TenderClassification[] = [
   'SOFTWARE / IT RELATED',
@@ -36,6 +39,91 @@ const CLASSIFICATIONS: TenderClassification[] = [
   'NOT SOFTWARE / IT RELATED',
   'UNCLEAR',
 ];
+
+const createDefaultFinancialModel = (estimatedVal: number = 0): TenderFinancialModel => ({
+  paymentScenario: 'MILESTONE_BASED',
+  workingCapitalRisk: 'MEDIUM',
+  advancePayment: {
+    enabled: false,
+    percentage: 15,
+    amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.15) : 0,
+    bankGuaranteeRequired: true,
+    bankGuaranteeType: 'Unconditional First Demand Bank Guarantee',
+    recoveryType: 'PRO_RATA_INVOICE',
+    recoveryPercentagePerInvoice: 15,
+    recoveryStartMilestone: 1,
+  },
+  milestones: [
+    {
+      milestoneNumber: 1,
+      name: 'Inception & SRS Signoff',
+      percentage: 20,
+      amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.2) : 0,
+      deliverable: 'Approved Inception Report & Architectural Blueprint',
+      approvalRequired: true,
+      clientReviewDays: 14,
+      paymentProcessingDays: 30,
+      paymentTrigger: 'UPON_SRS_APPROVAL',
+      invoiceRequirements: 'Inception Report, Acceptance Certificate, Tax Invoice',
+    },
+    {
+      milestoneNumber: 2,
+      name: 'Core Development & Pilot Deployment',
+      percentage: 50,
+      amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.5) : 0,
+      deliverable: 'Core Modules Deployed in Staging & UAT Signoff',
+      approvalRequired: true,
+      clientReviewDays: 21,
+      paymentProcessingDays: 30,
+      paymentTrigger: 'UPON_UAT_ACCEPTANCE',
+      invoiceRequirements: 'UAT Sign-off Protocol, Source Code Escrow',
+    },
+    {
+      milestoneNumber: 3,
+      name: 'Final Acceptance & Handover',
+      percentage: 30,
+      amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.3) : 0,
+      deliverable: 'Commissioning Certificate & Operations Handover',
+      approvalRequired: true,
+      clientReviewDays: 30,
+      paymentProcessingDays: 45,
+      paymentTrigger: 'UPON_FINAL_ACCEPTANCE',
+      invoiceRequirements: 'FAC Certificate & 10% Retention Deduction',
+    },
+  ],
+  subscriptionModel: {
+    pricingModel: 'MULTI_YEAR_ESCALATION',
+    billingFrequency: 'ANNUAL',
+    annualBaseFee: 0,
+    durationYears: 3,
+    annualEscalationRate: 5,
+    userCount: 100,
+    feePerUserMonthly: 500,
+    calculatedTcv: 0,
+    calculatedAcv: 0,
+    escalationTiers: [],
+  },
+  penaltiesAndDeductions: {
+    liquidatedDamages: {
+      enabled: true,
+      rate: 0.5,
+      frequency: 'PER_WEEK',
+      calculationBasis: 'DELAYED_MILESTONE_VALUE',
+      maxCapPercentage: 10,
+      gracePeriodDays: 7,
+    },
+    retentionMoney: {
+      enabled: true,
+      percentage: 10,
+      releaseCondition: 'DLP_EXPIRY',
+      dlpMonths: 12,
+      interimReleasePercent: 50,
+    },
+    slaDeductionRate: 1.0,
+    taxDeductionAtSourcePercent: 5.0,
+    vatDeductionAtSourcePercent: 7.5,
+  },
+});
 
 export const NewTenderModal: React.FC = () => {
   const {
@@ -48,10 +136,13 @@ export const NewTenderModal: React.FC = () => {
   } = useTenders();
 
   const [activeTab, setActiveTab] = useState<
-    'BASIC' | 'SCOPE' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS' | 'CLAUSES'
+    'BASIC' | 'SCOPE' | 'FINANCIAL' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS' | 'CLAUSES'
   >('BASIC');
 
   const [importantClauses, setImportantClauses] = useState<ImportantClause[]>([]);
+  const [financialModel, setFinancialModel] = useState<TenderFinancialModel>(() =>
+    createDefaultFinancialModel(2500000)
+  );
 
   // Classification
   const [classification, setClassification] =
@@ -504,7 +595,9 @@ export const NewTenderModal: React.FC = () => {
         risks: risks.filter((r) => r.text.trim().length > 0),
         managementHighlights: management.filter((m) => m.trim().length > 0),
         notes,
+        financialModel,
       },
+      financialModel,
       importantClauses,
     });
 
@@ -568,6 +661,19 @@ export const NewTenderModal: React.FC = () => {
 
           <button
             type="button"
+            onClick={() => setActiveTab('FINANCIAL')}
+            className={`flex items-center gap-2 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
+              activeTab === 'FINANCIAL'
+                ? 'border-[#2563EB] text-[#2563EB]'
+                : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+            }`}
+          >
+            <CreditCard className="w-3.5 h-3.5" />
+            <span>3. Financial Scenarios &amp; Rules</span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => setActiveTab('ELIGIBILITY')}
             className={`flex items-center gap-2 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
               activeTab === 'ELIGIBILITY'
@@ -576,7 +682,7 @@ export const NewTenderModal: React.FC = () => {
             }`}
           >
             <Briefcase className="w-3.5 h-3.5" />
-            <span>3. Eligibility &amp; JV</span>
+            <span>4. Eligibility &amp; JV</span>
           </button>
 
           <button
@@ -589,7 +695,7 @@ export const NewTenderModal: React.FC = () => {
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            <span>4. Docs, Staff &amp; Hardware</span>
+            <span>5. Docs, Staff &amp; Hardware</span>
           </button>
 
           <button
@@ -602,7 +708,7 @@ export const NewTenderModal: React.FC = () => {
             }`}
           >
             <AlertTriangle className="w-3.5 h-3.5" />
-            <span>5. Dates &amp; Risks</span>
+            <span>6. Dates &amp; Risks</span>
           </button>
 
           <button
@@ -615,7 +721,7 @@ export const NewTenderModal: React.FC = () => {
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
-            <span>6. Clauses &amp; Citations ({importantClauses.length})</span>
+            <span>7. Clauses &amp; Citations ({importantClauses.length})</span>
           </button>
         </div>
 
@@ -1506,7 +1612,19 @@ export const NewTenderModal: React.FC = () => {
             </div>
           )}
 
-          {/* TAB 3: ELIGIBILITY & JV */}
+          {/* TAB 3: FINANCIAL SCENARIOS & CASH FLOW */}
+          {activeTab === 'FINANCIAL' && (
+            <div className="space-y-6 animate-fadeIn">
+              <FinancialScenariosEditor
+                value={financialModel}
+                onChange={setFinancialModel}
+                tenderCurrency={tenderCurrency}
+                estimatedValue={Number(estimatedValue) || 0}
+              />
+            </div>
+          )}
+
+          {/* TAB 4: ELIGIBILITY & JV */}
           {activeTab === 'ELIGIBILITY' && (
             <div className="space-y-5 animate-fadeIn">
               <div>
@@ -2168,6 +2286,7 @@ export const NewTenderModal: React.FC = () => {
                     const tabs: (
                       | 'BASIC'
                       | 'SCOPE'
+                      | 'FINANCIAL'
                       | 'ELIGIBILITY'
                       | 'STAFFING'
                       | 'RISKS'
@@ -2175,6 +2294,7 @@ export const NewTenderModal: React.FC = () => {
                     )[] = [
                       'BASIC',
                       'SCOPE',
+                      'FINANCIAL',
                       'ELIGIBILITY',
                       'STAFFING',
                       'RISKS',
@@ -2197,6 +2317,7 @@ export const NewTenderModal: React.FC = () => {
                     const tabs: (
                       | 'BASIC'
                       | 'SCOPE'
+                      | 'FINANCIAL'
                       | 'ELIGIBILITY'
                       | 'STAFFING'
                       | 'RISKS'
@@ -2204,6 +2325,7 @@ export const NewTenderModal: React.FC = () => {
                     )[] = [
                       'BASIC',
                       'SCOPE',
+                      'FINANCIAL',
                       'ELIGIBILITY',
                       'STAFFING',
                       'RISKS',

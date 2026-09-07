@@ -50,6 +50,8 @@ class Tender(Base):
     tender_security_method = Column(String(50), nullable=True)
     # Post-Award Execution & Contract Delivery Data (Req #17)
     post_award_data = Column(JSON, nullable=True, default=dict)
+    # Financial Scenarios & Cash Flow Rules Model (Unified JSON)
+    financial_model = Column(JSON, nullable=True, default=dict)
     archived_from_stage = Column(String(50), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(
@@ -59,6 +61,9 @@ class Tender(Base):
     )
 
     # Relationships
+    financial_rules = relationship(
+        "TenderFinancialRule", back_populates="tender", cascade="all, delete-orphan"
+    )
     tasks = relationship(
         "TenderTask", back_populates="tender", cascade="all, delete-orphan"
     )

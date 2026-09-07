@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.12.0  
+**Current Version:** 2.13.0  
 **Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -19,6 +19,39 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 26-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 34 tests), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+### [2026-09-08] — Version 2.13.0: Tender Financial Scenarios, Milestone Schedules, SaaS Recurring Revenue & Contract Rule Engine
+- **Category:** Commercial Analysis & Financial Engineering, Contract Risk Modeling, Tender Registry Intake Architecture
+- **Summary:**
+  - **Tender Financial Scenarios & Rules Specification Implementation:**
+    - Implemented end-to-end commercial modeling engine across backend and frontend based on the official *Tender Financial Scenarios and Rules Specification*.
+    - Allows analysts to model, capture, and track 4 primary payment architectures:
+      1. *Milestone-Based Payments:* Percentage & deliverable linking, acceptance sign-offs, review windows (e.g. 14 days), payment processing periods (e.g. 30 days), and submission requirements.
+      2. *Advance Payment & Mobilization:* Advance % & amounts, 100% unconditional Advance Payment Guarantee (APG), pro-rata invoice amortization recovery, and recovery milestone thresholds.
+      3. *SaaS & Recurring Revenue Engine:* Fixed recurring, multi-year escalation tiers, per-user/license fees with automatic Total Contract Value (TCV) and Annual Contract Value (ACV) projection.
+      4. *Lump-Sum on Final Acceptance:* 100% completion risks, severe cash flow lag modeling, and working capital risk profiling (LOW, MEDIUM, HIGH).
+  - **Contract Penalties, Deductions & Retention Engine:**
+    - Liquidated Damages (LD) for late delivery: configurable rate (e.g. 0.5% per week/day), calculation basis (delayed milestone vs total contract value), and statutory maximum cap (e.g. 10%).
+    - Retention Money deductions: gross invoice deduction % (e.g. 5%), Defects Liability Period (DLP months), and release trigger criteria (50% on PAC / 50% on FAC, DLP expiry, or Bank Guarantee substitution).
+    - Statutory Tax Deductions at Source: Tax Withholding (TDS %) and VAT Withholding (VDS %) calculated and deducted at invoice payment stage.
+    - Expected Net Cash Flow Realization Waterfall ledger showing gross value, advance mobilization, milestone distribution, retention holdbacks, statutory withholding, and final net collectible cash.
+  - **Data Schema & Backend Persistence:**
+    - Created `tender_financial_rules` database model and table containing all 28 fields specified in Section 6.1 of the specification.
+    - Added first-class `financial_model` JSON column to the `tenders` table with zero-downtime auto-migrations for both SQLite (`PRAGMA table_info`) and MySQL 8.4 (`SHOW COLUMNS`).
+    - Built comprehensive REST endpoints in `backend/app/routers/financial_rules.py`:
+      - `GET /api/tenders/{id}/financial-rules` (with optional `rule_category` filtering)
+      - `POST /api/tenders/{id}/financial-rules`
+      - `GET`, `PUT`, `DELETE` on `/api/financial-rules/{rule_id}` (204 No Content)
+      - `GET`, `PUT` on `/api/tenders/{id}/financial-model` (accepts both direct and wrapped payloads)
+  - **Tender Registry Intake & Reusable Financial Scenarios Editor:**
+    - Built modular, reusable [`FinancialScenariosEditor.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/tender/FinancialScenariosEditor.tsx) adhering to Ponytail's 7-Step Decision Ladder (zero extra libraries).
+    - Integrated Tab 3 ("3. Financial Scenarios & Rules") directly into both the *Tender Registry Console* ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx)) and *Intake Modal* ([`NewTenderModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/NewTenderModal.tsx)), ensuring required financial data is captured during tender intake.
+    - Added dedicated Financial Scenarios & Milestone Schedule section in the formal printable 3-page Tender Summary Document ([`TenderSummaryDocument.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/ui/TenderSummaryDocument.tsx)).
+  - **Verification & Testing:**
+    - Added `test_21_tender_financial_scenarios_and_rules` to integration test suite (`tests/test_api_integration.py`).
+    - All 21/21 integration tests pass with 100% green.
+    - Frontend TypeScript build verified clean (`npm run build`, 0 errors).
+    - Refreshed Graphify knowledge graph (54 nodes, 32 edges).
 
 ### [2026-09-07] — Version 2.12.0: Procurement Milestone Lifecycle, Commercial Budget Estimator, Calendar Tracking, Day-Of/T-1 Opening Alerts & Post-Award Execution Architecture
 - **Category:** Procurement Lifecycle (Req #20), Commercial Engineering (Calculator), Proactive Alert Operations (Req #17), Post-Award Execution & Contract Delivery Architecture
@@ -974,6 +1007,15 @@
   3. *Calendar Milestone Tracking & Proactive Alerts:* Upgraded `/calendar` with multi-category filters (🟣 Opening Days, 🔵 Deadlines, 🟢 Contract Signing, 🟡 Work Start, 🟠 Handover) and urgency markers. Configured `/api/alerts` to proactively dispatch CRITICAL alerts on Opening Day and WARNING alerts on T-1 Day.
   4. *7-Stage Post-Award Execution Roadmap:* When tender is `AWARDED`, `/tenders/:id/result` activates an interactive 7-phase delivery roadmap covering NOA Acceptance, Performance Security Deposit, Contract Signing, Work Start, Execution Period, Product Handover, and Maintenance SLA.  
   *Impact:* Seamless end-to-end procurement governance from pre-bid purchase to warranty maintenance with zero missed milestones.
+
+- **ADR-011: Tender Financial Scenarios, Milestone Schedules & Contract Rule Engine**  
+  *Context:* Commercial bid analysis requires modeling complex cash flow dynamics: milestone payment releases, advance mobilization with amortized recovery, long-term SaaS subscription revenue (TCV/ACV with price escalation), and contract deductions (Liquidated Damages, Retention Money, and Statutory TDS/VDS withholding). Without structured modeling during initial Tender Registry intake, bid analysts make manual margin estimation errors and lose visibility into working capital exposure.  
+  *Decision:*
+  1. *Dual Persistence Model:* Created dedicated `tender_financial_rules` database table with all 28 fields specified in Section 6.1 of the Tender Financial Scenarios specification for granular relational queries, coupled with a high-performance `financial_model` JSON column on the `tenders` table with zero-downtime auto-migrations for SQLite and MySQL 8.4.
+  2. *REST API Suite:* Built `/api/tenders/{id}/financial-rules` and `/api/tenders/{id}/financial-model` endpoints supporting category filtering, rule creation, and atomic model updates.
+  3. *Zero-Dependency Reusable Modeler:* Built `FinancialScenariosEditor.tsx` implementing 4 payment scenarios (Milestone, Advance, SaaS, Lump-Sum), 100% milestone disbursement balance validator, TCV/ACV calculation engine, penalty & retention calculators, and an interactive Expected Net Cash Flow Realization Waterfall ledger.
+  4. *Intake-Time Integration & Printable Summary:* Embedded Tab 3 ("Financial Scenarios & Rules") directly into Tender Registry and the New Tender Modal, and rendered the complete schedule and deduction breakdown in the formal printable 3-page Tender Summary Document (`TenderSummaryDocument.tsx`).  
+  *Impact:* Immediate visibility into contract cash flow, capital risk levels, and net collectible revenue from day zero of tender registration.
 
 ---
 

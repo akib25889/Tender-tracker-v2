@@ -1158,6 +1158,7 @@ def test_20_procurement_milestones_and_commercial_calculator():
     client.delete(f"/api/tenders/{test_id}")
 
     from datetime import date, timedelta
+
     today = date.today().isoformat()
     tomorrow = (date.today() + timedelta(days=1)).isoformat()
     next_month = (date.today() + timedelta(days=30)).isoformat()
@@ -1185,8 +1186,8 @@ def test_20_procurement_milestones_and_commercial_calculator():
             "noaDate": today,
             "performanceSecurityAmount": 1000000.0,
             "performanceSecurityStatus": "PENDING",
-            "contractSigningStatus": "SCHEDULED"
-        }
+            "contractSigningStatus": "SCHEDULED",
+        },
     }
 
     # 1. Create tender with milestones
@@ -1206,7 +1207,20 @@ def test_20_procurement_milestones_and_commercial_calculator():
     assert fetched["maintenance_period"] == "36 Months SLA 24/7 Support"
     assert fetched["tender_security_method"] == "BANK_GUARANTEE"
 
-    # 3. Update post-award execution roadmap
+    # 3. Check alerts generated for opening date today (while tender is in active pipeline)
+    alerts_res = client.get("/api/alerts")
+    assert alerts_res.status_code == 200
+    alerts_data = alerts_res.json()
+    alerts = alerts_data.get("alerts", [])
+    opening_alerts = [
+        a
+        for a in alerts
+        if a.get("tender_id") == test_id and "Opening" in a.get("title", "")
+    ]
+    assert len(opening_alerts) >= 1
+    assert opening_alerts[0]["severity"] == "CRITICAL"
+
+    # 4. Update post-award execution roadmap upon winning
     update_res = client.put(
         f"/api/tenders/{test_id}",
         json={
@@ -1217,9 +1231,9 @@ def test_20_procurement_milestones_and_commercial_calculator():
                 "performanceSecurityAmount": 1000000.0,
                 "performanceSecurityStatus": "DEPOSITED",
                 "contractSigningStatus": "SIGNED",
-                "contractSigningDate": next_month
-            }
-        }
+                "contractSigningDate": next_month,
+            },
+        },
     )
     assert update_res.status_code == 200
     updated = update_res.json()
@@ -1227,12 +1241,191 @@ def test_20_procurement_milestones_and_commercial_calculator():
     assert updated["post_award_data"]["performanceSecurityStatus"] == "DEPOSITED"
     assert updated["post_award_data"]["contractSigningStatus"] == "SIGNED"
 
-    # 4. Check alerts generated for opening date today
-    alerts_res = client.get("/api/alerts")
-    assert alerts_res.status_code == 200
-    alerts_data = alerts_res.json()
-    alerts = alerts_data.get("alerts", [])
-    opening_alerts = [a for a in alerts if a.get("tender_id") == test_id and "Opening" in a.get("title", "")]
-    assert len(opening_alerts) >= 1
-    assert opening_alerts[0]["severity"] == "CRITICAL"
+
+def test_21_tender_financial_scenarios_and_rules():
+    """Test Section 6.1 financial rules CRUD and tender financial model management."""
+    test_tender_id = "TDR-TEST-FIN-001"
+    client.delete(f"/api/tenders/{test_tender_id}")
+
+    # 1. Create tender with financial_model
+    tender_payload = {
+        "id": test_tender_id,
+        "title": "National Tax Automation & E-Invoice Platform",
+        "reference_no": "NBR/FIN/2026/04",
+        "organization": "National Board of Revenue",
+        "country": "Bangladesh",
+        "stage": "DISCOVERED",
+        "category": "ICT",
+        "submission_deadline": "2026-11-30",
+        "estimated_value": 50000000.0,
+        "currency": "BDT",
+        "financial_model": {
+            "paymentScenario": "MILESTONE_AND_ADVANCE",
+            "workingCapitalRisk": "MEDIUM",
+            "advancePayment": {
+                "enabled": True,
+                "percentage": 15.0,
+                "amount": 7500000.0,
+                "bankGuaranteeRequired": True,
+                "recoveryType": "PRO_RATA_INVOICE",
+                "recoveryPercentagePerInvoice": 15.0,
+            },
+            "milestones": [
+                {
+                    "milestoneNumber": 1,
+                    "name": "SRS and Architecture Approval",
+                    "percentage": 25.0,
+                    "amount": 12500000.0,
+                    "deliverable": "SRS Signoff & Architecture Design Document",
+                    "approvalRequired": True,
+                    "clientReviewDays": 15,
+                    "paymentProcessingDays": 30,
+                    "paymentTrigger": "UPON_ACCEPTANCE",
+                },
+                {
+                    "milestoneNumber": 2,
+                    "name": "Core System UAT & Pilot Rollout",
+                    "percentage": 40.0,
+                    "amount": 20000000.0,
+                    "deliverable": "Pilot Go-Live in 3 Collectorates",
+                    "approvalRequired": True,
+                    "clientReviewDays": 20,
+                    "paymentProcessingDays": 30,
+                    "paymentTrigger": "UPON_ACCEPTANCE",
+                },
+                {
+                    "milestoneNumber": 3,
+                    "name": "Nationwide Commissioning & DLP Handover",
+                    "percentage": 20.0,
+                    "amount": 10000000.0,
+                    "deliverable": "Final Commissioning Certificate",
+                    "approvalRequired": True,
+                    "clientReviewDays": 30,
+                    "paymentProcessingDays": 45,
+                    "paymentTrigger": "UPON_FINAL_ACCEPTANCE",
+                },
+            ],
+            "subscriptionModel": {
+                "pricingModel": "MULTI_YEAR_ESCALATION",
+                "billingFrequency": "ANNUAL",
+                "annualBaseFee": 6000000.0,
+                "durationYears": 3,
+                "annualEscalationRate": 5.0,
+                "calculatedTcv": 18915000.0,
+                "calculatedAcv": 6305000.0,
+            },
+            "penaltiesAndDeductions": {
+                "liquidatedDamages": {
+                    "enabled": True,
+                    "rate": 0.5,
+                    "frequency": "PER_WEEK",
+                    "calculationBasis": "DELAYED_MILESTONE_VALUE",
+                    "maxCapPercentage": 10.0,
+                },
+                "retentionMoney": {
+                    "enabled": True,
+                    "percentage": 10.0,
+                    "releaseCondition": "DLP_EXPIRY",
+                    "dlpMonths": 12,
+                },
+            },
+        },
+    }
+
+    create_res = client.post("/api/tenders", json=tender_payload)
+    assert create_res.status_code == 201
+    created = create_res.json()
+    assert created["id"] == test_tender_id
+    assert created["financial_model"]["paymentScenario"] == "MILESTONE_AND_ADVANCE"
+    assert created["financial_model"]["advancePayment"]["amount"] == 7500000.0
+
+    # 2. Get financial model via dedicated endpoint
+    fm_res = client.get(f"/api/tenders/{test_tender_id}/financial-model")
+    assert fm_res.status_code == 200
+    fm_data = fm_res.json()
+    assert fm_data["paymentScenario"] == "MILESTONE_AND_ADVANCE"
+    assert len(fm_data["milestones"]) == 3
+
+    # 3. Update financial model via dedicated endpoint
+    updated_fm = dict(fm_data)
+    updated_fm["workingCapitalRisk"] = "LOW"
+    updated_fm["subscriptionModel"]["calculatedTcv"] = 19000000.0
+
+    put_fm_res = client.put(
+        f"/api/tenders/{test_tender_id}/financial-model",
+        json={"financial_model": updated_fm},
+    )
+    assert put_fm_res.status_code == 200
+    assert put_fm_res.json()["financial_model"]["workingCapitalRisk"] == "LOW"
+
+    # 4. Create granular financial rules
+    rule1_payload = {
+        "tender_id": test_tender_id,
+        "rule_category": "ADVANCE_PAYMENT",
+        "rule_type": "MOBILIZATION_ADVANCE",
+        "original_clause": "15% Mobilization Advance against Bank Guarantee",
+        "financial_value": 7500000.0,
+        "percentage": 15.0,
+        "currency": "BDT",
+        "payment_trigger": "CONTRACT_SIGNING",
+        "advance_percentage": 15.0,
+        "advance_recovery_method": "PRO_RATA_INVOICE",
+        "risk_level": "LOW",
+    }
+    r1_res = client.post(f"/api/tenders/{test_tender_id}/financial-rules", json=rule1_payload)
+    assert r1_res.status_code == 201
+    r1_data = r1_res.json()
+    rule_id = r1_data["id"]
+    assert r1_data["rule_type"] == rule1_payload["rule_type"]
+    assert r1_data["original_clause"] == rule1_payload["original_clause"]
+    assert r1_data["advance_percentage"] == 15.0
+
+    # 5. Create another rule (Liquidated Damages)
+    rule2_payload = {
+        "tender_id": test_tender_id,
+        "rule_category": "PENALTY_LD",
+        "rule_type": "DELAY_PENALTY",
+        "original_clause": "Liquidated Damages for Delay",
+        "penalty_rate": 0.5,
+        "penalty_basis": "DELAYED_PORTION",
+        "penalty_frequency": "WEEKLY",
+        "maximum_penalty": 10.0,
+    }
+    r2_res = client.post(f"/api/tenders/{test_tender_id}/financial-rules", json=rule2_payload)
+    assert r2_res.status_code == 201
+
+    # 6. List financial rules for tender
+    list_res = client.get(f"/api/tenders/{test_tender_id}/financial-rules")
+    assert list_res.status_code == 200
+    rules = list_res.json()
+    assert len(rules) == 2
+
+    # Filter by category
+    adv_rules_res = client.get(f"/api/tenders/{test_tender_id}/financial-rules?rule_category=ADVANCE_PAYMENT")
+    assert adv_rules_res.status_code == 200
+    adv_rules = adv_rules_res.json()
+    assert len(adv_rules) == 1
+    assert adv_rules[0]["rule_category"] == "ADVANCE_PAYMENT"
+
+    # 7. Get single rule
+    get_r1 = client.get(f"/api/financial-rules/{rule_id}")
+    assert get_r1.status_code == 200
+    assert get_r1.json()["id"] == rule_id
+
+    # 8. Update rule
+    put_r1 = client.put(
+        f"/api/financial-rules/{rule_id}",
+        json={"financial_value": 8000000.0, "percentage": 16.0},
+    )
+    assert put_r1.status_code == 200
+    assert put_r1.json()["financial_value"] == 8000000.0
+    assert put_r1.json()["percentage"] == 16.0
+
+    # 9. Delete rule
+    del_res = client.delete(f"/api/financial-rules/{rule_id}")
+    assert del_res.status_code == 204
+
+    # Verify deleted
+    verify_list = client.get(f"/api/tenders/{test_tender_id}/financial-rules")
+    assert len(verify_list.json()) == 1
 

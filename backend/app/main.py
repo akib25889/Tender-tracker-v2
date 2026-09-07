@@ -22,6 +22,7 @@ from app.routers import (
     requirements,
     company_credentials,
     company_profiles,
+    financial_rules,
 )
 
 
@@ -75,6 +76,7 @@ app.include_router(organizations.router, prefix=settings.API_V1_STR)
 app.include_router(requirements.router, prefix=settings.API_V1_STR)
 app.include_router(company_credentials.router, prefix=settings.API_V1_STR)
 app.include_router(company_profiles.router, prefix=settings.API_V1_STR)
+app.include_router(financial_rules.router)
 
 
 @app.get(f"{settings.API_V1_STR}/health", tags=["Health"])

@@ -15,6 +15,7 @@ from app.models.chat import ChatChannelMessage
 from app.models.organization import Organization
 from app.models.company_credential import CompanyProjectCredential
 from app.models.company_profile import CompanyProfile
+from app.models.financial_rule import TenderFinancialRule
 from app.models.permission import (
     Permission,
     PartnerOrganization,

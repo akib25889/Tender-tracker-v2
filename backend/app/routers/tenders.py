@@ -122,6 +122,7 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
         tender_security_amount=tender_in.tender_security_amount,
         tender_security_method=tender_in.tender_security_method,
         post_award_data=tender_in.post_award_data,
+        financial_model=tender_in.financial_model or {},
     )
     db.add(db_tender)
     db.flush()

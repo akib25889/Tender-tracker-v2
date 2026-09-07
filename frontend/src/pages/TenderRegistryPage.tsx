@@ -21,6 +21,7 @@ import {
   ShieldCheck,
   Calendar,
   ArrowRight,
+  CreditCard,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import {
@@ -30,9 +31,11 @@ import {
   TenderHardwareReq,
   TenderRiskPoint,
   ImportantClause,
+  TenderFinancialModel,
 } from '../types/tender';
 import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { ImportantClausesManager } from '../components/tender/ImportantClausesManager';
+import { FinancialScenariosEditor } from '../components/tender/FinancialScenariosEditor';
 import { fuzzyMatch } from '../utils/fuzzySearch';
 
 const CLASSIFICATIONS: TenderClassification[] = [
@@ -41,6 +44,91 @@ const CLASSIFICATIONS: TenderClassification[] = [
   'NOT SOFTWARE / IT RELATED',
   'UNCLEAR',
 ];
+
+const createDefaultFinancialModel = (estimatedVal: number = 0): TenderFinancialModel => ({
+  paymentScenario: 'MILESTONE_BASED',
+  workingCapitalRisk: 'MEDIUM',
+  advancePayment: {
+    enabled: false,
+    percentage: 15,
+    amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.15) : 0,
+    bankGuaranteeRequired: true,
+    bankGuaranteeType: 'Unconditional First Demand Bank Guarantee',
+    recoveryType: 'PRO_RATA_INVOICE',
+    recoveryPercentagePerInvoice: 15,
+    recoveryStartMilestone: 1,
+  },
+  milestones: [
+    {
+      milestoneNumber: 1,
+      name: 'Inception & SRS Signoff',
+      percentage: 20,
+      amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.2) : 0,
+      deliverable: 'Approved Inception Report & Architectural Blueprint',
+      approvalRequired: true,
+      clientReviewDays: 14,
+      paymentProcessingDays: 30,
+      paymentTrigger: 'UPON_SRS_APPROVAL',
+      invoiceRequirements: 'Inception Report, Acceptance Certificate, Tax Invoice',
+    },
+    {
+      milestoneNumber: 2,
+      name: 'Core Development & Pilot Deployment',
+      percentage: 50,
+      amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.5) : 0,
+      deliverable: 'Core Modules Deployed in Staging & UAT Signoff',
+      approvalRequired: true,
+      clientReviewDays: 21,
+      paymentProcessingDays: 30,
+      paymentTrigger: 'UPON_UAT_ACCEPTANCE',
+      invoiceRequirements: 'UAT Sign-off Protocol, Source Code Escrow',
+    },
+    {
+      milestoneNumber: 3,
+      name: 'Final Acceptance & Handover',
+      percentage: 30,
+      amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.3) : 0,
+      deliverable: 'Commissioning Certificate & Operations Handover',
+      approvalRequired: true,
+      clientReviewDays: 30,
+      paymentProcessingDays: 45,
+      paymentTrigger: 'UPON_FINAL_ACCEPTANCE',
+      invoiceRequirements: 'FAC Certificate & 10% Retention Deduction',
+    },
+  ],
+  subscriptionModel: {
+    pricingModel: 'MULTI_YEAR_ESCALATION',
+    billingFrequency: 'ANNUAL',
+    annualBaseFee: 0,
+    durationYears: 3,
+    annualEscalationRate: 5,
+    userCount: 100,
+    feePerUserMonthly: 500,
+    calculatedTcv: 0,
+    calculatedAcv: 0,
+    escalationTiers: [],
+  },
+  penaltiesAndDeductions: {
+    liquidatedDamages: {
+      enabled: true,
+      rate: 0.5,
+      frequency: 'PER_WEEK',
+      calculationBasis: 'DELAYED_MILESTONE_VALUE',
+      maxCapPercentage: 10,
+      gracePeriodDays: 7,
+    },
+    retentionMoney: {
+      enabled: true,
+      percentage: 10,
+      releaseCondition: 'DLP_EXPIRY',
+      dlpMonths: 12,
+      interimReleasePercent: 50,
+    },
+    slaDeductionRate: 1.0,
+    taxDeductionAtSourcePercent: 5.0,
+    vatDeductionAtSourcePercent: 7.5,
+  },
+});
 
 export const TenderRegistryPage: React.FC = () => {
   const { tenders, addTender, deleteTender, categories, addCategory } = useTenders();
@@ -60,7 +148,7 @@ export const TenderRegistryPage: React.FC = () => {
   }, [editIdFromUrl, tenders]);
 
   const [activeEditorTab, setActiveEditorTab] = useState<
-    'BASIC' | 'SCOPE' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS' | 'CLAUSES'
+    'BASIC' | 'SCOPE' | 'FINANCIAL' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS' | 'CLAUSES'
   >('BASIC');
 
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -72,6 +160,10 @@ export const TenderRegistryPage: React.FC = () => {
 
   const [importantClauses, setImportantClauses] = useState<ImportantClause[]>(
     selectedTender?.importantClauses || []
+  );
+
+  const [financialModel, setFinancialModel] = useState<TenderFinancialModel>(
+    selectedTender?.financialModel || createDefaultFinancialModel(selectedTender?.estimatedValue)
   );
 
   const [classification, setClassification] = useState<TenderClassification>(
@@ -641,6 +733,10 @@ export const TenderRegistryPage: React.FC = () => {
     );
     setNotes(selectedTender.summary?.notes || '');
     setImportantClauses(selectedTender.importantClauses || []);
+    setFinancialModel(
+      selectedTender.financialModel ||
+        createDefaultFinancialModel(selectedTender.estimatedValue)
+    );
   }, [selectedTenderId]);
 
   const filteredTenders = tenders.filter((t) => {
@@ -805,7 +901,9 @@ export const TenderRegistryPage: React.FC = () => {
         risks: risks.filter((r) => r.text.trim().length > 0),
         managementHighlights: management.filter((m) => m.trim().length > 0),
         notes,
+        financialModel,
       },
+      financialModel,
       importantClauses,
     });
 
@@ -1088,6 +1186,19 @@ export const TenderRegistryPage: React.FC = () => {
 
             <button
               type="button"
+              onClick={() => setActiveEditorTab('FINANCIAL')}
+              className={`flex items-center gap-1.5 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
+                activeEditorTab === 'FINANCIAL'
+                  ? 'border-[#2563EB] text-[#2563EB]'
+                  : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+              }`}
+            >
+              <CreditCard className="w-3.5 h-3.5" />
+              <span>3. Financial Scenarios &amp; Rules</span>
+            </button>
+
+            <button
+              type="button"
               onClick={() => setActiveEditorTab('ELIGIBILITY')}
               className={`flex items-center gap-1.5 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
                 activeEditorTab === 'ELIGIBILITY'
@@ -1096,7 +1207,7 @@ export const TenderRegistryPage: React.FC = () => {
               }`}
             >
               <Briefcase className="w-3.5 h-3.5" />
-              <span>3. Eligibility &amp; JV</span>
+              <span>4. Eligibility &amp; JV</span>
             </button>
 
             <button
@@ -1109,7 +1220,7 @@ export const TenderRegistryPage: React.FC = () => {
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
-              <span>4. Staff &amp; Hardware</span>
+              <span>5. Staff &amp; Hardware</span>
             </button>
 
             <button
@@ -1122,7 +1233,7 @@ export const TenderRegistryPage: React.FC = () => {
               }`}
             >
               <AlertTriangle className="w-3.5 h-3.5" />
-              <span>5. Dates, Risks &amp; Notes</span>
+              <span>6. Dates, Risks &amp; Notes</span>
             </button>
 
             <button
@@ -1135,7 +1246,7 @@ export const TenderRegistryPage: React.FC = () => {
               }`}
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>6. Important Clauses ({importantClauses.length})</span>
+              <span>7. Important Clauses ({importantClauses.length})</span>
             </button>
           </div>
 
@@ -1920,7 +2031,19 @@ export const TenderRegistryPage: React.FC = () => {
               </div>
             )}
 
-            {/* TAB 3: ELIGIBILITY & JV */}
+            {/* TAB 3: FINANCIAL SCENARIOS & CASH FLOW */}
+            {activeEditorTab === 'FINANCIAL' && (
+              <div className="space-y-6 animate-fadeIn">
+                <FinancialScenariosEditor
+                  value={financialModel}
+                  onChange={setFinancialModel}
+                  tenderCurrency={tenderCurrency}
+                  estimatedValue={Number(estimatedValue) || 0}
+                />
+              </div>
+            )}
+
+            {/* TAB 4: ELIGIBILITY & JV */}
             {activeEditorTab === 'ELIGIBILITY' && (
               <div className="space-y-5 animate-fadeIn">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

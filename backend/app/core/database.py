@@ -178,6 +178,53 @@ def run_migrations():
                             "ALTER TABLE tenders ADD COLUMN post_award_data JSON DEFAULT NULL"
                         )
                     )
+                if "financial_model" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN financial_model JSON DEFAULT '{}'"
+                        )
+                    )
+                # Ensure tender_financial_rules table exists in SQLite
+                conn.execute(
+                    text(
+                        """
+                        CREATE TABLE IF NOT EXISTS tender_financial_rules (
+                            id VARCHAR(50) PRIMARY KEY,
+                            tender_id VARCHAR(50) NOT NULL,
+                            rule_category VARCHAR(100) NOT NULL,
+                            rule_type VARCHAR(100) DEFAULT NULL,
+                            financial_value FLOAT DEFAULT NULL,
+                            currency VARCHAR(10) DEFAULT 'BDT',
+                            percentage FLOAT DEFAULT NULL,
+                            frequency VARCHAR(50) DEFAULT NULL,
+                            payment_trigger VARCHAR(255) DEFAULT NULL,
+                            payment_due_days INTEGER DEFAULT NULL,
+                            penalty_rate FLOAT DEFAULT NULL,
+                            penalty_frequency VARCHAR(50) DEFAULT NULL,
+                            maximum_penalty FLOAT DEFAULT NULL,
+                            penalty_basis VARCHAR(100) DEFAULT NULL,
+                            retention_percentage FLOAT DEFAULT NULL,
+                            advance_percentage FLOAT DEFAULT NULL,
+                            advance_recovery_method VARCHAR(255) DEFAULT NULL,
+                            subscription_type VARCHAR(50) DEFAULT NULL,
+                            subscription_frequency VARCHAR(50) DEFAULT NULL,
+                            contract_duration VARCHAR(100) DEFAULT NULL,
+                            price_escalation VARCHAR(255) DEFAULT NULL,
+                            tax_rate FLOAT DEFAULT NULL,
+                            vat_rate FLOAT DEFAULT NULL,
+                            payment_currency VARCHAR(10) DEFAULT NULL,
+                            liability_limit VARCHAR(100) DEFAULT NULL,
+                            risk_level VARCHAR(20) DEFAULT 'LOW',
+                            original_clause TEXT DEFAULT NULL,
+                            source_document VARCHAR(255) DEFAULT NULL,
+                            page_number VARCHAR(50) DEFAULT NULL,
+                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                            FOREIGN KEY (tender_id) REFERENCES tenders(id) ON DELETE CASCADE
+                        )
+                        """
+                    )
+                )
                 # Migrations for tender_documents
                 td_result = conn.execute(
                     text("PRAGMA table_info(tender_documents)")
@@ -282,6 +329,7 @@ def run_migrations():
                             ("tender_security_amount", "FLOAT DEFAULT NULL"),
                             ("tender_security_method", "VARCHAR(50) DEFAULT NULL"),
                             ("post_award_data", "JSON DEFAULT NULL"),
+                            ("financial_model", "JSON DEFAULT NULL"),
                         ],
                     ),
                     (

@@ -7,6 +7,7 @@ interface TenderSummaryDocumentProps {
 
 export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ tender }) => {
   const s = tender.summary;
+  const fm = tender.financialModel || s?.financialModel;
   const fmt = (date: string | undefined) =>
     date && !isNaN(Date.parse(date))
       ? new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
@@ -195,6 +196,252 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
             <SubSection title="Operational / Service Requirements">
               <BulletList items={s!.operationalReqs} />
             </SubSection>
+          )}
+        </Section>
+      )}
+
+      {/* FINANCIAL SCENARIOS, PAYMENT SCHEDULE & CONTRACT RULES */}
+      {fm && (
+        <Section title="Financial Scenarios, Payment Schedule & Contract Rules">
+          {/* Overview Grid */}
+          <div className="mb-4 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-2.5 rounded">
+              <span className="text-[10px] uppercase font-bold text-[#64748B] block">Disbursement Model</span>
+              <span className="text-xs font-bold text-[#1E293B]">
+                {fm.paymentScenario === 'MILESTONE_BASED'
+                  ? 'Milestone-Based'
+                  : fm.paymentScenario === 'ADVANCE_AND_MILESTONES'
+                  ? 'Advance + Milestones'
+                  : fm.paymentScenario === 'ACCEPTANCE_BASED'
+                  ? 'Acceptance-Based'
+                  : fm.paymentScenario === 'LUMP_SUM_FINAL'
+                  ? 'Final Lump-Sum'
+                  : 'Standard Delivery'}
+              </span>
+            </div>
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-2.5 rounded">
+              <span className="text-[10px] uppercase font-bold text-[#64748B] block">Working Capital Risk</span>
+              <span
+                className={`text-xs font-bold ${
+                  fm.workingCapitalRisk === 'LOW'
+                    ? 'text-emerald-700'
+                    : fm.workingCapitalRisk === 'HIGH'
+                    ? 'text-rose-700'
+                    : 'text-amber-700'
+                }`}
+              >
+                {fm.workingCapitalRisk || 'MEDIUM'} Risk
+              </span>
+            </div>
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-2.5 rounded">
+              <span className="text-[10px] uppercase font-bold text-[#64748B] block">Advance Mobilization</span>
+              <span className="text-xs font-semibold text-[#1E293B]">
+                {fm.advancePayment?.enabled ? `${fm.advancePayment.percentage}% Advance` : 'None (0%)'}
+              </span>
+            </div>
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-2.5 rounded">
+              <span className="text-[10px] uppercase font-bold text-[#64748B] block">Retention Deduction</span>
+              <span className="text-xs font-semibold text-[#1E293B]">
+                {fm.penaltiesAndDeductions?.retentionMoney?.enabled
+                  ? `${fm.penaltiesAndDeductions.retentionMoney.percentage}% Retention`
+                  : 'None'}
+              </span>
+            </div>
+          </div>
+
+          {/* Advance Payment SubSection */}
+          {fm.advancePayment?.enabled && (
+            <div className="mb-4 bg-blue-50/50 border border-blue-200 rounded p-3 text-xs text-[#1E293B]">
+              <div className="font-bold text-[#1E40AF] mb-1">Advance Payment & Mobilization Terms</div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div>
+                  Advance Ratio:{' '}
+                  <span className="font-semibold">
+                    {fm.advancePayment.percentage}%{' '}
+                    {fm.advancePayment.amount
+                      ? `(${tender.currency || 'USD'} ${fm.advancePayment.amount.toLocaleString()})`
+                      : ''}
+                  </span>
+                </div>
+                <div>
+                  Bank Guarantee (APG):{' '}
+                  <span className="font-semibold">
+                    {fm.advancePayment.bankGuaranteeRequired
+                      ? `Required (${fm.advancePayment.bankGuaranteeType || '100% Unconditional APG'})`
+                      : 'Not required'}
+                  </span>
+                </div>
+                <div>
+                  Recovery Mechanism:{' '}
+                  <span className="font-semibold">
+                    {fm.advancePayment.recoveryType === 'PRO_RATA_INVOICE'
+                      ? `Pro-rata (${fm.advancePayment.recoveryPercentagePerInvoice || 0}% per invoice)`
+                      : fm.advancePayment.recoveryType === 'BALLOON_RECOVERY'
+                      ? 'Balloon recovery at completion'
+                      : 'Interim payment certificates'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Milestone Schedule Table */}
+          {fm.milestones && fm.milestones.length > 0 && (
+            <div className="mb-4 overflow-x-auto">
+              <div className="text-xs font-bold text-[#1A2B4A] mb-1.5">Milestone Payment Disbursement Schedule</div>
+              <table className="w-full border-collapse text-xs border border-[#C8D5E2]">
+                <thead>
+                  <tr style={{ backgroundColor: '#E8F0FB', color: '#1A2B4A' }}>
+                    <th className="py-2 px-2.5 text-left font-semibold border-b border-r border-[#C8D5E2] w-10">#</th>
+                    <th className="py-2 px-2.5 text-left font-semibold border-b border-r border-[#C8D5E2]">
+                      Milestone / Deliverable
+                    </th>
+                    <th className="py-2 px-2.5 text-left font-semibold border-b border-r border-[#C8D5E2]">
+                      Approval / Trigger Criteria
+                    </th>
+                    <th className="py-2 px-2.5 text-right font-semibold border-b border-r border-[#C8D5E2] w-20">
+                      Share %
+                    </th>
+                    <th className="py-2 px-2.5 text-right font-semibold border-b border-r border-[#C8D5E2] w-28">
+                      Net Amount
+                    </th>
+                    <th className="py-2 px-2.5 text-center font-semibold border-b border-[#C8D5E2] w-28">
+                      Review / Payment
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {fm.milestones.map((m, idx) => (
+                    <tr key={m.id || idx} className="border-b border-[#E8EDF2] last:border-0 hover:bg-slate-50/50">
+                      <td className="py-2 px-2.5 text-[#64748B] border-r border-[#E8EDF2] font-mono text-center">
+                        {m.milestoneNumber || idx + 1}
+                      </td>
+                      <td className="py-2 px-2.5 text-[#1A2B4A] border-r border-[#E8EDF2] font-medium">
+                        <div>{m.name}</div>
+                        {m.deliverable && (
+                          <div className="text-[11px] text-[#64748B] font-normal">{m.deliverable}</div>
+                        )}
+                      </td>
+                      <td className="py-2 px-2.5 text-[#475569] border-r border-[#E8EDF2]">
+                        {m.paymentTrigger ||
+                          (m.approvalRequired
+                            ? 'Client formal acceptance certificate'
+                            : 'Standard completion')}
+                      </td>
+                      <td className="py-2 px-2.5 text-right text-[#1A2B4A] border-r border-[#E8EDF2] font-semibold">
+                        {m.percentage}%
+                      </td>
+                      <td className="py-2 px-2.5 text-right text-[#1A2B4A] border-r border-[#E8EDF2]">
+                        {m.amount != null ? `${tender.currency || 'USD'} ${m.amount.toLocaleString()}` : '—'}
+                      </td>
+                      <td className="py-2 px-2.5 text-center text-[#64748B]">
+                        {m.clientReviewDays || 14}d rev / {m.paymentProcessingDays || 30}d pay
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr className="bg-[#F1F5F9] font-semibold text-[#1A2B4A] border-t border-[#C8D5E2]">
+                    <td colSpan={3} className="py-2 px-2.5 text-right border-r border-[#C8D5E2]">
+                      Total Milestone Commitment:
+                    </td>
+                    <td className="py-2 px-2.5 text-right border-r border-[#C8D5E2] text-blue-700 font-bold">
+                      {fm.milestones.reduce((acc, cur) => acc + (cur.percentage || 0), 0)}%
+                    </td>
+                    <td className="py-2 px-2.5 text-right border-r border-[#C8D5E2] text-blue-700 font-bold">
+                      {tender.currency || 'USD'}{' '}
+                      {fm.milestones.reduce((acc, cur) => acc + (cur.amount || 0), 0).toLocaleString()}
+                    </td>
+                    <td className="py-2 px-2.5 text-center text-[#64748B]">—</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          )}
+
+          {/* SaaS & Recurring Revenue Section */}
+          {fm.subscriptionModel &&
+            (fm.subscriptionModel.calculatedTcv > 0 || fm.subscriptionModel.annualBaseFee > 0) && (
+              <div className="mb-4 bg-emerald-50/50 border border-emerald-200 rounded p-3 text-xs text-[#1E293B]">
+                <div className="font-bold text-emerald-800 mb-1.5 flex items-center justify-between">
+                  <span>SaaS & Recurring Revenue Model</span>
+                  <span className="text-[11px] font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">
+                    TCV: {tender.currency || 'USD'}{' '}
+                    {(fm.subscriptionModel.calculatedTcv || 0).toLocaleString()} | ACV:{' '}
+                    {tender.currency || 'USD'}{' '}
+                    {(fm.subscriptionModel.calculatedAcv || 0).toLocaleString()}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <div>
+                    Billing Frequency:{' '}
+                    <span className="font-semibold capitalize">
+                      {fm.subscriptionModel.billingFrequency?.toLowerCase() || 'Annual'}
+                    </span>
+                  </div>
+                  <div>
+                    Contract Duration:{' '}
+                    <span className="font-semibold">{fm.subscriptionModel.durationYears || 1} Years</span>
+                  </div>
+                  <div>
+                    Base Annual Fee:{' '}
+                    <span className="font-semibold">
+                      {tender.currency || 'USD'}{' '}
+                      {(fm.subscriptionModel.annualBaseFee || 0).toLocaleString()}
+                    </span>
+                  </div>
+                  <div>
+                    Annual Escalation:{' '}
+                    <span className="font-semibold">
+                      {fm.subscriptionModel.annualEscalationRate || 0}% per annum
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          {/* Deductions, Retentions & Penalties */}
+          {fm.penaltiesAndDeductions && (
+            <div className="bg-[#F8FAFC] border border-[#C8D5E2] rounded p-3 text-xs">
+              <div className="font-bold text-[#1A2B4A] mb-2">
+                Penalties, Liquidated Damages & Statutory Deductions
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="border-r border-[#E2E8F0] pr-2 last:border-0">
+                  <span className="font-semibold text-rose-700 block mb-0.5">Liquidated Damages (Delay)</span>
+                  <p className="text-[#475569] leading-tight">
+                    {fm.penaltiesAndDeductions.liquidatedDamages?.rate || 0.5}%{' '}
+                    {fm.penaltiesAndDeductions.liquidatedDamages?.frequency === 'PER_DAY'
+                      ? 'per day'
+                      : 'per week'}{' '}
+                    of delay. Max cap:{' '}
+                    {fm.penaltiesAndDeductions.liquidatedDamages?.maxCapPercentage || 10}% of contract value.
+                  </p>
+                </div>
+                <div className="border-r border-[#E2E8F0] pr-2 last:border-0">
+                  <span className="font-semibold text-amber-700 block mb-0.5">Retention Money</span>
+                  <p className="text-[#475569] leading-tight">
+                    {fm.penaltiesAndDeductions.retentionMoney?.percentage || 5}% deducted from gross invoices.
+                    Release:{' '}
+                    {fm.penaltiesAndDeductions.retentionMoney?.releaseCondition ===
+                    'FINAL_ACCEPTANCE_50_DLP_50'
+                      ? '50% upon PAC, 50% upon FAC / DLP'
+                      : fm.penaltiesAndDeductions.retentionMoney?.releaseCondition === 'BG_SUBSTITUTION'
+                      ? 'Bank Guarantee Substitution'
+                      : 'Upon DLP Expiry'}{' '}
+                    ({fm.penaltiesAndDeductions.retentionMoney?.dlpMonths || 12}m DLP).
+                  </p>
+                </div>
+                <div>
+                  <span className="font-semibold text-slate-700 block mb-0.5">Statutory Withholding</span>
+                  <p className="text-[#475569] leading-tight">
+                    TDS (Tax): {fm.penaltiesAndDeductions.taxDeductionAtSourcePercent || 0}%, VDS (VAT):{' '}
+                    {fm.penaltiesAndDeductions.vatDeductionAtSourcePercent || 0}%. Deducted directly by client
+                    finance.
+                  </p>
+                </div>
+              </div>
+            </div>
           )}
         </Section>
       )}

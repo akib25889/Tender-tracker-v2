@@ -513,6 +513,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                 importantClauses: Array.isArray(dbt.important_clauses)
                   ? dbt.important_clauses
                   : existing?.importantClauses || [],
+                postAward: dbt.post_award_data || existing?.postAward,
+                financialModel: dbt.financial_model || existing?.financialModel,
               });
             }
             return Array.from(map.values());
@@ -1083,6 +1085,18 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         { tierNumber: 3, name: 'Legal Solvency Sign-Off', reviewer: 'Elena Rostova', status: 'WAITING', comments: 'Pending review' },
         { tierNumber: 4, name: 'Executive Gatekeeper Sign-Off', reviewer: 'Sarah Jenkins', status: 'WAITING', comments: 'Pending review' },
       ],
+      openingDate: tenderData.openingDate,
+      contractSigningDate: tenderData.contractSigningDate,
+      workStartDate: tenderData.workStartDate,
+      possiblePeriod: tenderData.possiblePeriod,
+      productHandoverDate: tenderData.productHandoverDate,
+      maintenancePeriod: tenderData.maintenancePeriod,
+      schedulePurchaseDeadline: tenderData.schedulePurchaseDeadline,
+      schedulePurchaseMethod: tenderData.schedulePurchaseMethod,
+      tenderSecurityAmount: tenderData.tenderSecurityAmount,
+      tenderSecurityMethod: tenderData.tenderSecurityMethod,
+      postAward: tenderData.postAward,
+      financialModel: tenderData.financialModel,
       summary: tenderData.summary,
       importantClauses: tenderData.importantClauses || [],
     };
@@ -1110,6 +1124,18 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         helpline_phone: newTender.helplinePhone,
         helpline_email: newTender.helplineEmail,
         helpline_hours: newTender.helplineHours,
+        opening_date: newTender.openingDate,
+        contract_signing_date: newTender.contractSigningDate,
+        work_start_date: newTender.workStartDate,
+        possible_period: newTender.possiblePeriod,
+        product_handover_date: newTender.productHandoverDate,
+        maintenance_period: newTender.maintenancePeriod,
+        schedule_purchase_deadline: newTender.schedulePurchaseDeadline,
+        schedule_purchase_method: newTender.schedulePurchaseMethod,
+        tender_security_amount: newTender.tenderSecurityAmount,
+        tender_security_method: newTender.tenderSecurityMethod,
+        post_award_data: newTender.postAward,
+        financial_model: newTender.financialModel || {},
         stage: newTender.stage,
         decision: newTender.decision,
         priority: newTender.priority,
@@ -1142,6 +1168,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                     : t.estimatedValue,
                 summary: { ...t.summary, ...tenderData.summary },
                 importantClauses: tenderData.importantClauses !== undefined ? tenderData.importantClauses : t.importantClauses,
+                financialModel: tenderData.financialModel !== undefined ? tenderData.financialModel : t.financialModel,
               }
             : t
         );
@@ -1169,6 +1196,18 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (updates.helplinePhone !== undefined) payload.helpline_phone = updates.helplinePhone;
     if (updates.helplineEmail !== undefined) payload.helpline_email = updates.helplineEmail;
     if (updates.helplineHours !== undefined) payload.helpline_hours = updates.helplineHours;
+    if (updates.openingDate !== undefined) payload.opening_date = updates.openingDate;
+    if (updates.contractSigningDate !== undefined) payload.contract_signing_date = updates.contractSigningDate;
+    if (updates.workStartDate !== undefined) payload.work_start_date = updates.workStartDate;
+    if (updates.possiblePeriod !== undefined) payload.possible_period = updates.possiblePeriod;
+    if (updates.productHandoverDate !== undefined) payload.product_handover_date = updates.productHandoverDate;
+    if (updates.maintenancePeriod !== undefined) payload.maintenance_period = updates.maintenancePeriod;
+    if (updates.schedulePurchaseDeadline !== undefined) payload.schedule_purchase_deadline = updates.schedulePurchaseDeadline;
+    if (updates.schedulePurchaseMethod !== undefined) payload.schedule_purchase_method = updates.schedulePurchaseMethod;
+    if (updates.tenderSecurityAmount !== undefined) payload.tender_security_amount = updates.tenderSecurityAmount;
+    if (updates.tenderSecurityMethod !== undefined) payload.tender_security_method = updates.tenderSecurityMethod;
+    if (updates.postAward !== undefined) payload.post_award_data = updates.postAward;
+    if (updates.financialModel !== undefined) payload.financial_model = updates.financialModel;
     if (updates.stage !== undefined) payload.stage = updates.stage;
     if (updates.decision !== undefined) payload.decision = updates.decision;
     if (updates.priority !== undefined) payload.priority = updates.priority;
