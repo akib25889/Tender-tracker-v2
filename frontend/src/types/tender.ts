@@ -184,9 +184,14 @@ export interface TenderExtendedSummary {
   mainIdea?: string;
   commercial?: {
     tenderSecurity?: string;
+    tenderSecurityAmount?: number;
+    tenderSecurityMethod?: string;
     contractPeriod?: string;
     tenderDocPrice?: string;
+    schedulePurchaseDeadline?: string;
+    schedulePurchaseMethod?: string;
     performanceSecurity?: string;
+    maintenancePeriod?: string;
   };
   technicalReqs?: string[];
   technologyMentioned?: string[];
@@ -213,8 +218,14 @@ export interface TenderExtendedSummary {
   dates?: {
     clarificationDeadline?: string;
     submissionDeadline?: string;
+    schedulePurchaseDeadline?: string;
     openingDate?: string;
+    contractSigningDate?: string;
+    workStartDate?: string;
     contractStart?: string;
+    possiblePeriod?: string;
+    productHandoverDate?: string;
+    maintenancePeriod?: string;
   };
   risks?: TenderRiskPoint[];
   managementHighlights?: string[];
@@ -232,6 +243,23 @@ export interface TenderExtendedSummary {
     hours?: string;
     notes?: string;
   };
+  postAward?: PostAwardData;
+}
+
+export interface PostAwardData {
+  noaDate?: string;
+  noaReference?: string;
+  performanceSecurityAmount?: number;
+  performanceSecurityDueDate?: string;
+  performanceSecurityStatus?: 'PENDING' | 'DEPOSITED' | 'RELEASED';
+  contractSigningStatus?: 'SCHEDULED' | 'SIGNED';
+  contractSigningDate?: string;
+  workOrderReference?: string;
+  workStartDate?: string;
+  handoverStatus?: 'PENDING' | 'UAT_IN_PROGRESS' | 'HANDED_OVER';
+  productHandoverDate?: string;
+  warrantyEndDate?: string;
+  maintenancePeriod?: string;
 }
 
 export interface Tender {
@@ -253,6 +281,20 @@ export interface Tender {
   helplinePhone?: string;
   helplineEmail?: string;
   helplineHours?: string;
+  // Milestone Schedule (Req #20)
+  openingDate?: string;
+  contractSigningDate?: string;
+  workStartDate?: string;
+  possiblePeriod?: string;
+  productHandoverDate?: string;
+  maintenancePeriod?: string;
+  // Commercial Schedule & Security Deposit
+  schedulePurchaseDeadline?: string;
+  schedulePurchaseMethod?: string;
+  tenderDocPrice?: string;
+  tenderSecurityAmount?: number;
+  tenderSecurityMethod?: string;
+  postAward?: PostAwardData;
   stage: TenderStage;
   decision: DecisionStatus;
   priority: TenderPriority;

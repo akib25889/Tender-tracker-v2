@@ -141,6 +141,103 @@ def get_alerts(db: Session = Depends(get_db)):
                 }
             )
 
+    # ── 5. Tender Document Opening & Schedule Purchase Reminders (Req #17 & #20) ─
+    def _parse_date(d_str):
+        if not d_str:
+            return None
+        clean = d_str.strip().split("T")[0]
+        for fmt in ("%Y-%m-%d", "%d %B %Y", "%d-%m-%Y", "%d/%m/%Y", "%B %d, %Y"):
+            try:
+                return datetime.strptime(clean, fmt).date()
+            except Exception:
+                continue
+        return None
+
+    all_active_tenders = (
+        db.query(Tender)
+        .filter(Tender.stage.notin_(["ARCHIVED", "LOST"]))
+        .all()
+    )
+    today = now.date()
+
+    for t in all_active_tenders:
+        # Opening Day reminders (1 day before & on that day)
+        op_date = _parse_date(t.opening_date)
+        if op_date:
+            diff_days = (op_date - today).days
+            if diff_days == 0:
+                alerts.append(
+                    {
+                        "id": f"ALERT-OPN-TODAY-{t.id}",
+                        "category": "OPENING_REMINDER",
+                        "severity": "CRITICAL",
+                        "title": f"Tender Document Opening TODAY — {t.id}",
+                        "description": (
+                            f"Official tender opening session for '{t.title}' is taking place TODAY ({op_date.strftime('%d %b %Y')}). "
+                            f"Authority: {t.organization}."
+                        ),
+                        "tender_id": t.id,
+                        "tender_title": t.title,
+                        "hours_remaining": 0,
+                        "read": False,
+                    }
+                )
+            elif diff_days == 1:
+                alerts.append(
+                    {
+                        "id": f"ALERT-OPN-TOMORROW-{t.id}",
+                        "category": "OPENING_REMINDER",
+                        "severity": "WARNING",
+                        "title": f"Tender Opening Tomorrow (T-1) — {t.id}",
+                        "description": (
+                            f"Official tender document opening for '{t.title}' is scheduled for tomorrow ({op_date.strftime('%d %b %Y')}). "
+                            f"Verify final bid envelope submission before opening cutoff."
+                        ),
+                        "tender_id": t.id,
+                        "tender_title": t.title,
+                        "hours_remaining": 24,
+                        "read": False,
+                    }
+                )
+
+        # Schedule Purchase Deadline reminder (1 day before & day of)
+        sch_date = _parse_date(t.schedule_purchase_deadline)
+        if sch_date and t.stage not in ("SUBMITTED", "AWARDED"):
+            diff_sch = (sch_date - today).days
+            if diff_sch == 0:
+                alerts.append(
+                    {
+                        "id": f"ALERT-SCH-TODAY-{t.id}",
+                        "category": "DEADLINE",
+                        "severity": "CRITICAL",
+                        "title": f"Schedule Purchase Closes TODAY — {t.id}",
+                        "description": (
+                            f"Tender schedule / form purchase window for '{t.title}' closes TODAY. "
+                            f"Method: {t.schedule_purchase_method or 'Online e-GP'}."
+                        ),
+                        "tender_id": t.id,
+                        "tender_title": t.title,
+                        "hours_remaining": 0,
+                        "read": False,
+                    }
+                )
+            elif diff_sch == 1:
+                alerts.append(
+                    {
+                        "id": f"ALERT-SCH-TOMORROW-{t.id}",
+                        "category": "DEADLINE",
+                        "severity": "WARNING",
+                        "title": f"Schedule Purchase Closes Tomorrow — {t.id}",
+                        "description": (
+                            f"Last day to buy tender schedule / RFP document for '{t.title}'. Deadline: tomorrow."
+                        ),
+                        "tender_id": t.id,
+                        "tender_title": t.title,
+                        "hours_remaining": 24,
+                        "read": False,
+                    }
+                )
+
     # Sort: CRITICAL first, then WARNING, then INFO; within same severity by hours_remaining asc
     severity_order = {"CRITICAL": 0, "WARNING": 1, "INFO": 2}
     alerts.sort(

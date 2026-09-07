@@ -111,6 +111,17 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
         helpline_phone=tender_in.helpline_phone,
         helpline_email=tender_in.helpline_email,
         helpline_hours=tender_in.helpline_hours,
+        opening_date=tender_in.opening_date,
+        contract_signing_date=tender_in.contract_signing_date,
+        work_start_date=tender_in.work_start_date,
+        possible_period=tender_in.possible_period,
+        product_handover_date=tender_in.product_handover_date,
+        maintenance_period=tender_in.maintenance_period,
+        schedule_purchase_deadline=tender_in.schedule_purchase_deadline,
+        schedule_purchase_method=tender_in.schedule_purchase_method,
+        tender_security_amount=tender_in.tender_security_amount,
+        tender_security_method=tender_in.tender_security_method,
+        post_award_data=tender_in.post_award_data,
     )
     db.add(db_tender)
     db.flush()

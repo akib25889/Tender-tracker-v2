@@ -111,6 +111,73 @@ def run_migrations():
                             "ALTER TABLE tenders ADD COLUMN helpline_hours VARCHAR(150) DEFAULT NULL"
                         )
                     )
+                # Milestone Schedule & Commercial migrations (Req #17 & #20)
+                if "opening_date" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN opening_date VARCHAR(50) DEFAULT NULL"
+                        )
+                    )
+                if "contract_signing_date" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN contract_signing_date VARCHAR(50) DEFAULT NULL"
+                        )
+                    )
+                if "work_start_date" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN work_start_date VARCHAR(50) DEFAULT NULL"
+                        )
+                    )
+                if "possible_period" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN possible_period VARCHAR(100) DEFAULT NULL"
+                        )
+                    )
+                if "product_handover_date" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN product_handover_date VARCHAR(50) DEFAULT NULL"
+                        )
+                    )
+                if "maintenance_period" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN maintenance_period VARCHAR(100) DEFAULT NULL"
+                        )
+                    )
+                if "schedule_purchase_deadline" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN schedule_purchase_deadline VARCHAR(50) DEFAULT NULL"
+                        )
+                    )
+                if "schedule_purchase_method" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN schedule_purchase_method VARCHAR(50) DEFAULT NULL"
+                        )
+                    )
+                if "tender_security_amount" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN tender_security_amount FLOAT DEFAULT NULL"
+                        )
+                    )
+                if "tender_security_method" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN tender_security_method VARCHAR(50) DEFAULT NULL"
+                        )
+                    )
+                if "post_award_data" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN post_award_data JSON DEFAULT NULL"
+                        )
+                    )
                 # Migrations for tender_documents
                 td_result = conn.execute(
                     text("PRAGMA table_info(tender_documents)")
@@ -204,6 +271,17 @@ def run_migrations():
                             ("helpline_phone", "VARCHAR(100) DEFAULT NULL"),
                             ("helpline_email", "VARCHAR(150) DEFAULT NULL"),
                             ("helpline_hours", "VARCHAR(150) DEFAULT NULL"),
+                            ("opening_date", "VARCHAR(50) DEFAULT NULL"),
+                            ("contract_signing_date", "VARCHAR(50) DEFAULT NULL"),
+                            ("work_start_date", "VARCHAR(50) DEFAULT NULL"),
+                            ("possible_period", "VARCHAR(100) DEFAULT NULL"),
+                            ("product_handover_date", "VARCHAR(50) DEFAULT NULL"),
+                            ("maintenance_period", "VARCHAR(100) DEFAULT NULL"),
+                            ("schedule_purchase_deadline", "VARCHAR(50) DEFAULT NULL"),
+                            ("schedule_purchase_method", "VARCHAR(50) DEFAULT NULL"),
+                            ("tender_security_amount", "FLOAT DEFAULT NULL"),
+                            ("tender_security_method", "VARCHAR(50) DEFAULT NULL"),
+                            ("post_award_data", "JSON DEFAULT NULL"),
                         ],
                     ),
                     (

@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.11.0  
+**Current Version:** 2.12.0  
 **Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -19,6 +19,56 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 26-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 34 tests), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+### [2026-09-07] — Version 2.12.0: Procurement Milestone Lifecycle, Commercial Budget Estimator, Calendar Tracking, Day-Of/T-1 Opening Alerts & Post-Award Execution Architecture
+- **Category:** Procurement Lifecycle (Req #20), Commercial Engineering (Calculator), Proactive Alert Operations (Req #17), Post-Award Execution & Contract Delivery Architecture
+- **Summary:**
+  - **Full Lifecycle Procurement Milestones Schedule (Requirement #20):**
+    - Built comprehensive milestone schedule tracking all 6 critical procurement gates:
+      1. *Tender Document Opening Day* (`opening_date` / `openingDate`)
+      2. *Contract Signing Day* (`contract_signing_date` / `contractSigningDate`)
+      3. *Work / Project Start Day* (`work_start_date` / `workStartDate`)
+      4. *Possible / Execution Period* (`possible_period` / `possiblePeriod`)
+      5. *Product / System Handover Day* (`product_handover_date` / `productHandoverDate`)
+      6. *Support & Maintenance Period* (`maintenance_period` / `maintenancePeriod`)
+    - Added schedule & security deposit terms: *Schedule Buy Deadline* (`schedule_purchase_deadline`), *Schedule Payment Method* (`schedule_purchase_method`), *Tender Security / EMD Amount* (`tender_security_amount`), and *Security Instrument / Method* (`tender_security_method`).
+    - Stored as native first-class columns in backend `tenders` model with zero-downtime auto-migrations for SQLite (`PRAGMA table_info`) and MySQL (`SHOW COLUMNS`).
+  - **Smart 2.5% Security Deposit & Reverse Budget Calculator:**
+    - Integrated client-side reactive financial calculator in Tab 2 of both the *Tender Registry Console* ([`TenderRegistryPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/TenderRegistryPage.tsx)) and *Intake Modal* ([`NewTenderModal.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/components/modals/NewTenderModal.tsx)).
+    - Solves a pervasive public procurement reality: Procuring authorities frequently specify exact Security Deposit / EMD amounts while leaving official procurement budgets undisclosed or redacted.
+    - Quick-select percentage presets (`1.0%`, `2.0%`, `2.5%`, `3.0%`, `5.0%`).
+    - **Reverse Estimator:** Mathematically calculates implied procurement budget ($\text{Budget} = \frac{\text{Security}}{\%}$) with 1-click button to apply calculated budget directly to tender entry.
+    - **Forward Calculator:** Instantly calculates required bank guarantee or pay order deposit from estimated value ($\text{Security} = \text{Budget} \times \%$).
+  - **Calendar Tracking & Proactive Day-Of / T-1 Opening Alerts (Requirement #17):**
+    - Upgraded Master Calendar ([`CalendarPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/CalendarPage.tsx)) with milestone extraction engine supporting 5 dedicated category filters:
+      - `All Milestones`
+      - `Tender Document Opening Days` (🟣 purple badge & marker)
+      - `Submission Deadlines` (🔵 blue badge & marker)
+      - `Contract Signing Days` (🟢 emerald badge & marker)
+      - `Work Start` (🟡 amber badge & marker)
+      - `Product Handovers` (🟠 orange badge & marker)
+    - Integrated chronological timeline cards with `HAPPENING TODAY` and `TOMORROW (T-1)` urgency badges.
+    - Upgraded backend alert center ([`backend/app/routers/alerts.py`](file:///h:/Tender%20tracker%20v2/backend/app/routers/alerts.py)) and notifications console ([`NotificationsPage.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/NotificationsPage.tsx)):
+      - Automatically emits `CRITICAL` alerts on Tender Document Opening Day.
+      - Automatically emits `WARNING` alerts 1 day before Opening Day (T-1).
+      - Emits closing reminders for Schedule Purchase Deadlines.
+  - **7-Stage Post-Award Execution & Contract Delivery Roadmap (Requirement #17):**
+    - Established strict operational distinction between *Tender Submitted* vs. *Tender Won (`AWARDED`)*.
+    - Upgraded Outcome & Debrief ledger ([`TenderResultTab.tsx`](file:///h:/Tender%20tracker%20v2/frontend/src/pages/tender-tabs/TenderResultTab.tsx)): when tender is `AWARDED`, an interactive 7-phase contract execution roadmap activates:
+      1. *Notification of Award (NOA) Acceptance:* NOA memo reference, date, and acknowledgement.
+      2. *Performance Security Guarantee (PG) Deposit:* 10% auto-calculator, submission due date, status (`PENDING`, `DEPOSITED`, `RELEASED`).
+      3. *Official Contract Signing:* Execution date and stamp paper contract status (`SCHEDULED`, `SIGNED`).
+      4. *Work Commencement & Mobilization:* Notice to Proceed (NTP) / Work Order ref and kickoff date.
+      5. *Execution & Possible Period:* Sprint and deliverable progress timeline.
+      6. *Product Handover Day & UAT Acceptance:* Handover date, UAT progression, and Provisional/Final Acceptance Certificate (PAC/FAC) sign-off.
+      7. *Support & Maintenance Period:* Post-handover SLA duration, warranty end date, and 24/7 technical hotline management.
+    - Persists updates into `tender.postAward` and root milestone columns with 1-click sync.
+  - **Testing & Verification:**
+    - Added `test_20_procurement_milestones_and_commercial_calculator` to backend integration test suite.
+    - 100% passing tests (20/20 test suites).
+    - Frontend TypeScript build verified (`npm run build`, 1,890 modules transformed, 0 errors).
+    - Updated Graphify knowledge graph (54 nodes, 32 edges).
+
 
 ### [2026-09-07] — Version 2.11.0: Zero-Dependency Fuzzy Search Engine Across Tender Search Bars
 - **Category:** Search & Discovery, UX Ergonomics, Zero-Dependency Client Optimization (Requirement #18)
@@ -915,6 +965,15 @@
   3. *Multi-Word Permutations:* Splits multi-token queries and requires all query tokens to fuzzy-match target words in any order.
   4. *Tiered Relevance Scoring & O(n) Fast-Path:* Exact/substring matches bypass expensive matrix computations for zero typing latency.  
   *Impact:* Immediate, fault-tolerant search across Tender Pipeline, Dashboard, Registry, Master Document Vault, Organizations, Company Profiles, Credentials, and Archived Bids with zero new bundle dependencies.
+
+- **ADR-010: Procurement Milestone Lifecycle, Commercial Budget Estimator & Post-Award Execution Architecture**  
+  *Context:* Tender execution in public procurement spans beyond bid submission: teams must purchase tender schedules, submit Earnest Money Deposits (EMD) or bank guarantees, attend bid document opening sessions, negotiate contracts upon winning, execute deliverables, handover systems under UAT, and provide long-term maintenance SLAs (Requirements #20 & #17). Furthermore, procuring entities frequently redact overall budgets but publish required tender security amounts (~2.5% of budget), leaving analysts needing an instant reverse calculator. Finally, winning a tender (`AWARDED`) requires a formal operational roadmap rather than a static status flag.  
+  *Decision:*
+  1. *Procurement Milestone Fields & Auto-Migrations:* Added 6 lifecycle milestones (`opening_date`, `contract_signing_date`, `work_start_date`, `possible_period`, `product_handover_date`, `maintenance_period`) and commercial terms (`schedule_purchase_deadline`, `schedule_purchase_method`, `tender_security_amount`, `tender_security_method`, `post_award_data`) with zero-downtime auto-migrations for SQLite and MySQL.
+  2. *Smart 2.5% Security Deposit & Reverse Budget Calculator:* Added client-side reactive financial calculator in Tab 2 of Tender Registry and Intake Modal with percentage presets, reverse budget estimation ($\text{Budget} = \frac{\text{Security}}{\%}$), and forward security deposit calculation.
+  3. *Calendar Milestone Tracking & Proactive Alerts:* Upgraded `/calendar` with multi-category filters (🟣 Opening Days, 🔵 Deadlines, 🟢 Contract Signing, 🟡 Work Start, 🟠 Handover) and urgency markers. Configured `/api/alerts` to proactively dispatch CRITICAL alerts on Opening Day and WARNING alerts on T-1 Day.
+  4. *7-Stage Post-Award Execution Roadmap:* When tender is `AWARDED`, `/tenders/:id/result` activates an interactive 7-phase delivery roadmap covering NOA Acceptance, Performance Security Deposit, Contract Signing, Work Start, Execution Period, Product Handover, and Maintenance SLA.  
+  *Impact:* Seamless end-to-end procurement governance from pre-bid purchase to warranty maintenance with zero missed milestones.
 
 ---
 

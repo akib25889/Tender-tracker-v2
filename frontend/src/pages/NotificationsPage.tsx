@@ -1,10 +1,26 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card } from '../components/ui/Card';
-import { Clock, AlertTriangle, CheckCircle2, ShieldCheck, Check, RefreshCw } from 'lucide-react';
+import {
+  Clock,
+  AlertTriangle,
+  CheckCircle2,
+  ShieldCheck,
+  Check,
+  RefreshCw,
+  Eye,
+  CalendarCheck,
+} from 'lucide-react';
+import { useTenders } from '../context/TenderContext';
 
 interface Alert {
   id: string;
-  category: 'DEADLINE' | 'BLOCKER' | 'APPROVAL' | 'VAULT';
+  category:
+    | 'DEADLINE'
+    | 'BLOCKER'
+    | 'APPROVAL'
+    | 'VAULT'
+    | 'OPENING_REMINDER'
+    | 'MILESTONE_REMINDER';
   severity: 'CRITICAL' | 'WARNING' | 'INFO';
   title: string;
   description: string;
@@ -18,6 +34,8 @@ const CATEGORY_ICON: Record<string, React.ReactNode> = {
   BLOCKER: <AlertTriangle className="w-4 h-4" />,
   APPROVAL: <CheckCircle2 className="w-4 h-4" />,
   VAULT: <ShieldCheck className="w-4 h-4" />,
+  OPENING_REMINDER: <Eye className="w-4 h-4" />,
+  MILESTONE_REMINDER: <CalendarCheck className="w-4 h-4" />,
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -25,6 +43,8 @@ const CATEGORY_COLORS: Record<string, string> = {
   BLOCKER: 'bg-[#FFF7ED] text-[#EA580C]',
   APPROVAL: 'bg-[#F0FDF4] text-[#16A34A]',
   VAULT: 'bg-[#EFF6FF] text-[#2563EB]',
+  OPENING_REMINDER: 'bg-[#FAF5FF] text-[#7E22CE]',
+  MILESTONE_REMINDER: 'bg-[#FEFCE8] text-[#A16207]',
 };
 
 const SEVERITY_DOT: Record<string, string> = {
@@ -34,6 +54,7 @@ const SEVERITY_DOT: Record<string, string> = {
 };
 
 export const NotificationsPage: React.FC = () => {
+  const { tenders } = useTenders();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
   const [readIds, setReadIds] = useState<Set<string>>(new Set());
@@ -44,13 +65,80 @@ export const NotificationsPage: React.FC = () => {
     fetch('http://127.0.0.1:8000/api/alerts')
       .then((r) => r.json())
       .then((data) => {
-        setAlerts(data.alerts ?? []);
+        const fetched = data.alerts ?? [];
+        setAlerts(fetched);
         setLoading(false);
       })
       .catch(() => {
+        // Synthesize fallback alerts from local tenders if backend is offline
+        const localAlerts: Alert[] = [];
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+
+        tenders.forEach((t) => {
+          if (t.stage === 'ARCHIVED' || t.stage === 'LOST') return;
+
+          // Opening date reminders
+          const opStr = t.openingDate || t.summary?.dates?.openingDate;
+          if (opStr) {
+            const cleanOp = opStr.split('T')[0];
+            const d = new Date(cleanOp);
+            const diffDays = Math.ceil((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+            if (cleanOp === todayStr || diffDays === 0) {
+              localAlerts.push({
+                id: `ALERT-LOCAL-OPN-TODAY-${t.id}`,
+                category: 'OPENING_REMINDER',
+                severity: 'CRITICAL',
+                title: `Tender Document Opening TODAY — ${t.id}`,
+                description: `Official tender opening session for '${t.title}' is scheduled TODAY (${cleanOp}). Authority: ${t.organization}.`,
+                tender_id: t.id,
+                hours_remaining: 0,
+                read: false,
+              });
+            } else if (diffDays === 1) {
+              localAlerts.push({
+                id: `ALERT-LOCAL-OPN-TOMORROW-${t.id}`,
+                category: 'OPENING_REMINDER',
+                severity: 'WARNING',
+                title: `Tender Opening Tomorrow (T-1) — ${t.id}`,
+                description: `Official tender document opening for '${t.title}' is scheduled for tomorrow (${cleanOp}). Verify sealed envelope submission.`,
+                tender_id: t.id,
+                hours_remaining: 24,
+                read: false,
+              });
+            }
+          }
+
+          // Submission deadline reminders
+          if (t.daysRemaining === 0) {
+            localAlerts.push({
+              id: `ALERT-LOCAL-DL-TODAY-${t.id}`,
+              category: 'DEADLINE',
+              severity: 'CRITICAL',
+              title: `Submission Window Closing TODAY — ${t.id}`,
+              description: `Submission window for '${t.title}' locks today! Immediate executive upload required.`,
+              tender_id: t.id,
+              hours_remaining: t.hoursRemaining || 4,
+              read: false,
+            });
+          } else if (t.daysRemaining === 1) {
+            localAlerts.push({
+              id: `ALERT-LOCAL-DL-TOMORROW-${t.id}`,
+              category: 'DEADLINE',
+              severity: 'WARNING',
+              title: `Submission Deadline Tomorrow (T-1) — ${t.id}`,
+              description: `Submission deadline for '${t.title}' closes in 24 hours.`,
+              tender_id: t.id,
+              hours_remaining: t.hoursRemaining || 24,
+              read: false,
+            });
+          }
+        });
+
+        setAlerts(localAlerts);
         setLoading(false);
       });
-  }, []);
+  }, [tenders]);
 
   useEffect(() => {
     fetchAlerts();
@@ -111,7 +199,7 @@ export const NotificationsPage: React.FC = () => {
 
       {/* Filter Tabs */}
       <div className="flex items-center gap-1.5 p-1 bg-white border border-[#E2E8F0] rounded-lg text-xs w-fit shadow-sm">
-        {['ALL', 'DEADLINE', 'BLOCKER', 'APPROVAL', 'VAULT'].map((tab) => (
+        {['ALL', 'OPENING_REMINDER', 'DEADLINE', 'BLOCKER', 'APPROVAL', 'VAULT'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveFilter(tab)}

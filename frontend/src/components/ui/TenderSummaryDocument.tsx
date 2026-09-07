@@ -158,13 +158,18 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
           )}
 
           {s?.commercial && (
-            <SubSection title="Commercial Requirements">
+            <SubSection title="Commercial &amp; Financial Terms">
               <BulletList
                 items={[
-                  s.commercial.tenderSecurity ? `Tender security: ${s.commercial.tenderSecurity}` : null,
-                  s.commercial.tenderDocPrice ? `Tender document price: ${s.commercial.tenderDocPrice}` : null,
-                  s.commercial.contractPeriod ? `Contract/service period: ${s.commercial.contractPeriod}` : null,
-                  s.dates?.contractStart ? `Expected start date: ${s.dates.contractStart}.` : null,
+                  tender.tenderSecurityAmount || s.commercial.tenderSecurityAmount
+                    ? `Tender Security / EMD: ${tender.currency === 'BDT' ? '৳' : '$'}${(tender.tenderSecurityAmount || s.commercial.tenderSecurityAmount || 0).toLocaleString()} via ${tender.tenderSecurityMethod || s.commercial.tenderSecurityMethod || 'Bank Guarantee'}. ${s.commercial.tenderSecurity ? `(${s.commercial.tenderSecurity})` : ''}`
+                    : s.commercial.tenderSecurity ? `Tender security: ${s.commercial.tenderSecurity}` : null,
+                  tender.schedulePurchaseDeadline || s.commercial.schedulePurchaseDeadline
+                    ? `Schedule / Form Purchase: Closes ${tender.schedulePurchaseDeadline || s.commercial.schedulePurchaseDeadline} via ${tender.schedulePurchaseMethod || s.commercial.schedulePurchaseMethod || 'Online e-GP'}. Price: ${s.commercial.tenderDocPrice || 'Free on Portal'}.`
+                    : s.commercial.tenderDocPrice ? `Tender document price: ${s.commercial.tenderDocPrice}` : null,
+                  s.commercial.contractPeriod || tender.possiblePeriod ? `Execution / Contract period: ${s.commercial.contractPeriod || tender.possiblePeriod}` : null,
+                  tender.maintenancePeriod || s.commercial.maintenancePeriod ? `Support & Maintenance / Warranty: ${tender.maintenancePeriod || s.commercial.maintenancePeriod}` : null,
+                  s.dates?.contractStart || tender.workStartDate ? `Expected start date: ${s.dates?.contractStart || tender.workStartDate}.` : null,
                   s.commercial.performanceSecurity ? `Performance security: ${s.commercial.performanceSecurity}` : null,
                   tender.submissionDeadline
                     ? `Submission deadline: ${fmt(tender.submissionDeadline)}${s?.submissionTime ? `, ${s.submissionTime}` : ''}.`
@@ -259,18 +264,22 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
         </Section>
       )}
 
-      {/* IMPORTANT DATES */}
-      {(s?.dates || tender.submissionDeadline) && (
-        <Section title="Important Dates">
+      {/* KEY PROCUREMENT & PROJECT MILESTONES SCHEDULE */}
+      {(s?.dates || tender.submissionDeadline || tender.openingDate || tender.workStartDate || tender.productHandoverDate) && (
+        <Section title="Key Procurement &amp; Project Milestones Schedule">
           <BulletList
             items={[
-              s?.dates?.contractStart ? `Expected contract start date: ${s.dates.contractStart}` : null,
-              s?.commercial?.contractPeriod ? `Contract duration: ${s.commercial.contractPeriod}` : null,
-              tender.submissionDeadline
-                ? `Submission deadline: ${fmt(tender.submissionDeadline)}${s?.submissionTime ? `, ${s.submissionTime}` : ''}`
-                : null,
               s?.dates?.clarificationDeadline ? `Clarification deadline: ${s.dates.clarificationDeadline}` : null,
-              s?.dates?.openingDate ? `Bid opening date: ${s.dates.openingDate}` : null,
+              tender.schedulePurchaseDeadline || s?.dates?.schedulePurchaseDeadline ? `Schedule / Form purchase deadline: ${tender.schedulePurchaseDeadline || s?.dates?.schedulePurchaseDeadline}` : null,
+              tender.submissionDeadline
+                ? `Submission cutoff deadline: ${fmt(tender.submissionDeadline)}${s?.submissionTime ? `, ${s.submissionTime}` : ''}`
+                : null,
+              tender.openingDate || s?.dates?.openingDate ? `Tender document / bid opening date: ${tender.openingDate || s?.dates?.openingDate}` : null,
+              tender.contractSigningDate || s?.dates?.contractSigningDate ? `Contract signing date: ${tender.contractSigningDate || s?.dates?.contractSigningDate}` : null,
+              tender.workStartDate || s?.dates?.contractStart ? `Work / project commencement date: ${tender.workStartDate || s?.dates?.contractStart}` : null,
+              tender.possiblePeriod || s?.commercial?.contractPeriod ? `Execution duration / possible period: ${tender.possiblePeriod || s?.commercial?.contractPeriod}` : null,
+              tender.productHandoverDate || s?.dates?.productHandoverDate ? `Product / system handover date: ${tender.productHandoverDate || s?.dates?.productHandoverDate}` : null,
+              tender.maintenancePeriod || s?.commercial?.maintenancePeriod ? `Support & maintenance / warranty period: ${tender.maintenancePeriod || s?.commercial?.maintenancePeriod}` : null,
             ]}
           />
         </Section>

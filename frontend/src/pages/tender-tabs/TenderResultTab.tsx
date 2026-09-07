@@ -2,11 +2,25 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { useTenders } from '../../context/TenderContext';
-import { Award, CheckCircle2, XCircle } from 'lucide-react';
+import {
+  Award,
+  CheckCircle2,
+  XCircle,
+  ShieldCheck,
+  FileSignature,
+  PlayCircle,
+  PackageCheck,
+  Clock,
+  Wrench,
+  Save,
+  FileText,
+  Sparkles,
+} from 'lucide-react';
+import { PostAwardData } from '../../types/tender';
 
 export const TenderResultTab: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { tenders, updateTenderStage } = useTenders();
+  const { tenders, updateTender, updateTenderStage } = useTenders();
   const tender = tenders.find((t) => t.id === id) || tenders[0];
 
   const [outcome, setOutcome] = useState<'AWARDED' | 'LOST'>(
@@ -20,19 +34,60 @@ export const TenderResultTab: React.FC = () => {
     'Evaluated high technical score (92/100). Competitor discount was 4.2% below margin limit.'
   );
   const [saved, setSaved] = useState(false);
+  const [roadmapSaved, setRoadmapSaved] = useState(false);
+
+  // Post-Award Execution State
+  const initialPostAward: PostAwardData = tender?.postAward || {
+    noaDate: tender?.contractSigningDate ? new Date(Date.parse(tender.contractSigningDate) - 14 * 86400000).toISOString().split('T')[0] : '',
+    noaReference: tender?.referenceNo ? `NOA-${tender.referenceNo}` : 'NOA/2026/049',
+    performanceSecurityAmount: Math.round((tender?.estimatedValue || 0) * 0.1),
+    performanceSecurityDueDate: '',
+    performanceSecurityStatus: 'PENDING',
+    contractSigningStatus: 'SCHEDULED',
+    contractSigningDate: tender?.contractSigningDate || '',
+    workOrderReference: tender?.referenceNo ? `WO-${tender.referenceNo}` : '',
+    workStartDate: tender?.workStartDate || '',
+    handoverStatus: 'PENDING',
+    productHandoverDate: tender?.productHandoverDate || '',
+    warrantyEndDate: '',
+    maintenancePeriod: tender?.maintenancePeriod || '24 Months Post-Handover SLA',
+  };
+
+  const [postAward, setPostAward] = useState<PostAwardData>(initialPostAward);
+  const [possiblePeriod, setPossiblePeriod] = useState(tender?.possiblePeriod || '12 Months Execution');
 
   if (!tender) return null;
 
   const handleRecordResult = (e: React.FormEvent) => {
     e.preventDefault();
     updateTenderStage(tender.id, outcome);
+    if (outcome === 'AWARDED') {
+      updateTender(tender.id, {
+        estimatedValue: Number(awardedAmount) || tender.estimatedValue,
+        postAward,
+      });
+    }
     setSaved(true);
+  };
+
+  const handleSaveRoadmap = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateTender(tender.id, {
+      postAward,
+      contractSigningDate: postAward.contractSigningDate || tender.contractSigningDate,
+      workStartDate: postAward.workStartDate || tender.workStartDate,
+      productHandoverDate: postAward.productHandoverDate || tender.productHandoverDate,
+      maintenancePeriod: postAward.maintenancePeriod || tender.maintenancePeriod,
+      possiblePeriod,
+    });
+    setRoadmapSaved(true);
+    setTimeout(() => setRoadmapSaved(false), 3500);
   };
 
   return (
     <div className="space-y-6">
       <Card
-        title="Tender Outcome &amp; Debrief Ledger"
+        title="Tender Outcome & Debrief Ledger"
         subtitle="Formal contract confirmation or structured loss root-cause debrief tracking"
       >
         {saved && (
@@ -130,6 +185,388 @@ export const TenderResultTab: React.FC = () => {
           </div>
         </form>
       </Card>
+
+      {/* POST-AWARD EXECUTION & CONTRACT DELIVERY ROADMAP */}
+      {outcome === 'AWARDED' && (
+        <Card
+          title="Post-Award Execution & Contract Delivery Roadmap"
+          subtitle="Lifecycle progression after contract award: NOA acceptance, performance security, contract signing, mobilization, execution, and handover"
+        >
+          {roadmapSaved && (
+            <div className="mb-4 p-3 bg-[#F0FDF4] border border-[#BBF7D0] rounded-lg text-[#15803D] text-xs font-semibold flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Post-award roadmap saved! Calendar milestones and project schedules updated.</span>
+            </div>
+          )}
+
+          <div className="mb-5 p-3.5 bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl flex items-start gap-3">
+            <Sparkles className="w-5 h-5 text-[#2563EB] shrink-0 mt-0.5" />
+            <div className="text-xs text-[#1E3A8A] space-y-1">
+              <p className="font-bold">After We Won the Tender — What's Next?</p>
+              <p className="text-[#3B82F6]">
+                Winning the tender initiates statutory legal commitments. Follow the 7-phase operational roadmap below to secure the contract, deposit the performance guarantee, mobilize resources, and execute project deliverables smoothly.
+              </p>
+            </div>
+          </div>
+
+          <form onSubmit={handleSaveRoadmap} className="space-y-6 text-xs">
+            {/* Step 1: Notification of Award (NOA) */}
+            <div className="p-4 bg-white border border-[#E2E8F0] rounded-xl space-y-3 relative hover:border-[#CBD5E1] transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#2563EB] text-white font-bold flex items-center justify-center text-xs">
+                    1
+                  </span>
+                  <span className="font-bold text-sm text-[#0F172A] flex items-center gap-1.5">
+                    <FileText className="w-4 h-4 text-[#2563EB]" />
+                    Notification of Award (NOA) Acceptance
+                  </span>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Step 1 of 7
+                </span>
+              </div>
+              <p className="text-[11px] text-[#64748B]">
+                Issuance of the formal Letter of Acceptance by the procuring authority. The contractor must formally acknowledge and accept within statutory days.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">NOA Reference Memo No.</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Memo No. 44.02.0000.012.26"
+                    value={postAward.noaReference || ''}
+                    onChange={(e) => setPostAward({ ...postAward, noaReference: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">NOA Issuance Date</label>
+                  <input
+                    type="date"
+                    value={postAward.noaDate || ''}
+                    onChange={(e) => setPostAward({ ...postAward, noaDate: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Step 2: Performance Security (PG) Deposit */}
+            <div className="p-4 bg-white border border-[#E2E8F0] rounded-xl space-y-3 relative hover:border-[#CBD5E1] transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#2563EB] text-white font-bold flex items-center justify-center text-xs">
+                    2
+                  </span>
+                  <span className="font-bold text-sm text-[#0F172A] flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    Performance Security Guarantee (PG)
+                  </span>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                  Step 2 of 7
+                </span>
+              </div>
+              <p className="text-[11px] text-[#64748B]">
+                Typically 5% to 10% of total awarded contract value, submitted via irrevocable Bank Guarantee or Pay Order within 14-28 days of NOA.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="font-semibold text-[#0F172A]">PG Amount ($ / ৳)</label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const amt = Math.round((tender.estimatedValue || 0) * 0.1);
+                        setPostAward({ ...postAward, performanceSecurityAmount: amt });
+                      }}
+                      className="text-[10px] text-[#2563EB] font-bold hover:underline"
+                    >
+                      Calc 10%
+                    </button>
+                  </div>
+                  <input
+                    type="number"
+                    value={postAward.performanceSecurityAmount || ''}
+                    onChange={(e) =>
+                      setPostAward({
+                        ...postAward,
+                        performanceSecurityAmount: Number(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono font-bold text-[#0F172A]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Submission Due Date</label>
+                  <input
+                    type="date"
+                    value={postAward.performanceSecurityDueDate || ''}
+                    onChange={(e) =>
+                      setPostAward({ ...postAward, performanceSecurityDueDate: e.target.value })
+                    }
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Deposit Status</label>
+                  <select
+                    value={postAward.performanceSecurityStatus || 'PENDING'}
+                    onChange={(e) =>
+                      setPostAward({
+                        ...postAward,
+                        performanceSecurityStatus: e.target.value as any,
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-semibold"
+                  >
+                    <option value="PENDING">PENDING DEPOSIT</option>
+                    <option value="DEPOSITED">DEPOSITED &amp; ACKNOWLEDGED</option>
+                    <option value="RELEASED">RELEASED (POST-CONTRACT)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 3: Official Contract Signing */}
+            <div className="p-4 bg-white border border-[#E2E8F0] rounded-xl space-y-3 relative hover:border-[#CBD5E1] transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#2563EB] text-white font-bold flex items-center justify-center text-xs">
+                    3
+                  </span>
+                  <span className="font-bold text-sm text-[#0F172A] flex items-center gap-1.5">
+                    <FileSignature className="w-4 h-4 text-purple-600" />
+                    Official Contract Signing (Contract Day)
+                  </span>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+                  Step 3 of 7
+                </span>
+              </div>
+              <p className="text-[11px] text-[#64748B]">
+                Bilateral execution of legal contract deed on non-judicial stamp paper with the procuring entity.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Contract Signing Date</label>
+                  <input
+                    type="date"
+                    value={postAward.contractSigningDate || ''}
+                    onChange={(e) =>
+                      setPostAward({ ...postAward, contractSigningDate: e.target.value })
+                    }
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Signing Status</label>
+                  <select
+                    value={postAward.contractSigningStatus || 'SCHEDULED'}
+                    onChange={(e) =>
+                      setPostAward({
+                        ...postAward,
+                        contractSigningStatus: e.target.value as any,
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-semibold"
+                  >
+                    <option value="SCHEDULED">SCHEDULED / PENDING DATE</option>
+                    <option value="SIGNED">EXECUTED &amp; SIGNED</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 4: Work Commencement / Mobilization */}
+            <div className="p-4 bg-white border border-[#E2E8F0] rounded-xl space-y-3 relative hover:border-[#CBD5E1] transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#2563EB] text-white font-bold flex items-center justify-center text-xs">
+                    4
+                  </span>
+                  <span className="font-bold text-sm text-[#0F172A] flex items-center gap-1.5">
+                    <PlayCircle className="w-4 h-4 text-amber-600" />
+                    Work Start Day &amp; Mobilization
+                  </span>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                  Step 4 of 7
+                </span>
+              </div>
+              <p className="text-[11px] text-[#64748B]">
+                Receipt of Work Order / Notice to Proceed (NTP), kickoff meeting, and deployment of engineering teams and hardware infrastructure.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Work Order / NTP Ref</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. WO-2026-ICT-008"
+                    value={postAward.workOrderReference || ''}
+                    onChange={(e) =>
+                      setPostAward({ ...postAward, workOrderReference: e.target.value })
+                    }
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Work Start Day (Kickoff)</label>
+                  <input
+                    type="date"
+                    value={postAward.workStartDate || ''}
+                    onChange={(e) =>
+                      setPostAward({ ...postAward, workStartDate: e.target.value })
+                    }
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-bold"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Step 5: Execution & Deliverables Tracking */}
+            <div className="p-4 bg-white border border-[#E2E8F0] rounded-xl space-y-3 relative hover:border-[#CBD5E1] transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#2563EB] text-white font-bold flex items-center justify-center text-xs">
+                    5
+                  </span>
+                  <span className="font-bold text-sm text-[#0F172A] flex items-center gap-1.5">
+                    <Clock className="w-4 h-4 text-cyan-600" />
+                    Execution &amp; Possible Period
+                  </span>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-50 text-cyan-700 border border-cyan-200">
+                  Step 5 of 7
+                </span>
+              </div>
+              <p className="text-[11px] text-[#64748B]">
+                Active project rollout duration, sprints, sprint demos, and milestone deliverables delivery timeline.
+              </p>
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Possible / Execution Period Duration
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. 12 Months from Work Order / 180 Calendar Days"
+                  value={possiblePeriod}
+                  onChange={(e) => setPossiblePeriod(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-semibold"
+                />
+              </div>
+            </div>
+
+            {/* Step 6: Product Hand Over Day & UAT Acceptance */}
+            <div className="p-4 bg-white border border-[#E2E8F0] rounded-xl space-y-3 relative hover:border-[#CBD5E1] transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#2563EB] text-white font-bold flex items-center justify-center text-xs">
+                    6
+                  </span>
+                  <span className="font-bold text-sm text-[#0F172A] flex items-center gap-1.5">
+                    <PackageCheck className="w-4 h-4 text-emerald-600" />
+                    Product Hand Over Day &amp; UAT
+                  </span>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Step 6 of 7
+                </span>
+              </div>
+              <p className="text-[11px] text-[#64748B]">
+                User Acceptance Testing (UAT), training sign-off, and formal issuance of Provisional / Final Acceptance Certificate (PAC/FAC).
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Product Hand Over Day</label>
+                  <input
+                    type="date"
+                    value={postAward.productHandoverDate || ''}
+                    onChange={(e) =>
+                      setPostAward({ ...postAward, productHandoverDate: e.target.value })
+                    }
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Handover / UAT Status</label>
+                  <select
+                    value={postAward.handoverStatus || 'PENDING'}
+                    onChange={(e) =>
+                      setPostAward({
+                        ...postAward,
+                        handoverStatus: e.target.value as any,
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-semibold"
+                  >
+                    <option value="PENDING">PENDING DEVELOPMENT</option>
+                    <option value="UAT_IN_PROGRESS">UAT IN PROGRESS</option>
+                    <option value="HANDED_OVER">HANDED OVER (PAC SIGNED)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 7: Support & Maintenance Period (SLA) */}
+            <div className="p-4 bg-white border border-[#E2E8F0] rounded-xl space-y-3 relative hover:border-[#CBD5E1] transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#2563EB] text-white font-bold flex items-center justify-center text-xs">
+                    7
+                  </span>
+                  <span className="font-bold text-sm text-[#0F172A] flex items-center gap-1.5">
+                    <Wrench className="w-4 h-4 text-indigo-600" />
+                    Support &amp; Maintenance Period (O&amp;M)
+                  </span>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                  Step 7 of 7
+                </span>
+              </div>
+              <p className="text-[11px] text-[#64748B]">
+                Post-delivery warranty, tier-3/4 technical support, system patching, and SLA performance management.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Maintenance Period Duration</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 24 Months Comprehensive O&M + 24/7 Helpline"
+                    value={postAward.maintenancePeriod || ''}
+                    onChange={(e) =>
+                      setPostAward({ ...postAward, maintenancePeriod: e.target.value })
+                    }
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Warranty End Date</label>
+                  <input
+                    type="date"
+                    value={postAward.warrantyEndDate || ''}
+                    onChange={(e) =>
+                      setPostAward({ ...postAward, warrantyEndDate: e.target.value })
+                    }
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <button
+                type="submit"
+                className="px-5 py-2.5 bg-[#2563EB] text-white rounded-lg font-bold hover:bg-[#1D4ED8] shadow-sm transition-colors flex items-center gap-2 text-xs"
+              >
+                <Save className="w-4 h-4" />
+                <span>Save Post-Award Roadmap &amp; Update Milestones</span>
+              </button>
+            </div>
+          </form>
+        </Card>
+      )}
     </div>
   );
 };

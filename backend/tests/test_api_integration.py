@@ -1150,3 +1150,89 @@ def test_19_procurement_manager_and_helpline_details():
     assert updated["helpline_phone"] == "16123 (Toll Free Hotline)"
     # Retains previous unchanged fields
     assert updated["helpline_email"] == "helpdesk@dtca.gov.bd"
+
+
+def test_20_procurement_milestones_and_commercial_calculator():
+    """Test Req #20 & Req #17: Full lifecycle procurement milestones, commercial security deposit terms & post-award execution tracking."""
+    test_id = "TDR-TEST-MILESTONES-20"
+    client.delete(f"/api/tenders/{test_id}")
+
+    from datetime import date, timedelta
+    today = date.today().isoformat()
+    tomorrow = (date.today() + timedelta(days=1)).isoformat()
+    next_month = (date.today() + timedelta(days=30)).isoformat()
+
+    create_payload = {
+        "id": test_id,
+        "title": "National High-Speed Transit Ticketing Infrastructure",
+        "organization": "Bangladesh Railway",
+        "country": "Bangladesh",
+        "category": "Smart Mobility & Ticketing",
+        "estimated_value": 10000000.0,
+        "currency": "BDT",
+        "opening_date": today,
+        "contract_signing_date": next_month,
+        "work_start_date": (date.today() + timedelta(days=45)).isoformat(),
+        "possible_period": "18 Months Turnkey Delivery",
+        "product_handover_date": (date.today() + timedelta(days=540)).isoformat(),
+        "maintenance_period": "36 Months SLA 24/7 Support",
+        "schedule_purchase_deadline": tomorrow,
+        "schedule_purchase_method": "ONLINE_EGP",
+        "tender_security_amount": 250000.0,  # 2.5% of 10,000,000
+        "tender_security_method": "BANK_GUARANTEE",
+        "post_award_data": {
+            "noaReference": "BR/PROC/2026/089",
+            "noaDate": today,
+            "performanceSecurityAmount": 1000000.0,
+            "performanceSecurityStatus": "PENDING",
+            "contractSigningStatus": "SCHEDULED"
+        }
+    }
+
+    # 1. Create tender with milestones
+    res = client.post("/api/tenders", json=create_payload)
+    assert res.status_code == 201
+    created = res.json()
+    assert created["opening_date"] == today
+    assert created["possible_period"] == "18 Months Turnkey Delivery"
+    assert created["tender_security_amount"] == 250000.0
+    assert created["post_award_data"]["noaReference"] == "BR/PROC/2026/089"
+
+    # 2. Retrieve tender
+    get_res = client.get(f"/api/tenders/{test_id}")
+    assert get_res.status_code == 200
+    fetched = get_res.json()
+    assert fetched["opening_date"] == today
+    assert fetched["maintenance_period"] == "36 Months SLA 24/7 Support"
+    assert fetched["tender_security_method"] == "BANK_GUARANTEE"
+
+    # 3. Update post-award execution roadmap
+    update_res = client.put(
+        f"/api/tenders/{test_id}",
+        json={
+            "stage": "AWARDED",
+            "post_award_data": {
+                "noaReference": "BR/PROC/2026/089",
+                "noaDate": today,
+                "performanceSecurityAmount": 1000000.0,
+                "performanceSecurityStatus": "DEPOSITED",
+                "contractSigningStatus": "SIGNED",
+                "contractSigningDate": next_month
+            }
+        }
+    )
+    assert update_res.status_code == 200
+    updated = update_res.json()
+    assert updated["stage"] == "AWARDED"
+    assert updated["post_award_data"]["performanceSecurityStatus"] == "DEPOSITED"
+    assert updated["post_award_data"]["contractSigningStatus"] == "SIGNED"
+
+    # 4. Check alerts generated for opening date today
+    alerts_res = client.get("/api/alerts")
+    assert alerts_res.status_code == 200
+    alerts_data = alerts_res.json()
+    alerts = alerts_data.get("alerts", [])
+    opening_alerts = [a for a in alerts if a.get("tender_id") == test_id and "Opening" in a.get("title", "")]
+    assert len(opening_alerts) >= 1
+    assert opening_alerts[0]["severity"] == "CRITICAL"
+

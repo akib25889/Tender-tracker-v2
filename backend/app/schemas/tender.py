@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Dict
 from pydantic import BaseModel
 from app.schemas.task import TaskOut
 from app.schemas.document import DocumentOut, FolderOut
@@ -114,6 +114,20 @@ class TenderBase(BaseModel):
     helpline_phone: Optional[str] = None
     helpline_email: Optional[str] = None
     helpline_hours: Optional[str] = None
+    # Milestone Schedule Dates (Req #20)
+    opening_date: Optional[str] = None
+    contract_signing_date: Optional[str] = None
+    work_start_date: Optional[str] = None
+    possible_period: Optional[str] = None
+    product_handover_date: Optional[str] = None
+    maintenance_period: Optional[str] = None
+    # Schedule / Form Purchase & Tender Security (EMD)
+    schedule_purchase_deadline: Optional[str] = None
+    schedule_purchase_method: Optional[str] = None
+    tender_security_amount: Optional[float] = None
+    tender_security_method: Optional[str] = None
+    # Post-Award Execution & Contract Delivery Data (Req #17)
+    post_award_data: Optional[Dict[str, Any]] = None
 
 
 class TenderCreate(TenderBase):
@@ -149,6 +163,17 @@ class TenderUpdate(BaseModel):
     helpline_phone: Optional[str] = None
     helpline_email: Optional[str] = None
     helpline_hours: Optional[str] = None
+    opening_date: Optional[str] = None
+    contract_signing_date: Optional[str] = None
+    work_start_date: Optional[str] = None
+    possible_period: Optional[str] = None
+    product_handover_date: Optional[str] = None
+    maintenance_period: Optional[str] = None
+    schedule_purchase_deadline: Optional[str] = None
+    schedule_purchase_method: Optional[str] = None
+    tender_security_amount: Optional[float] = None
+    tender_security_method: Optional[str] = None
+    post_award_data: Optional[Dict[str, Any]] = None
     archived_from_stage: Optional[str] = None
 
 

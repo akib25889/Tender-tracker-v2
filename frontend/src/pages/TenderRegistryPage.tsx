@@ -17,6 +17,10 @@ import {
   BookOpen,
   UserCheck,
   Headphones,
+  Calculator,
+  ShieldCheck,
+  Calendar,
+  ArrowRight,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import {
@@ -203,6 +207,49 @@ export const TenderRegistryPage: React.FC = () => {
       '10% of Contract Value'
   );
 
+  // Commercial Schedule & Tender Security (EMD)
+  const [schedulePurchaseDeadline, setSchedulePurchaseDeadline] = useState(
+    selectedTender?.schedulePurchaseDeadline || selectedTender?.summary?.commercial?.schedulePurchaseDeadline || ''
+  );
+  const [schedulePurchaseMethod, setSchedulePurchaseMethod] = useState(
+    selectedTender?.schedulePurchaseMethod || selectedTender?.summary?.commercial?.schedulePurchaseMethod || 'ONLINE_EGP'
+  );
+  const [tenderSecurityAmount, setTenderSecurityAmount] = useState<string | number>(
+    selectedTender?.tenderSecurityAmount || selectedTender?.summary?.commercial?.tenderSecurityAmount || ''
+  );
+  const [tenderSecurityMethod, setTenderSecurityMethod] = useState(
+    selectedTender?.tenderSecurityMethod || selectedTender?.summary?.commercial?.tenderSecurityMethod || 'BANK_GUARANTEE'
+  );
+  const [securityPercent, setSecurityPercent] = useState<number>(2.5);
+
+  // Reverse budget estimator: Security ÷ %
+  const impliedBudgetFromSecurity = useMemo(() => {
+    const sec = Number(tenderSecurityAmount) || 0;
+    const pct = Number(securityPercent) || 2.5;
+    if (sec <= 0 || pct <= 0) return 0;
+    return sec / (pct / 100);
+  }, [tenderSecurityAmount, securityPercent]);
+
+  // Forward security calculator: Budget × %
+  const impliedSecurityFromBudget = useMemo(() => {
+    const bud = Number(estimatedValue) || 0;
+    const pct = Number(securityPercent) || 2.5;
+    if (bud <= 0 || pct <= 0) return 0;
+    return bud * (pct / 100);
+  }, [estimatedValue, securityPercent]);
+
+  const handleApplyCalculatedBudget = () => {
+    if (impliedBudgetFromSecurity > 0) {
+      setEstimatedValue(Math.round(impliedBudgetFromSecurity));
+    }
+  };
+
+  const handleApplyCalculatedSecurity = () => {
+    if (impliedSecurityFromBudget > 0) {
+      setTenderSecurityAmount(Math.round(impliedSecurityFromBudget));
+    }
+  };
+
   // Dynamic Lists
   const [technicalReqs, setTechnicalReqs] = useState<string[]>(
     selectedTender?.summary?.technicalReqs || [
@@ -315,15 +362,30 @@ export const TenderRegistryPage: React.FC = () => {
     ]
   );
 
-  // Dates, Risks, Management
+  // Milestone Schedule Dates (Req #20)
   const [clarificationDeadline, setClarificationDeadline] = useState(
     selectedTender?.summary?.dates?.clarificationDeadline || ''
   );
   const [openingDate, setOpeningDate] = useState(
-    selectedTender?.summary?.dates?.openingDate || ''
+    selectedTender?.openingDate || selectedTender?.summary?.dates?.openingDate || ''
+  );
+  const [contractSigningDate, setContractSigningDate] = useState(
+    selectedTender?.contractSigningDate || selectedTender?.summary?.dates?.contractSigningDate || ''
+  );
+  const [workStartDate, setWorkStartDate] = useState(
+    selectedTender?.workStartDate || selectedTender?.summary?.dates?.workStartDate || ''
   );
   const [contractStart, setContractStart] = useState(
-    selectedTender?.summary?.dates?.contractStart || ''
+    selectedTender?.workStartDate || selectedTender?.summary?.dates?.contractStart || ''
+  );
+  const [possiblePeriod, setPossiblePeriod] = useState(
+    selectedTender?.possiblePeriod || selectedTender?.summary?.dates?.possiblePeriod || ''
+  );
+  const [productHandoverDate, setProductHandoverDate] = useState(
+    selectedTender?.productHandoverDate || selectedTender?.summary?.dates?.productHandoverDate || ''
+  );
+  const [maintenancePeriod, setMaintenancePeriod] = useState(
+    selectedTender?.maintenancePeriod || selectedTender?.summary?.dates?.maintenancePeriod || ''
   );
 
   const [risks, setRisks] = useState<TenderRiskPoint[]>(
@@ -526,14 +588,42 @@ export const TenderRegistryPage: React.FC = () => {
       ]
     );
 
+    setSchedulePurchaseDeadline(
+      selectedTender.schedulePurchaseDeadline || selectedTender.summary?.commercial?.schedulePurchaseDeadline || ''
+    );
+    setSchedulePurchaseMethod(
+      selectedTender.schedulePurchaseMethod || selectedTender.summary?.commercial?.schedulePurchaseMethod || 'ONLINE_EGP'
+    );
+    setTenderSecurityAmount(
+      selectedTender.tenderSecurityAmount || selectedTender.summary?.commercial?.tenderSecurityAmount || ''
+    );
+    setTenderSecurityMethod(
+      selectedTender.tenderSecurityMethod || selectedTender.summary?.commercial?.tenderSecurityMethod || 'BANK_GUARANTEE'
+    );
+
     setClarificationDeadline(
       selectedTender.summary?.dates?.clarificationDeadline || ''
     );
     setOpeningDate(
-      selectedTender.summary?.dates?.openingDate || ''
+      selectedTender.openingDate || selectedTender.summary?.dates?.openingDate || ''
+    );
+    setContractSigningDate(
+      selectedTender.contractSigningDate || selectedTender.summary?.dates?.contractSigningDate || ''
+    );
+    setWorkStartDate(
+      selectedTender.workStartDate || selectedTender.summary?.dates?.workStartDate || ''
     );
     setContractStart(
-      selectedTender.summary?.dates?.contractStart || ''
+      selectedTender.workStartDate || selectedTender.summary?.dates?.contractStart || ''
+    );
+    setPossiblePeriod(
+      selectedTender.possiblePeriod || selectedTender.summary?.dates?.possiblePeriod || ''
+    );
+    setProductHandoverDate(
+      selectedTender.productHandoverDate || selectedTender.summary?.dates?.productHandoverDate || ''
+    );
+    setMaintenancePeriod(
+      selectedTender.maintenancePeriod || selectedTender.summary?.dates?.maintenancePeriod || ''
     );
 
     setRisks(
@@ -636,6 +726,16 @@ export const TenderRegistryPage: React.FC = () => {
       helplinePhone,
       helplineEmail,
       helplineHours,
+      openingDate: openingDate || '',
+      contractSigningDate: contractSigningDate || '',
+      workStartDate: workStartDate || '',
+      possiblePeriod: possiblePeriod || '',
+      productHandoverDate: productHandoverDate || '',
+      maintenancePeriod: maintenancePeriod || '',
+      schedulePurchaseDeadline: schedulePurchaseDeadline || '',
+      schedulePurchaseMethod: schedulePurchaseMethod || 'ONLINE_EGP',
+      tenderSecurityAmount: Number(tenderSecurityAmount) || undefined,
+      tenderSecurityMethod: tenderSecurityMethod || 'BANK_GUARANTEE',
       submissionDeadline: parsedDeadline,
       summary: {
         classification,
@@ -657,9 +757,14 @@ export const TenderRegistryPage: React.FC = () => {
         },
         commercial: {
           tenderSecurity,
-          contractPeriod,
+          tenderSecurityAmount: Number(tenderSecurityAmount) || undefined,
+          tenderSecurityMethod,
+          contractPeriod: possiblePeriod || contractPeriod,
           tenderDocPrice,
+          schedulePurchaseDeadline,
+          schedulePurchaseMethod,
           performanceSecurity,
+          maintenancePeriod,
         },
         technicalReqs: technicalReqs.filter((s) => s.trim().length > 0),
         technologyMentioned: technologyMentioned.filter(
@@ -689,7 +794,13 @@ export const TenderRegistryPage: React.FC = () => {
           clarificationDeadline: clarificationDeadline || '',
           submissionDeadline: lastDate ? `${lastDate} ${submissionTime}`.trim() : '',
           openingDate: openingDate || '',
-          contractStart: contractStart || '',
+          contractSigningDate: contractSigningDate || '',
+          workStartDate: workStartDate || '',
+          contractStart: workStartDate || contractStart || '',
+          possiblePeriod: possiblePeriod || '',
+          productHandoverDate: productHandoverDate || '',
+          maintenancePeriod: maintenancePeriod || '',
+          schedulePurchaseDeadline: schedulePurchaseDeadline || '',
         },
         risks: risks.filter((r) => r.text.trim().length > 0),
         managementHighlights: management.filter((m) => m.trim().length > 0),
@@ -1506,39 +1617,231 @@ export const TenderRegistryPage: React.FC = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Tender Schedule / Form Buy Panel */}
+                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2">
+                    <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5 text-[#2563EB]" />
+                      Tender Schedule / Form Purchase Terms
+                    </span>
+                    <span className="text-[10px] text-[#64748B] font-mono">Form Buy &amp; Procurement Fee</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        Schedule Buy Deadline
+                      </label>
+                      <input
+                        type="date"
+                        value={schedulePurchaseDeadline}
+                        onChange={(e) => setSchedulePurchaseDeadline(e.target.value)}
+                        className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        Tender Document / Form Fee
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. ৳2,000 or Free on e-GP"
+                        value={tenderDocPrice}
+                        onChange={(e) => setTenderDocPrice(e.target.value)}
+                        className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        Schedule Payment Method
+                      </label>
+                      <select
+                        value={schedulePurchaseMethod}
+                        onChange={(e) => setSchedulePurchaseMethod(e.target.value)}
+                        className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                      >
+                        <option value="ONLINE_EGP">Online e-GP Payment Gateway</option>
+                        <option value="PAY_ORDER">Pay Order / Demand Draft</option>
+                        <option value="BANK_DEPOSIT">Direct Bank Deposit / Transfer</option>
+                        <option value="TREASURY_CHALLAN">Treasury Challan (Sonali Bank)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tender Security Deposit & Smart 2.5% Reverse Budget Calculator */}
+                <div className="p-4 bg-gradient-to-br from-[#EFF6FF]/60 to-[#F8FAFC] rounded-xl border border-[#BFDBFE] space-y-4">
+                  <div className="flex flex-wrap items-center justify-between border-b border-[#BFDBFE] pb-2.5 gap-2">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-[#2563EB]" />
+                      <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                        Tender Security / Earnest Money Deposit (EMD)
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-semibold bg-[#DBEAFE] text-[#1D4ED8] px-2 py-0.5 rounded-full">
+                      Standard Guideline: ~2.5% of Budget
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                        Security Deposit Amount ({tenderCurrency}) *
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        placeholder="e.g. 355000"
+                        value={tenderSecurityAmount}
+                        onChange={(e) => setTenderSecurityAmount(e.target.value)}
+                        className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg font-mono font-bold text-[#0F172A] text-sm focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                        Security Instrument / Method *
+                      </label>
+                      <select
+                        value={tenderSecurityMethod}
+                        onChange={(e) => setTenderSecurityMethod(e.target.value)}
+                        className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                      >
+                        <option value="BANK_GUARANTEE">Bank Guarantee (BG)</option>
+                        <option value="PAY_ORDER">Pay Order (PO) / Demand Draft</option>
+                        <option value="ONLINE_PORTAL">Online Portal Security Deposit</option>
+                        <option value="TREASURY_CHALLAN">Treasury Challan</option>
+                      </select>
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                        Security Description / Specific Bank Requirements
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Irrevocable unconditional Bank Guarantee valid for 148 days from scheduled opening"
+                        value={tenderSecurity}
+                        onChange={(e) => setTenderSecurity(e.target.value)}
+                        className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Interactive % Estimator & Reverse Budget Calculator */}
+                  <div className="p-3.5 bg-white rounded-xl border border-[#93C5FD] shadow-xs space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#1E40AF]">
+                        <Calculator className="w-4 h-4 text-[#2563EB]" />
+                        <span>Security Deposit % &amp; Reverse Budget Estimator</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {[1.0, 2.0, 2.5, 3.0, 5.0].map((pct) => (
+                          <button
+                            key={pct}
+                            type="button"
+                            onClick={() => setSecurityPercent(pct)}
+                            className={`px-2 py-1 rounded text-[11px] font-semibold transition-colors ${
+                              securityPercent === pct
+                                ? 'bg-[#2563EB] text-white'
+                                : 'bg-[#F1F5F9] text-[#475569] hover:bg-[#E2E8F0]'
+                            }`}
+                          >
+                            {pct}%
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <p className="text-[11px] text-[#64748B] leading-relaxed">
+                      In many public tenders, procuring entities state the exact <strong>Security Deposit</strong> amount but keep the total budget unstated. 
+                      Since tender security is typically set at <strong>{securityPercent}%</strong>, you can instantly estimate the official procurement budget from the security deposit, or vice versa.
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                      {/* Reverse Estimator: From Security to Budget */}
+                      <div className="p-2.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-1.5">
+                        <div className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">
+                          Reverse Mode: Implied Budget from Security
+                        </div>
+                        <div className="text-xs text-[#0F172A]">
+                          Security ({tenderSecurityAmount ? Number(tenderSecurityAmount).toLocaleString() : '0'} {tenderCurrency}) ÷ {securityPercent}% =
+                        </div>
+                        <div className="font-mono text-sm font-extrabold text-[#2563EB]">
+                          {impliedBudgetFromSecurity > 0
+                            ? `≈ ${tenderCurrency === 'BDT' ? '৳' : '$'}${Math.round(impliedBudgetFromSecurity).toLocaleString()} ${tenderCurrency}`
+                            : 'Enter security deposit above'}
+                        </div>
+                        {impliedBudgetFromSecurity > 0 && (
+                          <button
+                            type="button"
+                            onClick={handleApplyCalculatedBudget}
+                            className="mt-1 w-full py-1.5 px-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-[11px] font-bold rounded flex items-center justify-center gap-1 transition-colors"
+                          >
+                            <span>⚡ Set Estimated Budget to {tenderCurrency === 'BDT' ? '৳' : '$'}{Math.round(impliedBudgetFromSecurity).toLocaleString()}</span>
+                            <ArrowRight className="w-3 h-3" />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Forward Mode: From Budget to Security */}
+                      <div className="p-2.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-1.5">
+                        <div className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">
+                          Forward Mode: Security from Estimated Budget
+                        </div>
+                        <div className="text-xs text-[#0F172A]">
+                          Budget ({estimatedValue ? Number(estimatedValue).toLocaleString() : '0'} {tenderCurrency}) × {securityPercent}% =
+                        </div>
+                        <div className="font-mono text-sm font-extrabold text-[#16A34A]">
+                          {impliedSecurityFromBudget > 0
+                            ? `≈ ${tenderCurrency === 'BDT' ? '৳' : '$'}${Math.round(impliedSecurityFromBudget).toLocaleString()} ${tenderCurrency}`
+                            : 'Enter estimated budget below'}
+                        </div>
+                        {impliedSecurityFromBudget > 0 && (
+                          <button
+                            type="button"
+                            onClick={handleApplyCalculatedSecurity}
+                            className="mt-1 w-full py-1.5 px-2 bg-[#16A34A] hover:bg-[#15803D] text-white text-[11px] font-bold rounded flex items-center justify-center gap-1 transition-colors"
+                          >
+                            <span>Set Security Amount ({tenderCurrency === 'BDT' ? '৳' : '$'}{Math.round(impliedSecurityFromBudget).toLocaleString()})</span>
+                            <Check className="w-3 h-3" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contract, Maintenance & Performance Security */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block font-semibold text-[#475569] mb-1">
-                      Tender Security / EMD
+                      Execution / Contract Period
                     </label>
                     <input
                       type="text"
-                      value={tenderSecurity}
-                      onChange={(e) => setTenderSecurity(e.target.value)}
+                      placeholder="e.g. 180 Days / 6 Months"
+                      value={possiblePeriod || contractPeriod}
+                      onChange={(e) => {
+                        setPossiblePeriod(e.target.value);
+                        setContractPeriod(e.target.value);
+                      }}
                       className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
                     />
                   </div>
 
                   <div>
                     <label className="block font-semibold text-[#475569] mb-1">
-                      Contract / Service Period
+                      Support &amp; Maintenance Period
                     </label>
                     <input
                       type="text"
-                      value={contractPeriod}
-                      onChange={(e) => setContractPeriod(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
-                      Tender Document Price
-                    </label>
-                    <input
-                      type="text"
-                      value={tenderDocPrice}
-                      onChange={(e) => setTenderDocPrice(e.target.value)}
+                      placeholder="e.g. 36 Months 24/7 SLA & Warranty"
+                      value={maintenancePeriod}
+                      onChange={(e) => setMaintenancePeriod(e.target.value)}
                       className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
                     />
                   </div>
@@ -1549,15 +1852,16 @@ export const TenderRegistryPage: React.FC = () => {
                     </label>
                     <input
                       type="text"
+                      placeholder="e.g. 10% of Contract Value"
                       value={performanceSecurity}
                       onChange={(e) => setPerformanceSecurity(e.target.value)}
                       className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
                     />
                   </div>
 
-                  <div className="sm:col-span-2">
+                  <div className="sm:col-span-3">
                     <label className="block font-semibold text-[#475569] mb-1">
-                      Estimated Net Value ($ USD)
+                      Estimated Net Value ({tenderCurrency})
                     </label>
                     <input
                       type="number"
@@ -1566,7 +1870,7 @@ export const TenderRegistryPage: React.FC = () => {
                       placeholder="Leave blank if not specified / entry"
                       value={estimatedValue}
                       onChange={(e) => setEstimatedValue(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] placeholder:text-[#94A3B8]"
+                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono font-bold text-[#0F172A] placeholder:text-[#94A3B8]"
                     />
                   </div>
                 </div>
@@ -1864,41 +2168,105 @@ export const TenderRegistryPage: React.FC = () => {
             {/* TAB 5: DATES & RISKS */}
             {activeEditorTab === 'RISKS' && (
               <div className="space-y-6 animate-fadeIn">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
-                      Clarification Deadline
-                    </label>
-                    <input
-                      type="date"
-                      value={clarificationDeadline}
-                      onChange={(e) => setClarificationDeadline(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
-                    />
+                {/* Comprehensive Procurement & Project Milestones Schedule (Req #20) */}
+                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2">
+                    <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-[#2563EB]" />
+                      Key Procurement &amp; Project Milestones Schedule
+                    </span>
+                    <span className="text-[10px] text-[#64748B] font-mono">Full Lifecycle Dates (Req #20)</span>
                   </div>
 
-                  <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
-                      Bid Opening Date
-                    </label>
-                    <input
-                      type="date"
-                      value={openingDate}
-                      onChange={(e) => setOpeningDate(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
-                    />
-                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                        Clarification Deadline
+                      </label>
+                      <input
+                        type="date"
+                        value={clarificationDeadline}
+                        onChange={(e) => setClarificationDeadline(e.target.value)}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
 
-                  <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
-                      Expected Contract Start
-                    </label>
-                    <input
-                      type="date"
-                      value={contractStart}
-                      onChange={(e) => setContractStart(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
-                    />
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                        Tender Document / Bid Opening Date *
+                      </label>
+                      <input
+                        type="date"
+                        value={openingDate}
+                        onChange={(e) => setOpeningDate(e.target.value)}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs font-bold text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                        Contract Signing Date *
+                      </label>
+                      <input
+                        type="date"
+                        value={contractSigningDate}
+                        onChange={(e) => setContractSigningDate(e.target.value)}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                        Work / Project Start Date (W.O.) *
+                      </label>
+                      <input
+                        type="date"
+                        value={workStartDate || contractStart}
+                        onChange={(e) => {
+                          setWorkStartDate(e.target.value);
+                          setContractStart(e.target.value);
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                        Possible / Execution Period
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. 180 Days / 6 Months"
+                        value={possiblePeriod}
+                        onChange={(e) => setPossiblePeriod(e.target.value)}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                        Product / System Handover Date *
+                      </label>
+                      <input
+                        type="date"
+                        value={productHandoverDate}
+                        onChange={(e) => setProductHandoverDate(e.target.value)}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs font-bold text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-3">
+                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                        Support and Maintenance / Warranty Period *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. 36 Months 24/7 SLA &amp; Comprehensive Warranty (O&amp;M)"
+                        value={maintenancePeriod}
+                        onChange={(e) => setMaintenancePeriod(e.target.value)}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
                   </div>
                 </div>
 
