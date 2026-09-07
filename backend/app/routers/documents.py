@@ -4,6 +4,7 @@ import zipfile
 import secrets
 import uuid
 import hashlib
+import mimetypes
 from typing import List, Optional
 from datetime import datetime, timedelta
 from datetime import datetime, timedelta, timezone
@@ -19,7 +20,7 @@ from fastapi import (
     Request,
     status,
 )
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, StreamingResponse
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.tender import Tender
@@ -49,6 +50,73 @@ from app.services.storage import (
 )
 
 router = APIRouter(tags=["Document Vault & Master Library"])
+
+
+def _document_media_type(filename: str) -> str:
+    return mimetypes.guess_type(filename)[0] or "application/octet-stream"
+
+
+def _inline_file_response(
+    file_path: str, filename: str, range_header: Optional[str] = None
+) -> Response:
+    media_type = _document_media_type(filename)
+    if not range_header:
+        return FileResponse(
+            path=file_path,
+            media_type=media_type,
+            headers={"Content-Disposition": f'inline; filename="{filename}"'},
+        )
+
+    file_size = os.path.getsize(file_path)
+    if not range_header.startswith("bytes=") or "," in range_header:
+        return Response(
+            status_code=416, headers={"Content-Range": f"bytes */{file_size}"}
+        )
+
+    range_value = range_header.removeprefix("bytes=")
+    start_text, _, end_text = range_value.partition("-")
+    try:
+        if not start_text:
+            suffix_length = int(end_text)
+            start = max(file_size - suffix_length, 0)
+            end = file_size - 1
+        else:
+            start = int(start_text)
+            end = int(end_text) if end_text else file_size - 1
+    except ValueError:
+        return Response(
+            status_code=416, headers={"Content-Range": f"bytes */{file_size}"}
+        )
+
+    if start < 0 or start >= file_size or end < start:
+        return Response(
+            status_code=416, headers={"Content-Range": f"bytes */{file_size}"}
+        )
+    end = min(end, file_size - 1)
+    content_length = end - start + 1
+
+    def iter_file():
+        with open(file_path, "rb") as stream:
+            stream.seek(start)
+            remaining = content_length
+            while remaining:
+                chunk = stream.read(min(1024 * 1024, remaining))
+                if not chunk:
+                    break
+                remaining -= len(chunk)
+                yield chunk
+
+    return StreamingResponse(
+        iter_file(),
+        status_code=206,
+        media_type=media_type,
+        headers={
+            "Content-Disposition": f'inline; filename="{filename}"',
+            "Accept-Ranges": "bytes",
+            "Content-Range": f"bytes {start}-{end}/{file_size}",
+            "Content-Length": str(content_length),
+        },
+    )
 
 
 @router.get("/tenders/{tender_id}/documents", response_model=List[DocumentOut])
@@ -234,6 +302,56 @@ def download_document(
     )
 
 
+@router.get("/documents/{doc_id}/preview")
+def preview_document(
+    doc_id: str,
+    request: Request,
+    user_id: Optional[str] = Query(None),
+    partner_org_id: Optional[str] = Query(None),
+    share_token: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+):
+    doc = db.query(TenderDocument).filter(TenderDocument.id == doc_id).first()
+    if not doc or not doc.file_path or not os.path.exists(doc.file_path):
+        raise HTTPException(
+            status_code=404, detail="Physical document file not found on disk"
+        )
+
+    if share_token:
+        share = (
+            db.query(ResourceShare).filter(ResourceShare.token == share_token).first()
+        )
+        now = datetime.utcnow()
+        if not share or share.resource_id != doc_id or share.status != "ACTIVE":
+            raise HTTPException(
+                status_code=403, detail="Invalid or revoked share token"
+            )
+        if share.expires_at and share.expires_at < now:
+            raise HTTPException(status_code=403, detail="Share token has expired")
+        if not share.can_preview:
+            raise HTTPException(
+                status_code=403,
+                detail="Preview permission not granted on this shared link",
+            )
+    elif partner_org_id:
+        auth = AuthorizationService.authorize(
+            db=db,
+            user_id=user_id,
+            permission_code="document.view",
+            tender_id=doc.tender_id,
+            resource_type="DOCUMENT",
+            resource_id=doc_id,
+            partner_org_id=partner_org_id,
+        )
+        if not auth.allowed:
+            raise HTTPException(
+                status_code=403,
+                detail=auth.denial_message or "Document preview forbidden",
+            )
+
+    return _inline_file_response(doc.file_path, doc.name, request.headers.get("range"))
+
+
 @router.get("/tenders/{tender_id}/documents/zip")
 def download_tender_zip(
     tender_id: str,
@@ -377,6 +495,32 @@ def get_reusable_documents(
     if category and category.upper() != "ALL":
         query = query.filter(ReusableDocument.category == category)
     return query.order_by(ReusableDocument.uploaded_at.desc()).all()
+
+
+@router.get("/reusable-documents/{doc_id}/preview")
+def preview_reusable_document(
+    doc_id: str, request: Request, db: Session = Depends(get_db)
+):
+    doc = db.query(ReusableDocument).filter(ReusableDocument.id == doc_id).first()
+    if not doc or not doc.file_path or not os.path.exists(doc.file_path):
+        raise HTTPException(
+            status_code=404, detail="Master document file not found on disk"
+        )
+    return _inline_file_response(doc.file_path, doc.name, request.headers.get("range"))
+
+
+@router.get("/reusable-documents/{doc_id}/download")
+def download_reusable_document(doc_id: str, db: Session = Depends(get_db)):
+    doc = db.query(ReusableDocument).filter(ReusableDocument.id == doc_id).first()
+    if not doc or not doc.file_path or not os.path.exists(doc.file_path):
+        raise HTTPException(
+            status_code=404, detail="Master document file not found on disk"
+        )
+    return FileResponse(
+        path=doc.file_path,
+        filename=doc.name,
+        media_type=_document_media_type(doc.name),
+    )
 
 
 @router.post(
@@ -579,6 +723,7 @@ def validate_shared_token(token: str, db: Session = Depends(get_db)):
         size=doc.size if doc else rud.size,
         sha256=doc.sha256 if doc else rud.sha256,
         can_view=share.can_view,
+        can_preview=share.can_preview,
         can_download=share.can_download,
         expires_at=share.expires_at,
         status=share.status,
@@ -625,6 +770,46 @@ def download_shared_file(token: str, db: Session = Depends(get_db)):
         path=file_path,
         filename=filename or "document.bin",
         media_type="application/octet-stream",
+    )
+
+
+@router.get("/shared/{token}/preview")
+def preview_shared_file(token: str, request: Request, db: Session = Depends(get_db)):
+    share = db.query(ResourceShare).filter(ResourceShare.token == token).first()
+    if not share:
+        raise HTTPException(status_code=404, detail="Shared link not found or invalid")
+
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    if share.status == "REVOKED":
+        raise HTTPException(status_code=403, detail="Share link has been revoked.")
+    if share.expires_at and share.expires_at < now:
+        raise HTTPException(status_code=403, detail="Share link has expired.")
+    if not share.can_preview:
+        raise HTTPException(
+            status_code=403,
+            detail="Preview permission not granted for this shared link.",
+        )
+
+    doc = (
+        db.query(TenderDocument).filter(TenderDocument.id == share.resource_id).first()
+    )
+    file_path = doc.file_path if doc else None
+    filename = doc.name if doc else None
+    if not doc:
+        reusable = (
+            db.query(ReusableDocument)
+            .filter(ReusableDocument.id == share.resource_id)
+            .first()
+        )
+        if reusable:
+            file_path = reusable.file_path
+            filename = reusable.name
+
+    if not file_path or not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Document file not found on disk")
+
+    return _inline_file_response(
+        file_path, filename or "document.bin", request.headers.get("range")
     )
 
 

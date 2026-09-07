@@ -1475,7 +1475,7 @@ def test_22_user_personal_profile_and_assignments():
         "deploymentMonths": 24,
         "keyDeliverables": ["Microservices Architecture", "Tier-IV UAT Sign-off"],
         "technologiesUsed": ["Kubernetes", "PostgreSQL", "Terraform"],
-        "coreResponsibilities": "Spearheaded core solution design and disaster recovery cutover."
+        "coreResponsibilities": "Spearheaded core solution design and disaster recovery cutover.",
     }
     asg_res = client.post(f"/api/users/{user_id}/assignments", json=asg_payload)
     assert asg_res.status_code == 200
@@ -1485,10 +1485,76 @@ def test_22_user_personal_profile_and_assignments():
     # 4. Get specific user profile
     get_res = client.get(f"/api/users/{user_id}")
     assert get_res.status_code == 200
-    assert get_res.json()["proposed_designation"] == "Lead Solutions Architect & Team Leader"
+    assert (
+        get_res.json()["proposed_designation"]
+        == "Lead Solutions Architect & Team Leader"
+    )
 
     # 5. Delete past assignment
     del_res = client.delete(f"/api/users/{user_id}/assignments/asg-test-01")
     assert del_res.status_code == 200
     assert not any(a["id"] == "asg-test-01" for a in del_res.json()["past_assignments"])
 
+
+def test_23_document_preview_and_streaming():
+    """
+    Test Req #15: In-Browser Document Preview & Streaming endpoints
+    Verify retrieval of documents with inline headers and access validation.
+    """
+    # 1. Upload a test document for preview
+    file_bytes = b"%PDF-1.4 Simulated Technical Proposal Volume for In-Browser Preview"
+    upload_res = client.post(
+        "/api/tenders/TDR-2026-EU-089/documents/upload",
+        files={
+            "file": (
+                "Technical_Schedule_Preview_Test.pdf",
+                file_bytes,
+                "application/pdf",
+            )
+        },
+        data={"folder": "03_technical_proposal"},
+    )
+    assert upload_res.status_code == 201
+    doc = upload_res.json()
+    doc_id = doc["id"]
+
+    # 2. Test shared document validation for in-browser preview
+    share_payload = {
+        "shared_with_type": "PUBLIC",
+        "can_view": True,
+        "can_preview": True,
+        "can_download": False,
+        "expires_in_days": 7,
+    }
+    share_res = client.post(f"/api/documents/{doc_id}/share", json=share_payload)
+    assert share_res.status_code == 200
+    token = share_res.json()["token"]
+
+    # 3. Access shared link for in-browser preview
+    shared_view_res = client.get(f"/api/shared/{token}")
+    assert shared_view_res.status_code == 200
+    shared_data = shared_view_res.json()
+    assert shared_data["can_view"] is True
+    assert shared_data["can_preview"] is True
+    assert shared_data["document_name"] == "Technical_Schedule_Preview_Test.pdf"
+    assert shared_data["sha256"] is not None
+
+    preview_res = client.get(f"/api/documents/{doc_id}/preview")
+    assert preview_res.status_code == 200
+    assert preview_res.headers["content-type"].startswith("application/pdf")
+    assert preview_res.headers["content-disposition"].startswith("inline;")
+    assert preview_res.content == file_bytes
+
+    range_res = client.get(
+        f"/api/documents/{doc_id}/preview", headers={"Range": "bytes=0-7"}
+    )
+    assert range_res.status_code == 206
+    assert range_res.headers["content-range"] == f"bytes 0-7/{len(file_bytes)}"
+    assert range_res.content == file_bytes[:8]
+
+    shared_preview_res = client.get(f"/api/shared/{token}/preview")
+    assert shared_preview_res.status_code == 200
+    assert shared_preview_res.headers["content-disposition"].startswith("inline;")
+
+    denied_download_res = client.get(f"/api/shared/{token}/download")
+    assert denied_download_res.status_code == 403

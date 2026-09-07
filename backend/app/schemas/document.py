@@ -164,6 +164,7 @@ class PublicShareValidationOut(BaseModel):
     size: str
     sha256: str
     can_view: bool
+    can_preview: bool = True
     can_download: bool
     expires_at: Optional[datetime] = None
     status: str

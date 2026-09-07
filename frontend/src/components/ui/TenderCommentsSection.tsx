@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
 import { useTenders } from '../../context/TenderContext';
 import { Tender } from '../../types/tender';
-import { MessageSquare, Send, Trash2, Shield } from 'lucide-react';
+import { MessageSquare, Send, Trash2, Shield, Smile } from 'lucide-react';
 import { Card } from './Card';
+
+const QUICK_REPLIES = [
+  'Acknowledged, I will review this.',
+  'Thanks, I will follow up shortly.',
+  'This is blocked pending additional information.',
+  'Approved from my side.',
+];
+
+const QUICK_EMOJIS = ['👍', '✅', '🎯', '🙌', '⚠️', '💬'];
 
 interface TenderCommentsSectionProps {
   tender: Tender;
@@ -13,6 +22,7 @@ export const TenderCommentsSection: React.FC<TenderCommentsSectionProps> = ({
 }) => {
   const { addComment, deleteComment, currentUser } = useTenders();
   const [commentText, setCommentText] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const comments = tender.comments || [];
 
@@ -21,6 +31,10 @@ export const TenderCommentsSection: React.FC<TenderCommentsSectionProps> = ({
     if (!commentText.trim()) return;
     addComment(tender.id, commentText.trim());
     setCommentText('');
+  };
+
+  const insertIntoDraft = (value: string) => {
+    setCommentText((prev) => `${prev}${prev && !prev.endsWith(' ') ? ' ' : ''}${value}`);
   };
 
   const getRoleBadge = (role: string) => {
@@ -52,18 +66,60 @@ export const TenderCommentsSection: React.FC<TenderCommentsSectionProps> = ({
       <div className="space-y-4">
         {/* Comment Input Box */}
         <form onSubmit={handlePost} className="space-y-2">
+          <div className="flex items-center gap-1.5 overflow-x-auto text-[10px] pl-9">
+            <span className="shrink-0 font-semibold text-[#64748B]">Quick reply:</span>
+            {QUICK_REPLIES.map((reply) => (
+              <button
+                key={reply}
+                type="button"
+                onClick={() => insertIntoDraft(reply)}
+                className="shrink-0 rounded-md border border-[#E2E8F0] bg-[#F8FAFC] px-2 py-1 text-[#475569] transition-colors hover:border-[#BFDBFE] hover:bg-[#EFF6FF] hover:text-[#2563EB]"
+              >
+                {reply}
+              </button>
+            ))}
+          </div>
           <div className="flex items-start gap-2.5">
             <div className="w-7 h-7 rounded-full bg-[#0F172A] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 shadow-xs">
               {currentUser.avatar}
             </div>
             <div className="flex-1">
-              <textarea
-                rows={2}
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-                placeholder={`Leave a comment as ${currentUser.name} (${currentUser.role.replace('_', ' ')})...`}
-                className="w-full p-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-              />
+              <div className="relative">
+                <textarea
+                  rows={2}
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  placeholder={`Leave a comment as ${currentUser.name} (${currentUser.role.replace('_', ' ')})...`}
+                  className="w-full p-2.5 pr-10 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowEmojiPicker((open) => !open)}
+                  className="absolute bottom-2 right-2 rounded-md p-1 text-[#64748B] hover:bg-[#E2E8F0] hover:text-[#2563EB]"
+                  title="Add emoji"
+                  aria-label="Add emoji"
+                >
+                  <Smile className="w-3.5 h-3.5" />
+                </button>
+                {showEmojiPicker && (
+                  <div className="absolute bottom-10 right-0 z-20 flex gap-1 rounded-lg border border-[#E2E8F0] bg-white p-2 shadow-lg">
+                    {QUICK_EMOJIS.map((emoji) => (
+                      <button
+                        key={emoji}
+                        type="button"
+                        onClick={() => {
+                          insertIntoDraft(emoji);
+                          setShowEmojiPicker(false);
+                        }}
+                        className="rounded-md p-1 text-base transition-colors hover:bg-[#EFF6FF]"
+                        title={`Add ${emoji}`}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

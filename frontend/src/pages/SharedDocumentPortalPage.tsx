@@ -11,7 +11,9 @@ import {
   Check,
   AlertTriangle,
   Lock,
+  Eye,
 } from 'lucide-react';
+import { DocumentPreviewModal } from '../components/modals/DocumentPreviewModal';
 
 interface ShareData {
   token: string;
@@ -23,6 +25,7 @@ interface ShareData {
   size: string;
   sha256: string;
   can_view: boolean;
+  can_preview?: boolean;
   can_download: boolean;
   expires_at?: string;
   status: string;
@@ -35,6 +38,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copiedHash, setCopiedHash] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   useEffect(() => {
     const fetchSharedDoc = async () => {
@@ -55,6 +59,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
               size: '3.8 MB',
               sha256: '9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0b9a8c7d6e5f4a3b2c1d0e9f8a',
               can_view: true,
+              can_preview: true,
               can_download: true,
               expires_at: new Date(Date.now() + 6 * 86400000).toISOString(),
               status: 'ACTIVE',
@@ -72,6 +77,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
               size: '4.6 MB',
               sha256: '4a5c3d2e1f0b9a8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c',
               can_view: true,
+              can_preview: true,
               can_download: false,
               expires_at: new Date(Date.now() + 5 * 86400000).toISOString(),
               status: 'ACTIVE',
@@ -96,6 +102,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
             size: '3.8 MB',
             sha256: '9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0b9a8c7d6e5f4a3b2c1d0e9f8a',
             can_view: true,
+            can_preview: true,
             can_download: true,
             expires_at: new Date(Date.now() + 6 * 86400000).toISOString(),
             status: 'ACTIVE',
@@ -113,6 +120,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
             size: '4.6 MB',
             sha256: '4a5c3d2e1f0b9a8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c',
             can_view: true,
+            can_preview: true,
             can_download: false,
             expires_at: new Date(Date.now() + 5 * 86400000).toISOString(),
             status: 'ACTIVE',
@@ -273,21 +281,33 @@ export const SharedDocumentPortalPage: React.FC = () => {
                   <p className="font-mono text-[10px] text-white/80 break-all">{data.sha256}</p>
                 </div>
 
-                {/* Download CTA */}
-                {data.can_download ? (
-                  <a
-                    href={`http://127.0.0.1:8000/api/shared/${token}/download`}
-                    className="w-full py-3 px-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 transition-all cursor-pointer"
+                {/* Action Buttons: Preview & Download */}
+                <div className="space-y-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsPreviewOpen(true)}
+                    disabled={data.can_preview === false || data.can_view === false}
+                    className="w-full py-3 px-4 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 border border-white/10 transition-all cursor-pointer shadow-md"
                   >
-                    <Download className="w-4 h-4" />
-                    <span>Download Original Document ({data.size})</span>
-                  </a>
-                ) : (
-                  <div className="p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-xs flex items-center gap-2">
-                    <Lock className="w-4 h-4 shrink-0 text-yellow-400" />
-                    <span>Download is prohibited by partner permission ceilings. File can only be viewed in approved viewers.</span>
-                  </div>
-                )}
+                    <Eye className="w-4 h-4 text-blue-400" />
+                    <span>Preview Document in Browser</span>
+                  </button>
+
+                  {data.can_download ? (
+                    <a
+                      href={`http://127.0.0.1:8000/api/shared/${token}/download`}
+                      className="w-full py-3 px-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 transition-all cursor-pointer"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Download Original Document ({data.size})</span>
+                    </a>
+                  ) : (
+                    <div className="p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-xs flex items-center gap-2">
+                      <Lock className="w-4 h-4 shrink-0 text-yellow-400" />
+                      <span>Download is restricted by security policy. File can be viewed via the in-browser viewer above.</span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Card Footer */}
@@ -299,6 +319,25 @@ export const SharedDocumentPortalPage: React.FC = () => {
           ) : null}
         </div>
       </main>
+
+      {/* Universal Document Preview Modal (Clean View) */}
+      {data && (
+        <DocumentPreviewModal
+          isOpen={isPreviewOpen}
+          onClose={() => setIsPreviewOpen(false)}
+          document={{
+            id: data.document_id,
+            name: data.document_name,
+            folder: data.folder,
+            size: data.size,
+            sha256: data.sha256,
+            uploadedAt: 'Verified Shared Link',
+            previewUrl: `http://127.0.0.1:8000/api/shared/${token}/preview`,
+            downloadUrl: `http://127.0.0.1:8000/api/shared/${token}/download`,
+          }}
+          tenderId={data.tender_id}
+        />
+      )}
 
       {/* Footer */}
       <footer className="border-t border-white/10 px-6 py-4 text-center text-xs text-[#64748B]">

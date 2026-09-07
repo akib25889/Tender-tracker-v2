@@ -123,3 +123,33 @@ Milestone 5 elevates the frontend from structural scaffolding to a fully interac
 - Test uploading a document to the Document Vault and verifying the generated SHA-256 hash.
 - Test signing off a review tier in the 4-tier approval flow.
 - Test completing a task in `My Tasks` and observing the readiness score increase.
+
+---
+
+## Completed Feature Updates
+
+### Universal Document Viewer Hub (Req #15)
+
+- Enhanced `DocumentPreviewModal` with real local browser loading for PDF, DOCX, XLS/XLSX/CSV, images, and text/code files.
+- Added MIME-aware inline preview routes for tender documents, shared links, and reusable master-library files.
+- Added separate preview/download authorization for shared documents.
+- Added byte-range preview streaming and repaired the document preview integration test.
+- Connected tender vault, master vault, shared portal, and partner portal actions to real preview/download URLs.
+
+### Requirement Blockers
+
+- Requirement status can be cycled between `VERIFIED`, `PENDING`, and `BLOCKER` from the Tender Requirements tab.
+- Setting a requirement to `BLOCKER` persists through `PATCH /api/requirements/{requirement_id}` and updates the tender's blocker list used by dashboard and tender views.
+- Blockers are cleared by cycling the same requirement back to `VERIFIED`.
+
+### Chat and Comment Replies
+
+- Added fixed quick-reply chips and native emoji insertion to the main team chat, tender comments, and partner secure chat.
+- Quick replies append to the existing draft and continue through the existing comment/message APIs without additional dependencies or schema changes.
+
+### Feature Verification
+
+- Focused document preview integration test passes.
+- Frontend TypeScript check and production build pass.
+- Touched frontend files report no diagnostics.
+- Existing lint warnings and the production bundle-size warning remain unrelated to these feature additions.

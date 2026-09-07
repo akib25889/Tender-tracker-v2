@@ -21,7 +21,9 @@ import {
   RotateCcw,
   Clock,
   Send,
+  Eye,
 } from 'lucide-react';
+import { DocumentPreviewModal } from '../../components/modals/DocumentPreviewModal';
 
 const ACCESS_STYLES: Record<
   DocumentAccessLevel,
@@ -96,6 +98,7 @@ export const TenderDocumentsTab: React.FC = () => {
     tender?.summary?.jv?.localPartner ||
     'DataCore Systems Ltd';
   const leadCompanyName = 'PrimeTech Ltd';
+  const [previewDoc, setPreviewDoc] = useState<TenderDocument | null>(null);
 
   // Re-upload Request Modal State
   const [selectedDocForReupload, setSelectedDocForReupload] = useState<TenderDocument | null>(null);
@@ -619,7 +622,14 @@ export const TenderDocumentsTab: React.FC = () => {
                       <td className="py-3 px-3 font-medium text-[#0F172A] max-w-sm">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <FileText className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
-                          <span className="font-semibold">{doc.name}</span>
+                          <button
+                            type="button"
+                            onClick={() => setPreviewDoc(doc)}
+                            className="font-semibold text-[#0F172A] hover:text-[#2563EB] hover:underline text-left cursor-pointer"
+                            title="Click to preview document in browser"
+                          >
+                            {doc.name}
+                          </button>
 
                           {/* Status Badge */}
                           {doc.status === 'ACTION_REQUIRED' ? (
@@ -764,6 +774,16 @@ export const TenderDocumentsTab: React.FC = () => {
                               </button>
                             )}
 
+                            {/* In-Browser Preview Button */}
+                            <button
+                              type="button"
+                              onClick={() => setPreviewDoc(doc)}
+                              className="p-1.5 text-[#0F172A] bg-white border border-[#CBD5E1] hover:bg-[#0F172A] hover:text-white rounded-lg transition-colors shadow-2xs cursor-pointer"
+                              title="Preview document in browser (PDF, DOCX, XLSX, Images)"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </button>
+
                             <button
                               type="button"
                               onClick={() =>
@@ -776,9 +796,12 @@ export const TenderDocumentsTab: React.FC = () => {
                             </button>
                             <button
                               type="button"
-                              onClick={() =>
-                                alert(`Simulating secure download for ${doc.name}`)
-                              }
+                              onClick={() => {
+                                const link = window.document.createElement('a');
+                                link.href = `/api/documents/${doc.id}/download`;
+                                link.download = doc.name;
+                                link.click();
+                              }}
                               className="p-1.5 text-[#0F172A] bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg transition-colors shadow-2xs"
                               title="Download file"
                             >
@@ -1474,6 +1497,23 @@ export const TenderDocumentsTab: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Universal Document Preview Modal (Clean View) */}
+      <DocumentPreviewModal
+        isOpen={!!previewDoc}
+        onClose={() => setPreviewDoc(null)}
+        document={previewDoc ? {
+          ...previewDoc,
+          previewUrl: `/api/documents/${previewDoc.id}/preview`,
+          downloadUrl: `/api/documents/${previewDoc.id}/download`,
+        } : null}
+        tenderId={tender.id}
+        onShare={() => {
+          if (previewDoc) {
+            setActiveDocForShare({ tenderId: tender.id, doc: previewDoc });
+          }
+        }}
+      />
     </div>
   );
 };

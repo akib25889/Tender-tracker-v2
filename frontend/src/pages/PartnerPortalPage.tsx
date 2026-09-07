@@ -22,7 +22,18 @@ import {
   Building2,
   Menu,
   Gavel,
+  Smile,
 } from 'lucide-react';
+import { DocumentPreviewModal } from '../components/modals/DocumentPreviewModal';
+
+const QUICK_REPLIES = [
+  'Acknowledged, I will review this.',
+  'Thanks, I will follow up shortly.',
+  'This is blocked pending additional information.',
+  'Approved from my side.',
+];
+
+const QUICK_EMOJIS = ['👍', '✅', '🎯', '🙌', '⚠️', '💬'];
 
 interface DocumentItem {
   id: string;
@@ -61,6 +72,7 @@ export const PartnerPortalPage: React.FC = () => {
 
   // Category tab state
   const [selectedCategory, setSelectedCategory] = useState<'All' | 'Statutory' | 'Technical' | 'Legal'>('All');
+  const [previewDoc, setPreviewDoc] = useState<any>(null);
   
   // Document ledger state
   const [documents, setDocuments] = useState<DocumentItem[]>([
@@ -172,6 +184,7 @@ export const PartnerPortalPage: React.FC = () => {
     },
   ]);
   const [newChatText, setNewChatText] = useState('');
+  const [showChatEmojiPicker, setShowChatEmojiPicker] = useState(false);
 
   // Modals state
   const [isReuploadModalOpen, setIsReuploadModalOpen] = useState(false);
@@ -287,6 +300,10 @@ export const PartnerPortalPage: React.FC = () => {
       },
     ]);
     setNewChatText('');
+  };
+
+  const insertIntoChatDraft = (value: string) => {
+    setNewChatText((prev) => `${prev}${prev && !prev.endsWith(' ') ? ' ' : ''}${value}`);
   };
 
   // Toggle TOR checklist
@@ -766,7 +783,26 @@ export const PartnerPortalPage: React.FC = () => {
                           )}
                         </td>
                         <td className="py-3 px-4">
-                          <div className="font-semibold text-[#0F172A]">{doc.name}</div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setPreviewDoc({
+                                id: doc.id,
+                                name: doc.name,
+                                size: doc.size,
+                                sha256: doc.hash,
+                                revision: doc.version,
+                                folder: doc.category,
+                                uploadedAt: doc.uploadedAt,
+                                isJvPartner: true,
+                                companyName: 'Consortium Technology Partners Ltd.',
+                              })
+                            }
+                            className="font-semibold text-[#0F172A] hover:text-[#2563EB] hover:underline text-left cursor-pointer"
+                            title="Preview document in browser"
+                          >
+                            {doc.name}
+                          </button>
                           <div className="text-[10px] text-[#64748B]">Uploaded: {doc.uploadedAt}</div>
                         </td>
                         <td className="py-3 px-4">
@@ -808,24 +844,48 @@ export const PartnerPortalPage: React.FC = () => {
                           </span>
                         </td>
                         <td className="py-3 px-4 text-right">
-                          {doc.status === 'ACTION_REQUIRED' ? (
+                          <div className="flex items-center justify-end gap-1.5">
+                            {/* In-Browser Preview Button */}
                             <button
-                              onClick={() => setIsReuploadModalOpen(true)}
-                              className="px-2.5 py-1 bg-[#0F172A] hover:bg-[#1E293B] text-white rounded text-[11px] font-semibold transition-colors shadow-2xs"
-                            >
-                              Re-Upload
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => {
-                                alert(`Downloading ${doc.name} (SHA-256 verified)`);
-                              }}
+                              type="button"
+                              onClick={() =>
+                                setPreviewDoc({
+                                  id: doc.id,
+                                  name: doc.name,
+                                  size: doc.size,
+                                  sha256: doc.hash,
+                                  revision: doc.version,
+                                  folder: doc.category,
+                                  uploadedAt: doc.uploadedAt,
+                                  isJvPartner: true,
+                                  companyName: 'Consortium Technology Partners Ltd.',
+                                })
+                              }
                               className="p-1.5 text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] rounded transition-colors"
-                              title="Download document"
+                              title="Preview document in browser"
                             >
-                              <Download className="w-3.5 h-3.5" />
+                              <Eye className="w-3.5 h-3.5" />
                             </button>
-                          )}
+
+                            {doc.status === 'ACTION_REQUIRED' ? (
+                              <button
+                                onClick={() => setIsReuploadModalOpen(true)}
+                                className="px-2.5 py-1 bg-[#0F172A] hover:bg-[#1E293B] text-white rounded text-[11px] font-semibold transition-colors shadow-2xs"
+                              >
+                                Re-Upload
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  alert(`Downloading ${doc.name} (SHA-256 verified)`);
+                                }}
+                                className="p-1.5 text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] rounded transition-colors"
+                                title="Download document"
+                              >
+                                <Download className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -987,22 +1047,66 @@ export const PartnerPortalPage: React.FC = () => {
               </div>
 
               {/* Chat input form */}
-              <form onSubmit={handleSendChat} className="p-2.5 border-t border-[#E2E8F0] bg-white flex gap-2">
-                <input
-                  type="text"
-                  value={newChatText}
-                  onChange={(e) => setNewChatText(e.target.value)}
-                  placeholder="Type a secure message to Prime Lead..."
-                  className="flex-1 border border-[#CBD5E1] rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#2563EB] focus:border-[#2563EB]"
-                />
-                <button
-                  type="submit"
-                  disabled={!newChatText.trim()}
-                  className="bg-[#0F172A] hover:bg-[#1E293B] disabled:opacity-40 text-white p-2 rounded-lg transition-colors shadow-2xs"
-                  title="Send message"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                </button>
+              <form onSubmit={handleSendChat} className="p-2.5 border-t border-[#E2E8F0] bg-white space-y-2">
+                <div className="flex items-center gap-1.5 overflow-x-auto text-[10px]">
+                  <span className="shrink-0 font-semibold text-[#64748B]">Quick reply:</span>
+                  {QUICK_REPLIES.map((reply) => (
+                    <button
+                      key={reply}
+                      type="button"
+                      onClick={() => insertIntoChatDraft(reply)}
+                      className="shrink-0 rounded-md border border-[#E2E8F0] bg-[#F8FAFC] px-2 py-1 text-[#475569] transition-colors hover:border-[#BFDBFE] hover:bg-[#EFF6FF] hover:text-[#2563EB]"
+                    >
+                      {reply}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      value={newChatText}
+                      onChange={(e) => setNewChatText(e.target.value)}
+                      placeholder="Type a secure message to Prime Lead..."
+                      className="w-full border border-[#CBD5E1] rounded-lg px-3 py-1.5 pr-9 text-xs focus:outline-none focus:ring-1 focus:ring-[#2563EB] focus:border-[#2563EB]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowChatEmojiPicker((open) => !open)}
+                      className="absolute right-1 top-1/2 -translate-y-1/2 rounded p-1 text-[#64748B] hover:bg-[#E2E8F0] hover:text-[#2563EB]"
+                      title="Add emoji"
+                      aria-label="Add emoji"
+                    >
+                      <Smile className="w-3.5 h-3.5" />
+                    </button>
+                    {showChatEmojiPicker && (
+                      <div className="absolute bottom-9 right-0 z-20 flex gap-1 rounded-lg border border-[#E2E8F0] bg-white p-2 shadow-lg">
+                        {QUICK_EMOJIS.map((emoji) => (
+                          <button
+                            key={emoji}
+                            type="button"
+                            onClick={() => {
+                              insertIntoChatDraft(emoji);
+                              setShowChatEmojiPicker(false);
+                            }}
+                            className="rounded-md p-1 text-base transition-colors hover:bg-[#EFF6FF]"
+                            title={`Add ${emoji}`}
+                          >
+                            {emoji}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={!newChatText.trim()}
+                    className="bg-[#0F172A] hover:bg-[#1E293B] disabled:opacity-40 text-white p-2 rounded-lg transition-colors shadow-2xs"
+                    title="Send message"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -1267,6 +1371,18 @@ export const PartnerPortalPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Universal Document Preview Modal (Clean View) */}
+      <DocumentPreviewModal
+        isOpen={!!previewDoc}
+        onClose={() => setPreviewDoc(null)}
+        document={previewDoc ? {
+          ...previewDoc,
+          previewUrl: `/api/documents/${previewDoc.id}/preview`,
+          downloadUrl: `/api/documents/${previewDoc.id}/download`,
+        } : null}
+        tenderId="TDR-2026-EU-089"
+      />
     </div>
   );
 };

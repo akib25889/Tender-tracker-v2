@@ -56,6 +56,10 @@ export interface ReusableDocument {
   accessLevel: DocumentAccessLevel;
   sha256: string;
   description?: string;
+  filePath?: string;
+  mimeType?: string;
+  previewUrl?: string;
+  downloadUrl?: string;
 }
 
 export interface TenderDocument {
@@ -76,6 +80,10 @@ export interface TenderDocument {
   actionComment?: string;
   requestedBy?: string;
   actionDueDate?: string;
+  filePath?: string;
+  mimeType?: string;
+  previewUrl?: string;
+  downloadUrl?: string;
 }
 
 export interface TenderFolder {

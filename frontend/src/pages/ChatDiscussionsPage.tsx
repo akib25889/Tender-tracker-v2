@@ -13,7 +13,17 @@ import {
   AtSign,
   ArrowRight,
   Clock,
+  Smile,
 } from 'lucide-react';
+
+const QUICK_REPLIES = [
+  'Acknowledged, I will review this.',
+  'Thanks, I will follow up shortly.',
+  'This is blocked pending additional information.',
+  'Approved from my side.',
+];
+
+const QUICK_EMOJIS = ['👍', '✅', '🎯', '🙌', '⚠️', '💬'];
 
 interface GeneralMessage {
   id: string;
@@ -133,6 +143,7 @@ export const ChatDiscussionsPage: React.FC = () => {
   const [activeChannelId, setActiveChannelId] = useState<string>('general-ops');
   const [inputText, setInputText] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   // General Chat Messages stored in localStorage
   const [generalMessages, setGeneralMessages] = useState<GeneralMessage[]>(() => {
@@ -265,6 +276,10 @@ export const ChatDiscussionsPage: React.FC = () => {
 
   const handleTagMember = (name: string) => {
     setInputText((prev) => `${prev} @${name} `);
+  };
+
+  const insertIntoDraft = (value: string) => {
+    setInputText((prev) => `${prev}${prev && !prev.endsWith(' ') ? ' ' : ''}${value}`);
   };
 
   const formatTimestamp = (isoString: string) => {
@@ -547,6 +562,19 @@ export const ChatDiscussionsPage: React.FC = () => {
 
           {/* Message Input Box */}
           <form onSubmit={handleSendMessage} className="p-3 border-t border-[#E2E8F0] bg-white">
+            <div className="mb-2 flex items-center gap-1.5 overflow-x-auto text-[10px]">
+              <span className="shrink-0 font-semibold text-[#64748B]">Quick reply:</span>
+              {QUICK_REPLIES.map((reply) => (
+                <button
+                  key={reply}
+                  type="button"
+                  onClick={() => insertIntoDraft(reply)}
+                  className="shrink-0 rounded-md border border-[#E2E8F0] bg-[#F8FAFC] px-2 py-1 text-[#475569] transition-colors hover:border-[#BFDBFE] hover:bg-[#EFF6FF] hover:text-[#2563EB]"
+                >
+                  {reply}
+                </button>
+              ))}
+            </div>
             <div className="flex items-end gap-2">
               <textarea
                 rows={2}
@@ -563,6 +591,35 @@ export const ChatDiscussionsPage: React.FC = () => {
                 } as ${currentUser.name}... (Press Enter to send)`}
                 className="flex-1 p-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB] resize-none"
               />
+              <div className="relative shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setShowEmojiPicker((open) => !open)}
+                  className="p-3 text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#2563EB] rounded-xl transition-colors"
+                  title="Add emoji"
+                  aria-label="Add emoji"
+                >
+                  <Smile className="w-4 h-4" />
+                </button>
+                {showEmojiPicker && (
+                  <div className="absolute bottom-12 right-0 z-20 flex gap-1 rounded-lg border border-[#E2E8F0] bg-white p-2 shadow-lg">
+                    {QUICK_EMOJIS.map((emoji) => (
+                      <button
+                        key={emoji}
+                        type="button"
+                        onClick={() => {
+                          insertIntoDraft(emoji);
+                          setShowEmojiPicker(false);
+                        }}
+                        className="rounded-md p-1.5 text-base transition-colors hover:bg-[#EFF6FF]"
+                        title={`Add ${emoji}`}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               <button
                 type="submit"
                 disabled={!inputText.trim()}

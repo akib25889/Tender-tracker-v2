@@ -25,7 +25,9 @@ import {
   Scale,
   Share2,
   Briefcase,
+  Eye,
 } from 'lucide-react';
+import { DocumentPreviewModal } from '../components/modals/DocumentPreviewModal';
 
 const CATEGORY_ICONS: Record<string, any> = {
   'Company Statutory': Building2,
@@ -97,6 +99,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [selectedAccess, setSelectedAccess] = useState<string>('ALL');
   const [selectedCompany, setSelectedCompany] = useState<string>('ALL');
+  const [previewDoc, setPreviewDoc] = useState<any>(null);
 
   // Modal: Add New Reusable Document
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -430,9 +433,14 @@ export const MasterDocumentVaultPage: React.FC = () => {
                             <Icon className="w-4 h-4" />
                           </div>
                           <div className="min-w-0">
-                            <span className="font-semibold text-[#0F172A] block leading-snug">
+                            <button
+                              type="button"
+                              onClick={() => setPreviewDoc(doc)}
+                              className="font-semibold text-[#0F172A] block leading-snug hover:text-[#2563EB] hover:underline text-left cursor-pointer"
+                              title="Click to preview document in browser"
+                            >
                               {doc.name}
-                            </span>
+                            </button>
                             {doc.description && (
                               <p className="text-[11px] text-[#64748B] mt-0.5 leading-relaxed line-clamp-1">
                                 {doc.description}
@@ -499,6 +507,16 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
                       <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-1.5">
+                          {/* In-Browser Preview Button */}
+                          <button
+                            type="button"
+                            onClick={() => setPreviewDoc(doc)}
+                            className="p-1.5 text-[#0F172A] bg-white border border-[#CBD5E1] hover:bg-[#0F172A] hover:text-white rounded-lg transition-colors shadow-2xs cursor-pointer"
+                            title="Preview master file in browser (PDF, DOCX, XLSX, Images)"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                          </button>
+
                           {/* Reference into Tender Button */}
                           <button
                             type="button"
@@ -850,6 +868,23 @@ export const MasterDocumentVaultPage: React.FC = () => {
       )}
         </>
       )}
+
+      {/* Universal Document Preview Modal (Clean View) */}
+      <DocumentPreviewModal
+        isOpen={!!previewDoc}
+        onClose={() => setPreviewDoc(null)}
+        document={previewDoc ? {
+          ...previewDoc,
+          previewUrl: `/api/reusable-documents/${previewDoc.id}/preview`,
+          downloadUrl: `/api/reusable-documents/${previewDoc.id}/download`,
+        } : null}
+        tenderId="Master Library"
+        onShare={() => {
+          if (previewDoc) {
+            setActiveDocForShare({ tenderId: 'Master Library', doc: previewDoc });
+          }
+        }}
+      />
     </div>
   );
 };
