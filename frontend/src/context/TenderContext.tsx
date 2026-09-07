@@ -58,6 +58,27 @@ interface TenderContextType {
   addFolder: (tenderId: string, folder: { name: string; label: string }) => void;
   deleteFolder: (tenderId: string, folderName: string) => void;
   moveDocumentFolder: (tenderId: string, docId: string, targetFolder: string) => void;
+  requestDocumentReupload: (
+    tenderId: string,
+    docId: string,
+    payload: { reason: string; comment: string; dueDate?: string; requestedBy?: string }
+  ) => Promise<boolean>;
+  requestNewDocumentUpload: (payload: {
+    tenderId: string;
+    title: string;
+    folder: string;
+    companyName: string;
+    companyRole?: string;
+    instructions: string;
+    dueDate?: string;
+    requestedBy?: string;
+  }) => Promise<boolean>;
+  resolveDocumentReupload: (
+    tenderId: string,
+    docId: string,
+    file: File,
+    comment?: string
+  ) => Promise<boolean>;
   signOffReviewTier: (
     tenderId: string,
     tierNumber: number,
@@ -328,6 +349,10 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                       accessLevel: doc.access_level || 'ALL_TEAM',
                       isReusableLink: doc.is_reusable_link,
                       reusableSourceId: doc.reusable_source_id,
+                      status: doc.status || 'CLEARED',
+                      actionComment: doc.action_comment || undefined,
+                      requestedBy: doc.requested_by || undefined,
+                      actionDueDate: doc.action_due_date || undefined,
                     }))
                   : existing
                   ? existing.documents
@@ -1402,6 +1427,227 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
+  const requestDocumentReupload = async (
+    tenderId: string,
+    docId: string,
+    payload: { reason: string; comment: string; dueDate?: string; requestedBy?: string }
+  ): Promise<boolean> => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/documents/${docId}/request-reupload`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        const updatedDoc = await res.json();
+        setTenders((prev) =>
+          prev.map((t) => {
+            if (t.id !== tenderId) return t;
+            return {
+              ...t,
+              documents: t.documents.map((d) =>
+                d.id === docId
+                  ? {
+                      ...d,
+                      status: updatedDoc.status,
+                      actionComment: updatedDoc.action_comment,
+                      requestedBy: updatedDoc.requested_by,
+                      actionDueDate: updatedDoc.action_due_date,
+                    }
+                  : d
+              ),
+            };
+          })
+        );
+        return true;
+      }
+    } catch (e) {
+      console.error('Failed to request document reupload', e);
+    }
+    // Fallback local update
+    const fullComment = `[${payload.reason}] ${payload.comment}`.trim();
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        return {
+          ...t,
+          documents: t.documents.map((d) =>
+            d.id === docId
+              ? {
+                  ...d,
+                  status: 'ACTION_REQUIRED',
+                  actionComment: fullComment,
+                  requestedBy: payload.requestedBy || currentUser.name,
+                  actionDueDate: payload.dueDate || 'T-48h',
+                }
+              : d
+          ),
+        };
+      })
+    );
+    return true;
+  };
+
+  const requestNewDocumentUpload = async (payload: {
+    tenderId: string;
+    title: string;
+    folder: string;
+    companyName: string;
+    companyRole?: string;
+    instructions: string;
+    dueDate?: string;
+    requestedBy?: string;
+  }): Promise<boolean> => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/documents/request-upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tender_id: payload.tenderId,
+          title: payload.title,
+          folder: payload.folder,
+          company_name: payload.companyName,
+          company_role: payload.companyRole || 'JV_PARTNER',
+          instructions: payload.instructions,
+          due_date: payload.dueDate || 'T-48h',
+          requested_by: payload.requestedBy || currentUser.name,
+        }),
+      });
+      if (res.ok) {
+        const created = await res.json();
+        const newDoc: TenderDocument = {
+          id: created.id,
+          name: created.name,
+          folder: created.folder,
+          companyName: created.company_name,
+          companyRole: created.company_role,
+          isJvPartner: created.is_jv_partner,
+          size: created.size,
+          revision: created.revision,
+          sha256: created.sha256,
+          uploadedAt: created.uploaded_at,
+          status: created.status,
+          actionComment: created.action_comment,
+          requestedBy: created.requested_by,
+          actionDueDate: created.action_due_date,
+        };
+        setTenders((prev) =>
+          prev.map((t) => {
+            if (t.id !== payload.tenderId) return t;
+            return {
+              ...t,
+              documents: [newDoc, ...t.documents],
+              missingDocumentsCount: t.missingDocumentsCount + 1,
+            };
+          })
+        );
+        return true;
+      }
+    } catch (e) {
+      console.error('Failed to request new document upload', e);
+    }
+    // Fallback local update
+    const dummyId = `DOC-${Math.floor(100 + Math.random() * 900)}`;
+    const newDoc: TenderDocument = {
+      id: dummyId,
+      name: payload.title,
+      folder: payload.folder,
+      companyName: payload.companyName,
+      companyRole: payload.companyRole || 'JV_PARTNER',
+      isJvPartner:
+        payload.companyRole === 'JV_PARTNER' ||
+        payload.companyName.toLowerCase() !== 'primetech ltd',
+      size: '0 KB (Pending)',
+      revision: 'v0.0 (Requested)',
+      sha256: 'PENDING_UPLOAD',
+      uploadedAt: new Date().toISOString().split('T')[0],
+      status: 'ACTION_REQUIRED',
+      actionComment: payload.instructions,
+      requestedBy: payload.requestedBy || currentUser.name,
+      actionDueDate: payload.dueDate || 'T-48h',
+    };
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== payload.tenderId) return t;
+        return {
+          ...t,
+          documents: [newDoc, ...t.documents],
+          missingDocumentsCount: t.missingDocumentsCount + 1,
+        };
+      })
+    );
+    return true;
+  };
+
+  const resolveDocumentReupload = async (
+    tenderId: string,
+    docId: string,
+    file: File,
+    comment?: string
+  ): Promise<boolean> => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      if (comment) formData.append('comment', comment);
+
+      const res = await fetch(`http://127.0.0.1:8000/api/documents/${docId}/resolve-reupload`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setTenders((prev) =>
+          prev.map((t) => {
+            if (t.id !== tenderId) return t;
+            return {
+              ...t,
+              documents: t.documents.map((d) =>
+                d.id === docId
+                  ? {
+                      ...d,
+                      name: updated.name,
+                      revision: updated.revision,
+                      size: updated.size,
+                      sha256: updated.sha256,
+                      status: updated.status,
+                      actionComment: updated.action_comment,
+                      uploadedAt: updated.uploaded_at,
+                    }
+                  : d
+              ),
+            };
+          })
+        );
+        return true;
+      }
+    } catch (e) {
+      console.error('Failed to resolve document reupload', e);
+    }
+    // Local fallback
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        return {
+          ...t,
+          documents: t.documents.map((d) =>
+            d.id === docId
+              ? {
+                  ...d,
+                  name: file.name,
+                  revision: d.revision === 'v1.0' ? 'v1.1' : 'v1.0',
+                  size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+                  status: 'PENDING_REVIEW',
+                  actionComment: comment ? `Revised: ${comment}` : undefined,
+                  uploadedAt: new Date().toISOString().split('T')[0],
+                }
+              : d
+          ),
+        };
+      })
+    );
+    return true;
+  };
+
   const signOffReviewTier = (
     tenderId: string,
     tierNumber: number,
@@ -1890,6 +2136,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         addFolder,
         deleteFolder,
         moveDocumentFolder,
+        requestDocumentReupload,
+        requestNewDocumentUpload,
+        resolveDocumentReupload,
         signOffReviewTier,
         toggleRequirementStatus,
         submitTenderProof,

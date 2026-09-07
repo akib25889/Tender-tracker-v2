@@ -857,6 +857,14 @@
   *Decision:* Implemented SQLAlchemy ORM with auto-dialect selection. The backend defaults to an embedded zero-configuration SQLite database (`tender_tracker.db`) for instant local development, automated integration testing, and CI. When deploying to production, simply configuring `DATABASE_URL` in `.env` connects to MySQL 8.4 LTS (or Docker Compose container) with zero application code changes.  
   *Impact:* 100% test coverage and full local execution out of the box with zero external database dependencies, while retaining enterprise MySQL 8.4 compatibility.
 
+- **ADR-007: Bidder-Partner Document Upload & Re-Upload Request Workflow with Review Feedback**  
+  *Context:* In consortium bid management, the Lead Bidder frequently identifies defective, expired, or unsealed documents provided by JV Partners (or missing statutory documents entirely) and needs a formal revision request workflow with SLA deadlines and reviewer comments rather than informal email chains.  
+  *Decision:* Added bidirectional document lifecycle statuses (`ACTION_REQUIRED`, `PENDING_REVIEW`, `CLEARED`, `VERIFIED`) to `tender_documents`. Implemented dedicated endpoints:
+  1. `POST /api/documents/request-upload`: Dispatches formal request for missing partner documents, placing a pending placeholder in the vault.
+  2. `POST /api/documents/{doc_id}/request-reupload`: Flags defective documents with `ACTION_REQUIRED`, logs specific reviewer instructions/comments, urgency tags, and due date.
+  3. `POST /api/documents/{doc_id}/resolve-reupload`: Accepts partner revision upload with SHA-256 integrity validation, automatic revision bumping (e.g. `v1.0` -> `v1.1`), and transitions status to `PENDING_REVIEW`.  
+  *Impact:* Eliminates email bottlenecks, enforces clear consortium SLA accountability, and renders interactive feedback banners and modals directly in the Document Vault and Partner Portal.
+
 ---
 
 ## 4. Current Application Screen & Route Directory (21 Screens)

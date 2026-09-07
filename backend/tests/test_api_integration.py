@@ -983,3 +983,96 @@ def test_17_company_profiles_crud():
     # Verify 404 after delete
     get_del = client.get(f"/api/companies/profiles/{test_id}")
     assert get_del.status_code == 404
+
+
+def test_18_document_reupload_request_workflow():
+    """Test requesting document upload, requesting re-upload with comment, and resolving revision."""
+    tenders_res = client.get("/api/tenders")
+    assert tenders_res.status_code == 200
+    tenders_list = tenders_res.json()
+    if tenders_list:
+        tender_id = tenders_list[0]["id"]
+    else:
+        tender_id = "TDR-TEST-REUPLOAD-01"
+        client.post(
+            "/api/tenders",
+            json={
+                "id": tender_id,
+                "title": "Test Tender for Re-upload Workflow",
+                "organization": "UNDP Bangladesh",
+                "country": "Bangladesh",
+                "category": "ICT Systems",
+                "estimated_value": 500000.0,
+                "stage": "PREPARATION",
+                "priority": "HIGH",
+                "days_remaining": 10,
+                "hours_remaining": 240,
+                "readiness_score": 60,
+            },
+        )
+
+    # 1. Request a new missing document from JV partner
+    new_doc_req = client.post(
+        "/api/documents/request-upload",
+        json={
+            "tender_id": tender_id,
+            "title": "Manufacturer Authorization Form (MAF) - CISCO",
+            "folder": "03_technical_specifications_compliance",
+            "company_name": "DataCore Systems Ltd",
+            "company_role": "JV_PARTNER",
+            "instructions": "Official OEM authorization letter signed by Country Director for Bangladesh.",
+            "due_date": "T-48h",
+            "requested_by": "Mark D. (Prime Lead)",
+        },
+    )
+    assert new_doc_req.status_code == 201
+    created_req = new_doc_req.json()
+    doc_id = created_req["id"]
+    assert created_req["status"] == "ACTION_REQUIRED"
+    assert created_req["revision"] == "v0.0 (Requested)"
+    assert created_req["company_name"] == "DataCore Systems Ltd"
+    assert "Official OEM authorization" in created_req["action_comment"]
+
+    # 2. Resolve the requested document with initial upload
+    file_bytes = b"%PDF-1.4 Mock Manufacturer Authorization Form Content"
+    upload_res = client.post(
+        f"/api/documents/{doc_id}/resolve-reupload",
+        files={"file": ("MAF_Cisco_Partner_Signed.pdf", file_bytes, "application/pdf")},
+        data={"comment": "Signed digital copy received from Singapore regional desk."},
+    )
+    assert upload_res.status_code == 200
+    uploaded_doc = upload_res.json()
+    assert uploaded_doc["status"] == "PENDING_REVIEW"
+    assert uploaded_doc["revision"] == "v1.0"
+    assert uploaded_doc["sha256"] != "PENDING_UPLOAD"
+    assert "Revised: Signed digital copy" in uploaded_doc["action_comment"]
+
+    # 3. Prime Lead inspects and requests a RE-UPLOAD with specific reason & comment
+    reupload_res = client.post(
+        f"/api/documents/{doc_id}/request-reupload",
+        json={
+            "reason": "Missing Auditor Stamp",
+            "comment": "Page 2 is missing the official notary seal. Please re-scan with seal attached.",
+            "due_date": "T-24h",
+            "requested_by": "Mark D. (Prime Lead)",
+        },
+    )
+    assert reupload_res.status_code == 200
+    flagged = reupload_res.json()
+    assert flagged["status"] == "ACTION_REQUIRED"
+    assert "[Missing Auditor Stamp]" in flagged["action_comment"]
+    assert flagged["action_due_date"] == "T-24h"
+
+    # 4. Partner re-uploads the certified revision (bumps to v1.1)
+    revision_bytes = b"%PDF-1.4 Mock Manufacturer Authorization Form with Notary Seal Added"
+    reupload_submit = client.post(
+        f"/api/documents/{doc_id}/resolve-reupload",
+        files={"file": ("MAF_Cisco_Partner_Signed_Notarized_v1.1.pdf", revision_bytes, "application/pdf")},
+        data={"comment": "Notary seal affixed on page 2 by Supreme Court Notary Public."},
+    )
+    assert reupload_submit.status_code == 200
+    resolved = reupload_submit.json()
+    assert resolved["status"] == "PENDING_REVIEW"
+    assert resolved["revision"] == "v1.1"
+    assert "Notary seal affixed" in resolved["action_comment"]
+

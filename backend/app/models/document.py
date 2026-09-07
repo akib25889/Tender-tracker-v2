@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
+from sqlalchemy import Column, String, Boolean, Integer, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -44,6 +45,12 @@ class TenderDocument(Base):
     reusable_source_id = Column(String(50), nullable=True)
     access_level = Column(String(50), nullable=False, default="ALL_TEAM")
     file_path = Column(String(255), nullable=True)
+    
+    # Document Action & Review Workflow
+    status = Column(String(50), nullable=False, default="CLEARED")  # CLEARED, ACTION_REQUIRED, PENDING_REVIEW, VERIFIED
+    action_comment = Column(Text, nullable=True)
+    requested_by = Column(String(100), nullable=True)
+    action_due_date = Column(String(50), nullable=True)
 
     tender = relationship("Tender", back_populates="documents")
 

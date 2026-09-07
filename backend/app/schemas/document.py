@@ -33,6 +33,10 @@ class DocumentOut(BaseModel):
     is_reusable_link: bool = False
     reusable_source_id: Optional[str] = None
     access_level: str = "ALL_TEAM"
+    status: Optional[str] = "CLEARED"
+    action_comment: Optional[str] = None
+    requested_by: Optional[str] = None
+    action_due_date: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -43,6 +47,29 @@ class DocumentUpdate(BaseModel):
     access_level: Optional[str] = None
     company_name: Optional[str] = None
     company_role: Optional[str] = None
+    is_jv_partner: Optional[bool] = None
+    status: Optional[str] = None
+    action_comment: Optional[str] = None
+    requested_by: Optional[str] = None
+    action_due_date: Optional[str] = None
+
+
+class DocumentReuploadRequest(BaseModel):
+    reason: str
+    comment: str
+    due_date: Optional[str] = "T-48h"
+    requested_by: Optional[str] = "Prime Compliance Lead"
+
+
+class DocumentNewUploadRequest(BaseModel):
+    tender_id: str
+    title: str
+    folder: str = "02_company_statutory_documents"
+    company_name: str
+    company_role: Optional[str] = "JV_PARTNER"
+    instructions: str
+    due_date: Optional[str] = "T-48h"
+    requested_by: Optional[str] = "Prime Lead Estimator"
     is_jv_partner: Optional[bool] = None
 
 

@@ -92,6 +92,30 @@ def run_migrations():
                             "ALTER TABLE tender_documents ADD COLUMN is_jv_partner BOOLEAN DEFAULT 0"
                         )
                     )
+                if "status" not in td_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tender_documents ADD COLUMN status VARCHAR(50) DEFAULT 'CLEARED'"
+                        )
+                    )
+                if "action_comment" not in td_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tender_documents ADD COLUMN action_comment TEXT DEFAULT NULL"
+                        )
+                    )
+                if "requested_by" not in td_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tender_documents ADD COLUMN requested_by VARCHAR(100) DEFAULT NULL"
+                        )
+                    )
+                if "action_due_date" not in td_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tender_documents ADD COLUMN action_due_date VARCHAR(50) DEFAULT NULL"
+                        )
+                    )
 
                 # Migrations for reusable_documents
                 rd_result = conn.execute(
@@ -136,6 +160,10 @@ def run_migrations():
                             ("company_name", "VARCHAR(150) DEFAULT 'PrimeTech Ltd'"),
                             ("company_role", "VARCHAR(50) DEFAULT 'LEAD_BIDDER'"),
                             ("is_jv_partner", "BOOLEAN DEFAULT FALSE"),
+                            ("status", "VARCHAR(50) DEFAULT 'CLEARED'"),
+                            ("action_comment", "TEXT DEFAULT NULL"),
+                            ("requested_by", "VARCHAR(100) DEFAULT NULL"),
+                            ("action_due_date", "VARCHAR(50) DEFAULT NULL"),
                         ],
                     ),
                     (

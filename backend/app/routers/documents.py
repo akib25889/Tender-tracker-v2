@@ -3,6 +3,7 @@ import io
 import zipfile
 import secrets
 import uuid
+import hashlib
 from typing import List, Optional
 from datetime import datetime, timedelta
 from datetime import datetime, timedelta, timezone
@@ -37,6 +38,8 @@ from app.schemas.document import (
     ResourceShareCreate,
     ResourceShareOut,
     PublicShareValidationOut,
+    DocumentReuploadRequest,
+    DocumentNewUploadRequest,
 )
 from app.services.storage import (
     get_tender_storage_dir,
@@ -701,3 +704,124 @@ def delete_reusable_document(doc_id: str, db: Session = Depends(get_db)):
     db.delete(doc)
     db.commit()
     return None
+
+
+@router.post("/documents/{doc_id}/request-reupload", response_model=DocumentOut)
+def request_document_reupload(
+    doc_id: str,
+    payload: DocumentReuploadRequest,
+    db: Session = Depends(get_db),
+):
+    doc = db.query(TenderDocument).filter(TenderDocument.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Tender document not found")
+
+    full_comment = f"[{payload.reason}] {payload.comment}".strip()
+    doc.status = "ACTION_REQUIRED"
+    doc.action_comment = full_comment
+    doc.requested_by = payload.requested_by or "Prime Compliance Lead"
+    doc.action_due_date = payload.due_date or "T-48h"
+    db.commit()
+    db.refresh(doc)
+    return doc
+
+
+@router.post(
+    "/documents/request-upload",
+    response_model=DocumentOut,
+    status_code=status.HTTP_201_CREATED,
+)
+def request_new_document_upload(
+    payload: DocumentNewUploadRequest,
+    db: Session = Depends(get_db),
+):
+    tender = db.query(Tender).filter(Tender.id == payload.tender_id).first()
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
+
+    new_doc_id = f"DOC-{uuid.uuid4().hex[:8].upper()}"
+    now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
+
+    is_jv = payload.is_jv_partner
+    if is_jv is None:
+        is_jv = (
+            payload.company_role in ["JV_PARTNER", "CONSORTIUM_MEMBER"]
+            or payload.company_name.lower() != "primetech ltd"
+        )
+
+    doc = TenderDocument(
+        id=new_doc_id,
+        tender_id=payload.tender_id,
+        name=payload.title,
+        folder=payload.folder,
+        company_name=payload.company_name,
+        company_role=payload.company_role or "JV_PARTNER",
+        is_jv_partner=is_jv,
+        size="0 KB (Pending)",
+        revision="v0.0 (Requested)",
+        sha256="PENDING_UPLOAD",
+        uploaded_at=now_str,
+        access_level="ALL_TEAM",
+        status="ACTION_REQUIRED",
+        action_comment=payload.instructions,
+        requested_by=payload.requested_by or "Prime Lead Estimator",
+        action_due_date=payload.due_date or "T-48h",
+    )
+    db.add(doc)
+    db.commit()
+    db.refresh(doc)
+    return doc
+
+
+@router.post("/documents/{doc_id}/resolve-reupload", response_model=DocumentOut)
+async def resolve_document_reupload(
+    doc_id: str,
+    file: UploadFile = File(...),
+    comment: Optional[str] = Form(None),
+    db: Session = Depends(get_db),
+):
+    doc = db.query(TenderDocument).filter(TenderDocument.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Tender document not found")
+
+    safe_company = (
+        "".join(
+            c if c.isalnum() or c in ("-", "_") else "_"
+            for c in (doc.company_name or "PrimeTech_Ltd")
+        ).strip("_")
+        or "PrimeTech_Ltd"
+    )
+    target_dir = get_tender_storage_dir(doc.tender_id) / doc.folder / safe_company
+    filename, sha256_hash, size_bytes = await save_uploaded_file(file, target_dir)
+
+    size_mb = (
+        f"{size_bytes / (1024 * 1024):.1f} MB"
+        if size_bytes >= 1024 * 1024
+        else f"{size_bytes / 1024:.0f} KB"
+    )
+
+    doc.name = filename
+    doc.file_path = str(target_dir / filename)
+    doc.size = size_mb
+    doc.sha256 = sha256_hash
+    if "Requested" in doc.revision or doc.revision.startswith("v0"):
+        doc.revision = "v1.0"
+    elif doc.revision == "v1.0":
+        doc.revision = "v1.1"
+    else:
+        try:
+            num = float(doc.revision.replace("v", ""))
+            doc.revision = f"v{num + 0.1:.1f}"
+        except Exception:
+            doc.revision = f"{doc.revision}.1"
+
+    doc.status = "PENDING_REVIEW"
+    if comment:
+        doc.action_comment = f"Revised: {comment}"
+    else:
+        doc.action_comment = None
+    doc.uploaded_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
+
+    db.commit()
+    db.refresh(doc)
+    return doc

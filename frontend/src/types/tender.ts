@@ -72,6 +72,10 @@ export interface TenderDocument {
   isReusableLink?: boolean;
   reusableSourceId?: string;
   accessLevel?: DocumentAccessLevel;
+  status?: 'CLEARED' | 'ACTION_REQUIRED' | 'PENDING_REVIEW' | 'VERIFIED' | string;
+  actionComment?: string;
+  requestedBy?: string;
+  actionDueDate?: string;
 }
 
 export interface TenderFolder {

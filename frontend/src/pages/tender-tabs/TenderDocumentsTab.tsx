@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { useTenders } from '../../context/TenderContext';
 import { DocumentAccessLevel } from '../../types/tender';
+import { DocumentAccessLevel, TenderDocument } from '../../types/tender';
 import { downloadFolderAsZip, downloadAllVaultAsZip } from '../../utils/zipDownloader';
 import {
   Folder,
@@ -17,6 +18,10 @@ import {
   Trash2,
   Archive,
   Share2,
+  AlertTriangle,
+  RotateCcw,
+  Clock,
+  Send,
 } from 'lucide-react';
 
 const ACCESS_STYLES: Record<
@@ -64,6 +69,10 @@ export const TenderDocumentsTab: React.FC = () => {
     hasDocumentAccess,
     currentUser,
     setActiveDocForShare,
+    requestDocumentReupload,
+    requestNewDocumentUpload,
+    resolveDocumentReupload,
+    companyProfiles,
   } = useTenders();
 
   const tender = tenders.find((t) => t.id === id) || tenders[0];
@@ -88,6 +97,29 @@ export const TenderDocumentsTab: React.FC = () => {
     tender?.summary?.jv?.localPartner ||
     'DataCore Systems Ltd';
   const leadCompanyName = 'PrimeTech Ltd';
+
+  // Re-upload Request Modal State
+  const [selectedDocForReupload, setSelectedDocForReupload] = useState<TenderDocument | null>(null);
+  const [reuploadReason, setReuploadReason] = useState('Missing Auditor Stamp');
+  const [reuploadComment, setReuploadComment] = useState('');
+  const [reuploadDueDate, setReuploadDueDate] = useState('T-48h');
+  const [isSubmittingReupload, setIsSubmittingReupload] = useState(false);
+  const [reuploadFeedbackToast, setReuploadFeedbackToast] = useState<string | null>(null);
+
+  // Request New Document Modal State
+  const [isRequestDocModalOpen, setIsRequestDocModalOpen] = useState(false);
+  const [reqDocTitle, setReqDocTitle] = useState('');
+  const [reqDocFolder, setReqDocFolder] = useState('02_company_statutory_documents');
+  const [reqDocCompany, setReqDocCompany] = useState(isJvTender ? jvPartnerName : leadCompanyName);
+  const [reqDocInstructions, setReqDocInstructions] = useState('');
+  const [reqDocDueDate, setReqDocDueDate] = useState('T-48h');
+  const [isSubmittingNewReq, setIsSubmittingNewReq] = useState(false);
+
+  // Resolve Re-upload Modal State
+  const [docToResolve, setDocToResolve] = useState<TenderDocument | null>(null);
+  const [resolveFile, setResolveFile] = useState<File | null>(null);
+  const [resolveComment, setResolveComment] = useState('');
+  const [isSubmittingResolve, setIsSubmittingResolve] = useState(false);
 
   // Modal: Link Reusable Document
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
@@ -200,6 +232,60 @@ export const TenderDocumentsTab: React.FC = () => {
     setIsLinkModalOpen(false);
   };
 
+  const handleSendReuploadRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedDocForReupload) return;
+    setIsSubmittingReupload(true);
+    await requestDocumentReupload(tender.id, selectedDocForReupload.id, {
+      reason: reuploadReason,
+      comment: reuploadComment,
+      dueDate: reuploadDueDate,
+      requestedBy: currentUser.name,
+    });
+    setIsSubmittingReupload(false);
+    const docName = selectedDocForReupload.name;
+    setSelectedDocForReupload(null);
+    setReuploadFeedbackToast(`Re-upload request sent for "${docName}". Partner notified with action requirement.`);
+    setTimeout(() => setReuploadFeedbackToast(null), 4000);
+  };
+
+  const handleSendNewDocumentRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reqDocTitle.trim()) return;
+    setIsSubmittingNewReq(true);
+    await requestNewDocumentUpload({
+      tenderId: tender.id,
+      title: reqDocTitle.trim(),
+      folder: reqDocFolder,
+      companyName: reqDocCompany,
+      companyRole: reqDocCompany === leadCompanyName ? 'LEAD_BIDDER' : 'JV_PARTNER',
+      instructions: reqDocInstructions.trim(),
+      dueDate: reqDocDueDate,
+      requestedBy: currentUser.name,
+    });
+    setIsSubmittingNewReq(false);
+    setIsRequestDocModalOpen(false);
+    const title = reqDocTitle;
+    setReqDocTitle('');
+    setReqDocInstructions('');
+    setReuploadFeedbackToast(`Document request "${title}" dispatched to ${reqDocCompany}.`);
+    setTimeout(() => setReuploadFeedbackToast(null), 4000);
+  };
+
+  const handleResolveUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!docToResolve || !resolveFile) return;
+    setIsSubmittingResolve(true);
+    await resolveDocumentReupload(tender.id, docToResolve.id, resolveFile, resolveComment);
+    setIsSubmittingResolve(false);
+    const name = docToResolve.name;
+    setDocToResolve(null);
+    setResolveFile(null);
+    setResolveComment('');
+    setReuploadFeedbackToast(`Revised document uploaded for "${name}". Status changed to Under Review.`);
+    setTimeout(() => setReuploadFeedbackToast(null), 4000);
+  };
+
   const displayedDocs = (tender.documents || []).filter((d) => {
     const matchesFolder = activeFolderFilter === 'ALL' || d.folder === activeFolderFilter;
     const matchesCompany =
@@ -266,6 +352,24 @@ export const TenderDocumentsTab: React.FC = () => {
             <span>Download All as ZIP</span>
           </button>
 
+          {/* Request Document from Partner Button */}
+          <button
+            type="button"
+            onClick={() => {
+              setReqDocTitle('');
+              setReqDocInstructions('');
+              setReqDocFolder(folders[1]?.name || '02_company_statutory_documents');
+              setReqDocCompany(isJvTender ? jvPartnerName : leadCompanyName);
+              setReqDocDueDate('T-48h');
+              setIsRequestDocModalOpen(true);
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-300 text-amber-900 text-xs font-semibold rounded-lg hover:bg-amber-100 shadow-xs transition-colors"
+            title="Send an official deliverable request for a missing document to a partner or team member"
+          >
+            <Send className="w-3.5 h-3.5 text-amber-700" />
+            <span>Request Document from Partner</span>
+          </button>
+
           {/* Upload Document Button */}
           <button
             type="button"
@@ -277,6 +381,23 @@ export const TenderDocumentsTab: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Feedback Toast Notification */}
+      {reuploadFeedbackToast && (
+        <div className="p-3 bg-emerald-50 border border-emerald-300 text-emerald-900 rounded-xl text-xs font-semibold flex items-center justify-between shadow-sm animate-fadeIn">
+          <div className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{reuploadFeedbackToast}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setReuploadFeedbackToast(null)}
+            className="text-emerald-700 hover:text-emerald-900 p-1"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Folder Hierarchy Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -501,6 +622,19 @@ export const TenderDocumentsTab: React.FC = () => {
                           <FileText className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
                           <span className="font-semibold">{doc.name}</span>
 
+                          {/* Status Badge */}
+                          {doc.status === 'ACTION_REQUIRED' ? (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-300 animate-pulse">
+                              <AlertTriangle className="w-2.5 h-2.5" />
+                              <span>Action Required</span>
+                            </span>
+                          ) : doc.status === 'PENDING_REVIEW' ? (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-800 border border-blue-300">
+                              <Clock className="w-2.5 h-2.5" />
+                              <span>Under Review</span>
+                            </span>
+                          ) : null}
+
                           {/* Owning Entity Disambiguation Badge */}
                           {isJvDoc ? (
                             <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
@@ -519,6 +653,31 @@ export const TenderDocumentsTab: React.FC = () => {
                             </span>
                           )}
                         </div>
+
+                        {/* Action Required Feedback Callout */}
+                        {doc.status === 'ACTION_REQUIRED' && (
+                          <div className="w-full mt-2 p-2.5 bg-amber-50/90 border border-amber-300 rounded-lg text-amber-900 text-[11px] space-y-1">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="font-bold flex items-center gap-1 text-amber-900">
+                                <AlertTriangle className="w-3 h-3 text-amber-600 shrink-0" />
+                                <span>Re-Upload Requested</span>
+                              </span>
+                              <span className="text-[10px] font-mono font-bold bg-amber-200/90 px-1.5 py-0.5 rounded text-amber-900">
+                                Due: {doc.actionDueDate || 'T-48h'}
+                              </span>
+                            </div>
+                            {doc.actionComment && (
+                              <p className="text-[11px] text-amber-900 bg-white/70 p-1.5 rounded border border-amber-200 leading-tight">
+                                "{doc.actionComment}"
+                                {doc.requestedBy && (
+                                  <span className="not-italic text-[9.5px] text-amber-700 font-semibold block mt-1">
+                                    — Requested by {doc.requestedBy}
+                                  </span>
+                                )}
+                              </p>
+                            )}
+                          </div>
+                        )}
                       </td>
 
                       <td className="py-3 px-3">
@@ -562,9 +721,50 @@ export const TenderDocumentsTab: React.FC = () => {
                       </td>
 
                       <td className="py-3 px-3 text-[#64748B]">{doc.uploadedAt}</td>
+                      <td className="py-3 px-3 text-[#64748B]">
+                        <div>{doc.uploadedAt}</div>
+                        <div className="text-[10px] text-[#94A3B8] font-mono">{doc.revision} • {doc.size}</div>
+                      </td>
+
                       <td className="py-3 px-3 text-right">
                         {hasAccess ? (
                           <div className="flex items-center justify-end gap-1.5">
+                            {/* Request Re-Upload / Flag Action Button */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedDocForReupload(doc);
+                                setReuploadReason('Missing Auditor Stamp');
+                                setReuploadComment(doc.actionComment ? doc.actionComment.replace(/^\[.*?\]\s*/, '') : '');
+                                setReuploadDueDate(doc.actionDueDate || 'T-48h');
+                              }}
+                              className={`p-1.5 rounded-lg border transition-colors shadow-2xs ${
+                                doc.status === 'ACTION_REQUIRED'
+                                  ? 'text-amber-700 bg-amber-100 border-amber-300 hover:bg-amber-200'
+                                  : 'text-[#64748B] bg-white border-[#E2E8F0] hover:text-amber-700 hover:bg-amber-50 hover:border-amber-300'
+                              }`}
+                              title={
+                                doc.status === 'ACTION_REQUIRED'
+                                  ? 'Edit Re-Upload Request instructions'
+                                  : 'Request document revision / re-upload with reviewer comments'
+                              }
+                            >
+                              <RotateCcw className="w-3.5 h-3.5" />
+                            </button>
+
+                            {/* Resolve Re-Upload / Upload Revision Button if flagged */}
+                            {doc.status === 'ACTION_REQUIRED' && (
+                              <button
+                                type="button"
+                                onClick={() => setDocToResolve(doc)}
+                                className="inline-flex items-center gap-1 px-2 py-1 bg-[#0F172A] hover:bg-[#1E293B] text-white rounded text-[10px] font-bold shadow-2xs transition-colors shrink-0"
+                                title="Upload certified revision to resolve this action request"
+                              >
+                                <Upload className="w-3 h-3" />
+                                <span>Upload</span>
+                              </button>
+                            )}
+
                             <button
                               type="button"
                               onClick={() =>
@@ -834,6 +1034,7 @@ export const TenderDocumentsTab: React.FC = () => {
       )}
 
       {/* Modal: Confirm Delete Folder */}
+      {/* Modal: Delete Folder Confirmation */}
       {folderToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
           <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-md w-full shadow-2xl space-y-4">
@@ -887,6 +1088,390 @@ export const TenderDocumentsTab: React.FC = () => {
                 Delete Folder
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal 1: Request Document Revision & Re-Upload */}
+      {selectedDocForReupload && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl border border-[#E2E8F0] overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F5F9] bg-[#FFFBEB]">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-[#FEF3C7] text-[#D97706]">
+                  <RotateCcw className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-bold text-[#92400E]">
+                    Request Document Revision &amp; Re-Upload
+                  </h3>
+                  <p className="text-xs text-[#B45309]">
+                    Flag this file and notify the partner with compliance revision instructions
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedDocForReupload(null)}
+                className="text-[#94A3B8] hover:text-[#0F172A] p-1 rounded-lg hover:bg-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSendReuploadRequest} className="p-6 space-y-4 text-xs">
+              {/* Target File Info */}
+              <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#0F172A] text-xs truncate max-w-xs">
+                    {selectedDocForReupload.name}
+                  </span>
+                  <span className="font-mono text-[10px] font-bold bg-[#E2E8F0] text-[#475569] px-1.5 py-0.5 rounded">
+                    {selectedDocForReupload.revision}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] text-[#64748B]">
+                  <span>Entity: <strong>{selectedDocForReupload.companyName || leadCompanyName}</strong></span>
+                  <span>•</span>
+                  <span>Folder: <strong>{folders.find(f => f.name === selectedDocForReupload.folder)?.label || selectedDocForReupload.folder}</strong></span>
+                </div>
+              </div>
+
+              {/* Defect / Reason */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Primary Defect / Re-Upload Reason:
+                </label>
+                <select
+                  value={reuploadReason}
+                  onChange={(e) => setReuploadReason(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-medium text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#F59E0B]"
+                >
+                  <option value="Missing Auditor Stamp">Missing CA Auditor Seal &amp; Stamp on Pages</option>
+                  <option value="Illegible / Low Resolution Scan">Illegible / Low Resolution Scan (&lt;300 DPI)</option>
+                  <option value="Expired Document Validity">Expired Document Validity Date</option>
+                  <option value="Missing Signatures">Missing Authorized Attorney Signature / Board Resolution</option>
+                  <option value="Incorrect Entity Details">Incorrect Legal Name / Tax Registration Details</option>
+                  <option value="Tender Specific Format Required">Specific Tender Format / Notarization Required</option>
+                  <option value="Other Compliance Defect">Other Compliance Defect</option>
+                </select>
+              </div>
+
+              {/* Feedback Comment */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Reviewer Feedback &amp; Action Instructions:
+                </label>
+                <textarea
+                  value={reuploadComment}
+                  onChange={(e) => setReuploadComment(e.target.value)}
+                  placeholder="Explain exactly what needs fixing (e.g. Page 4 requires physical signature and official seal of the external chartered accountant. Please re-scan at 300 DPI and upload)."
+                  rows={4}
+                  required
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#F59E0B] resize-none leading-relaxed"
+                />
+              </div>
+
+              {/* Urgency Due Window */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1.5">
+                  Resolution SLA / Due Window:
+                </label>
+                <div className="grid grid-cols-4 gap-2">
+                  {[
+                    { label: 'T-24h (Urgent)', value: 'T-24h' },
+                    { label: 'T-48h (Standard)', value: 'T-48h' },
+                    { label: 'T-72h', value: 'T-72h' },
+                    { label: 'Before Gate 5', value: 'Gate 5 Review' },
+                  ].map((sla) => (
+                    <button
+                      key={sla.value}
+                      type="button"
+                      onClick={() => setReuploadDueDate(sla.value)}
+                      className={`py-1.5 px-2 rounded-lg border text-[11px] font-semibold text-center transition-all ${
+                        reuploadDueDate === sla.value
+                          ? 'bg-[#FEF3C7] border-[#F59E0B] text-[#92400E] shadow-2xs font-bold'
+                          : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:bg-white'
+                      }`}
+                    >
+                      {sla.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Notice */}
+              <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-lg text-[11px] text-amber-800 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <span>
+                  This document's status will be marked as <strong>ACTION REQUIRED</strong>. An alert banner will appear in the partner portal and dashboard until a certified revision is submitted.
+                </span>
+              </div>
+
+              {/* Modal Actions */}
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+                <button
+                  type="button"
+                  onClick={() => setSelectedDocForReupload(null)}
+                  className="px-4 py-2 border border-[#CBD5E1] text-[#64748B] font-semibold rounded-lg hover:text-[#0F172A] hover:bg-[#F8FAFC] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingReupload || !reuploadComment.trim()}
+                  className="px-4 py-2 bg-[#D97706] hover:bg-[#B45309] text-white font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>{isSubmittingReupload ? 'Sending Request...' : 'Dispatch Re-Upload Request'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal 2: Request Missing Document from Partner */}
+      {isRequestDocModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl border border-[#E2E8F0] overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F5F9] bg-[#F8FAFC]">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+                  <Send className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-bold text-[#0F172A]">
+                    Request Missing Document from Partner
+                  </h3>
+                  <p className="text-xs text-[#64748B]">
+                    Send a formal deliverable request for statutory credentials, forms, or technical diagrams
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsRequestDocModalOpen(false)}
+                className="text-[#94A3B8] hover:text-[#0F172A] p-1 rounded-lg hover:bg-[#F1F5F9] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSendNewDocumentRequest} className="p-6 space-y-4 text-xs">
+              {/* Target Entity / Partner */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Assign To Entity / JV Partner:
+                </label>
+                <select
+                  value={reqDocCompany}
+                  onChange={(e) => setReqDocCompany(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-medium text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                >
+                  <option value={leadCompanyName}>🏛️ Lead Bidder ({leadCompanyName})</option>
+                  <option value={jvPartnerName}>⭐ JV Partner ({jvPartnerName})</option>
+                  {companyProfiles
+                    .filter((p) => p.legal_name !== leadCompanyName && p.legal_name !== jvPartnerName)
+                    .map((p) => (
+                      <option key={p.id} value={p.legal_name}>
+                        🤝 {p.legal_name} ({p.company_role})
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              {/* Document Title */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Required Document Title:
+                </label>
+                <input
+                  type="text"
+                  value={reqDocTitle}
+                  onChange={(e) => setReqDocTitle(e.target.value)}
+                  placeholder="e.g. Manufacturer Authorization Form (MAF) - Cisco Systems"
+                  required
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                />
+              </div>
+
+              {/* Target Vault Folder */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Target Vault Folder:
+                </label>
+                <select
+                  value={reqDocFolder}
+                  onChange={(e) => setReqDocFolder(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-medium text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                >
+                  {folders.map((f) => (
+                    <option key={f.name} value={f.name}>
+                      📁 {f.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Detailed Instructions */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Instructions &amp; Compliance Specifications:
+                </label>
+                <textarea
+                  value={reqDocInstructions}
+                  onChange={(e) => setReqDocInstructions(e.target.value)}
+                  placeholder="e.g. Letter must be printed on official manufacturer letterhead, specifically referencing this tender number, and signed by an authorized regional director."
+                  rows={3}
+                  required
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] resize-none leading-relaxed"
+                />
+              </div>
+
+              {/* SLA Due Window */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1.5">
+                  Resolution SLA / Due Window:
+                </label>
+                <div className="grid grid-cols-4 gap-2">
+                  {[
+                    { label: 'T-24h (Urgent)', value: 'T-24h' },
+                    { label: 'T-48h (Standard)', value: 'T-48h' },
+                    { label: 'T-72h', value: 'T-72h' },
+                    { label: 'Before Gate 5', value: 'Gate 5 Review' },
+                  ].map((sla) => (
+                    <button
+                      key={sla.value}
+                      type="button"
+                      onClick={() => setReqDocDueDate(sla.value)}
+                      className={`py-1.5 px-2 rounded-lg border text-[11px] font-semibold text-center transition-all ${
+                        reqDocDueDate === sla.value
+                          ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-2xs font-bold'
+                          : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:bg-white'
+                      }`}
+                    >
+                      {sla.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Modal Actions */}
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+                <button
+                  type="button"
+                  onClick={() => setIsRequestDocModalOpen(false)}
+                  className="px-4 py-2 border border-[#CBD5E1] text-[#64748B] font-semibold rounded-lg hover:text-[#0F172A] hover:bg-[#F8FAFC] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingNewReq || !reqDocTitle.trim()}
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>{isSubmittingNewReq ? 'Sending...' : 'Send Request'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal 3: Upload Certified Revision to Resolve Request */}
+      {docToResolve && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="w-full max-w-md bg-white rounded-xl shadow-2xl border border-[#E2E8F0] overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F5F9] bg-[#F8FAFC]">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600">
+                  <Upload className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-bold text-[#0F172A]">
+                    Upload Revised Document
+                  </h3>
+                  <p className="text-xs text-[#64748B]">
+                    Resolve action request for {docToResolve.name}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setDocToResolve(null);
+                  setResolveFile(null);
+                }}
+                className="text-[#94A3B8] hover:text-[#0F172A] p-1 rounded-lg hover:bg-[#F1F5F9] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleResolveUpload} className="p-6 space-y-4 text-xs">
+              {/* Reviewer instructions prompt */}
+              {docToResolve.actionComment && (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-[11px] space-y-1">
+                  <span className="font-bold block">Reviewer Instructions:</span>
+                  <p className="italic">"{docToResolve.actionComment}"</p>
+                </div>
+              )}
+
+              {/* File input */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Select Certified Revision File (PDF / Office):
+                </label>
+                <input
+                  type="file"
+                  required
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setResolveFile(e.target.files[0]);
+                    }
+                  }}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A]"
+                />
+              </div>
+
+              {/* Resolution Note */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Resolution Note / Auditor Changes Summary:
+                </label>
+                <textarea
+                  value={resolveComment}
+                  onChange={(e) => setResolveComment(e.target.value)}
+                  placeholder="e.g. Certified stamp affixed on page 4 by statutory auditor. Re-scanned at 300 DPI."
+                  rows={2}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] resize-none"
+                />
+              </div>
+
+              {/* Modal Actions */}
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDocToResolve(null);
+                    setResolveFile(null);
+                  }}
+                  className="px-4 py-2 border border-[#CBD5E1] text-[#64748B] font-semibold rounded-lg hover:text-[#0F172A] hover:bg-[#F8FAFC] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingResolve || !resolveFile}
+                  className="px-4 py-2 bg-[#0F172A] hover:bg-[#1E293B] text-white font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>{isSubmittingResolve ? 'Uploading...' : 'Submit Revision (v1.1)'}</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
