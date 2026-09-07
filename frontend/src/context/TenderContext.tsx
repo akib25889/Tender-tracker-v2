@@ -439,6 +439,20 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                     : existing
                     ? existing.estimatedValueBdt
                     : 0,
+                procurementManagerName:
+                  dbt.procurement_manager_name || (existing ? existing.procurementManagerName : ''),
+                procurementManagerDesignation:
+                  dbt.procurement_manager_designation || (existing ? existing.procurementManagerDesignation : ''),
+                procurementManagerEmail:
+                  dbt.procurement_manager_email || (existing ? existing.procurementManagerEmail : ''),
+                procurementManagerPhone:
+                  dbt.procurement_manager_phone || (existing ? existing.procurementManagerPhone : ''),
+                helplinePhone:
+                  dbt.helpline_phone || (existing ? existing.helplinePhone : ''),
+                helplineEmail:
+                  dbt.helpline_email || (existing ? existing.helplineEmail : ''),
+                helplineHours:
+                  dbt.helpline_hours || (existing ? existing.helplineHours : ''),
                 stage: (dbt.stage as TenderStage) || (existing ? existing.stage : 'DISCOVERED'),
                 decision:
                   (dbt.decision as DecisionStatus) || (existing ? existing.decision : 'PENDING'),
@@ -480,7 +494,22 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                 documents: dbDocs,
                 reviews: dbReviews,
                 decisionMatrix: dbMatrix,
-                summary: dbSummary,
+                summary: dbSummary
+                  ? {
+                      ...dbSummary,
+                      procurementManager: dbSummary.procurementManager || {
+                        name: dbt.procurement_manager_name || '',
+                        designation: dbt.procurement_manager_designation || '',
+                        email: dbt.procurement_manager_email || '',
+                        phone: dbt.procurement_manager_phone || '',
+                      },
+                      helpline: dbSummary.helpline || {
+                        phone: dbt.helpline_phone || '',
+                        email: dbt.helpline_email || '',
+                        hours: dbt.helpline_hours || '',
+                      },
+                    }
+                  : dbSummary,
                 importantClauses: Array.isArray(dbt.important_clauses)
                   ? dbt.important_clauses
                   : existing?.importantClauses || [],
@@ -1006,6 +1035,13 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       exchangeRateToBdt: tenderRate,
       exchangeRateDate: tenderData.exchangeRateDate || '',
       estimatedValueBdt: tenderValBdt,
+      procurementManagerName: tenderData.procurementManagerName || tenderData.summary?.procurementManager?.name || '',
+      procurementManagerDesignation: tenderData.procurementManagerDesignation || tenderData.summary?.procurementManager?.designation || '',
+      procurementManagerEmail: tenderData.procurementManagerEmail || tenderData.summary?.procurementManager?.email || '',
+      procurementManagerPhone: tenderData.procurementManagerPhone || tenderData.summary?.procurementManager?.phone || '',
+      helplinePhone: tenderData.helplinePhone || tenderData.summary?.helpline?.phone || '',
+      helplineEmail: tenderData.helplineEmail || tenderData.summary?.helpline?.email || '',
+      helplineHours: tenderData.helplineHours || tenderData.summary?.helpline?.hours || '',
       stage: tenderData.stage || 'DISCOVERED',
       decision: 'PENDING',
       priority: tenderData.priority || 'HIGH',
@@ -1067,6 +1103,13 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         exchange_rate_to_bdt: newTender.exchangeRateToBdt,
         exchange_rate_date: newTender.exchangeRateDate,
         estimated_value_bdt: newTender.estimatedValueBdt,
+        procurement_manager_name: newTender.procurementManagerName,
+        procurement_manager_designation: newTender.procurementManagerDesignation,
+        procurement_manager_email: newTender.procurementManagerEmail,
+        procurement_manager_phone: newTender.procurementManagerPhone,
+        helpline_phone: newTender.helplinePhone,
+        helpline_email: newTender.helplineEmail,
+        helpline_hours: newTender.helplineHours,
         stage: newTender.stage,
         decision: newTender.decision,
         priority: newTender.priority,
@@ -1119,12 +1162,20 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (updates.exchangeRateToBdt !== undefined) payload.exchange_rate_to_bdt = updates.exchangeRateToBdt;
     if (updates.exchangeRateDate !== undefined) payload.exchange_rate_date = updates.exchangeRateDate;
     if (updates.estimatedValueBdt !== undefined) payload.estimated_value_bdt = updates.estimatedValueBdt;
+    if (updates.procurementManagerName !== undefined) payload.procurement_manager_name = updates.procurementManagerName;
+    if (updates.procurementManagerDesignation !== undefined) payload.procurement_manager_designation = updates.procurementManagerDesignation;
+    if (updates.procurementManagerEmail !== undefined) payload.procurement_manager_email = updates.procurementManagerEmail;
+    if (updates.procurementManagerPhone !== undefined) payload.procurement_manager_phone = updates.procurementManagerPhone;
+    if (updates.helplinePhone !== undefined) payload.helpline_phone = updates.helplinePhone;
+    if (updates.helplineEmail !== undefined) payload.helpline_email = updates.helplineEmail;
+    if (updates.helplineHours !== undefined) payload.helpline_hours = updates.helplineHours;
     if (updates.stage !== undefined) payload.stage = updates.stage;
     if (updates.decision !== undefined) payload.decision = updates.decision;
     if (updates.priority !== undefined) payload.priority = updates.priority;
     if (updates.submissionDeadline !== undefined) payload.submission_deadline = updates.submissionDeadline;
     if (updates.readinessScore !== undefined) payload.readiness_score = updates.readinessScore;
     if (updates.importantClauses !== undefined) payload.important_clauses = updates.importantClauses;
+    if (updates.summary !== undefined) payload.summary_json = JSON.stringify(updates.summary);
 
     if (Object.keys(payload).length > 0) {
       fetch(`http://127.0.0.1:8000/api/tenders/${id}`, {

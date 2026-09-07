@@ -4,7 +4,7 @@ from pathlib import Path
 from fastapi.testclient import TestClient
 from app.main import app
 from app.core.config import settings
-from app.core.database import Base, engine, SessionLocal
+from app.core.database import Base, engine, SessionLocal, run_migrations
 from app.services.seeder import seed_database
 
 client = TestClient(app)
@@ -12,6 +12,7 @@ client = TestClient(app)
 
 def setup_module():
     Base.metadata.create_all(bind=engine)
+    run_migrations()
     db = SessionLocal()
     try:
         seed_database(db)
@@ -1075,4 +1076,63 @@ def test_18_document_reupload_request_workflow():
     assert resolved["status"] == "PENDING_REVIEW"
     assert resolved["revision"] == "v1.1"
     assert "Notary seal affixed" in resolved["action_comment"]
+
+
+def test_19_procurement_manager_and_helpline_details():
+    """Verify official Procurement Manager & Helpline details persist, update, and return in API."""
+    tender_id = "TDR-TEST-PROC-MGR-01"
+    client.delete(f"/api/tenders/{tender_id}")
+
+    # 1. Create tender with procurement manager and helpline
+    create_payload = {
+        "id": tender_id,
+        "title": "Smart City Intelligent Transport System Tender",
+        "organization": "Dhaka Transport Coordination Authority (DTCA)",
+        "country": "Bangladesh",
+        "category": "Traffic & IoT Systems",
+        "currency": "BDT",
+        "estimated_value": 45000000.0,
+        "procurement_manager_name": "Engr. Rafiqul Islam",
+        "procurement_manager_designation": "Superintending Engineer (Procurement)",
+        "procurement_manager_email": "rafiqul.islam@dtca.gov.bd",
+        "procurement_manager_phone": "+880 1711-234567",
+        "helpline_phone": "+880 2 9568741",
+        "helpline_email": "helpdesk@dtca.gov.bd",
+        "helpline_hours": "09:00 AM - 05:00 PM BST (Sun-Thu)",
+    }
+    create_res = client.post("/api/tenders", json=create_payload)
+    assert create_res.status_code == 201
+    created = create_res.json()
+    assert created["procurement_manager_name"] == "Engr. Rafiqul Islam"
+    assert created["procurement_manager_designation"] == "Superintending Engineer (Procurement)"
+    assert created["procurement_manager_email"] == "rafiqul.islam@dtca.gov.bd"
+    assert created["procurement_manager_phone"] == "+880 1711-234567"
+    assert created["helpline_phone"] == "+880 2 9568741"
+    assert created["helpline_email"] == "helpdesk@dtca.gov.bd"
+    assert created["helpline_hours"] == "09:00 AM - 05:00 PM BST (Sun-Thu)"
+
+    # 2. Get tender by ID and verify persistence
+    get_res = client.get(f"/api/tenders/{tender_id}")
+    assert get_res.status_code == 200
+    fetched = get_res.json()
+    assert fetched["procurement_manager_name"] == "Engr. Rafiqul Islam"
+    assert fetched["helpline_phone"] == "+880 2 9568741"
+
+    # 3. Update procurement manager and helpline details
+    update_res = client.put(
+        f"/api/tenders/{tender_id}",
+        json={
+            "procurement_manager_name": "Engr. Tanjina Akter",
+            "procurement_manager_designation": "Director (Procurement & Contracts)",
+            "helpline_phone": "16123 (Toll Free Hotline)",
+        },
+    )
+    assert update_res.status_code == 200
+    updated = update_res.json()
+    assert updated["procurement_manager_name"] == "Engr. Tanjina Akter"
+    assert updated["procurement_manager_designation"] == "Director (Procurement & Contracts)"
+    assert updated["helpline_phone"] == "16123 (Toll Free Hotline)"
+    # Retains previous unchanged fields
+    assert updated["helpline_email"] == "helpdesk@dtca.gov.bd"
+
 

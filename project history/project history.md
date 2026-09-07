@@ -865,6 +865,11 @@
   3. `POST /api/documents/{doc_id}/resolve-reupload`: Accepts partner revision upload with SHA-256 integrity validation, automatic revision bumping (e.g. `v1.0` -> `v1.1`), and transitions status to `PENDING_REVIEW`.  
   *Impact:* Eliminates email bottlenecks, enforces clear consortium SLA accountability, and renders interactive feedback banners and modals directly in the Document Vault and Partner Portal.
 
+- **ADR-008: Procuring Authority Officer & Helpdesk Details Intake**  
+  *Context:* Bid preparation teams and consortium partners need direct, rapid access to the official client procurement manager (evaluation committee officer) and tender helpline/support desk during clarification and submission windows without having to dig through multi-hundred page tender PDFs.  
+  *Decision:* Added structured database columns (`procurement_manager_name`, `procurement_manager_designation`, `procurement_manager_email`, `procurement_manager_phone`, `helpline_phone`, `helpline_email`, `helpline_hours`) to the `tenders` table with SQLite & MySQL auto-migrations. Integrated dual cards into Tab 1 of the Tender Registry console (`/registry`) and the intake modal, with dynamic representations across the Formal 3-Page Tender Summary (`/registry/summary/:id`) and Proposal Workspace overview (`/tenders/:id`).  
+  *Impact:* Immediate visibility of key contact personnel and helpdesks across all tender views, with clickable telephone and email links.
+
 ---
 
 ## 4. Current Application Screen & Route Directory (21 Screens)

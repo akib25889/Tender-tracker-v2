@@ -107,6 +107,13 @@ class TenderBase(BaseModel):
     lead_owner_role: Optional[str] = "Business Head"
     summary_json: Optional[str] = None
     important_clauses: Optional[List[ImportantClauseSchema]] = []
+    procurement_manager_name: Optional[str] = None
+    procurement_manager_designation: Optional[str] = None
+    procurement_manager_email: Optional[str] = None
+    procurement_manager_phone: Optional[str] = None
+    helpline_phone: Optional[str] = None
+    helpline_email: Optional[str] = None
+    helpline_hours: Optional[str] = None
 
 
 class TenderCreate(TenderBase):
@@ -135,6 +142,13 @@ class TenderUpdate(BaseModel):
     lead_owner_role: Optional[str] = None
     summary_json: Optional[str] = None
     important_clauses: Optional[List[ImportantClauseSchema]] = None
+    procurement_manager_name: Optional[str] = None
+    procurement_manager_designation: Optional[str] = None
+    procurement_manager_email: Optional[str] = None
+    procurement_manager_phone: Optional[str] = None
+    helpline_phone: Optional[str] = None
+    helpline_email: Optional[str] = None
+    helpline_hours: Optional[str] = None
     archived_from_stage: Optional[str] = None
 
 

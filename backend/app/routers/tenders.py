@@ -104,6 +104,13 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
         lead_owner_role=tender_in.lead_owner_role,
         summary_json=tender_in.summary_json,
         important_clauses=[c.model_dump() for c in (tender_in.important_clauses or [])],
+        procurement_manager_name=tender_in.procurement_manager_name,
+        procurement_manager_designation=tender_in.procurement_manager_designation,
+        procurement_manager_email=tender_in.procurement_manager_email,
+        procurement_manager_phone=tender_in.procurement_manager_phone,
+        helpline_phone=tender_in.helpline_phone,
+        helpline_email=tender_in.helpline_email,
+        helpline_hours=tender_in.helpline_hours,
     )
     db.add(db_tender)
     db.flush()

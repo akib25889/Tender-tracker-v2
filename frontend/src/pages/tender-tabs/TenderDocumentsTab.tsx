@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { useTenders } from '../../context/TenderContext';
-import { DocumentAccessLevel } from '../../types/tender';
 import { DocumentAccessLevel, TenderDocument } from '../../types/tender';
 import { downloadFolderAsZip, downloadAllVaultAsZip } from '../../utils/zipDownloader';
 import {

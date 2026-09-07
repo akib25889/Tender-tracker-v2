@@ -29,6 +29,10 @@ import {
   ShieldAlert,
   Building,
   CheckCircle2,
+  UserCheck,
+  Headphones,
+  Phone,
+  Mail,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -49,7 +53,6 @@ export const TenderDetailPage: React.FC = () => {
     archiveTender,
     restoreTender,
     deleteTender,
-    formatCurrency,
   } = useTenders();
 
   const [copiedRef, setCopiedRef] = useState(false);
@@ -115,9 +118,12 @@ export const TenderDetailPage: React.FC = () => {
   const currentStageIndex = stageKeys.indexOf(tender.stage);
 
   // Financial calculations
-  const estUsd = tender.estimatedValue || 4250000;
-  const bdtCrore = ((estUsd * 122) / 10000000).toFixed(1);
-  const earnestUsd = Math.round(estUsd * 0.02);
+  const estVal = tender.estimatedValue || 4250000;
+  const tenderCur = tender.currency || 'USD';
+  const exRate = tender.exchangeRateToBdt || (tenderCur === 'BDT' ? 1.0 : 122.0);
+  const bdtTotal = tender.estimatedValueBdt || (tenderCur === 'BDT' ? estVal : estVal * exRate);
+  const bdtCrore = (bdtTotal / 10000000).toFixed(2);
+  const earnestVal = Math.round(estVal * 0.02);
 
   // Scope tags derived or fallback
   const scopeTags = [
@@ -533,7 +539,7 @@ export const TenderDetailPage: React.FC = () => {
                       </span>
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold font-mono text-[#059669]">
-                          {formatCurrency(estUsd)}{' '}
+                          {tenderCur} {estVal.toLocaleString()}{' '}
                           <span className="text-[10px] font-normal text-[#64748B] font-sans">
                             (≈ BDT {bdtCrore} Crore)
                           </span>
@@ -551,13 +557,84 @@ export const TenderDetailPage: React.FC = () => {
                       </span>
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold font-mono text-[#0F172A]">
-                          {formatCurrency(earnestUsd)}{' '}
+                          {tenderCur} {earnestVal.toLocaleString()}{' '}
                           <span className="text-[10px] font-normal text-[#64748B] font-sans">
                             (Bank Guarantee required)
                           </span>
                         </span>
                         <span className="text-[10px] font-semibold text-[#DC2626] bg-[#FEF2F2] px-1.5 py-0.5 rounded border border-[#FECACA]">
                           120 Days Validity
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Procurement Officer / Contact Person */}
+                    <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                        Procurement Officer / Contact
+                      </span>
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
+                            <UserCheck className="w-3.5 h-3.5 text-[#2563EB]" />
+                            {tender.procurementManagerName || tender.summary?.procurementManager?.name || 'Assigned Procurement Officer'}
+                          </span>
+                          <span className="text-[11px] text-[#64748B] block mt-0.5">
+                            {tender.procurementManagerDesignation || tender.summary?.procurementManager?.designation || 'Tender Evaluation Committee'}
+                          </span>
+                          <div className="flex flex-wrap items-center gap-3 mt-1 text-[11px]">
+                            {(tender.procurementManagerPhone || tender.summary?.procurementManager?.phone) && (
+                              <a
+                                href={`tel:${tender.procurementManagerPhone || tender.summary?.procurementManager?.phone}`}
+                                className="text-[#2563EB] hover:underline flex items-center gap-1"
+                              >
+                                <Phone className="w-3 h-3" />
+                                {tender.procurementManagerPhone || tender.summary?.procurementManager?.phone}
+                              </a>
+                            )}
+                            {(tender.procurementManagerEmail || tender.summary?.procurementManager?.email) && (
+                              <a
+                                href={`mailto:${tender.procurementManagerEmail || tender.summary?.procurementManager?.email}`}
+                                className="text-[#2563EB] hover:underline flex items-center gap-1"
+                              >
+                                <Mail className="w-3 h-3" />
+                                {tender.procurementManagerEmail || tender.summary?.procurementManager?.email}
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-mono text-[#2563EB] bg-[#EFF6FF] px-1.5 py-0.5 rounded font-bold border border-[#BFDBFE] shrink-0">
+                          Direct Desk
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Tender Helpline & Support Desk */}
+                    <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                        Tender Helpline &amp; Support Desk
+                      </span>
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
+                            <Headphones className="w-3.5 h-3.5 text-[#2563EB]" />
+                            {tender.helplinePhone || tender.summary?.helpline?.phone || 'Central e-GP Helpdesk'}
+                          </span>
+                          <span className="text-[11px] text-[#64748B] block mt-0.5">
+                            {tender.helplineHours || tender.summary?.helpline?.hours || '09:00 AM - 05:00 PM BST (Sun-Thu)'}
+                          </span>
+                          {(tender.helplineEmail || tender.summary?.helpline?.email) && (
+                            <a
+                              href={`mailto:${tender.helplineEmail || tender.summary?.helpline?.email}`}
+                              className="text-[11px] text-[#2563EB] hover:underline flex items-center gap-1 mt-1"
+                            >
+                              <Mail className="w-3 h-3" />
+                              {tender.helplineEmail || tender.summary?.helpline?.email}
+                            </a>
+                          )}
+                        </div>
+                        <span className="text-[10px] font-mono text-[#059669] bg-[#ECFDF5] px-1.5 py-0.5 rounded font-bold border border-[#A7F3D0] shrink-0">
+                          Helpdesk
                         </span>
                       </div>
                     </div>

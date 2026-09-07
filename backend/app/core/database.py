@@ -69,6 +69,48 @@ def run_migrations():
                             "ALTER TABLE tenders ADD COLUMN important_clauses JSON DEFAULT '[]'"
                         )
                     )
+                if "procurement_manager_name" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN procurement_manager_name VARCHAR(150) DEFAULT NULL"
+                        )
+                    )
+                if "procurement_manager_designation" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN procurement_manager_designation VARCHAR(150) DEFAULT NULL"
+                        )
+                    )
+                if "procurement_manager_email" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN procurement_manager_email VARCHAR(150) DEFAULT NULL"
+                        )
+                    )
+                if "procurement_manager_phone" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN procurement_manager_phone VARCHAR(100) DEFAULT NULL"
+                        )
+                    )
+                if "helpline_phone" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN helpline_phone VARCHAR(100) DEFAULT NULL"
+                        )
+                    )
+                if "helpline_email" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN helpline_email VARCHAR(150) DEFAULT NULL"
+                        )
+                    )
+                if "helpline_hours" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN helpline_hours VARCHAR(150) DEFAULT NULL"
+                        )
+                    )
                 # Migrations for tender_documents
                 td_result = conn.execute(
                     text("PRAGMA table_info(tender_documents)")
@@ -152,6 +194,13 @@ def run_migrations():
                             ("exchange_rate_date", "VARCHAR(50) DEFAULT ''"),
                             ("estimated_value_bdt", "FLOAT DEFAULT 0.0"),
                             ("important_clauses", "JSON DEFAULT NULL"),
+                            ("procurement_manager_name", "VARCHAR(150) DEFAULT NULL"),
+                            ("procurement_manager_designation", "VARCHAR(150) DEFAULT NULL"),
+                            ("procurement_manager_email", "VARCHAR(150) DEFAULT NULL"),
+                            ("procurement_manager_phone", "VARCHAR(100) DEFAULT NULL"),
+                            ("helpline_phone", "VARCHAR(100) DEFAULT NULL"),
+                            ("helpline_email", "VARCHAR(150) DEFAULT NULL"),
+                            ("helpline_hours", "VARCHAR(150) DEFAULT NULL"),
                         ],
                     ),
                     (

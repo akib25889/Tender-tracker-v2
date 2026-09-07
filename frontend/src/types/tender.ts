@@ -219,6 +219,19 @@ export interface TenderExtendedSummary {
   risks?: TenderRiskPoint[];
   managementHighlights?: string[];
   notes?: string;
+  procurementManager?: {
+    name?: string;
+    designation?: string;
+    email?: string;
+    phone?: string;
+    officeAddress?: string;
+  };
+  helpline?: {
+    phone?: string;
+    email?: string;
+    hours?: string;
+    notes?: string;
+  };
 }
 
 export interface Tender {
@@ -233,6 +246,13 @@ export interface Tender {
   exchangeRateToBdt?: number;
   exchangeRateDate?: string;
   estimatedValueBdt?: number;
+  procurementManagerName?: string;
+  procurementManagerDesignation?: string;
+  procurementManagerEmail?: string;
+  procurementManagerPhone?: string;
+  helplinePhone?: string;
+  helplineEmail?: string;
+  helplineHours?: string;
   stage: TenderStage;
   decision: DecisionStatus;
   priority: TenderPriority;

@@ -15,6 +15,8 @@ import {
   PanelLeftOpen,
   FileText,
   BookOpen,
+  UserCheck,
+  Headphones,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import {
@@ -117,6 +119,29 @@ export const TenderRegistryPage: React.FC = () => {
     selectedTender?.category || 'IT & Cloud Infrastructure'
   );
   const [isCustomCategory, setIsCustomCategory] = useState(false);
+
+  // Procuring Authority Officer & Helpline Details
+  const [procurementManagerName, setProcurementManagerName] = useState(
+    selectedTender?.procurementManagerName || selectedTender?.summary?.procurementManager?.name || ''
+  );
+  const [procurementManagerDesignation, setProcurementManagerDesignation] = useState(
+    selectedTender?.procurementManagerDesignation || selectedTender?.summary?.procurementManager?.designation || ''
+  );
+  const [procurementManagerEmail, setProcurementManagerEmail] = useState(
+    selectedTender?.procurementManagerEmail || selectedTender?.summary?.procurementManager?.email || ''
+  );
+  const [procurementManagerPhone, setProcurementManagerPhone] = useState(
+    selectedTender?.procurementManagerPhone || selectedTender?.summary?.procurementManager?.phone || ''
+  );
+  const [helplinePhone, setHelplinePhone] = useState(
+    selectedTender?.helplinePhone || selectedTender?.summary?.helpline?.phone || ''
+  );
+  const [helplineEmail, setHelplineEmail] = useState(
+    selectedTender?.helplineEmail || selectedTender?.summary?.helpline?.email || ''
+  );
+  const [helplineHours, setHelplineHours] = useState(
+    selectedTender?.helplineHours || selectedTender?.summary?.helpline?.hours || ''
+  );
 
   const handleCurrencyChange = (newCur: string) => {
     setTenderCurrency(newCur);
@@ -362,6 +387,42 @@ export const TenderRegistryPage: React.FC = () => {
     setCategory(selectedTender.category);
     setIsCustomCategory(false);
 
+    setProcurementManagerName(
+      selectedTender.procurementManagerName ||
+        selectedTender.summary?.procurementManager?.name ||
+        ''
+    );
+    setProcurementManagerDesignation(
+      selectedTender.procurementManagerDesignation ||
+        selectedTender.summary?.procurementManager?.designation ||
+        ''
+    );
+    setProcurementManagerEmail(
+      selectedTender.procurementManagerEmail ||
+        selectedTender.summary?.procurementManager?.email ||
+        ''
+    );
+    setProcurementManagerPhone(
+      selectedTender.procurementManagerPhone ||
+        selectedTender.summary?.procurementManager?.phone ||
+        ''
+    );
+    setHelplinePhone(
+      selectedTender.helplinePhone ||
+        selectedTender.summary?.helpline?.phone ||
+        ''
+    );
+    setHelplineEmail(
+      selectedTender.helplineEmail ||
+        selectedTender.summary?.helpline?.email ||
+        ''
+    );
+    setHelplineHours(
+      selectedTender.helplineHours ||
+        selectedTender.summary?.helpline?.hours ||
+        ''
+    );
+
     setMainIdea(
       selectedTender.summary?.mainIdea ||
         'Deployment of centralized enterprise software, cloud infrastructure, and technical support.'
@@ -569,6 +630,13 @@ export const TenderRegistryPage: React.FC = () => {
       exchangeRateToBdt: tenderCurrency === 'BDT' ? 1.0 : (Number(exchangeRateToBdt) || 122.0),
       exchangeRateDate: exchangeRateDate || publishedDate,
       estimatedValueBdt: liveBdtValue,
+      procurementManagerName,
+      procurementManagerDesignation,
+      procurementManagerEmail,
+      procurementManagerPhone,
+      helplinePhone,
+      helplineEmail,
+      helplineHours,
       submissionDeadline: parsedDeadline,
       summary: {
         classification,
@@ -577,6 +645,17 @@ export const TenderRegistryPage: React.FC = () => {
         publishedDate,
         submissionTime,
         mainIdea,
+        procurementManager: {
+          name: procurementManagerName,
+          designation: procurementManagerDesignation,
+          email: procurementManagerEmail,
+          phone: procurementManagerPhone,
+        },
+        helpline: {
+          phone: helplinePhone,
+          email: helplineEmail,
+          hours: helplineHours,
+        },
         commercial: {
           tenderSecurity,
           contractPeriod,
@@ -1261,6 +1340,133 @@ export const TenderRegistryPage: React.FC = () => {
                         ৳{Math.round(liveBdtValue).toLocaleString()} BDT
                       </span>
                     </span>
+                  </div>
+                </div>
+
+                {/* Procuring Authority Officer & Helpline Details */}
+                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
+                  <div className="flex items-center gap-2 border-b border-[#E2E8F0] pb-2">
+                    <UserCheck className="w-4 h-4 text-[#2563EB]" />
+                    <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                      Procuring Authority Contact &amp; Helpdesk Information
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Procurement Officer / Manager */}
+                    <div className="p-3.5 bg-white rounded-xl border border-[#E2E8F0] shadow-2xs space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
+                          <UserCheck className="w-3.5 h-3.5 text-[#2563EB]" />
+                          Procurement Manager / Officer
+                        </span>
+                        <span className="text-[10px] text-[#64748B] font-mono">Official Contact</span>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                          Officer Full Name
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Engr. Rafiqul Islam"
+                          value={procurementManagerName}
+                          onChange={(e) => setProcurementManagerName(e.target.value)}
+                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                          Official Designation / Title
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Superintending Engineer (Procurement)"
+                          value={procurementManagerDesignation}
+                          onChange={(e) => setProcurementManagerDesignation(e.target.value)}
+                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                            Direct Phone / Mobile
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. +880 1711-234567"
+                            value={procurementManagerPhone}
+                            onChange={(e) => setProcurementManagerPhone(e.target.value)}
+                            className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                            Official Email
+                          </label>
+                          <input
+                            type="email"
+                            placeholder="e.g. rafiqul@dtca.gov.bd"
+                            value={procurementManagerEmail}
+                            onChange={(e) => setProcurementManagerEmail(e.target.value)}
+                            className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Tender Helpline & Support Desk */}
+                    <div className="p-3.5 bg-white rounded-xl border border-[#E2E8F0] shadow-2xs space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
+                          <Headphones className="w-3.5 h-3.5 text-[#2563EB]" />
+                          Tender Helpline &amp; Support Desk
+                        </span>
+                        <span className="text-[10px] text-[#64748B] font-mono">Portal Support</span>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                          Helpline Number / Hotline
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. +880 2 9568741 or 16123"
+                          value={helplinePhone}
+                          onChange={(e) => setHelplinePhone(e.target.value)}
+                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                          Support Desk Email
+                        </label>
+                        <input
+                          type="email"
+                          placeholder="e.g. helpdesk@eprocure.gov.bd"
+                          value={helplineEmail}
+                          onChange={(e) => setHelplineEmail(e.target.value)}
+                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                          Desk Operating Hours
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. 09:00 AM - 05:00 PM BST (Sun-Thu)"
+                          value={helplineHours}
+                          onChange={(e) => setHelplineHours(e.target.value)}
+                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 

@@ -29,6 +29,13 @@ class Tender(Base):
     lead_owner_role = Column(String(100), nullable=True, default="Business Head")
     summary_json = Column(Text, nullable=True)
     important_clauses = Column(JSON, nullable=True, default=list)
+    procurement_manager_name = Column(String(150), nullable=True)
+    procurement_manager_designation = Column(String(150), nullable=True)
+    procurement_manager_email = Column(String(150), nullable=True)
+    procurement_manager_phone = Column(String(100), nullable=True)
+    helpline_phone = Column(String(100), nullable=True)
+    helpline_email = Column(String(150), nullable=True)
+    helpline_hours = Column(String(150), nullable=True)
     archived_from_stage = Column(String(50), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(

@@ -99,8 +99,50 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
               value={tender.submissionDeadline ? fmt(tender.submissionDeadline) : null}
             />
             <Row label="Submission Time" value={s?.submissionTime || null} />
+            {(tender.procurementManagerName || s?.procurementManager?.name) && (
+              <Row
+                label="Procurement Officer / Contact"
+                value={[
+                  tender.procurementManagerName || s?.procurementManager?.name,
+                  tender.procurementManagerDesignation || s?.procurementManager?.designation,
+                  (tender.procurementManagerPhone || s?.procurementManager?.phone)
+                    ? `Tel: ${tender.procurementManagerPhone || s?.procurementManager?.phone}`
+                    : null,
+                  (tender.procurementManagerEmail || s?.procurementManager?.email)
+                    ? `Email: ${tender.procurementManagerEmail || s?.procurementManager?.email}`
+                    : null,
+                ]
+                  .filter(Boolean)
+                  .join(' • ')}
+              />
+            )}
+            {(tender.helplinePhone || s?.helpline?.phone || tender.helplineEmail || s?.helpline?.email) && (
+              <Row
+                label="Helpline & Support Desk"
+                value={[
+                  (tender.helplinePhone || s?.helpline?.phone)
+                    ? `Hotline: ${tender.helplinePhone || s?.helpline?.phone}`
+                    : null,
+                  (tender.helplineEmail || s?.helpline?.email)
+                    ? `Email: ${tender.helplineEmail || s?.helpline?.email}`
+                    : null,
+                  (tender.helplineHours || s?.helpline?.hours)
+                    ? `Hours: ${tender.helplineHours || s?.helpline?.hours}`
+                    : null,
+                ]
+                  .filter(Boolean)
+                  .join(' • ')}
+              />
+            )}
             {Boolean(tender.estimatedValue && tender.estimatedValue > 0) && (
-              <Row label="Estimated Net Value" value={`$${tender.estimatedValue.toLocaleString()} USD`} />
+              <Row
+                label="Estimated Net Value"
+                value={`${tender.currency || 'USD'} ${tender.estimatedValue.toLocaleString()}${
+                  tender.estimatedValueBdt && tender.currency !== 'BDT'
+                    ? ` (≈ ৳${Math.round(tender.estimatedValueBdt).toLocaleString()} BDT)`
+                    : ''
+                }`}
+              />
             )}
           </tbody>
         </table>
