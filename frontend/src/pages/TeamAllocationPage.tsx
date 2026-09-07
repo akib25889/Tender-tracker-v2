@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
 import { UserRole } from '../types/tender';
 import { Plus, Shield, Check, X, Users, Lock } from 'lucide-react';
 
 export const TeamAllocationPage: React.FC = () => {
+  const navigate = useNavigate();
   const { tenders, teamMembers, addTeamMember } = useTenders();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
@@ -195,6 +197,16 @@ export const TeamAllocationPage: React.FC = () => {
             <div className="flex items-center justify-between text-[11px] text-[#64748B] pt-1">
               <span>{member.activeTasksCount} Active Tasks</span>
               <span>{member.ledTendersCount} Lead Bids</span>
+            </div>
+
+            <div className="pt-2 border-t border-[#F1F5F9]">
+              <button
+                type="button"
+                onClick={() => navigate(`/profile/${member.id}`)}
+                className="w-full flex items-center justify-center gap-1.5 py-1 px-2 bg-[#F8FAFC] border border-[#E2E8F0] hover:bg-[#0F172A] hover:text-white hover:border-[#0F172A] rounded-md text-[11px] font-semibold text-[#0F172A] transition-all shadow-xs"
+              >
+                <span>View Personnel Dossier &amp; CV →</span>
+              </button>
             </div>
           </Card>
         ))}

@@ -1434,3 +1434,61 @@ def test_21_tender_financial_scenarios_and_rules():
     # Verify deleted
     verify_list = client.get(f"/api/tenders/{test_tender_id}/financial-rules")
     assert len(verify_list.json()) == 1
+
+
+def test_22_user_personal_profile_and_assignments():
+    """Verify Personal Profile & Key Personnel Dossier APIs: contact info, employment type, proposed designation, and past project track record assignments."""
+    # 1. List users
+    res = client.get("/api/users")
+    assert res.status_code == 200
+    users = res.json()
+    assert len(users) > 0
+    target_user = users[0]
+    user_id = target_user["id"]
+
+    # 2. Update user profile
+    update_payload = {
+        "phone": "+880 1711-987654",
+        "location": "Dhaka, Bangladesh",
+        "employment_type": "PERMANENT",
+        "proposed_designation": "Lead Solutions Architect & Team Leader",
+        "certifications": ["PMP", "AWS Certified Solutions Architect", "CISSP"],
+        "education": [{"degree": "M.Sc in CSE", "institution": "BUET", "year": "2016"}],
+        "active_tender_roles": {"TDR-PRC0190428": "LEAD_MANAGER"},
+    }
+    put_res = client.put(f"/api/users/{user_id}", json=update_payload)
+    assert put_res.status_code == 200
+    updated = put_res.json()
+    assert updated["phone"] == "+880 1711-987654"
+    assert updated["employment_type"] == "PERMANENT"
+    assert updated["proposed_designation"] == "Lead Solutions Architect & Team Leader"
+    assert "PMP" in updated["certifications"]
+    assert updated["active_tender_roles"]["TDR-PRC0190428"] == "LEAD_MANAGER"
+
+    # 3. Add past project assignment
+    asg_payload = {
+        "id": "asg-test-01",
+        "projectName": "Government Cloud Infrastructure Modernization",
+        "client": "Ministry of ICT / World Bank",
+        "role": "Lead Systems Architect",
+        "duration": "24 Months (2022 - 2024)",
+        "deploymentMonths": 24,
+        "keyDeliverables": ["Microservices Architecture", "Tier-IV UAT Sign-off"],
+        "technologiesUsed": ["Kubernetes", "PostgreSQL", "Terraform"],
+        "coreResponsibilities": "Spearheaded core solution design and disaster recovery cutover."
+    }
+    asg_res = client.post(f"/api/users/{user_id}/assignments", json=asg_payload)
+    assert asg_res.status_code == 200
+    user_with_asg = asg_res.json()
+    assert any(a["id"] == "asg-test-01" for a in user_with_asg["past_assignments"])
+
+    # 4. Get specific user profile
+    get_res = client.get(f"/api/users/{user_id}")
+    assert get_res.status_code == 200
+    assert get_res.json()["proposed_designation"] == "Lead Solutions Architect & Team Leader"
+
+    # 5. Delete past assignment
+    del_res = client.delete(f"/api/users/{user_id}/assignments/asg-test-01")
+    assert del_res.status_code == 200
+    assert not any(a["id"] == "asg-test-01" for a in del_res.json()["past_assignments"])
+

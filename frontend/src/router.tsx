@@ -27,6 +27,7 @@ import { SharedDocumentPortalPage } from './pages/SharedDocumentPortalPage';
 import { OrganizationsPage } from './pages/OrganizationsPage';
 import { PartnerPortalPage } from './pages/PartnerPortalPage';
 import { CompanyProfilesPage } from './pages/CompanyProfilesPage';
+import { UserProfilePage } from './pages/UserProfilePage';
 
 export const router = createBrowserRouter([
   {
@@ -134,6 +135,18 @@ export const router = createBrowserRouter([
       {
         path: 'settings',
         element: <SettingsPage />,
+      },
+      {
+        path: 'profile',
+        element: <UserProfilePage />,
+      },
+      {
+        path: 'profile/:userId',
+        element: <UserProfilePage />,
+      },
+      {
+        path: 'tools/profile',
+        element: <Navigate to="/profile" replace />,
       },
       {
         path: 'tools/permissions',

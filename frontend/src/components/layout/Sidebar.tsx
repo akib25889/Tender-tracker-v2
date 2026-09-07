@@ -22,6 +22,7 @@ import {
   Landmark,
   Wrench,
   Award,
+  UserCheck,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 
@@ -36,7 +37,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
   const newDiscoveredCount = tenders.filter((t) => t.stage === 'DISCOVERED').length;
   const archivedCount = tenders.filter((t) => t.stage === 'ARCHIVED').length;
 
-  const isToolsRoute = location.pathname.startsWith('/tools') || location.pathname.startsWith('/permissions');
+  const isToolsRoute =
+    location.pathname.startsWith('/tools') ||
+    location.pathname.startsWith('/permissions') ||
+    location.pathname.startsWith('/profile');
   const [isToolsOpen, setIsToolsOpen] = useState<boolean>(() => isToolsRoute);
 
   useEffect(() => {
@@ -131,6 +135,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       label: 'Company Credentials',
       path: '/documents?tab=credentials',
       icon: Award,
+      badge: undefined,
+    },
+    {
+      label: 'Personnel Dossiers',
+      path: '/profile',
+      icon: UserCheck,
       badge: undefined,
     },
     {

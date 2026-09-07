@@ -293,6 +293,26 @@ def run_migrations():
                         )
                     )
 
+                # Migrations for users table
+                u_result = conn.execute(text("PRAGMA table_info(users)")).fetchall()
+                u_cols = {row[1] for row in u_result}
+                if "phone" not in u_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN phone VARCHAR(50) DEFAULT NULL"))
+                if "location" not in u_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN location VARCHAR(150) DEFAULT 'Dhaka, Bangladesh'"))
+                if "employment_type" not in u_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN employment_type VARCHAR(50) DEFAULT 'PERMANENT'"))
+                if "proposed_designation" not in u_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN proposed_designation VARCHAR(150) DEFAULT NULL"))
+                if "past_assignments" not in u_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN past_assignments JSON DEFAULT NULL"))
+                if "certifications" not in u_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN certifications JSON DEFAULT NULL"))
+                if "education" not in u_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN education JSON DEFAULT NULL"))
+                if "active_tender_roles" not in u_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN active_tender_roles JSON DEFAULT NULL"))
+
                 conn.commit()
             elif engine.dialect.name == "mysql":
                 for tbl, cols in [
@@ -346,6 +366,19 @@ def run_migrations():
                             ("company_name", "VARCHAR(150) DEFAULT 'PrimeTech Ltd'"),
                             ("company_role", "VARCHAR(50) DEFAULT 'LEAD_BIDDER'"),
                             ("is_jv_partner", "BOOLEAN DEFAULT FALSE"),
+                        ],
+                    ),
+                    (
+                        "users",
+                        [
+                            ("phone", "VARCHAR(50) DEFAULT NULL"),
+                            ("location", "VARCHAR(150) DEFAULT 'Dhaka, Bangladesh'"),
+                            ("employment_type", "VARCHAR(50) DEFAULT 'PERMANENT'"),
+                            ("proposed_designation", "VARCHAR(150) DEFAULT NULL"),
+                            ("past_assignments", "JSON DEFAULT NULL"),
+                            ("certifications", "JSON DEFAULT NULL"),
+                            ("education", "JSON DEFAULT NULL"),
+                            ("active_tender_roles", "JSON DEFAULT NULL"),
                         ],
                     ),
                 ]:

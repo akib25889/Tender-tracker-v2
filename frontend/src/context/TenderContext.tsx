@@ -20,6 +20,7 @@ import {
   Organization,
   CompanyProjectCredential,
   CompanyProfile,
+  PastProjectAssignment,
 } from '../types/tender';
 import { MOCK_TENDERS } from '../mock/tenders';
 import { TEAM_PROFILES } from '../mock/users';
@@ -102,6 +103,9 @@ interface TenderContextType {
     dept?: string;
     maxCapacity?: number;
   }) => void;
+  updateUserProfile: (userId: string, updates: Partial<UserProfile>) => Promise<void>;
+  addPastAssignment: (userId: string, assignment: PastProjectAssignment) => Promise<void>;
+  deletePastAssignment: (userId: string, assignmentId: string) => Promise<void>;
   canPerformAction: (action: 'ADVANCE_STAGE' | 'SIGN_OFF_TIER_3' | 'DELETE_TENDER' | 'ASSIGN_TASK' | 'EDIT_TECHNICAL') => boolean;
   // Task assignment
   assignTask: (tenderId: string, taskId: string, newAssignee: string) => void;
@@ -1848,7 +1852,24 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((p: UserProfile) => {
+            const seed = TEAM_PROFILES.find((s) => s.id === p.id);
+            if (!seed) return p;
+            return {
+              ...seed,
+              ...p,
+              pastAssignments: p.pastAssignments && p.pastAssignments.length > 0 ? p.pastAssignments : seed.pastAssignments,
+              certifications: p.certifications && p.certifications.length > 0 ? p.certifications : seed.certifications,
+              education: p.education && p.education.length > 0 ? p.education : seed.education,
+              activeTenderRoles: p.activeTenderRoles || seed.activeTenderRoles,
+              phone: p.phone || seed.phone,
+              location: p.location || seed.location,
+              employmentType: p.employmentType || seed.employmentType,
+              proposedDesignation: p.proposedDesignation || seed.proposedDesignation,
+            };
+          });
+        }
       } catch (e) {
         console.error('Failed to parse team profiles:', e);
       }
@@ -2085,6 +2106,84 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem('tendertracker_team_profiles', JSON.stringify(updated));
   };
 
+  const updateUserProfile = async (userId: string, updates: Partial<UserProfile>) => {
+    const payload: Record<string, any> = { ...updates };
+    if (updates.maxCapacity !== undefined) payload.max_capacity = updates.maxCapacity;
+    if (updates.employmentType !== undefined) payload.employment_type = updates.employmentType;
+    if (updates.proposedDesignation !== undefined) payload.proposed_designation = updates.proposedDesignation;
+    if (updates.pastAssignments !== undefined) payload.past_assignments = updates.pastAssignments;
+    if (updates.activeTenderRoles !== undefined) payload.active_tender_roles = updates.activeTenderRoles;
+
+    fetch(`http://127.0.0.1:8000/api/users/${userId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }).catch((err) => console.warn('Failed to persist user profile to backend:', err));
+
+    setTeamMembers((prev) => {
+      const updated = prev.map((m) => (m.id === userId ? { ...m, ...updates } : m));
+      localStorage.setItem('tendertracker_team_profiles', JSON.stringify(updated));
+      return updated;
+    });
+
+    setCurrentUser((prev) => {
+      if (prev.id === userId) {
+        return { ...prev, ...updates };
+      }
+      return prev;
+    });
+  };
+
+  const addPastAssignment = async (userId: string, assignment: PastProjectAssignment) => {
+    fetch(`http://127.0.0.1:8000/api/users/${userId}/assignments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(assignment),
+    }).catch((err) => console.warn('Failed to persist assignment to backend:', err));
+
+    setTeamMembers((prev) => {
+      const updated = prev.map((m) => {
+        if (m.id !== userId) return m;
+        const currentList = m.pastAssignments || [];
+        return { ...m, pastAssignments: [assignment, ...currentList] };
+      });
+      localStorage.setItem('tendertracker_team_profiles', JSON.stringify(updated));
+      return updated;
+    });
+
+    setCurrentUser((prev) => {
+      if (prev.id === userId) {
+        const currentList = prev.pastAssignments || [];
+        return { ...prev, pastAssignments: [assignment, ...currentList] };
+      }
+      return prev;
+    });
+  };
+
+  const deletePastAssignment = async (userId: string, assignmentId: string) => {
+    fetch(`http://127.0.0.1:8000/api/users/${userId}/assignments/${assignmentId}`, {
+      method: 'DELETE',
+    }).catch((err) => console.warn('Failed to delete assignment on backend:', err));
+
+    setTeamMembers((prev) => {
+      const updated = prev.map((m) => {
+        if (m.id !== userId) return m;
+        const currentList = m.pastAssignments || [];
+        return { ...m, pastAssignments: currentList.filter((a) => a.id !== assignmentId) };
+      });
+      localStorage.setItem('tendertracker_team_profiles', JSON.stringify(updated));
+      return updated;
+    });
+
+    setCurrentUser((prev) => {
+      if (prev.id === userId) {
+        const currentList = prev.pastAssignments || [];
+        return { ...prev, pastAssignments: currentList.filter((a) => a.id !== assignmentId) };
+      }
+      return prev;
+    });
+  };
+
   // Full access: every role has operational permissions
   const canPerformAction = (): boolean => true;
 
@@ -2236,6 +2335,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         setCurrentUser,
         teamMembers,
         addTeamMember,
+        updateUserProfile,
+        addPastAssignment,
+        deletePastAssignment,
         canPerformAction,
         assignTask,
         addComment,

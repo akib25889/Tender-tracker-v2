@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTenders } from '../../context/TenderContext';
 import { UserRole } from '../../types/tender';
-import { Shield, ChevronDown, Check } from 'lucide-react';
+import { Shield, ChevronDown, Check, User } from 'lucide-react';
 
 const ROLE_BADGES: Record<
   UserRole,
@@ -34,6 +35,7 @@ const ROLE_BADGES: Record<
 };
 
 export const UserRoleSwitcher: React.FC = () => {
+  const navigate = useNavigate();
   const { currentUser, setCurrentUser, teamMembers } = useTenders();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -129,6 +131,20 @@ export const UserRoleSwitcher: React.FC = () => {
                 </button>
               );
             })}
+          </div>
+
+          <div className="p-2 bg-[#F8FAFC]">
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false);
+                navigate(`/profile/${currentUser.id}`);
+              }}
+              className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 bg-white border border-[#CBD5E1] hover:bg-[#0F172A] hover:text-white hover:border-[#0F172A] rounded-lg text-xs font-semibold text-[#0F172A] transition-all shadow-xs cursor-pointer"
+            >
+              <User className="w-3.5 h-3.5" />
+              <span>View Profile &amp; Dossier</span>
+            </button>
           </div>
         </div>
       )}

@@ -118,6 +118,26 @@ export type UserRole =
   | 'SENIOR_MANAGER'
   | 'TENDER_ANALYST';
 
+export interface PastProjectAssignment {
+  id: string;
+  projectName: string;
+  client: string;
+  role: string;
+  duration: string;
+  deploymentMonths?: number;
+  keyDeliverables: string[];
+  technologiesUsed: string[];
+  coreResponsibilities: string;
+}
+
+export type EmploymentType = 'PERMANENT' | 'JV_PARTNER_STAFF' | 'EXTERNAL_CONSULTANT';
+
+export interface EducationEntry {
+  degree: string;
+  institution: string;
+  year?: string | number;
+}
+
 export interface UserProfile {
   id: string;
   name: string;
@@ -127,6 +147,14 @@ export interface UserProfile {
   avatar: string;
   department?: string;
   maxCapacity?: number;
+  phone?: string;
+  location?: string;
+  employmentType?: EmploymentType;
+  proposedDesignation?: string;
+  pastAssignments?: PastProjectAssignment[];
+  certifications?: string[];
+  education?: EducationEntry[];
+  activeTenderRoles?: Record<string, 'LEAD_MANAGER' | 'CORE_CONTRIBUTOR' | 'REVIEWER' | string>;
 }
 
 export interface TenderComment {

@@ -1017,9 +1017,23 @@
   4. *Intake-Time Integration & Printable Summary:* Embedded Tab 3 ("Financial Scenarios & Rules") directly into Tender Registry and the New Tender Modal, and rendered the complete schedule and deduction breakdown in the formal printable 3-page Tender Summary Document (`TenderSummaryDocument.tsx`).  
   *Impact:* Immediate visibility into contract cash flow, capital risk levels, and net collectible revenue from day zero of tender registration.
 
+- **ADR-012: Personal Profile & Key Personnel Dossier Hub Architecture**  
+  *Context:* Tender evaluation committees evaluate not only the corporate bidder but also the key personnel proposed for the assignment (e.g. Lead Solutions Architect, Commercial Director, Quality Sentinel). Bid operations teams need structured management of individual team member profiles, clear employment relationship categorization (Permanent Employee vs. JV Partner Staff vs. External Consultant), proposed project designations, verified chronological project track records for Form Tech-1 CV generation, active multi-tender commitments, and a real-time capacity sentinel to prevent team burnout.  
+  *Decision:*
+  1. *Backend Model & Dual-Mode Auto-Migrations:* Extended the `users` table with structured columns (`phone`, `location`, `employment_type`, `proposed_designation`, `past_assignments` JSON, `certifications` JSON, `education` JSON, `active_tender_roles` JSON) and automatic boot-time column migrations for SQLite and MySQL 8.4 LTS.
+  2. *REST API Endpoints:* Created `/api/users` router supporting profile lookups, updates, assignment appending (`POST /api/users/{id}/assignments`), and assignment deletions.
+  3. *5-Pillar Frontend Hub:* Created `UserProfilePage.tsx` (`/profile` and `/profile/:userId`) containing:
+     - *User Identity & Core Profile:* Name, title, department, employment contract badge (`PERMANENT`, `JV_PARTNER_STAFF`, `EXTERNAL_CONSULTANT`), phone, email, location, and edit modal.
+     - *Tender-Specific Identity:* Prominent proposed project designation card (e.g. *Sarah Rahman — Lead Solutions Architect & Team Leader*) with 1-click clipboard copy.
+     - *Professional Track Record:* Chronological project ledger with client, role, deployment duration, deliverables, technologies, and responsibilities, plus "Add Project Assignment" modal and academic/certification credentials.
+     - *Active Tender Commitments:* Cards tracking live bids the user is associated with, responsibility matrix tags (`Lead Proposal Manager`, `Core Technical Contributor`, `Quality Reviewer`), and direct 1-click links to `/tenders/{id}`.
+     - *Workload & Capacity Sentinel:* Real-time capacity utilization meter with dynamic burnout risk warnings (Optimal, Near Capacity, Overallocated).
+  4. *Integration Across App:* Integrated dossier navigation into `UserRoleSwitcher.tsx`, `TeamAllocationPage.tsx`, and `Sidebar.tsx`.  
+  *Impact:* Bid managers can compile Form Tech CV annexures in seconds, verify consortium expert qualifications, and balance workloads across competing bids without burnout.
+
 ---
 
-## 4. Current Application Screen & Route Directory (21 Screens)
+## 4. Current Application Screen & Route Directory (25 Screens)
 
 | Screen ID | Screen Name | Route | Module |
 | :--- | :--- | :--- | :--- |
@@ -1046,5 +1060,10 @@
 | `screen:archive` | Archived Non-Participating Records | `/archive` | `archive` |
 | `screen:notifications` | Notification & Alert Center | `/notifications` | `notifications` |
 | `screen:settings` | Settings & System Configuration | `/settings` | `settings` |
+| `screen:organizations` | Enterprise Procuring Entities & Clients Directory | `/tools/organizations` | `organizations` |
+| `screen:company_profiles` | Corporate Bidder & JV Partner Entity Profiles | `/tools/company-profiles` | `profiles` |
+| `screen:partner_portal` | Consortium Partner Document Intake Portal | `/partner/portal` | `partners` |
+| `screen:user_profile` | Personal Profile & Key Personnel Dossier Hub | `/profile`, `/profile/{userId}` | `personnel` |
+
 
 
