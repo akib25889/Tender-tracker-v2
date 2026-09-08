@@ -193,14 +193,18 @@ export type TenderClassification =
   | 'UNCLEAR';
 
 export const STANDARD_TENDER_TYPES = [
+  'Request for Proposals (RFP)',
+  'Expression of Interest (EOI)',
+  'Request for Quotation (RFQ)',
+  'Open Tendering Process (OTP)',
+  'Open Tendering Method (OTM)',
   'National Competitive Bidding (NCB)',
   'International Competitive Bidding (ICB)',
-  'Request for Proposals (RFP)',
-  'Request for Quotation (RFQ)',
   'Limited Tendering Method (LTM)',
   'Direct Contracting / Single Source',
-  'Expression of Interest (EOI)',
-  'Framework Agreement',
+  'Framework Agreement / Call-off',
+  'Pre-Qualification (PQ)',
+  'Other / Custom Modality',
 ] as const;
 
 export const STANDARD_BUDGET_TYPES = [

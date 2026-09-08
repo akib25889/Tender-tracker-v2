@@ -1498,7 +1498,7 @@ export const TenderRegistryPage: React.FC = () => {
                         <select
                           value={tenderType}
                           onChange={(e) => {
-                            if (e.target.value === '__CUSTOM__') {
+                            if (e.target.value === '__CUSTOM__' || e.target.value === 'Other / Custom Modality') {
                               setIsCustomTenderType(true);
                               setTenderType('');
                             } else {
