@@ -8,7 +8,6 @@ import {
   FolderGit2,
   CalendarDays,
   FileCheck,
-  Users,
   BarChart3,
   Settings,
   ChevronLeft,
@@ -96,12 +95,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       label: 'Document Vault',
       path: '/documents',
       icon: FileCheck,
-      badge: undefined,
-    },
-    {
-      label: 'Team & Workload',
-      path: '/team',
-      icon: Users,
       badge: undefined,
     },
     {
