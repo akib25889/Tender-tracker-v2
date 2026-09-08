@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 
 const STANDARD_PERMISSIONS = [
+  { code: '*', name: 'All Permissions (* Wildcard / Full Access)', module: 'system', icon: ShieldCheck },
   { code: 'tender.view', name: 'View Tender Overview', module: 'tender', icon: Eye },
   { code: 'tender.create', name: 'Create Opportunity', module: 'tender', icon: Plus },
   { code: 'tender.edit', name: 'Modify Tender Details', module: 'tender', icon: Sliders },
@@ -341,6 +342,22 @@ export const MasterPermissionsPage: React.FC = () => {
       }).catch(() => {});
       return next;
     });
+  };
+
+  // Allow or Deny all ceilings at once
+  const handleSetAllCeilings = (allow: boolean) => {
+    const updatedCeilings: Record<string, boolean> = {};
+    STANDARD_PERMISSIONS.forEach((p) => {
+      updatedCeilings[p.code] = allow;
+    });
+    setCeilings((prev) => ({ ...prev, ...updatedCeilings }));
+
+    // Sync to backend
+    fetch(`http://127.0.0.1:8000/api/permissions/partners/${selectedPartnerForCeiling}/ceilings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ceilings: updatedCeilings }),
+    }).catch(() => {});
   };
 
   const filteredLogs = auditLogs.filter((log) => {
@@ -772,6 +789,27 @@ export const MasterPermissionsPage: React.FC = () => {
           <Card
             title={`Partner Permission Ceiling: ${partners.find((p) => p.id === selectedPartnerForCeiling)?.name}`}
             subtitle="Hard access cap. Even if an administrator accidentally grants higher permissions, the ceiling enforces Actual = Ceiling ∩ Granted."
+            headerAction={
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleSetAllCeilings(true)}
+                  className="px-2.5 py-1 text-xs font-semibold bg-[#EFF6FF] text-[#2563EB] hover:bg-[#DBEAFE] rounded-md border border-[#BFDBFE] transition-colors flex items-center gap-1 cursor-pointer"
+                  title="Grant ALLOW for all permissions to this partner"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Allow All Permissions</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSetAllCeilings(false)}
+                  className="px-2.5 py-1 text-xs font-semibold bg-[#FEF2F2] text-[#DC2626] hover:bg-[#FEE2E2] rounded-md border border-[#FECACA] transition-colors cursor-pointer"
+                  title="Set all permissions to DENY for this partner"
+                >
+                  <span>Deny All</span>
+                </button>
+              </div>
+            }
           >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {STANDARD_PERMISSIONS.map((perm) => {
@@ -798,7 +836,7 @@ export const MasterPermissionsPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => toggleCeiling(perm.code)}
-                      className={`px-2.5 py-1 rounded text-[11px] font-bold transition-colors shrink-0 ${
+                      className={`px-2.5 py-1 rounded text-[11px] font-bold transition-colors shrink-0 cursor-pointer ${
                         isAllowed
                           ? 'bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0] hover:bg-[#DCFCE7]'
                           : 'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] hover:bg-[#FEE2E2]'
@@ -821,6 +859,34 @@ export const MasterPermissionsPage: React.FC = () => {
         <Card
           title="Active Permission Rules &amp; Scope Hierarchy"
           subtitle="Hierarchical evaluation: Specific Resource overrides Tender; Tender overrides Organization; Organization overrides Role."
+          headerAction={
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const newRule: PermissionRule = {
+                    id: Date.now(),
+                    subject_type: 'ROLE',
+                    subject_id: 'ADMIN',
+                    scope_type: 'ROLE',
+                    permission_code: '*',
+                    effect: 'ALLOW',
+                  };
+                  setRules((prev) => [newRule, ...prev]);
+                  fetch('http://127.0.0.1:8000/api/permissions/rules', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newRule),
+                  }).catch(() => {});
+                }}
+                className="px-2.5 py-1 text-xs font-semibold bg-[#2563EB] text-white hover:bg-[#1D4ED8] rounded-md shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
+                title="Grant full administrative wildcard access"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Grant All Permissions (`*` Wildcard)</span>
+              </button>
+            </div>
+          }
         >
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">

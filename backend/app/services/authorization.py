@@ -484,19 +484,27 @@ class AuthorizationService:
                 )
             )
 
-        if not conditions:
-            return None
-
-        rules = (
-            db.query(PermissionRule)
-            .filter(
-                PermissionRule.scope_type == scope_type,
-                PermissionRule.scope_id == scope_id,
-                PermissionRule.permission_code == permission_code,
-                or_(*conditions),
+        if permission_code == "*":
+            rules = (
+                db.query(PermissionRule)
+                .filter(
+                    PermissionRule.scope_type == scope_type,
+                    PermissionRule.scope_id == scope_id,
+                    or_(*conditions),
+                )
+                .all()
             )
-            .all()
-        )
+        else:
+            rules = (
+                db.query(PermissionRule)
+                .filter(
+                    PermissionRule.scope_type == scope_type,
+                    PermissionRule.scope_id == scope_id,
+                    PermissionRule.permission_code.in_([permission_code, "*"]),
+                    or_(*conditions),
+                )
+                .all()
+            )
 
         if not rules:
             return None
