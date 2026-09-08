@@ -536,7 +536,7 @@ def test_11_partner_view_allow_download_deny():
                 permission_code="document.view",
                 effect="ALLOW",
                 scope_type="RESOURCE",
-                scope_id="DOC-WATERMARK-01",
+                scope_id="DOC-PREVIEW-01",
             )
         )
         db.add(
@@ -546,7 +546,7 @@ def test_11_partner_view_allow_download_deny():
                 permission_code="document.download",
                 effect="DENY",
                 scope_type="RESOURCE",
-                scope_id="DOC-WATERMARK-01",
+                scope_id="DOC-PREVIEW-01",
             )
         )
         db.commit()
@@ -556,7 +556,7 @@ def test_11_partner_view_allow_download_deny():
             user_id=None,
             permission_code="document.view",
             tender_id="TDR-11",
-            resource_id="DOC-WATERMARK-01",
+            resource_id="DOC-PREVIEW-01",
             partner_org_id="ORG-TEST-11",
             skip_audit=True,
         )
@@ -567,7 +567,7 @@ def test_11_partner_view_allow_download_deny():
             user_id=None,
             permission_code="document.download",
             tender_id="TDR-11",
-            resource_id="DOC-WATERMARK-01",
+            resource_id="DOC-PREVIEW-01",
             partner_org_id="ORG-TEST-11",
             skip_audit=True,
         )

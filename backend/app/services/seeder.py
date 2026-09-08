@@ -613,7 +613,7 @@ def seed_database(db: Session):
         ("task.edit", "Edit Task Status & Assignee", "task", "edit"),
         ("task.delete", "Delete Task", "task", "delete"),
         ("document.view", "View Document Metadata", "document", "view"),
-        ("document.preview", "In-Browser Watermarked Preview", "document", "preview"),
+        ("document.preview", "In-Browser Document Preview", "document", "preview"),
         ("document.upload", "Upload Files to Vault", "document", "upload"),
         ("document.download", "Download Original Files", "document", "download"),
         ("document.edit", "Modify / Move Documents", "document", "edit"),

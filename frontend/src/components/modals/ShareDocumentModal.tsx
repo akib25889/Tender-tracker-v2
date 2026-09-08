@@ -193,7 +193,7 @@ export const ShareDocumentModal: React.FC = () => {
                     <span>View Only</span>
                   </div>
                   <span className="text-[10px] block opacity-80">
-                    Read in browser; watermarked without download
+                    Read directly in browser without file download
                   </span>
                 </button>
 

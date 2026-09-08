@@ -37,7 +37,7 @@ const STANDARD_PERMISSIONS = [
   { code: 'task.view', name: 'View Operational Tasks', module: 'task', icon: Eye },
   { code: 'task.edit', name: 'Edit Task Status & Assignee', module: 'task', icon: Sliders },
   { code: 'document.view', name: 'View Document Metadata', module: 'document', icon: Eye },
-  { code: 'document.preview', name: 'In-Browser Watermarked Preview', module: 'document', icon: FileText },
+  { code: 'document.preview', name: 'In-Browser Document Preview', module: 'document', icon: FileText },
   { code: 'document.download', name: 'Download Original Files', module: 'document', icon: Download },
   { code: 'document.upload', name: 'Upload Files to Vault', module: 'document', icon: Upload },
   { code: 'document.delete', name: 'Delete Documents from Vault', module: 'document', icon: Trash2 },

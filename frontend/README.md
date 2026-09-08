@@ -117,4 +117,4 @@ npm run lint
 
 - **Strict JV Partner Isolation:** External partners access only their assigned scopes via `/partner/portal` with no access to internal dashboards or financial models.
 - **Client-Side Token Validation:** Shared links (`/shared/:token`) validate against `/api/documents/share/{token}` before unlocking document views.
-- **Cryptographic Watermarking:** External document downloads enforce watermarking to prevent unauthorized redistribution.
+- **Controlled Access & Auditing:** Granular permission ceilings and SHA-256 integrity checks protect against unauthorized redistribution.
