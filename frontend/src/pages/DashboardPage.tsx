@@ -329,7 +329,6 @@ export const DashboardPage: React.FC = () => {
       {/* 6-Gate Tender Pipeline Breakdown (Zero Money) */}
       <Card
         title="6-Gate Tender Pipeline Breakdown"
-        subtitle="Distribution of live opportunities across sequential procurement gates"
       >
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {stages.map((s) => {
