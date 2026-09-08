@@ -11,11 +11,11 @@ class ActionItemSchema(BaseModel):
 
 
 class ClientVisitBase(BaseModel):
-    title: str
-    client_organization: str
+    title: Optional[str] = "Client Engagement / Meeting"
+    client_organization: Optional[str] = "General Client / Entity"
     organization_id: Optional[str] = None
     tender_id: Optional[str] = None
-    visitor_name: str
+    visitor_name: Optional[str] = "Guest Visitor"
     visitor_designation: Optional[str] = None
     visitor_phone: Optional[str] = None
     visitor_email: Optional[str] = None
@@ -24,7 +24,7 @@ class ClientVisitBase(BaseModel):
     internal_host_role: Optional[str] = "Business Head"
     visit_type: Optional[str] = "IN_PERSON_OFFICE"
     status: Optional[str] = "SCHEDULED"
-    scheduled_start: str
+    scheduled_start: Optional[str] = None
     scheduled_end: Optional[str] = None
     actual_check_in: Optional[str] = None
     actual_check_out: Optional[str] = None

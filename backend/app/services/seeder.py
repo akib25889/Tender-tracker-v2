@@ -1038,7 +1038,10 @@ def seed_database(db: Session):
                 visitor_email="amina.osei@undp.org",
                 accompanying_persons=[
                     {"name": "Kwame Mensah", "role": "IT Infrastructure Lead"},
-                    {"name": "Elena Rostova", "role": "UN Regional Procurement Officer"},
+                    {
+                        "name": "Elena Rostova",
+                        "role": "UN Regional Procurement Officer",
+                    },
                 ],
                 internal_host_name="Sarah Jenkins",
                 internal_host_role="Business Head",
@@ -1169,4 +1172,3 @@ def seed_database(db: Session):
             db.add(v)
 
     db.commit()
-

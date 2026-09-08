@@ -91,3 +91,4 @@ export interface ClientVisitCreateInput {
   action_items?: ActionItem[] | null;
   sentiment_outcome?: VisitSentiment | null;
 }
+

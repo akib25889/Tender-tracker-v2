@@ -34,7 +34,9 @@ class ClientVisit(Base):
     scheduled_end = Column(String(100), nullable=True)
     actual_check_in = Column(String(100), nullable=True)
     actual_check_out = Column(String(100), nullable=True)
-    location_or_room = Column(String(150), nullable=True, default="Main Conference Room")
+    location_or_room = Column(
+        String(150), nullable=True, default="Main Conference Room"
+    )
     meeting_link = Column(String(255), nullable=True)
     agenda = Column(Text, nullable=True)
     discussion_notes = Column(Text, nullable=True)

@@ -195,28 +195,22 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
-
-    if (!title.trim() || !clientOrganization.trim() || !visitorName.trim() || !scheduledStart) {
-      setErrorMsg('Please fill in all mandatory fields (Title, Client, Visitor Name, Start Time).');
-      return;
-    }
-
     setIsSubmitting(true);
 
     const payload = {
-      title: title.trim(),
-      client_organization: clientOrganization.trim(),
+      title: title.trim() || 'Client Engagement / Meeting',
+      client_organization: clientOrganization.trim() || 'General Client / Entity',
       tender_id: tenderId ? tenderId : null,
-      visitor_name: visitorName.trim(),
+      visitor_name: visitorName.trim() || 'Guest Visitor',
       visitor_designation: visitorDesignation.trim() || null,
       visitor_phone: visitorPhone.trim() || null,
       visitor_email: visitorEmail.trim() || null,
       accompanying_persons: accompanyingPersons.filter((p) => p.name.trim().length > 0),
-      internal_host_name: internalHostName.trim() || null,
-      internal_host_role: internalHostRole.trim() || null,
+      internal_host_name: internalHostName.trim() || 'Sarah Jenkins',
+      internal_host_role: internalHostRole.trim() || 'Business Head',
       visit_type: visitType,
       status: activeTab === 'LOG_PAST' && status === 'SCHEDULED' ? 'COMPLETED' : status,
-      scheduled_start: scheduledStart,
+      scheduled_start: scheduledStart || new Date().toISOString().slice(0, 16),
       scheduled_end: scheduledEnd || null,
       actual_check_in: actualCheckIn || null,
       actual_check_out: actualCheckOut || null,
@@ -335,11 +329,10 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
             </div>
             <div>
               <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
-                Meeting Title / Subject *
+                Meeting Title / Subject
               </label>
               <input
                 type="text"
-                required
                 placeholder="e.g. Technical Clarification & Architectural Briefing for ADB Project"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -350,12 +343,11 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
-                  Client / Procuring Entity *
+                  Client / Procuring Entity
                 </label>
                 <div className="relative">
                   <input
                     type="text"
-                    required
                     list="organizations-list"
                     placeholder="e.g. United Nations Development Programme"
                     value={clientOrganization}
@@ -404,7 +396,7 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
-                  Visit Format *
+                  Visit Format
                 </label>
                 <select
                   value={visitType}
@@ -421,11 +413,10 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
 
               <div>
                 <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
-                  Start Date &amp; Time *
+                  Start Date &amp; Time
                 </label>
                 <input
                   type="datetime-local"
-                  required
                   value={scheduledStart}
                   onChange={(e) => setScheduledStart(e.target.value)}
                   className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-mono text-xs"
@@ -489,13 +480,12 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
-                  Primary Visitor Full Name *
+                  Primary Visitor Full Name
                 </label>
                 <div className="relative">
                   <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                   <input
                     type="text"
-                    required
                     placeholder="e.g. Dr. Arthur Pendelton"
                     value={visitorName}
                     onChange={(e) => setVisitorName(e.target.value)}
@@ -610,7 +600,7 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               <div>
                 <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
-                  Internal Host / Account Lead *
+                  Internal Host
                 </label>
                 <select
                   value={internalHostName}

@@ -34,9 +34,7 @@ def get_client_visits(
         query = query.filter(ClientVisit.visit_type == visit_type)
 
     if organization and organization != "ALL":
-        query = query.filter(
-            ClientVisit.client_organization.ilike(f"%{organization}%")
-        )
+        query = query.filter(ClientVisit.client_organization.ilike(f"%{organization}%"))
 
     if tender_id:
         query = query.filter(ClientVisit.tender_id == tender_id)
@@ -103,11 +101,11 @@ def create_client_visit(
 
     visit = ClientVisit(
         id=visit_id,
-        title=payload.title,
-        client_organization=payload.client_organization,
+        title=payload.title or "Client Engagement / Meeting",
+        client_organization=payload.client_organization or "General Client / Entity",
         organization_id=payload.organization_id,
         tender_id=payload.tender_id,
-        visitor_name=payload.visitor_name,
+        visitor_name=payload.visitor_name or "Guest Visitor",
         visitor_designation=payload.visitor_designation,
         visitor_phone=payload.visitor_phone,
         visitor_email=payload.visitor_email,
@@ -116,7 +114,7 @@ def create_client_visit(
         internal_host_role=payload.internal_host_role or "Business Head",
         visit_type=payload.visit_type or "IN_PERSON_OFFICE",
         status=(payload.status or "SCHEDULED").upper(),
-        scheduled_start=payload.scheduled_start,
+        scheduled_start=payload.scheduled_start or datetime.now().strftime("%Y-%m-%dT%H:%M"),
         scheduled_end=payload.scheduled_end,
         actual_check_in=payload.actual_check_in,
         actual_check_out=payload.actual_check_out,

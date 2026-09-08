@@ -1727,4 +1727,3 @@ def test_25_client_visits_and_meetings_crud():
     # 7. Confirm 404 after deletion
     get_after_del = client.get(f"/api/v1/client-visits/{visit_id}")
     assert get_after_del.status_code == 404
-
