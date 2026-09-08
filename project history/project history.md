@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.17.0
+**Current Version:** 2.18.0
 **Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -19,6 +19,27 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 26-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 34 tests), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+### [2026-09-08] — Version 2.18.0: Fine-Grained Master Access Control & 4-Layer Permissions Governance
+- **Category:** Access Control, Role-Based Access Control (RBAC), Partner Permission Ceilings, Authorization Diagnostic Simulator, Audit Trails
+- **Summary:**
+  - **Master Access & Permissions Control Center (`/permissions` & `MasterPermissionsPage.tsx`):**
+    - Built enterprise 5-tab permissions governance center for managing user roles, partner ceilings, and scope rules:
+      1. *Live Diagnostic Simulator:* Multi-select permission tester with quick-action utilities ("Select All", "Reset (*)"), badge counters, sensitive tags, and live multi-action authorization evaluation.
+      2. *JV & Partner Ceilings:* Maximum boundary ceiling matrix ($Actual = Ceiling \cap Granted$) with batch "Allow All Permissions" and "Deny All" controls.
+      3. *Role Baselines & Scope Overrides:* Hierarchical permission rules (Resource > Tender > Organization > Role baseline) supporting wildcard `*` ("Grant All Permissions").
+      4. *Security Blockers (Layer 1):* Hard DENY conditions (e.g. account suspensions, NDA flags) that precede all granted roles.
+      5. *Authorization Audit Trail:* Immutable append-only audit trail logging every request ID, decision, matched scope, and denial reason with CSV and JSON exports.
+  - **Backend 4-Layer Authorization Engine (`backend/app/services/authorization.py`):**
+    - Strict 4-layer evaluation pipeline with support for full-access wildcard `*` matching across all standard action codes.
+    - Endpoints for rule management, ceilings configuration, diagnostics, and tamper-resistant audit logs (`/api/permissions/*`).
+    - Comprehensive test suite in `backend/tests/test_authorization_engine.py` (15/15 tests passing).
+  - **Sidebar Navigation:**
+    - Integrated direct route `/permissions` under *Tools & Addons* in the primary Command Center sidebar.
+  - **Verification:**
+    - Backend authorization engine tests: 15/15 passed (100%).
+    - Frontend TypeScript build: 0 errors.
+    - Knowledge Graph synchronized via Graphify.
 
 ### [2026-09-08] — Version 2.17.0: Client Visitor & Scheduled Meetings Management System
 - **Category:** Client Relationship Management (CRM), Meeting Logistics, Minutes of Meeting (MoM), Pre-Bid Engagements
