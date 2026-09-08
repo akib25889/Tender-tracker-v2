@@ -442,6 +442,7 @@ export const DashboardPage: React.FC = () => {
       >
         {/* Interactive Filter Toolbar */}
         <div className="flex flex-wrap items-center justify-between gap-2.5 px-4 py-2.5 bg-[#F8FAFC] dark:bg-[#0F172A] border-b border-[#F1F5F9] dark:border-slate-800 -mt-5 -mx-5 mb-5 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 px-5 py-2.5 bg-[#F8FAFC] dark:bg-[#0F172A] border-b border-[#CBD5E1] dark:border-slate-700 -mt-5 -mx-5 mb-0 text-xs">
           <div className="flex flex-wrap items-center gap-2 flex-1 min-w-[280px]">
             <div className="flex items-center gap-1 text-[#64748B] dark:text-slate-400 shrink-0 font-medium">
               <Filter className="w-3.5 h-3.5" />
@@ -457,6 +458,7 @@ export const DashboardPage: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 className="w-full pl-8 pr-7 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white placeholder-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                className="w-full pl-8 pr-7 py-1 text-xs rounded-md border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white placeholder-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
               />
               {searchQuery && (
                 <button
@@ -474,6 +476,7 @@ export const DashboardPage: React.FC = () => {
               value={selectedStage}
               onChange={(e) => handleStageChange(e.target.value)}
               className="px-2 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+              className="px-2 py-1 text-xs rounded-md border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
             >
               <option value="ALL">All Stages</option>
               {stages.map((s) => (
@@ -488,6 +491,7 @@ export const DashboardPage: React.FC = () => {
               value={selectedCategory}
               onChange={(e) => handleCategoryChange(e.target.value)}
               className="px-2 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+              className="px-2 py-1 text-xs rounded-md border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
             >
               <option value="ALL">All Categories</option>
               {categories.map((c) => (
@@ -535,17 +539,18 @@ export const DashboardPage: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="divide-y divide-[#F1F5F9] dark:divide-slate-800 -mx-5 -my-5">
             <div className="divide-y divide-[#E2E8F0] dark:divide-slate-700 -mx-5 -my-5">
+          <div>
+            <div className="divide-y divide-[#E2E8F0] dark:divide-slate-700 -mx-5">
               {paginatedTenders.map((tender) => (
                 <div
                   key={tender.id}
                   className="p-4 hover:bg-[#F8FAFC] dark:hover:bg-slate-800/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+                  className="px-5 py-4 hover:bg-[#F8FAFC] dark:hover:bg-slate-800/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 group"
                 >
                   {/* Left Details */}
                   <div className="space-y-1.5 flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white bg-[#F1F5F9] dark:bg-slate-800 px-2 py-0.5 rounded">
                       <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white bg-[#F1F5F9] dark:bg-slate-800 px-2 py-0.5 rounded border border-[#CBD5E1] dark:border-slate-700">
                         {tender.id}
                       </span>
@@ -558,7 +563,6 @@ export const DashboardPage: React.FC = () => {
                         hoursRemaining={tender.hoursRemaining}
                       />
                       {tender.scannerConfidence && (
-                        <span className="text-[10px] font-mono text-[#64748B] dark:text-slate-400 bg-[#F8FAFC] dark:bg-slate-800 px-1.5 py-0.5 rounded border border-[#E2E8F0] dark:border-slate-700">
                         <span className="text-[10px] font-mono text-[#64748B] dark:text-slate-400 bg-[#F8FAFC] dark:bg-slate-800 px-1.5 py-0.5 rounded border border-[#CBD5E1] dark:border-slate-700">
                           Scanner {tender.scannerConfidence}%
                         </span>
@@ -603,7 +607,6 @@ export const DashboardPage: React.FC = () => {
 
                     <Link
                       to={`/tenders/${tender.id}`}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-[#F1F5F9] dark:bg-slate-800 hover:bg-[#2563EB] dark:hover:bg-blue-600 hover:text-white text-[#0F172A] dark:text-white rounded-lg text-xs font-semibold transition-all group-hover:border-[#2563EB]"
                       className="flex items-center gap-1 px-3 py-1.5 bg-[#F1F5F9] dark:bg-slate-800 hover:bg-[#2563EB] dark:hover:bg-blue-600 hover:text-white text-[#0F172A] dark:text-white rounded-lg text-xs font-semibold border border-[#CBD5E1] dark:border-slate-700 transition-all group-hover:border-[#2563EB]"
                     >
                       <span>Resolve</span>
@@ -616,8 +619,8 @@ export const DashboardPage: React.FC = () => {
 
             {/* Pagination Controls Toolbar */}
             {urgentQueue.length > 0 && (
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-[#F1F5F9] dark:border-slate-800 text-xs">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-[#CBD5E1] dark:border-slate-700 text-xs">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-3 -mx-5 -mb-5 bg-[#F8FAFC]/50 dark:bg-[#0F172A] border-t border-[#CBD5E1] dark:border-slate-700 text-xs">
                 {/* Page Summary & Items Per Page */}
                 <div className="flex items-center gap-3 text-[#64748B] dark:text-slate-400">
                   <span>
@@ -627,13 +630,11 @@ export const DashboardPage: React.FC = () => {
                     </strong> of <strong className="text-[#0F172A] dark:text-white">{urgentQueue.length}</strong> tenders
                   </span>
 
-                  <div className="flex items-center gap-1.5 pl-3 border-l border-[#E2E8F0] dark:border-slate-800">
                   <div className="flex items-center gap-1.5 pl-3 border-l border-[#CBD5E1] dark:border-slate-700">
                     <span className="text-[11px]">Show:</span>
                     <select
                       value={pageSize}
                       onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                      className="px-2 py-0.5 text-xs rounded border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
                       className="px-2 py-0.5 text-xs rounded border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
                     >
                       <option value={5}>5 per page</option>
@@ -652,7 +653,6 @@ export const DashboardPage: React.FC = () => {
                       type="button"
                       onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                       disabled={currentPage === 1}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
                       className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#CBD5E1] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
                     >
                       <ChevronLeft className="w-3.5 h-3.5" />
@@ -668,7 +668,6 @@ export const DashboardPage: React.FC = () => {
                           className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                             currentPage === pageNum
                               ? 'bg-[#2563EB] text-white shadow-xs'
-                              : 'text-[#64748B] dark:text-slate-400 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white'
                               : 'border border-[#E2E8F0] dark:border-slate-700 text-[#64748B] dark:text-slate-400 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white'
                           }`}
                         >
@@ -681,7 +680,6 @@ export const DashboardPage: React.FC = () => {
                       type="button"
                       onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                       disabled={currentPage === totalPages}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
                       className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#CBD5E1] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
                     >
                       <span>Next</span>
