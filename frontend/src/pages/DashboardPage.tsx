@@ -36,7 +36,6 @@ export const DashboardPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStage, setSelectedStage] = useState<string>('ALL');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
-  const [excludeArchived, setExcludeArchived] = useState<boolean>(true);
 
   // Dynamic live operational metric calculations
   const activeTenders = tenders.filter(
@@ -59,13 +58,10 @@ export const DashboardPage: React.FC = () => {
   }, [tenders]);
 
   const baseUrgentPool = useMemo(() => {
-    return tenders.filter((t) => {
-      if (excludeArchived && (t.stage === 'ARCHIVED' || t.stage === 'LOST' || t.stage === 'DECLINED')) {
-        return false;
-      }
-      return true;
-    });
-  }, [tenders, excludeArchived]);
+    return tenders.filter(
+      (t) => t.stage !== 'ARCHIVED' && t.stage !== 'LOST' && t.stage !== 'DECLINED'
+    );
+  }, [tenders]);
 
   const allUrgentCount = useMemo(() => {
     return baseUrgentPool.filter(
@@ -148,15 +144,13 @@ export const DashboardPage: React.FC = () => {
     filterMode !== 'ALL_URGENT' ||
     searchQuery.trim() !== '' ||
     selectedStage !== 'ALL' ||
-    selectedCategory !== 'ALL' ||
-    !excludeArchived;
+    selectedCategory !== 'ALL';
 
   const resetFilters = () => {
     setFilterMode('ALL_URGENT');
     setSearchQuery('');
     setSelectedStage('ALL');
     setSelectedCategory('ALL');
-    setExcludeArchived(true);
   };
 
   const stages: { stage: TenderStage; label: string }[] = [
@@ -452,20 +446,6 @@ export const DashboardPage: React.FC = () => {
                 </option>
               ))}
             </select>
-
-            {/* Exclude Archived Toggle */}
-            <button
-              type="button"
-              onClick={() => setExcludeArchived(!excludeArchived)}
-              className={`px-2.5 py-1 text-xs rounded-md border font-medium transition-colors cursor-pointer ${
-                excludeArchived
-                  ? 'bg-white border-[#CBD5E1] text-[#2563EB] shadow-xs'
-                  : 'bg-white/60 border-dashed border-[#CBD5E1] text-[#64748B]'
-              }`}
-              title={excludeArchived ? 'Archived tenders are excluded. Click to include.' : 'Archived tenders are included. Click to exclude.'}
-            >
-              {excludeArchived ? '✓ Active Only' : 'Include Archived'}
-            </button>
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0">
