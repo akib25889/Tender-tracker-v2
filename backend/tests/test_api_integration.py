@@ -1622,3 +1622,109 @@ def test_24_tender_procurement_governance_attributes():
     # 4. Cleanup
     del_res = client.delete(f"/api/tenders/{test_id}")
     assert del_res.status_code in (200, 204)
+
+
+def test_25_client_visits_and_meetings_crud():
+    """
+    Test Client Visitor & Scheduled Meetings REST endpoints:
+    - POST /api/v1/client-visits (create visit / schedule)
+    - GET /api/v1/client-visits (list all)
+    - GET /api/v1/client-visits/{id} (get single)
+    - PUT /api/v1/client-visits/{id} (update visit & MoM)
+    - PATCH /api/v1/client-visits/{id}/status (quick check-in & status transition)
+    - GET /api/v1/client-visits/upcoming (query upcoming pipeline)
+    - DELETE /api/v1/client-visits/{id} (delete record)
+    """
+    visit_id = "VISIT-TEST-2026-001"
+    # Ensure cleanup first if exists
+    client.delete(f"/api/v1/client-visits/{visit_id}")
+
+    payload = {
+        "id": visit_id,
+        "title": "UNDP Climate Fund Technical Pre-Bid Alignment",
+        "client_organization": "United Nations Development Programme",
+        "visitor_name": "Dr. Arthur Pendelton",
+        "visitor_designation": "Director General of Procurement",
+        "visitor_phone": "+1 555-019-2834",
+        "visitor_email": "arthur.pendelton@undp.org",
+        "accompanying_persons": [
+            {"name": "Elena Rostova", "designation": "Senior Evaluation Specialist"},
+            {"name": "Tariq Mansoor", "designation": "IT Security Assessor"},
+        ],
+        "internal_host_name": "Sarah Jenkins",
+        "internal_host_role": "Business Head",
+        "visit_type": "IN_PERSON_OFFICE",
+        "status": "SCHEDULED",
+        "scheduled_start": "2026-09-15T10:00:00",
+        "scheduled_end": "2026-09-15T11:30:00",
+        "location_or_room": "Executive Boardroom 4A",
+        "agenda": "Reviewing data residency compliance, ISO 27001 SLA, and consortium qualifications.",
+        "action_items": [
+            {
+                "task": "Submit updated Tier-3 Datacenter SOC2 Type II compliance audit report",
+                "owner": "Michael Zhang",
+                "deadline": "2026-09-18",
+                "is_done": False,
+            }
+        ],
+        "sentiment_outcome": "POSITIVE",
+    }
+
+    # 1. Create client visit
+    create_res = client.post("/api/v1/client-visits", json=payload)
+    assert create_res.status_code == 201
+    created_visit = create_res.json()
+    assert created_visit["id"] == visit_id
+    assert created_visit["visitor_name"] == "Dr. Arthur Pendelton"
+    assert len(created_visit["accompanying_persons"]) == 2
+    assert created_visit["status"] == "SCHEDULED"
+
+    # 2. Get by ID
+    get_res = client.get(f"/api/v1/client-visits/{visit_id}")
+    assert get_res.status_code == 200
+    retrieved_visit = get_res.json()
+    assert retrieved_visit["title"] == payload["title"]
+    assert retrieved_visit["client_organization"] == payload["client_organization"]
+
+    # 3. Patch Status (Reception Check-In)
+    patch_res = client.patch(
+        f"/api/v1/client-visits/{visit_id}/status",
+        json={
+            "status": "CHECKED_IN",
+            "actual_check_in": "2026-09-15T09:55:00",
+        },
+    )
+    assert patch_res.status_code == 200
+    patched_visit = patch_res.json()
+    assert patched_visit["status"] == "CHECKED_IN"
+    assert patched_visit["actual_check_in"] == "2026-09-15T09:55:00"
+
+    # 4. Update with MoM Discussion Notes & Completed status
+    update_res = client.put(
+        f"/api/v1/client-visits/{visit_id}",
+        json={
+            "status": "COMPLETED",
+            "actual_check_out": "2026-09-15T11:45:00",
+            "discussion_notes": "Client was highly satisfied with our consortium structure and confirmed submission timeline extension by 7 days.",
+            "sentiment_outcome": "VERY_POSITIVE",
+        },
+    )
+    assert update_res.status_code == 200
+    updated_visit = update_res.json()
+    assert updated_visit["status"] == "COMPLETED"
+    assert updated_visit["sentiment_outcome"] == "VERY_POSITIVE"
+    assert "consortium structure" in updated_visit["discussion_notes"]
+
+    # 5. Check Upcoming Endpoint
+    upcoming_res = client.get("/api/v1/client-visits/upcoming")
+    assert upcoming_res.status_code == 200
+    assert isinstance(upcoming_res.json(), list)
+
+    # 6. Delete visit
+    del_res = client.delete(f"/api/v1/client-visits/{visit_id}")
+    assert del_res.status_code == 204
+
+    # 7. Confirm 404 after deletion
+    get_after_del = client.get(f"/api/v1/client-visits/{visit_id}")
+    assert get_after_del.status_code == 404
+

@@ -87,6 +87,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       urgentBadge: '3 Due',
     },
     {
+      label: 'Client Visitors',
+      path: '/clients/visits',
+      icon: UserCheck,
+      badge: undefined,
+    },
+    {
       label: 'Document Vault',
       path: '/documents',
       icon: FileCheck,
@@ -123,6 +129,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       label: 'Organizations',
       path: '/tools/organizations',
       icon: Landmark,
+      badge: undefined,
+    },
+    {
+      label: 'Client Visitors',
+      path: '/clients/visits',
+      icon: UserCheck,
       badge: undefined,
     },
     {

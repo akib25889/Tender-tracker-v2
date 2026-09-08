@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.16.0
+**Current Version:** 2.17.0
 **Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -19,6 +19,27 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 26-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 34 tests), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+### [2026-09-08] — Version 2.17.0: Client Visitor & Scheduled Meetings Management System
+- **Category:** Client Relationship Management (CRM), Meeting Logistics, Minutes of Meeting (MoM), Pre-Bid Engagements
+- **Summary:**
+  - **Client Visitor & Meeting Hub (`/clients/visits`):**
+    - Developed dedicated enterprise console for managing in-person client delegations, pre-bid clarification sessions, site visits, and virtual meetings.
+    - Integrated navigation directly into the main Command Center Sidebar (`/clients/visits`) with instant access under both Command Navigation and Tools & Addons.
+  - **Comprehensive Backend REST Core (`backend/app/routers/client_visits.py`):**
+    - Built full-featured CRUD endpoints (`GET /api/client-visits`, `POST /api/client-visits`, `GET /api/client-visits/{id}`, `PUT /api/client-visits/{id}`, `PATCH /api/client-visits/{id}/status`, `DELETE /api/client-visits/{id}`, `GET /api/client-visits/upcoming`).
+    - Database entity `ClientVisit` with columns for visitor particulars, accompanying delegations, internal host lead, format, start/end timestamps, reception check-in/out, room/virtual links, agenda, MoM discussion notes, actionable deliverable items, and sentiment scoring.
+    - Added database auto-migration and demo seeders covering UNDP, European Commission, World Bank, and ADB.
+  - **Rich Frontend Management Experience (`ClientVisitsPage.tsx` & `ClientVisitModal.tsx`):**
+    - **KPI Ribbon:** Live metrics for Upcoming Meetings, Today's Reception Check-Ins, Completed Engagements, and Pending Deliverables.
+    - **Dual-Mode Console:** Interactive Card/Timeline schedule view and high-density Data Table view.
+    - **Lifecycle Status Transitions:** 1-click reception check-in (`CHECKED_IN`), MoM completion (`COMPLETED`), reschedule, and cancellation.
+    - **Deliverable Action Item Tracker:** Inline interactive checkboxes with immediate database persistence.
+    - **Dual Quick Entry Modal:** Switch seamlessly between "Schedule Upcoming Meeting" and "Log Completed / Walk-In MoM".
+  - **Testing & Verification:**
+    - Full pytest backend integration test (`test_25_client_visits_and_meetings_crud`) passed with 100% pass rate (25/25 tests).
+    - Production Vite TypeScript build passed with 0 errors.
+    - Knowledge graph updated via Graphify (54 nodes, 32 edges).
 
 ### [2026-09-08] — Version 2.16.0: Tender Type, Budget Type, Source of Fund & Procurement Method Governance Framework
 - **Category:** Procurement Governance, Data Architecture, Tender Intake & Executive Reporting

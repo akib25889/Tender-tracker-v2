@@ -16,6 +16,7 @@ from app.models.organization import Organization
 from app.models.company_credential import CompanyProjectCredential
 from app.models.company_profile import CompanyProfile
 from app.models.financial_rule import TenderFinancialRule
+from app.models.client_visit import ClientVisit
 from app.models.permission import (
     Permission,
     PartnerOrganization,

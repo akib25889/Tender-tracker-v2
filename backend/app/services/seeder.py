@@ -22,6 +22,7 @@ from app.models.permission import (
 )
 from app.models.setting import SystemSetting
 from app.models.chat import ChatChannelMessage
+from app.models.client_visit import ClientVisit
 from app.core.security import get_password_hash
 from app.services.storage import ensure_tender_directories
 
@@ -1022,4 +1023,150 @@ def seed_database(db: Session):
         for cp in initial_profiles:
             db.add(cp)
 
+    # 13. Seed Client Visits & Scheduled Meetings
+    if db.query(ClientVisit).count() == 0:
+        initial_visits = [
+            ClientVisit(
+                id="VISIT-2026-001",
+                title="Pre-Bid Architecture Clarification & Sovereign Cloud Specs",
+                client_organization="United Nations Development Programme (UNDP)",
+                organization_id="ORG-101",
+                tender_id="TDR-PRC0190428",
+                visitor_name="Dr. Amina Osei",
+                visitor_designation="Senior Technical Procurement Specialist",
+                visitor_phone="+233 24 555 0192",
+                visitor_email="amina.osei@undp.org",
+                accompanying_persons=[
+                    {"name": "Kwame Mensah", "role": "IT Infrastructure Lead"},
+                    {"name": "Elena Rostova", "role": "UN Regional Procurement Officer"},
+                ],
+                internal_host_name="Sarah Jenkins",
+                internal_host_role="Business Head",
+                visit_type="PRE_BID_MEETING",
+                status="COMPLETED",
+                scheduled_start="2026-09-04T10:00:00",
+                scheduled_end="2026-09-04T12:30:00",
+                actual_check_in="2026-09-04T09:52:00",
+                actual_check_out="2026-09-04T12:45:00",
+                location_or_room="Executive Boardroom A (HQ)",
+                meeting_link=None,
+                agenda="Review of data sovereignty requirements, Tier-III DC replication SLAs, and ISO 27001 audit standards.",
+                discussion_notes="UNDP delegation was very satisfied with our multi-region failover demo. Clarified that local joint venture partnership is encouraged but not mandatory. Confirmed bid submission deadline extension to Sept 16.",
+                action_items=[
+                    {
+                        "task": "Provide certified ISO 27001 audit report copy to UNDP procurement desk",
+                        "owner": "Sarah Jenkins",
+                        "deadline": "2026-09-10",
+                        "is_done": True,
+                    },
+                    {
+                        "task": "Update Financial Model to reflect 3-year multi-tier SaaS escalation structure",
+                        "owner": "Financial Lead",
+                        "deadline": "2026-09-11",
+                        "is_done": True,
+                    },
+                ],
+                sentiment_outcome="CRITICAL_BREAKTHROUGH",
+            ),
+            ClientVisit(
+                id="VISIT-2026-002",
+                title="Executive Courtesy Call & ERP Modernization Roadmap Review",
+                client_organization="European Commission — DG DIGIT",
+                organization_id="ORG-102",
+                tender_id="TDR-2026-EU-089",
+                visitor_name="Marc Vandenberg",
+                visitor_designation="Director of Digital Modernization",
+                visitor_phone="+32 2 299 11 11",
+                visitor_email="marc.vandenberg@ec.europa.eu",
+                accompanying_persons=[
+                    {"name": "Sophie Dubois", "role": "Principal Systems Architect"},
+                ],
+                internal_host_name="Sarah Jenkins",
+                internal_host_role="Business Head",
+                visit_type="IN_PERSON_OFFICE",
+                status="CHECKED_IN",
+                scheduled_start="2026-09-08T14:00:00",
+                scheduled_end="2026-09-08T16:00:00",
+                actual_check_in="2026-09-08T13:50:00",
+                actual_check_out=None,
+                location_or_room="Innovation Hub Conference Suite (Level 4)",
+                meeting_link=None,
+                agenda="Discussion on modular ERP migration milestones, open API gateways, and multi-tenant security guarantees.",
+                discussion_notes="Currently in progress. Visitor presented European interoperability framework constraints.",
+                action_items=[
+                    {
+                        "task": "Submit updated Form Tech-4 Architecture Blueprint",
+                        "owner": "Technical Architect",
+                        "deadline": "2026-09-12",
+                        "is_done": False,
+                    }
+                ],
+                sentiment_outcome="POSITIVE",
+            ),
+            ClientVisit(
+                id="VISIT-2026-003",
+                title="Telemedicine Platform Security & Compliance Audit Briefing",
+                client_organization="World Bank Group (Health Sector Development)",
+                organization_id="ORG-103",
+                tender_id="TDR-2026-WB-104",
+                visitor_name="Dr. Rajesh Patel",
+                visitor_designation="Lead Health Informatics Specialist",
+                visitor_phone="+1 202 473 1000",
+                visitor_email="rpatel@worldbank.org",
+                accompanying_persons=[],
+                internal_host_name="Sarah Jenkins",
+                internal_host_role="Business Head",
+                visit_type="VIRTUAL_CONFERENCE",
+                status="CONFIRMED",
+                scheduled_start="2026-09-10T15:00:00",
+                scheduled_end="2026-09-10T16:30:00",
+                actual_check_in=None,
+                actual_check_out=None,
+                location_or_room="Virtual Microsoft Teams Room",
+                meeting_link="https://teams.microsoft.com/l/meetup-join/worldbank-health-rfp-2026",
+                agenda="Review of HL7 / FHIR data exchange protocols and patient data encryption at rest (AES-256).",
+                discussion_notes=None,
+                action_items=[
+                    {
+                        "task": "Prepare HL7 FHIR compliance matrix and API sandbox credentials",
+                        "owner": "Lead Solutions Engineer",
+                        "deadline": "2026-09-09",
+                        "is_done": False,
+                    }
+                ],
+                sentiment_outcome="POSITIVE",
+            ),
+            ClientVisit(
+                id="VISIT-2026-004",
+                title="Smart Grid SCADA Hardening & Substation Site Inspection Alignment",
+                client_organization="Asian Development Bank (ADB) / Power Grid Corp",
+                organization_id="ORG-104",
+                tender_id="TDR-2026-ADB-215",
+                visitor_name="Hiroshi Tanaka",
+                visitor_designation="Chief Energy Sector Specialist",
+                visitor_phone="+63 2 8632 4444",
+                visitor_email="htanaka@adb.org",
+                accompanying_persons=[
+                    {"name": "Engr. Tariqul Islam", "role": "Executive Engineer, PGCB"},
+                ],
+                internal_host_name="Sarah Jenkins",
+                internal_host_role="Business Head",
+                visit_type="CLIENT_SITE_VISIT",
+                status="SCHEDULED",
+                scheduled_start="2026-09-14T09:30:00",
+                scheduled_end="2026-09-14T13:00:00",
+                actual_check_in=None,
+                actual_check_out=None,
+                location_or_room="PGCB National Load Dispatch Centre (NLDC), Aftabnagar",
+                meeting_link=None,
+                agenda="Physical site inspection of SCADA servers, backup power generators, and fiber telemetry patch panels.",
+                discussion_notes=None,
+                action_items=[],
+                sentiment_outcome="POSITIVE",
+            ),
+        ]
+        for v in initial_visits:
+            db.add(v)
+
     db.commit()
+

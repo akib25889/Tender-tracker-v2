@@ -28,6 +28,7 @@ import { OrganizationsPage } from './pages/OrganizationsPage';
 import { PartnerPortalPage } from './pages/PartnerPortalPage';
 import { CompanyProfilesPage } from './pages/CompanyProfilesPage';
 import { UserProfilePage } from './pages/UserProfilePage';
+import { ClientVisitsPage } from './pages/ClientVisitsPage';
 
 export const router = createBrowserRouter([
   {
@@ -183,6 +184,18 @@ export const router = createBrowserRouter([
       {
         path: 'partner-portal',
         element: <Navigate to="/partner/portal" replace />,
+      },
+      {
+        path: 'clients/visits',
+        element: <ClientVisitsPage />,
+      },
+      {
+        path: 'visits',
+        element: <Navigate to="/clients/visits" replace />,
+      },
+      {
+        path: 'tools/client-visits',
+        element: <Navigate to="/clients/visits" replace />,
       },
       {
         path: '*',
