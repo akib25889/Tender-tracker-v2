@@ -69,3 +69,6 @@ backend/tender_tracker.db
 backups/
 backend/backups/
 
+# Local reference files
+Project_Start_Point.md
+

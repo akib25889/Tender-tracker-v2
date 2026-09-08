@@ -82,8 +82,7 @@ def delete_past_assignment(
         raise HTTPException(status_code=404, detail=f"User '{user_id}' not found")
 
     assignments = [
-        asg for asg in (user.past_assignments or [])
-        if asg.get("id") != assignment_id
+        asg for asg in (user.past_assignments or []) if asg.get("id") != assignment_id
     ]
     user.past_assignments = assignments
 

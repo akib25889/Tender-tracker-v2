@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.13.0  
+**Current Version:** 2.15.0
 **Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -19,6 +19,18 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 26-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 34 tests), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+### [2026-09-08] — Version 2.15.0: Universal Document Viewer Hub, Requirement Blockers & Collaboration Replies
+- **Category:** Document Operations, Compliance Workflow, Team Collaboration
+- **Summary:**
+  - **Universal Document Viewer Hub (Req #15):** Enhanced the shared document preview modal with local browser rendering for PDF, DOCX, XLS/XLSX/CSV, images, and text/code files using the native browser engine, `docx-preview`, and SheetJS.
+  - **Secure Document Streaming:** Added MIME-aware inline preview endpoints for tender documents, shared links, and reusable master-library files, including separate preview/download permissions and byte-range streaming.
+  - **Document Surface Integration:** Connected tender vault, master vault, shared portal, and partner portal preview/download actions to real file URLs and repaired the preview integration test.
+  - **Requirement Blockers:** Documented and verified the `VERIFIED` / `PENDING` / `BLOCKER` requirement workflow. Blocker status persists through `PATCH /api/requirements/{requirement_id}` and updates tender blocker lists.
+  - **Chat & Comments:** Added fixed quick-reply chips and native emoji insertion to team chat, tender comments, and partner secure chat without introducing new dependencies or schema changes.
+  - **Documentation:** Updated the implementation plan with completed feature notes and verification details.
+  - **Verification:** Focused preview integration test passed, frontend TypeScript/build checks passed, and touched-file diagnostics reported no errors. Existing lint and bundle-size warnings remain documented.
+- **Release Commit:** `979275e` — `Implement document hub and collaboration updates`
 
 ### [2026-09-08] — Version 2.13.0: Tender Financial Scenarios, Milestone Schedules, SaaS Recurring Revenue & Contract Rule Engine
 - **Category:** Commercial Analysis & Financial Engineering, Contract Risk Modeling, Tender Registry Intake Architecture
@@ -1030,6 +1042,21 @@
      - *Workload & Capacity Sentinel:* Real-time capacity utilization meter with dynamic burnout risk warnings (Optimal, Near Capacity, Overallocated).
   4. *Integration Across App:* Integrated dossier navigation into `UserRoleSwitcher.tsx`, `TeamAllocationPage.tsx`, and `Sidebar.tsx`.  
   *Impact:* Bid managers can compile Form Tech CV annexures in seconds, verify consortium expert qualifications, and balance workloads across competing bids without burnout.
+
+- **ADR-013: Universal In-Browser Document Viewer Hub (Native PDF + docx-preview + SheetJS Engine)**  
+  *Context:* Tender evaluation and bid management requires reviewing diverse document formats (RFP PDFs, technical specifications in `.docx`, BOQ pricing sheets in `.xlsx`/`.csv`, scanned statutory trade licenses in `.png`/`.jpg`, software code/markdown scripts, and archive packages) directly within the application without forcing users to leave the browser or install heavy desktop suites. Furthermore, strict data privacy mandates zero cloud leaks (no third-party cloud viewer iframe proxies like Google Docs or Office 365), and tender compliance demands clean, pristine rendering with zero watermarks on both browser views and downloaded files.  
+  *Decision:*
+  1. *Format-Aware Multi-Engine Dispatcher:* Built `DocumentPreviewModal.tsx` utilizing Ponytail-optimized local client-side rendering engines:
+     - *PDF Viewport:* Native sandboxed browser PDF engine with inline fallback and download triggers.
+     - *Word Engine (`docx-preview`):* Pure DOM rendering engine parsing WordprocessingML directly into styled HTML DOM.
+     - *Spreadsheet Engine (`xlsx` / SheetJS):* Client-side workbook parser with sheet tab selector, structured scrollable table, cell formatting, and real-time text search filtering.
+     - *Image Lightbox:* High-contrast viewer with zoom controls ($50\% - 300\%$), 90° rotation, pan reset, and full-screen expansion.
+     - *Code & Text Editor:* Syntax-highlighted monospaced viewer with line numbers and character count.
+     - *Archive Manifest Inspector:* ZIP container inspection and file structure breakdown.
+  2. *Zero Watermark Enforcement:* Explicitly eliminated all watermark overlays and PDF stamping per user mandate. Documents are rendered and downloaded in their original, unblemished integrity.
+  3. *Secure Backend Streaming:* Built dedicated inline preview endpoints (`GET /api/documents/{id}/preview`, `GET /api/documents/shared/{token}/preview`, and `GET /api/reusable-documents/{id}/preview`) supporting MIME headers, byte-range streaming, and token permission validation.
+  4. *Universal Surface Integration:* Connected Document Vault, Master Reusable Library, Shared Token Portal, and JV Partner Portal with preview action buttons and clickable file names.  
+  *Impact:* 100% private, instantaneous in-browser document review across all standard tender file formats with zero external cloud dependencies.
 
 ---
 

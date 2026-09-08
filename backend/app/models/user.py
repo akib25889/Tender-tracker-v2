@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, Integer, JSON
 from app.core.database import Base
 
+
 class User(Base):
     __tablename__ = "users"
 
@@ -17,10 +18,11 @@ class User(Base):
     # Personal Profile & CV Dossier Fields
     phone = Column(String(50), nullable=True)
     location = Column(String(150), nullable=True, default="Dhaka, Bangladesh")
-    employment_type = Column(String(50), nullable=False, default="PERMANENT") # PERMANENT, JV_PARTNER_STAFF, EXTERNAL_CONSULTANT
+    employment_type = Column(
+        String(50), nullable=False, default="PERMANENT"
+    )  # PERMANENT, JV_PARTNER_STAFF, EXTERNAL_CONSULTANT
     proposed_designation = Column(String(150), nullable=True)
     past_assignments = Column(JSON, nullable=True, default=list)
     certifications = Column(JSON, nullable=True, default=list)
     education = Column(JSON, nullable=True, default=list)
     active_tender_roles = Column(JSON, nullable=True, default=dict)
-
