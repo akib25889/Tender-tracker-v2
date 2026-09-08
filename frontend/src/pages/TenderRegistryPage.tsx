@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   Plus,
-  Search,
   Trash2,
   Save,
   Check,
@@ -11,8 +10,6 @@ import {
   Briefcase,
   AlertTriangle,
   ExternalLink,
-  PanelLeftClose,
-  PanelLeftOpen,
   FileText,
   BookOpen,
   UserCheck,
@@ -40,7 +37,6 @@ import {
 import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { ImportantClausesManager } from '../components/tender/ImportantClausesManager';
 import { FinancialScenariosEditor } from '../components/tender/FinancialScenariosEditor';
-import { fuzzyMatch } from '../utils/fuzzySearch';
 
 const CLASSIFICATIONS: TenderClassification[] = [
   'SOFTWARE / IT RELATED',
@@ -139,8 +135,6 @@ export const TenderRegistryPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const editIdFromUrl = searchParams.get('id') || searchParams.get('edit');
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedClassificationFilter, setSelectedClassificationFilter] = useState<string>('ALL');
   const [selectedTenderId, setSelectedTenderId] = useState<string>(
     editIdFromUrl || tenders[0]?.id || ''
   );
@@ -156,7 +150,6 @@ export const TenderRegistryPage: React.FC = () => {
   >('BASIC');
 
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [isRailCollapsed, setIsRailCollapsed] = useState(false);
 
   // Form State initialized from currently selected tender
   const selectedTender =
@@ -778,17 +771,6 @@ export const TenderRegistryPage: React.FC = () => {
     );
   }, [selectedTenderId]);
 
-  const filteredTenders = tenders.filter((t) => {
-    const matchesQuery = fuzzyMatch(
-      [t.title, t.id, t.referenceNo, t.organization, t.category],
-      searchQuery
-    );
-    const matchesClass =
-      selectedClassificationFilter === 'ALL' ||
-      t.summary?.classification === selectedClassificationFilter;
-    return matchesQuery && matchesClass;
-  });
-
   const handleCreateNewBlank = () => {
     const newId = `TDR-2026-REG-${Math.floor(100 + Math.random() * 900)}`;
     addTender({
@@ -1019,198 +1001,73 @@ export const TenderRegistryPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 2-Column Split Workspace (Rail + Editor) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 min-h-[750px]">
-        {/* Left List Rail (Conditional Minimization) */}
-        {!isRailCollapsed && (
-          <div className="lg:col-span-4 bg-white rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col overflow-hidden transition-all duration-300">
-            {/* Rail Header with Minimizer */}
-            <div className="p-3.5 border-b border-[#F1F5F9] space-y-2.5 bg-[#F8FAFC]">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[11px] font-bold text-[#0F172A] uppercase tracking-wider">
-                  Tender Explorer ({filteredTenders.length})
+      {/* Full-Width Editor Panel */}
+      <div className="w-full bg-white rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col overflow-hidden">
+        {/* Editor Header Bar */}
+        <div className="px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              {tenders.length > 1 ? (
+                <select
+                  value={selectedTenderId}
+                  onChange={(e) => setSelectedTenderId(e.target.value)}
+                  className="px-2.5 py-1 text-xs font-mono font-bold text-[#0F172A] bg-white border border-[#CBD5E1] rounded-lg shadow-xs focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer max-w-[220px]"
+                  title="Switch active tender"
+                >
+                  {tenders.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.id} {t.referenceNo ? `(${t.referenceNo})` : ''}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <span className="font-mono text-xs font-bold text-[#0F172A] bg-white border border-[#CBD5E1] px-2 py-0.5 rounded">
+                  {selectedTender?.id}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => setIsRailCollapsed(true)}
-                  className="p-1.5 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#E2E8F0] transition-colors"
-                  title="Minimize search & list panel"
-                >
-                  <PanelLeftClose className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="relative">
-                <Search className="w-3.5 h-3.5 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  placeholder="Search by title, ref no. or ID..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-8 pr-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-                />
-              </div>
-
-              {/* Classification Filter */}
-              <div className="flex items-center gap-1 overflow-x-auto text-[10px] pb-1">
-              <button
-                onClick={() => setSelectedClassificationFilter('ALL')}
-                className={`px-2 py-0.5 rounded-full font-semibold whitespace-nowrap transition-colors ${
-                  selectedClassificationFilter === 'ALL'
-                    ? 'bg-[#0F172A] text-white'
-                    : 'bg-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
-                }`}
-              >
-                All ({tenders.length})
-              </button>
-              {CLASSIFICATIONS.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setSelectedClassificationFilter(c)}
-                  className={`px-2 py-0.5 rounded-full font-semibold whitespace-nowrap transition-colors ${
-                    selectedClassificationFilter === c
-                      ? 'bg-[#0F172A] text-white'
-                      : 'bg-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
-                  }`}
-                >
-                  {c.includes('SOFTWARE') ? 'Software' : c}
-                </button>
-              ))}
+              )}
+              <span className="text-xs text-[#64748B] hidden md:inline">
+                Ref: {selectedTender?.referenceNo || 'N/A'}
+              </span>
             </div>
+            <h2 className="font-display text-base font-bold text-[#0F172A] mt-0.5 line-clamp-1">
+              {tenderTitle || 'Untitled Tender Entry'}
+            </h2>
           </div>
 
-          {/* Scrollable Entry Cards */}
-          <div className="flex-1 overflow-y-auto divide-y divide-[#F1F5F9] p-2 space-y-1">
-            {filteredTenders.length === 0 ? (
-              <div className="p-8 text-center text-xs text-[#94A3B8]">
-                No entries match your search.
-              </div>
-            ) : (
-              filteredTenders.map((t) => {
-                const isSelected = t.id === selectedTenderId;
-                return (
-                  <div
-                    key={t.id}
-                    onClick={() => setSelectedTenderId(t.id)}
-                    className={`p-3 rounded-lg cursor-pointer transition-all ${
-                      isSelected
-                        ? 'bg-[#EFF6FF] border-l-4 border-l-[#2563EB] shadow-xs'
-                        : 'hover:bg-[#F8FAFC]'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between text-[10px] font-mono text-[#64748B] mb-1">
-                      <span className="font-bold text-[#2563EB]">{t.id}</span>
-                      <span>{t.referenceNo}</span>
-                    </div>
-
-                    <h4 className="font-semibold text-xs text-[#0F172A] line-clamp-2 leading-snug">
-                      {t.title}
-                    </h4>
-
-                    <div className="flex items-center justify-between text-[11px] text-[#64748B] mt-2">
-                      <span className="truncate max-w-[130px]">
-                        {t.organization}
-                      </span>
-                      <div className="flex items-center gap-1.5 font-mono text-[10px]">
-                        {t.estimatedValue > 0 && (
-                          <span className="text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">
-                            {t.currency === 'BDT'
-                              ? `৳${(t.estimatedValue / 10000000).toFixed(2)} Cr`
-                              : `${t.currency || '$'} ${(t.estimatedValue / 1000000).toFixed(1)}M`}
-                          </span>
-                        )}
-                        {t.importantClauses && t.importantClauses.length > 0 && (
-                          <span
-                            className="bg-indigo-50 text-indigo-700 font-semibold px-1.5 py-0.5 rounded border border-indigo-100 flex items-center gap-1"
-                            title={`${t.importantClauses.length} Important Clauses Marked`}
-                          >
-                            <BookOpen className="w-2.5 h-2.5" />
-                            {t.importantClauses.length}
-                          </span>
-                        )}
-                        <span className="bg-[#F1F5F9] px-1.5 py-0.5 rounded">
-                          Due {new Date(t.submissionDeadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            )}
+          <div className="flex items-center gap-2">
+            <Link
+              to={`/registry/summary/${selectedTender?.id}`}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#475569] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors shadow-2xs"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>View Summary</span>
+            </Link>
+            <button
+              type="button"
+              onClick={handleDeleteCurrent}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#FECACA] text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
+              title="Delete this tender"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Delete</span>
+            </button>
+            <Link
+              to={`/tenders/${selectedTender?.id}`}
+              className="flex items-center gap-1 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors"
+            >
+              <span>Workspace</span>
+              <ExternalLink className="w-3 h-3" />
+            </Link>
+            <button
+              type="button"
+              onClick={handleSaveEntry}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] shadow-sm transition-colors cursor-pointer"
+            >
+              <Save className="w-3.5 h-3.5" />
+              <span>Save Entry</span>
+            </button>
           </div>
         </div>
-      )}
-
-        {/* Right Editor Panel (8 or 12 Cols) */}
-        <div
-          className={`${
-            isRailCollapsed ? 'lg:col-span-12' : 'lg:col-span-8'
-          } bg-white rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col overflow-hidden transition-all duration-300`}
-        >
-          {/* Editor Header Bar */}
-          <div className="px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
-            <div className="flex items-center gap-3">
-              {isRailCollapsed && (
-                <button
-                  type="button"
-                  onClick={() => setIsRailCollapsed(false)}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#0F172A] rounded-lg text-xs font-semibold shadow-xs transition-colors"
-                  title="Expand search & list panel"
-                >
-                  <PanelLeftOpen className="w-4 h-4 text-[#2563EB]" />
-                  <span>Tender List ({filteredTenders.length})</span>
-                </button>
-              )}
-
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-bold text-[#0F172A] bg-white border border-[#CBD5E1] px-2 py-0.5 rounded">
-                    {selectedTender?.id}
-                  </span>
-                  <span className="text-xs text-[#64748B]">
-                    Ref: {selectedTender?.referenceNo}
-                  </span>
-                </div>
-                <h2 className="font-display text-base font-bold text-[#0F172A] mt-1 line-clamp-1">
-                  {tenderTitle || 'Untitled Tender Entry'}
-                </h2>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Link
-                to={`/registry/summary/${selectedTender?.id}`}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#475569] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors shadow-2xs"
-              >
-                <FileText className="w-3.5 h-3.5" />
-                <span>View Summary</span>
-              </Link>
-              <button
-                type="button"
-                onClick={handleDeleteCurrent}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#FECACA] text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg text-xs font-semibold transition-colors shadow-2xs"
-                title="Delete this tender"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Delete</span>
-              </button>
-              <Link
-                to={`/tenders/${selectedTender?.id}`}
-                className="flex items-center gap-1 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors"
-              >
-                <span>Workspace</span>
-                <ExternalLink className="w-3 h-3" />
-              </Link>
-              <button
-                type="button"
-                onClick={handleSaveEntry}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] shadow-sm transition-colors"
-              >
-                <Save className="w-3.5 h-3.5" />
-                <span>Save Entry</span>
-              </button>
-            </div>
-          </div>
 
           {/* Section Navigation Tabs */}
           <div className="flex items-center border-b border-[#E2E8F0] bg-white px-6 overflow-x-auto shrink-0">
@@ -2784,7 +2641,7 @@ export const TenderRegistryPage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   type="submit"
-                  className="flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white rounded-lg font-semibold hover:bg-[#1E293B] shadow-sm transition-colors text-xs"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white rounded-lg font-semibold hover:bg-[#1E293B] shadow-sm transition-colors text-xs cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Save All Changes</span>
@@ -2793,7 +2650,6 @@ export const TenderRegistryPage: React.FC = () => {
             </div>
           </form>
         </div>
-      </div>
     </div>
   );
 };
