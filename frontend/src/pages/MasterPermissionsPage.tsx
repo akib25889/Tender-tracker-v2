@@ -27,6 +27,8 @@ import {
   Upload,
   Trash2,
   FileText,
+  CheckSquare,
+  Square,
 } from 'lucide-react';
 
 const STANDARD_PERMISSIONS = [
@@ -129,8 +131,9 @@ export const MasterPermissionsPage: React.FC = () => {
   const [simPartner, setSimPartner] = useState<string>('NONE');
   const [simTender, setSimTender] = useState<string>(tenders[0]?.id || 'TDR-PRC0190428');
   const [simResource, setSimResource] = useState<string>('');
-  const [simAction, setSimAction] = useState<string>('document.download');
-  const [simResult, setSimResult] = useState<DiagnosticResult | null>(null);
+  const [selectedSimActions, setSelectedSimActions] = useState<string[]>(['*']);
+  const [simResultsList, setSimResultsList] = useState<DiagnosticResult[]>([]);
+  const [inspectedAction, setInspectedAction] = useState<string>('*');
   const [isSimulating, setIsSimulating] = useState(false);
 
   // --- State: Audit Trail ---
@@ -217,117 +220,151 @@ export const MasterPermissionsPage: React.FC = () => {
       .catch(() => {});
   }, []);
 
-  // --- Run Diagnostic Simulation ---
+  // --- Permission Selection Handlers ---
+  const toggleSimAction = (code: string) => {
+    setSelectedSimActions((prev) => {
+      if (prev.includes(code)) {
+        const next = prev.filter((c) => c !== code);
+        return next.length === 0 ? ['*'] : next;
+      } else {
+        return [...prev, code];
+      }
+    });
+  };
+
+  const handleSelectAllSimActions = () => {
+    setSelectedSimActions(STANDARD_PERMISSIONS.map((p) => p.code));
+  };
+
+  const handleClearSimActions = () => {
+    setSelectedSimActions(['*']);
+  };
+
+  // --- Run Multi-Action Diagnostic Simulation ---
   const handleRunDiagnostic = async () => {
+    if (selectedSimActions.length === 0) return;
     setIsSimulating(true);
 
-    const payload = {
-      user_id: simPartner === 'NONE' ? simUser : undefined,
-      partner_org_id: simPartner !== 'NONE' ? simPartner : undefined,
-      tender_id: simTender || undefined,
-      resource_id: simResource.trim() || undefined,
-      permission_code: simAction,
-    };
+    const evaluatedResults: DiagnosticResult[] = [];
+    const newLogs: AuthorizationAuditLog[] = [];
 
-    try {
-      const res = await fetch('http://127.0.0.1:8000/api/permissions/diagnose', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+    for (const actionCode of selectedSimActions) {
+      const payload = {
+        user_id: simPartner === 'NONE' ? simUser : undefined,
+        partner_org_id: simPartner !== 'NONE' ? simPartner : undefined,
+        tender_id: simTender || undefined,
+        resource_id: simResource.trim() || undefined,
+        permission_code: actionCode,
+      };
 
-      if (res.ok) {
-        const data: DiagnosticResult = await res.json();
-        setSimResult(data);
+      let evaluated: DiagnosticResult | null = null;
 
-        // Add to audit logs view
-        const newLog: AuthorizationAuditLog = {
-          id: Date.now(),
-          uuid: crypto.randomUUID(),
-          request_id: data.request_id,
-          user_id: payload.user_id,
-          partner_organization_id: payload.partner_org_id,
-          tender_id: payload.tender_id,
-          resource_id: payload.resource_id,
-          permission_code: payload.permission_code,
-          action: payload.permission_code.split('.').pop() || 'action',
-          decision: data.verdict,
-          denial_reason_code: data.denial_reason_code,
-          denial_message: data.denial_message,
-          matched_rule_id: data.matched_rule_id,
-          matched_rule_scope: data.matched_rule_scope,
-          created_at: new Date().toISOString().replace('T', ' ').substring(0, 19),
-        };
-        setAuditLogs((prev) => [newLog, ...prev]);
-        setIsSimulating(false);
-        return;
+      try {
+        const res = await fetch('http://127.0.0.1:8000/api/permissions/diagnose', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (res.ok) {
+          evaluated = await res.json();
+        }
+      } catch {
+        // Fallback to local evaluation
       }
-    } catch {
-      // Fallback local simulation logic
+
+      if (!evaluated) {
+        // Local Simulation Fallback
+        const reqId = `REQ-${new Date().toISOString().slice(0, 10)}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+        let allowed = true;
+        let denialReason = '';
+        let denialCode = '';
+
+        // Check partner ceiling
+        if (simPartner !== 'NONE') {
+          const isCeilingDenied =
+            actionCode !== '*' &&
+            (ceilings[actionCode] === false || actionCode.startsWith('financial.') || actionCode.startsWith('submission.'));
+          if (isCeilingDenied) {
+            allowed = false;
+            denialReason = "Requested action exceeds the partner organization's maximum permission ceiling.";
+            denialCode = 'PARTNER_PERMISSION_CEILING_EXCEEDED';
+          }
+        }
+
+        // Check security block
+        const isBlocked = blocks.some((b) => b.is_active && b.subject_id === simUser);
+        if (isBlocked) {
+          allowed = false;
+          denialReason = 'User account is under active security suspension.';
+          denialCode = 'USER_SUSPENDED';
+        }
+
+        evaluated = {
+          request_id: reqId,
+          allowed,
+          verdict: allowed ? 'ALLOW' : 'DENY',
+          permission_code: actionCode,
+          denial_reason_code: allowed ? undefined : denialCode,
+          denial_message: allowed ? undefined : denialReason,
+          matched_rule_scope: allowed ? 'ROLE' : (simPartner !== 'NONE' ? 'PARTNER_CEILING' : 'SECURITY_BLOCKER'),
+          steps: [
+            {
+              name: 'Layer 1: Security Blockers',
+              passed: !isBlocked,
+              status: !isBlocked ? 'PASS' : 'FAIL',
+              detail: isBlocked ? 'User suspended' : 'No active security suspensions.',
+            },
+            {
+              name: 'Layer 2: Access Boundaries',
+              passed: true,
+              status: 'PASS',
+              detail: 'Tender membership & assignment verified.',
+            },
+            {
+              name: 'Partner Permission Ceiling',
+              passed: !(simPartner !== 'NONE' && actionCode !== '*' && (ceilings[actionCode] === false || actionCode.startsWith('financial.'))),
+              status: !(simPartner !== 'NONE' && actionCode !== '*' && (ceilings[actionCode] === false || actionCode.startsWith('financial.'))) ? 'PASS' : 'FAIL',
+              detail: simPartner === 'NONE' ? 'Internal User (Ceiling N/A)' : (ceilings[actionCode] === false ? 'Action blocked by partner ceiling.' : 'Action within ceiling boundary.'),
+            },
+            {
+              name: 'Layer 3: Scope Resolution (Resource > Tender > Org > Role)',
+              passed: allowed,
+              status: allowed ? 'PASS' : 'FAIL',
+              detail: allowed ? 'Granted via Role Baseline (ALLOW)' : denialReason,
+            },
+          ],
+        };
+      }
+
+      evaluatedResults.push(evaluated);
+
+      // Add to audit logs view
+      newLogs.push({
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        uuid: crypto.randomUUID(),
+        request_id: evaluated.request_id,
+        user_id: payload.user_id,
+        partner_organization_id: payload.partner_org_id,
+        tender_id: payload.tender_id,
+        resource_id: payload.resource_id,
+        permission_code: payload.permission_code,
+        action: payload.permission_code.split('.').pop() || 'action',
+        decision: evaluated.verdict,
+        denial_reason_code: evaluated.denial_reason_code,
+        denial_message: evaluated.denial_message,
+        matched_rule_id: evaluated.matched_rule_id,
+        matched_rule_scope: evaluated.matched_rule_scope,
+        created_at: new Date().toISOString().replace('T', ' ').substring(0, 19),
+      });
     }
 
-    // Local Simulation
-    setTimeout(() => {
-      const reqId = `REQ-${new Date().toISOString().slice(0, 10)}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-      let allowed = true;
-      let denialReason = '';
-      let denialCode = '';
-
-      // Check partner ceiling
-      if (simPartner !== 'NONE') {
-        const isCeilingDenied = ceilings[simAction] === false || simAction.startsWith('financial.') || simAction.startsWith('submission.');
-        if (isCeilingDenied) {
-          allowed = false;
-          denialReason = "Requested action exceeds the partner organization's maximum permission ceiling.";
-          denialCode = 'PARTNER_PERMISSION_CEILING_EXCEEDED';
-        }
-      }
-
-      // Check security block
-      const isBlocked = blocks.some((b) => b.is_active && b.subject_id === simUser);
-      if (isBlocked) {
-        allowed = false;
-        denialReason = 'User account is under active security suspension.';
-        denialCode = 'USER_SUSPENDED';
-      }
-
-      setSimResult({
-        request_id: reqId,
-        allowed,
-        verdict: allowed ? 'ALLOW' : 'DENY',
-        permission_code: simAction,
-        denial_reason_code: allowed ? undefined : denialCode,
-        denial_message: allowed ? undefined : denialReason,
-        matched_rule_scope: allowed ? 'ROLE' : (simPartner !== 'NONE' ? 'PARTNER_CEILING' : 'SECURITY_BLOCKER'),
-        steps: [
-          {
-            name: 'Layer 1: Security Blockers',
-            passed: !isBlocked,
-            status: !isBlocked ? 'PASS' : 'FAIL',
-            detail: isBlocked ? 'User suspended' : 'No active security suspensions.',
-          },
-          {
-            name: 'Layer 2: Access Boundaries',
-            passed: true,
-            status: 'PASS',
-            detail: 'Tender membership & assignment verified.',
-          },
-          {
-            name: 'Partner Permission Ceiling',
-            passed: !(simPartner !== 'NONE' && (ceilings[simAction] === false || simAction.startsWith('financial.'))),
-            status: !(simPartner !== 'NONE' && (ceilings[simAction] === false || simAction.startsWith('financial.'))) ? 'PASS' : 'FAIL',
-            detail: simPartner === 'NONE' ? 'Internal User (Ceiling N/A)' : (ceilings[simAction] === false ? 'Action blocked by partner ceiling.' : 'Action within ceiling boundary.'),
-          },
-          {
-            name: 'Layer 3: Scope Resolution (Resource > Tender > Org > Role)',
-            passed: allowed,
-            status: allowed ? 'PASS' : 'FAIL',
-            detail: allowed ? 'Granted via Role Baseline (ALLOW)' : denialReason,
-          },
-        ],
-      });
-      setIsSimulating(false);
-    }, 350);
+    setSimResultsList(evaluatedResults);
+    // Focus on first denied permission if any, else first permission
+    const firstDenied = evaluatedResults.find((r) => !r.allowed);
+    setInspectedAction(firstDenied ? firstDenied.permission_code : evaluatedResults[0]?.permission_code || '*');
+    setAuditLogs((prev) => [...newLogs, ...prev]);
+    setIsSimulating(false);
   };
 
   // Toggle ceiling locally
@@ -596,32 +633,81 @@ export const MasterPermissionsPage: React.FC = () => {
                   </span>
                 </div>
 
-                {/* Requested Action */}
-                <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
-                    Requested Action Code:
-                  </label>
-                  <select
-                    value={simAction}
-                    onChange={(e) => setSimAction(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-mono text-[#0F172A]"
-                  >
-                    {STANDARD_PERMISSIONS.map((p) => (
-                      <option key={p.code} value={p.code}>
-                        {p.code} — {p.name} {p.sensitive ? '⚠️ (Sensitive)' : ''}
-                      </option>
-                    ))}
-                  </select>
+                {/* Requested Action Permissions (Multi-Select) */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="block font-semibold text-[#0F172A] text-xs">
+                      Target Permissions to Evaluate:
+                    </label>
+                    <div className="flex items-center gap-1.5 text-[11px]">
+                      <span className="font-bold px-1.5 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] text-[10px]">
+                        {selectedSimActions.length} Selected
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleSelectAllSimActions}
+                        className="font-semibold text-[#2563EB] hover:underline cursor-pointer"
+                      >
+                        Select All
+                      </button>
+                      <span className="text-[#CBD5E1]">•</span>
+                      <button
+                        type="button"
+                        onClick={handleClearSimActions}
+                        className="font-semibold text-[#64748B] hover:text-[#0F172A] cursor-pointer"
+                      >
+                        Reset (*)
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="max-h-56 overflow-y-auto border border-[#CBD5E1] rounded-lg bg-[#F8FAFC] p-1.5 space-y-1 divide-y divide-[#E2E8F0]/60">
+                    {STANDARD_PERMISSIONS.map((p) => {
+                      const isSelected = selectedSimActions.includes(p.code);
+                      const IconComponent = p.icon;
+                      return (
+                        <div
+                          key={p.code}
+                          onClick={() => toggleSimAction(p.code)}
+                          className={`pt-1 first:pt-0 flex items-center justify-between p-1.5 rounded-md cursor-pointer transition-colors ${
+                            isSelected ? 'bg-white border border-[#BFDBFE] shadow-2xs' : 'hover:bg-white/80 border border-transparent'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 min-w-0 pr-2">
+                            {isSelected ? (
+                              <CheckSquare className="w-4 h-4 text-[#2563EB] shrink-0" />
+                            ) : (
+                              <Square className="w-4 h-4 text-[#94A3B8] shrink-0" />
+                            )}
+                            <IconComponent className={`w-3.5 h-3.5 shrink-0 ${p.sensitive ? 'text-[#DC2626]' : 'text-[#2563EB]'}`} />
+                            <div className="min-w-0">
+                              <span className="text-xs font-semibold text-[#0F172A] block truncate leading-tight">{p.name}</span>
+                              <span className="font-mono text-[10px] text-[#64748B] block truncate leading-tight">{p.code}</span>
+                            </div>
+                          </div>
+                          {p.sensitive && (
+                            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] shrink-0">
+                              Sensitive
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <button
                   type="button"
-                  disabled={isSimulating}
+                  disabled={isSimulating || selectedSimActions.length === 0}
                   onClick={handleRunDiagnostic}
-                  className="w-full py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-xs rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2"
+                  className="w-full py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-xs rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <PlayCircle className="w-4 h-4" />
-                  <span>{isSimulating ? 'Simulating 4-Layer Resolution...' : 'Run 4-Layer Authorization Check'}</span>
+                  <span>
+                    {isSimulating
+                      ? `Evaluating ${selectedSimActions.length} Permission${selectedSimActions.length > 1 ? 's' : ''}...`
+                      : `Run 4-Layer Authorization Check (${selectedSimActions.length})`}
+                  </span>
                 </button>
               </div>
             </Card>
@@ -633,104 +719,177 @@ export const MasterPermissionsPage: React.FC = () => {
               title="Resolution Trace &amp; Layer Pipeline"
               subtitle="Step-by-step verification through Security Blockers, Access Boundaries, Ceilings, and Scope Resolution."
             >
-              {simResult ? (
-                <div className="space-y-6">
-                  {/* Big Verdict Header */}
-                  <div
-                    className={`p-4 rounded-xl border flex items-center justify-between ${
-                      simResult.allowed
-                        ? 'bg-[#F0FDF4] border-[#BBF7D0] text-[#15803D]'
-                        : 'bg-[#FEF2F2] border-[#FECACA] text-[#DC2626]'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      {simResult.allowed ? (
-                        <CheckCircle2 className="w-8 h-8 text-[#16A34A] shrink-0" />
-                      ) : (
-                        <XCircle className="w-8 h-8 text-[#DC2626] shrink-0" />
-                      )}
-                      <div>
+              {simResultsList.length > 0 ? (
+                (() => {
+                  const inspectedResult =
+                    simResultsList.find((r) => r.permission_code === inspectedAction) || simResultsList[0];
+                  const totalCount = simResultsList.length;
+                  const allowedCount = simResultsList.filter((r) => r.allowed).length;
+                  const deniedCount = totalCount - allowedCount;
+
+                  return (
+                    <div className="space-y-5">
+                      {/* Multi-Permission Summary Header */}
+                      <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <span className="font-display font-bold text-lg">
-                            FINAL DECISION: {simResult.verdict}
+                          <span className="text-xs font-bold text-[#0F172A]">
+                            Evaluated {totalCount} Permission{totalCount > 1 ? 's' : ''}:
                           </span>
-                          <span className="font-mono text-[11px] px-2 py-0.5 rounded bg-white/80 border border-current">
-                            {simResult.permission_code}
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0]">
+                            {allowedCount} ALLOWED
                           </span>
+                          {deniedCount > 0 && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]">
+                              {deniedCount} DENIED
+                            </span>
+                          )}
                         </div>
-                        <p className="text-xs mt-0.5 opacity-90">
-                          {simResult.denial_message || 'Authorization confirmed. Operation permitted.'}
-                        </p>
+
+                        <span className="text-[10px] text-[#64748B]">Click any chip below to inspect trace</span>
                       </div>
-                    </div>
 
-                    <div className="text-right font-mono text-[10px] text-[#64748B]">
-                      <span>{simResult.request_id}</span>
-                    </div>
-                  </div>
+                      {/* Evaluated Permission Chips / Selector Ribbon */}
+                      <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-1 bg-white border border-[#E2E8F0] rounded-lg">
+                        {simResultsList.map((res) => {
+                          const isActive = inspectedResult.permission_code === res.permission_code;
+                          return (
+                            <button
+                              key={res.permission_code}
+                              type="button"
+                              onClick={() => setInspectedAction(res.permission_code)}
+                              className={`px-2.5 py-1 rounded-md text-xs font-mono font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
+                                isActive
+                                  ? 'bg-[#0F172A] text-white shadow-xs'
+                                  : res.allowed
+                                  ? 'bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0] hover:bg-[#DCFCE7]'
+                                  : 'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] hover:bg-[#FEE2E2]'
+                              }`}
+                            >
+                              {res.allowed ? (
+                                <CheckCircle2 className={`w-3.5 h-3.5 ${isActive ? 'text-[#4ADE80]' : 'text-[#16A34A]'}`} />
+                              ) : (
+                                <XCircle className={`w-3.5 h-3.5 ${isActive ? 'text-[#F87171]' : 'text-[#DC2626]'}`} />
+                              )}
+                              <span>{res.permission_code}</span>
+                              <span
+                                className={`text-[9px] px-1 py-0.2 rounded font-bold ${
+                                  isActive
+                                    ? res.allowed
+                                      ? 'bg-[#15803D] text-white'
+                                      : 'bg-[#DC2626] text-white'
+                                    : res.allowed
+                                    ? 'bg-[#DCFCE7] text-[#15803D]'
+                                    : 'bg-[#FEE2E2] text-[#DC2626]'
+                                }`}
+                              >
+                                {res.verdict}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
 
-                  {/* 4-Layer Sequential Pipeline Steps */}
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
-                      Evaluation Breakdown
-                    </h4>
-
-                    {simResult.steps.map((step, idx) => (
+                      {/* Active Inspected Decision Banner */}
                       <div
-                        key={idx}
-                        className={`p-3 rounded-lg border text-xs flex items-start justify-between transition-all ${
-                          step.passed
-                            ? 'bg-[#F8FAFC] border-[#E2E8F0]'
-                            : 'bg-[#FEF2F2] border-[#FECACA]'
+                        className={`p-4 rounded-xl border flex items-center justify-between ${
+                          inspectedResult.allowed
+                            ? 'bg-[#F0FDF4] border-[#BBF7D0] text-[#15803D]'
+                            : 'bg-[#FEF2F2] border-[#FECACA] text-[#DC2626]'
                         }`}
                       >
-                        <div className="flex items-start gap-2.5">
-                          <span
-                            className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 ${
-                              step.passed
-                                ? 'bg-[#DCFCE7] text-[#15803D]'
-                                : 'bg-[#FEE2E2] text-[#DC2626]'
-                            }`}
-                          >
-                            {idx + 1}
-                          </span>
+                        <div className="flex items-center gap-3">
+                          {inspectedResult.allowed ? (
+                            <CheckCircle2 className="w-8 h-8 text-[#16A34A] shrink-0" />
+                          ) : (
+                            <XCircle className="w-8 h-8 text-[#DC2626] shrink-0" />
+                          )}
                           <div>
-                            <span className="font-bold text-[#0F172A] block">{step.name}</span>
-                            <span className="text-[11px] text-[#64748B] mt-0.5 block">{step.detail}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-display font-bold text-lg">
+                                FINAL DECISION: {inspectedResult.verdict}
+                              </span>
+                              <span className="font-mono text-[11px] px-2 py-0.5 rounded bg-white/80 border border-current">
+                                {inspectedResult.permission_code}
+                              </span>
+                            </div>
+                            <p className="text-xs mt-0.5 opacity-90">
+                              {inspectedResult.denial_message || 'Authorization confirmed. Operation permitted.'}
+                            </p>
                           </div>
                         </div>
 
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
-                            step.passed
-                              ? 'bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0]'
-                              : 'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]'
-                          }`}
-                        >
-                          {step.status}
-                        </span>
+                        <div className="text-right font-mono text-[10px] text-[#64748B]">
+                          <span>{inspectedResult.request_id}</span>
+                        </div>
                       </div>
-                    ))}
-                  </div>
 
-                  {/* Internal Denial Details */}
-                  {simResult.denial_reason_code && (
-                    <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs space-y-1">
-                      <div className="flex items-center justify-between text-[11px]">
-                        <span className="font-bold text-[#64748B]">Internal Denial Code:</span>
-                        <span className="font-mono font-bold text-[#DC2626]">{simResult.denial_reason_code}</span>
+                      {/* 4-Layer Sequential Pipeline Steps */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                            Evaluation Breakdown: <span className="font-mono text-[#2563EB]">{inspectedResult.permission_code}</span>
+                          </h4>
+                          <span className="text-[11px] text-[#64748B] font-mono">
+                            Scope: {inspectedResult.matched_rule_scope || 'N/A'}
+                          </span>
+                        </div>
+
+                        {inspectedResult.steps.map((step, idx) => (
+                          <div
+                            key={idx}
+                            className={`p-3 rounded-lg border text-xs flex items-start justify-between transition-all ${
+                              step.passed ? 'bg-[#F8FAFC] border-[#E2E8F0]' : 'bg-[#FEF2F2] border-[#FECACA]'
+                            }`}
+                          >
+                            <div className="flex items-start gap-2.5">
+                              <span
+                                className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 ${
+                                  step.passed ? 'bg-[#DCFCE7] text-[#15803D]' : 'bg-[#FEE2E2] text-[#DC2626]'
+                                }`}
+                              >
+                                {idx + 1}
+                              </span>
+                              <div>
+                                <span className="font-bold text-[#0F172A] block">{step.name}</span>
+                                <span className="text-[11px] text-[#64748B] mt-0.5 block">{step.detail}</span>
+                              </div>
+                            </div>
+
+                            <span
+                              className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                                step.passed
+                                  ? 'bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0]'
+                                  : 'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]'
+                              }`}
+                            >
+                              {step.status}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                      <div className="flex items-center justify-between text-[11px]">
-                        <span className="font-bold text-[#64748B]">Stopping Layer:</span>
-                        <span className="font-mono text-[#0F172A]">{simResult.matched_rule_scope || 'SECURITY'}</span>
-                      </div>
+
+                      {/* Internal Denial Details */}
+                      {inspectedResult.denial_reason_code && (
+                        <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs space-y-1">
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="font-bold text-[#64748B]">Internal Denial Code:</span>
+                            <span className="font-mono font-bold text-[#DC2626]">{inspectedResult.denial_reason_code}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="font-bold text-[#64748B]">Stopping Layer:</span>
+                            <span className="font-mono text-[#0F172A]">{inspectedResult.matched_rule_scope || 'SECURITY'}</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  );
+                })()
               ) : (
                 <div className="py-16 text-center text-xs text-[#94A3B8]">
                   <Sliders className="w-8 h-8 mx-auto text-[#CBD5E1] mb-2" />
-                  <span>Configure the parameters on the left and click <strong>"Run 4-Layer Authorization Check"</strong> to inspect evaluation steps.</span>
+                  <span>
+                    Select one or more permissions on the left and click <strong>"Run 4-Layer Authorization Check"</strong> to inspect evaluation steps.
+                  </span>
                 </div>
               )}
             </Card>
