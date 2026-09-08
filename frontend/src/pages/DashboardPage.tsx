@@ -13,6 +13,8 @@ import {
   CheckCircle2,
   X,
   Filter,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -23,6 +25,7 @@ import { TenderStage } from '../types/tender';
 import { fuzzyMatch } from '../utils/fuzzySearch';
 
 export type UrgentFilterMode =
+  | 'ALL_TENDERS'
   | 'ALL_URGENT'
   | 'CLOSING_SOON'
   | 'BLOCKERS'
@@ -32,10 +35,12 @@ export type UrgentFilterMode =
 
 export const DashboardPage: React.FC = () => {
   const { tenders } = useTenders();
-  const [filterMode, setFilterMode] = useState<UrgentFilterMode>('ALL_URGENT');
+  const [filterMode, setFilterMode] = useState<UrgentFilterMode>('ALL_TENDERS');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStage, setSelectedStage] = useState<string>('ALL');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(5);
 
   // Dynamic live operational metric calculations
   const activeTenders = tenders.filter(
@@ -97,7 +102,9 @@ export const DashboardPage: React.FC = () => {
     return baseUrgentPool.filter((t) => {
       // 1. Mode filter
       let matchesMode = false;
-      if (filterMode === 'CLOSING_SOON') {
+      if (filterMode === 'ALL_TENDERS') {
+        matchesMode = true;
+      } else if (filterMode === 'CLOSING_SOON') {
         matchesMode = t.daysRemaining > 0 && t.daysRemaining <= 4;
       } else if (filterMode === 'BLOCKERS') {
         matchesMode = t.blockers.length > 0;
@@ -140,17 +147,51 @@ export const DashboardPage: React.FC = () => {
     });
   }, [baseUrgentPool, filterMode, selectedStage, selectedCategory, searchQuery]);
 
+  // Pagination Calculations
+  const totalPages = Math.max(1, Math.ceil(urgentQueue.length / (pageSize === -1 ? urgentQueue.length || 1 : pageSize)));
+  const paginatedTenders = useMemo(() => {
+    if (pageSize === -1) return urgentQueue;
+    const start = (currentPage - 1) * pageSize;
+    return urgentQueue.slice(start, start + pageSize);
+  }, [urgentQueue, currentPage, pageSize]);
+
+  const handleFilterModeChange = (mode: UrgentFilterMode) => {
+    setFilterMode(mode);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (val: string) => {
+    setSearchQuery(val);
+    setCurrentPage(1);
+  };
+
+  const handleStageChange = (val: string) => {
+    setSelectedStage(val);
+    setCurrentPage(1);
+  };
+
+  const handleCategoryChange = (val: string) => {
+    setSelectedCategory(val);
+    setCurrentPage(1);
+  };
+
+  const handlePageSizeChange = (val: number) => {
+    setPageSize(val);
+    setCurrentPage(1);
+  };
+
   const hasActiveFilters =
-    filterMode !== 'ALL_URGENT' ||
+    filterMode !== 'ALL_TENDERS' ||
     searchQuery.trim() !== '' ||
     selectedStage !== 'ALL' ||
     selectedCategory !== 'ALL';
 
   const resetFilters = () => {
-    setFilterMode('ALL_URGENT');
+    setFilterMode('ALL_TENDERS');
     setSearchQuery('');
     setSelectedStage('ALL');
     setSelectedCategory('ALL');
+    setCurrentPage(1);
   };
 
   const stages: { stage: TenderStage; label: string }[] = [
@@ -325,63 +366,73 @@ export const DashboardPage: React.FC = () => {
         subtitle="Ranked by deadline proximity, missing statutory credentials, and compliance blockers"
         headerAction={
           <div className="flex flex-wrap items-center gap-1.5 justify-end">
-            <div className="flex items-center p-0.5 bg-[#F1F5F9] rounded-lg text-xs overflow-x-auto max-w-full">
+            <div className="flex items-center p-0.5 bg-[#F1F5F9] dark:bg-[#1E293B] rounded-lg text-xs overflow-x-auto max-w-full">
               <button
-                onClick={() => setFilterMode('ALL_URGENT')}
+                onClick={() => handleFilterModeChange('ALL_TENDERS')}
+                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                  filterMode === 'ALL_TENDERS'
+                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
+                }`}
+              >
+                All Tenders ({baseUrgentPool.length})
+              </button>
+              <button
+                onClick={() => handleFilterModeChange('ALL_URGENT')}
                 className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
                   filterMode === 'ALL_URGENT'
-                    ? 'bg-white text-[#0F172A] shadow-xs font-semibold'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
                 }`}
               >
                 All Urgent ({allUrgentCount})
               </button>
               <button
-                onClick={() => setFilterMode('CLOSING_SOON')}
+                onClick={() => handleFilterModeChange('CLOSING_SOON')}
                 className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
                   filterMode === 'CLOSING_SOON'
-                    ? 'bg-white text-[#0F172A] shadow-xs font-semibold'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
                 }`}
               >
                 Closing &le; 4d ({closingSoonCount})
               </button>
               <button
-                onClick={() => setFilterMode('BLOCKERS')}
+                onClick={() => handleFilterModeChange('BLOCKERS')}
                 className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
                   filterMode === 'BLOCKERS'
-                    ? 'bg-white text-[#0F172A] shadow-xs font-semibold'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
                 }`}
               >
                 Blockers ({blockersCount})
               </button>
               <button
-                onClick={() => setFilterMode('MISSING_DOCS')}
+                onClick={() => handleFilterModeChange('MISSING_DOCS')}
                 className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
                   filterMode === 'MISSING_DOCS'
-                    ? 'bg-white text-[#0F172A] shadow-xs font-semibold'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
                 }`}
               >
                 Missing Docs ({missingDocsCount})
               </button>
               <button
-                onClick={() => setFilterMode('LOW_READINESS')}
+                onClick={() => handleFilterModeChange('LOW_READINESS')}
                 className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
                   filterMode === 'LOW_READINESS'
-                    ? 'bg-white text-[#0F172A] shadow-xs font-semibold'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
                 }`}
               >
                 Low Readiness ({lowReadinessCount})
               </button>
               <button
-                onClick={() => setFilterMode('CRITICAL')}
+                onClick={() => handleFilterModeChange('CRITICAL')}
                 className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
                   filterMode === 'CRITICAL'
-                    ? 'bg-white text-[#0F172A] shadow-xs font-semibold'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
                 }`}
               >
                 Critical ({criticalCount})
@@ -391,9 +442,9 @@ export const DashboardPage: React.FC = () => {
         }
       >
         {/* Interactive Filter Toolbar */}
-        <div className="flex flex-wrap items-center justify-between gap-2.5 px-4 py-2.5 bg-[#F8FAFC] border-b border-[#F1F5F9] -mt-5 -mx-5 mb-5 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 px-4 py-2.5 bg-[#F8FAFC] dark:bg-[#0F172A] border-b border-[#F1F5F9] dark:border-slate-800 -mt-5 -mx-5 mb-5 text-xs">
           <div className="flex flex-wrap items-center gap-2 flex-1 min-w-[280px]">
-            <div className="flex items-center gap-1 text-[#64748B] shrink-0 font-medium">
+            <div className="flex items-center gap-1 text-[#64748B] dark:text-slate-400 shrink-0 font-medium">
               <Filter className="w-3.5 h-3.5" />
               <span className="hidden md:inline">Filters:</span>
             </div>
@@ -403,16 +454,16 @@ export const DashboardPage: React.FC = () => {
               <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
               <input
                 type="text"
-                placeholder="Search urgent tenders..."
+                placeholder="Search tenders..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-7 py-1 text-xs rounded-md border border-[#E2E8F0] bg-white text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="w-full pl-8 pr-7 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white placeholder-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
               />
               {searchQuery && (
                 <button
                   type="button"
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A] cursor-pointer"
+                  onClick={() => handleSearchChange('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white cursor-pointer"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -422,8 +473,8 @@ export const DashboardPage: React.FC = () => {
             {/* Stage Dropdown */}
             <select
               value={selectedStage}
-              onChange={(e) => setSelectedStage(e.target.value)}
-              className="px-2 py-1 text-xs rounded-md border border-[#E2E8F0] bg-white text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+              onChange={(e) => handleStageChange(e.target.value)}
+              className="px-2 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
             >
               <option value="ALL">All Stages</option>
               {stages.map((s) => (
@@ -436,8 +487,8 @@ export const DashboardPage: React.FC = () => {
             {/* Category Dropdown */}
             <select
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-2 py-1 text-xs rounded-md border border-[#E2E8F0] bg-white text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              className="px-2 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
             >
               <option value="ALL">All Categories</option>
               {categories.map((c) => (
@@ -449,14 +500,14 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0">
-            <span className="text-[11px] font-mono text-[#64748B]">
-              Showing <strong className="text-[#0F172A]">{urgentQueue.length}</strong> of {baseUrgentPool.length}
+            <span className="text-[11px] font-mono text-[#64748B] dark:text-slate-400">
+              Filtered: <strong className="text-[#0F172A] dark:text-white">{urgentQueue.length}</strong> of {baseUrgentPool.length}
             </span>
             {hasActiveFilters && (
               <button
                 type="button"
                 onClick={resetFilters}
-                className="flex items-center gap-1 text-[11px] font-semibold text-[#DC2626] hover:underline cursor-pointer"
+                className="flex items-center gap-1 text-[11px] font-semibold text-[#DC2626] dark:text-rose-400 hover:underline cursor-pointer"
               >
                 <RotateCcw className="w-3 h-3" />
                 <span>Reset Filters</span>
@@ -468,96 +519,170 @@ export const DashboardPage: React.FC = () => {
         {urgentQueue.length === 0 ? (
           <div className="py-12 text-center space-y-2">
             <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto opacity-80" />
-            <p className="text-sm font-semibold text-[#0F172A]">
-              No urgent tenders matching current filters
+            <p className="text-sm font-semibold text-[#0F172A] dark:text-white">
+              No tenders matching current filters
             </p>
-            <p className="text-xs text-[#64748B]">
-              All opportunities under this criteria are on schedule and cleared of blockers.
+            <p className="text-xs text-[#64748B] dark:text-slate-400">
+              Try adjusting your search criteria or resetting filters.
             </p>
             <button
               type="button"
               onClick={resetFilters}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#2563EB] bg-[#EFF6FF] rounded-lg hover:underline mt-2 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#2563EB] dark:text-blue-400 bg-[#EFF6FF] dark:bg-blue-950/40 rounded-lg hover:underline mt-2 cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
               <span>Reset All Filters</span>
             </button>
           </div>
         ) : (
-        <div className="divide-y divide-[#F1F5F9] -mx-5 -my-5">
-          {urgentQueue.map((tender) => (
-            <div
-              key={tender.id}
-              className="p-4 hover:bg-[#F8FAFC] transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 group"
-            >
-              {/* Left Details */}
-              <div className="space-y-1.5 flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-xs font-bold text-[#0F172A] bg-[#F1F5F9] px-2 py-0.5 rounded">
-                    {tender.id}
-                  </span>
-                  <span className="font-mono text-xs text-[#64748B]">
-                    {tender.referenceNo}
-                  </span>
-                  <StatusBadge stage={tender.stage} />
-                  <UrgencyBadge
-                    daysRemaining={tender.daysRemaining}
-                    hoursRemaining={tender.hoursRemaining}
-                  />
-                  {tender.scannerConfidence && (
-                    <span className="text-[10px] font-mono text-[#64748B] bg-[#F8FAFC] px-1.5 py-0.5 rounded border border-[#E2E8F0]">
-                      Scanner {tender.scannerConfidence}%
-                    </span>
-                  )}
-                </div>
-
-                <Link
-                  to={`/tenders/${tender.id}`}
-                  className="font-display font-semibold text-sm text-[#0F172A] hover:text-[#2563EB] transition-colors block truncate"
+          <div className="space-y-4">
+            <div className="divide-y divide-[#F1F5F9] dark:divide-slate-800 -mx-5 -my-5">
+              {paginatedTenders.map((tender) => (
+                <div
+                  key={tender.id}
+                  className="p-4 hover:bg-[#F8FAFC] dark:hover:bg-slate-800/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 group"
                 >
-                  {tender.title}
-                </Link>
+                  {/* Left Details */}
+                  <div className="space-y-1.5 flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white bg-[#F1F5F9] dark:bg-slate-800 px-2 py-0.5 rounded">
+                        {tender.id}
+                      </span>
+                      <span className="font-mono text-xs text-[#64748B] dark:text-slate-400">
+                        {tender.referenceNo}
+                      </span>
+                      <StatusBadge stage={tender.stage} />
+                      <UrgencyBadge
+                        daysRemaining={tender.daysRemaining}
+                        hoursRemaining={tender.hoursRemaining}
+                      />
+                      {tender.scannerConfidence && (
+                        <span className="text-[10px] font-mono text-[#64748B] dark:text-slate-400 bg-[#F8FAFC] dark:bg-slate-800 px-1.5 py-0.5 rounded border border-[#E2E8F0] dark:border-slate-700">
+                          Scanner {tender.scannerConfidence}%
+                        </span>
+                      )}
+                    </div>
 
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#64748B]">
-                  <span>{tender.organization}</span>
-                  <span>•</span>
-                  <span>{tender.country}</span>
-                  <span>•</span>
-                  <span className="font-semibold text-[#2563EB]">
-                    {tender.category}
+                    <Link
+                      to={`/tenders/${tender.id}`}
+                      className="font-display font-semibold text-sm text-[#0F172A] dark:text-white hover:text-[#2563EB] dark:hover:text-blue-400 transition-colors block truncate"
+                    >
+                      {tender.title}
+                    </Link>
+
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#64748B] dark:text-slate-400">
+                      <span>{tender.organization}</span>
+                      <span>•</span>
+                      <span>{tender.country}</span>
+                      <span>•</span>
+                      <span className="font-semibold text-[#2563EB] dark:text-blue-400">
+                        {tender.category}
+                      </span>
+                      <span>•</span>
+                      <span>Lead: {tender.leadOwner.name}</span>
+                    </div>
+
+                    {tender.blockers.length > 0 && (
+                      <div className="flex items-center gap-1.5 text-xs text-[#DC2626] dark:text-rose-400 font-medium bg-[#FEF2F2] dark:bg-rose-950/40 px-2.5 py-1 rounded border border-[#FECACA] dark:border-rose-900/60 inline-flex">
+                        <FileWarning className="w-3.5 h-3.5 shrink-0" />
+                        <span>Blocker: {tender.blockers[0]}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right Action & Readiness */}
+                  <div className="flex items-center gap-6 shrink-0 justify-between md:justify-end">
+                    <div className="w-28 text-right hidden sm:block">
+                      <span className="text-[11px] text-[#64748B] dark:text-slate-400 block mb-1">
+                        Readiness
+                      </span>
+                      <ReadinessBar score={tender.readinessScore} showLabel={true} />
+                    </div>
+
+                    <Link
+                      to={`/tenders/${tender.id}`}
+                      className="flex items-center gap-1 px-3 py-1.5 bg-[#F1F5F9] dark:bg-slate-800 hover:bg-[#2563EB] dark:hover:bg-blue-600 hover:text-white text-[#0F172A] dark:text-white rounded-lg text-xs font-semibold transition-all group-hover:border-[#2563EB]"
+                    >
+                      <span>Resolve</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination Controls Toolbar */}
+            {urgentQueue.length > 0 && (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-[#F1F5F9] dark:border-slate-800 text-xs">
+                {/* Page Summary & Items Per Page */}
+                <div className="flex items-center gap-3 text-[#64748B] dark:text-slate-400">
+                  <span>
+                    Showing <strong className="text-[#0F172A] dark:text-white">{Math.min((currentPage - 1) * pageSize + 1, urgentQueue.length)}</strong> to{' '}
+                    <strong className="text-[#0F172A] dark:text-white">
+                      {pageSize === -1 ? urgentQueue.length : Math.min(currentPage * pageSize, urgentQueue.length)}
+                    </strong> of <strong className="text-[#0F172A] dark:text-white">{urgentQueue.length}</strong> tenders
                   </span>
-                  <span>•</span>
-                  <span>Lead: {tender.leadOwner.name}</span>
+
+                  <div className="flex items-center gap-1.5 pl-3 border-l border-[#E2E8F0] dark:border-slate-800">
+                    <span className="text-[11px]">Show:</span>
+                    <select
+                      value={pageSize}
+                      onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                      className="px-2 py-0.5 text-xs rounded border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+                    >
+                      <option value={5}>5 per page</option>
+                      <option value={10}>10 per page</option>
+                      <option value={15}>15 per page</option>
+                      <option value={20}>20 per page</option>
+                      <option value={-1}>All ({urgentQueue.length})</option>
+                    </select>
+                  </div>
                 </div>
 
-                {tender.blockers.length > 0 && (
-                  <div className="flex items-center gap-1.5 text-xs text-[#DC2626] font-medium bg-[#FEF2F2] px-2.5 py-1 rounded border border-[#FECACA] inline-flex">
-                    <FileWarning className="w-3.5 h-3.5 shrink-0" />
-                    <span>Blocker: {tender.blockers[0]}</span>
+                {/* Navigation: Previous, Numbered Page Chips, Next */}
+                {pageSize !== -1 && totalPages > 1 && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+                    >
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Previous</span>
+                    </button>
+
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                        <button
+                          key={pageNum}
+                          type="button"
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                            currentPage === pageNum
+                              ? 'bg-[#2563EB] text-white shadow-xs'
+                              : 'text-[#64748B] dark:text-slate-400 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+                    >
+                      <span>Next</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 )}
               </div>
-
-              {/* Right Action & Readiness */}
-              <div className="flex items-center gap-6 shrink-0 justify-between md:justify-end">
-                <div className="w-28 text-right hidden sm:block">
-                  <span className="text-[11px] text-[#64748B] block mb-1">
-                    Readiness
-                  </span>
-                  <ReadinessBar score={tender.readinessScore} showLabel={true} />
-                </div>
-
-                <Link
-                  to={`/tenders/${tender.id}`}
-                  className="flex items-center gap-1 px-3 py-1.5 bg-[#F1F5F9] hover:bg-[#2563EB] hover:text-white text-[#0F172A] rounded-lg text-xs font-semibold transition-all group-hover:border-[#2563EB]"
-                >
-                  <span>Resolve</span>
-                  <ExternalLink className="w-3 h-3" />
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
+            )}
+          </div>
         )}
       </Card>
     </div>

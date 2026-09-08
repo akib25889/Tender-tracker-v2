@@ -5,6 +5,7 @@ import {
   Filter,
   Plus,
   ChevronRight,
+  ChevronLeft,
   CheckSquare,
   Square,
   Compass,
@@ -39,6 +40,8 @@ export const TenderListPage: React.FC = () => {
   const [tenderToDelete, setTenderToDelete] = useState<{ id: string; title: string } | null>(null);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   useEffect(() => {
     if (stageFromUrl) {
@@ -46,10 +49,12 @@ export const TenderListPage: React.FC = () => {
     } else {
       setSelectedStage('ALL');
     }
+    setCurrentPage(1);
   }, [stageFromUrl]);
 
   const handleStageSelect = (stage: string) => {
     setSelectedStage(stage);
+    setCurrentPage(1);
     const nextParams = new URLSearchParams(searchParams);
     if (stage === 'ALL') {
       nextParams.delete('stage');
@@ -71,6 +76,9 @@ export const TenderListPage: React.FC = () => {
     const matchesCategory = selectedCategory === 'ALL' || t.category === selectedCategory;
     return matchesSearch && matchesStage && matchesCategory;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredTenders.length / (pageSize === -1 ? filteredTenders.length || 1 : pageSize)));
+  const paginatedTenders = pageSize === -1 ? filteredTenders : filteredTenders.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) =>
@@ -448,12 +456,12 @@ export const TenderListPage: React.FC = () => {
                   <th className="py-3 px-4 text-right whitespace-nowrap">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F1F5F9] text-xs">
-                {filteredTenders.map((tender, idx) => (
+              <tbody className="divide-y divide-[#F1F5F9] dark:divide-slate-800 text-xs">
+                {paginatedTenders.map((tender, idx) => (
                   <tr
                     key={`${tender.id}-${idx}`}
-                    className={`hover:bg-[#F8FAFC] transition-colors group ${
-                      selectedIds.includes(tender.id) ? 'bg-[#EFF6FF]/40' : ''
+                    className={`hover:bg-[#F8FAFC] dark:hover:bg-slate-800/50 transition-colors group ${
+                      selectedIds.includes(tender.id) ? 'bg-[#EFF6FF]/40 dark:bg-blue-950/30' : ''
                     }`}
                   >
                     <td className="py-3.5 px-4">
@@ -468,28 +476,28 @@ export const TenderListPage: React.FC = () => {
 
                     <td className="py-3.5 px-4 max-w-xs">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-mono text-xs font-bold text-[#0F172A]">
+                        <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white">
                           {tender.id}
                         </span>
                         {tender.referenceNo &&
                           tender.referenceNo !== tender.id &&
                           tender.referenceNo !== `REF/${tender.id}` &&
                           !tender.referenceNo.endsWith(tender.id) && (
-                            <span className="text-[10px] text-[#64748B] font-mono bg-[#F8FAFC] px-1.5 py-0.5 rounded">
+                            <span className="text-[10px] text-[#64748B] dark:text-slate-400 font-mono bg-[#F8FAFC] dark:bg-slate-800 px-1.5 py-0.5 rounded">
                               Ref: {tender.referenceNo}
                             </span>
                           )}
                       </div>
                       <Link
                         to={`/tenders/${tender.id}`}
-                        className="font-medium text-[#0F172A] group-hover:text-[#2563EB] line-clamp-1"
+                        className="font-medium text-[#0F172A] dark:text-white group-hover:text-[#2563EB] line-clamp-1"
                       >
                         {tender.title}
                       </Link>
                     </td>
 
-                    <td className="py-3.5 px-4 text-[#475569]">
-                      <div className="font-medium text-[#0F172A]">
+                    <td className="py-3.5 px-4 text-[#475569] dark:text-slate-300">
+                      <div className="font-medium text-[#0F172A] dark:text-white">
                         {tender.organization}
                       </div>
                       <div className="text-[11px] text-[#94A3B8]">
@@ -497,7 +505,7 @@ export const TenderListPage: React.FC = () => {
                       </div>
                     </td>
 
-                    <td className="py-3.5 px-4 font-mono font-bold text-[#0F172A]">
+                    <td className="py-3.5 px-4 font-mono font-bold text-[#0F172A] dark:text-white">
                       {formatCurrency(tender.estimatedValue)}
                     </td>
 
@@ -524,7 +532,7 @@ export const TenderListPage: React.FC = () => {
                       <div className="flex items-center justify-end gap-1.5">
                         <Link
                           to={`/registry?id=${tender.id}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] bg-white hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] hover:border-[#CBD5E1] transition-colors shadow-2xs"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] dark:text-white bg-white dark:bg-slate-800 hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] dark:border-slate-700 hover:border-[#CBD5E1] transition-colors shadow-2xs"
                           title="Edit Tender Specifications"
                         >
                           <Edit3 className="w-3.5 h-3.5 text-[#64748B]" />
@@ -539,7 +547,7 @@ export const TenderListPage: React.FC = () => {
                                 archiveTender(tender.id);
                               }
                             }}
-                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#475569] bg-white hover:bg-[#F1F5F9] rounded-lg border border-[#CBD5E1] transition-colors shadow-2xs"
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#475569] dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-[#F1F5F9] rounded-lg border border-[#CBD5E1] dark:border-slate-700 transition-colors shadow-2xs"
                             title="Send to Archive for records"
                           >
                             <Archive className="w-3.5 h-3.5 text-[#64748B]" />
@@ -551,7 +559,7 @@ export const TenderListPage: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => restoreTender(tender.id)}
-                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#2563EB] bg-white hover:bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] transition-colors shadow-2xs"
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#2563EB] bg-white dark:bg-slate-800 hover:bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] transition-colors shadow-2xs"
                             title="Restore tender from archive"
                           >
                             <RotateCcw className="w-3.5 h-3.5" />
@@ -561,7 +569,7 @@ export const TenderListPage: React.FC = () => {
 
                         <button
                           onClick={() => setTenderToDelete({ id: tender.id, title: tender.title })}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#DC2626] bg-white hover:bg-[#FEF2F2] rounded-lg border border-[#FECACA] hover:border-[#F87171] transition-colors shadow-2xs"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#DC2626] bg-white dark:bg-slate-800 hover:bg-[#FEF2F2] rounded-lg border border-[#FECACA] dark:border-rose-900/60 hover:border-[#F87171] transition-colors shadow-2xs"
                           title="Delete Tender"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -570,7 +578,7 @@ export const TenderListPage: React.FC = () => {
 
                         <Link
                           to={`/tenders/${tender.id}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#2563EB] hover:bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] transition-colors shadow-2xs"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#2563EB] dark:text-blue-400 hover:bg-[#EFF6FF] dark:hover:bg-blue-950/40 rounded-lg border border-[#BFDBFE] dark:border-blue-900/60 transition-colors shadow-2xs"
                           title="Open Tender Workspace"
                         >
                           <span>Workspace</span>
@@ -583,6 +591,78 @@ export const TenderListPage: React.FC = () => {
               </tbody>
             </table>
           </div>
+
+          {/* Table Pagination Controls */}
+          {filteredTenders.length > 0 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 bg-white dark:bg-[#0F172A] border-t border-[#F1F5F9] dark:border-slate-800 text-xs">
+              <div className="flex items-center gap-3 text-[#64748B] dark:text-slate-400">
+                <span>
+                  Showing <strong className="text-[#0F172A] dark:text-white">{Math.min((currentPage - 1) * pageSize + 1, filteredTenders.length)}</strong> to{' '}
+                  <strong className="text-[#0F172A] dark:text-white">
+                    {pageSize === -1 ? filteredTenders.length : Math.min(currentPage * pageSize, filteredTenders.length)}
+                  </strong> of <strong className="text-[#0F172A] dark:text-white">{filteredTenders.length}</strong> tenders
+                </span>
+
+                <div className="flex items-center gap-1.5 pl-3 border-l border-[#E2E8F0] dark:border-slate-800">
+                  <span className="text-[11px]">Show:</span>
+                  <select
+                    value={pageSize}
+                    onChange={(e) => {
+                      setPageSize(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="px-2 py-0.5 text-xs rounded border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+                  >
+                    <option value={10}>10 per page</option>
+                    <option value={25}>25 per page</option>
+                    <option value={50}>50 per page</option>
+                    <option value={-1}>All ({filteredTenders.length})</option>
+                  </select>
+                </div>
+              </div>
+
+              {pageSize !== -1 && totalPages > 1 && (
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Previous</span>
+                  </button>
+
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                      <button
+                        key={pageNum}
+                        type="button"
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                          currentPage === pageNum
+                            ? 'bg-[#2563EB] text-white shadow-xs'
+                            : 'text-[#64748B] dark:text-slate-400 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+                  >
+                    <span>Next</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
