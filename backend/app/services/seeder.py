@@ -441,6 +441,18 @@ def seed_database(db: Session):
                                 if isinstance(lead, dict)
                                 else "Business Head"
                             ),
+                            tender_type=t_data.get("tenderType")
+                            or t_data.get("tender_type")
+                            or "International Competitive Bidding (ICB)",
+                            budget_type=t_data.get("budgetType")
+                            or t_data.get("budget_type")
+                            or "Development Budget (ADP / Capex)",
+                            source_of_fund=t_data.get("sourceOfFund")
+                            or t_data.get("source_of_fund")
+                            or "Government Treasury (GoB)",
+                            procurement_method=t_data.get("procurementMethod")
+                            or t_data.get("procurement_method")
+                            or "Quality & Cost Based Selection (QCBS)",
                             summary_json=(
                                 json.dumps(t_data.get("summary"))
                                 if t_data.get("summary")

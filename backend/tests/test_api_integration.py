@@ -1558,3 +1558,67 @@ def test_23_document_preview_and_streaming():
 
     denied_download_res = client.get(f"/api/shared/{token}/download")
     assert denied_download_res.status_code == 403
+
+
+def test_24_tender_procurement_governance_attributes():
+    """
+    Test Req #21: Tender type, budget type, source of fund, procurement method
+    Verify CRUD persistence and serialization of procurement governance attributes.
+    """
+    test_id = "TDR-2026-GOV-TEST-99"
+    client.delete(f"/api/tenders/{test_id}")
+
+    payload = {
+        "id": test_id,
+        "reference_no": "GOV/2026/PROC-88",
+        "title": "National Single Window & Customs Modernization Portal",
+        "organization": "National Board of Revenue (NBR)",
+        "country": "Bangladesh",
+        "category": "Software / IT Related",
+        "estimated_value": 4500000.0,
+        "currency": "USD",
+        "stage": "DISCOVERED",
+        "priority": "HIGH",
+        "tender_type": "International Competitive Bidding (ICB)",
+        "budget_type": "Development Budget (ADP / Capex)",
+        "source_of_fund": "World Bank (IDA / IBRD)",
+        "procurement_method": "Quality & Cost Based Selection (QCBS)",
+    }
+
+    # 1. Create tender with procurement governance fields
+    res = client.post("/api/tenders", json=payload)
+    assert res.status_code == 201
+    created = res.json()
+    assert created["id"] == test_id
+    assert created["tender_type"] == "International Competitive Bidding (ICB)"
+    assert created["budget_type"] == "Development Budget (ADP / Capex)"
+    assert created["source_of_fund"] == "World Bank (IDA / IBRD)"
+    assert created["procurement_method"] == "Quality & Cost Based Selection (QCBS)"
+
+    # 2. Retrieve tender via GET
+    get_res = client.get(f"/api/tenders/{test_id}")
+    assert get_res.status_code == 200
+    retrieved = get_res.json()
+    assert retrieved["tender_type"] == "International Competitive Bidding (ICB)"
+    assert retrieved["budget_type"] == "Development Budget (ADP / Capex)"
+    assert retrieved["source_of_fund"] == "World Bank (IDA / IBRD)"
+    assert retrieved["procurement_method"] == "Quality & Cost Based Selection (QCBS)"
+
+    # 3. Update procurement governance attributes
+    update_payload = {
+        "tender_type": "National Competitive Bidding (NCB)",
+        "budget_type": "Own Funds / Corporate Budget",
+        "source_of_fund": "Government of Bangladesh (GoB)",
+        "procurement_method": "Single Stage Two Envelope (SSTE)",
+    }
+    put_res = client.put(f"/api/tenders/{test_id}", json=update_payload)
+    assert put_res.status_code == 200
+    updated = put_res.json()
+    assert updated["tender_type"] == "National Competitive Bidding (NCB)"
+    assert updated["budget_type"] == "Own Funds / Corporate Budget"
+    assert updated["source_of_fund"] == "Government of Bangladesh (GoB)"
+    assert updated["procurement_method"] == "Single Stage Two Envelope (SSTE)"
+
+    # 4. Cleanup
+    del_res = client.delete(f"/api/tenders/{test_id}")
+    assert del_res.status_code in (200, 204)

@@ -121,6 +121,10 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
         schedule_purchase_method=tender_in.schedule_purchase_method,
         tender_security_amount=tender_in.tender_security_amount,
         tender_security_method=tender_in.tender_security_method,
+        tender_type=tender_in.tender_type,
+        budget_type=tender_in.budget_type,
+        source_of_fund=tender_in.source_of_fund,
+        procurement_method=tender_in.procurement_method,
         post_award_data=tender_in.post_award_data,
         financial_model=tender_in.financial_model or {},
     )

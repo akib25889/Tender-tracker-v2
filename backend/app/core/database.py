@@ -111,6 +111,31 @@ def run_migrations():
                             "ALTER TABLE tenders ADD COLUMN helpline_hours VARCHAR(150) DEFAULT NULL"
                         )
                     )
+                # Procurement Governance & Sourcing migrations (Req #21)
+                if "tender_type" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN tender_type VARCHAR(100) DEFAULT NULL"
+                        )
+                    )
+                if "budget_type" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN budget_type VARCHAR(100) DEFAULT NULL"
+                        )
+                    )
+                if "source_of_fund" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN source_of_fund VARCHAR(150) DEFAULT NULL"
+                        )
+                    )
+                if "procurement_method" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN procurement_method VARCHAR(100) DEFAULT NULL"
+                        )
+                    )
                 # Milestone Schedule & Commercial migrations (Req #17 & #20)
                 if "opening_date" not in existing_cols:
                     conn.execute(
@@ -364,6 +389,10 @@ def run_migrations():
                             ("helpline_phone", "VARCHAR(100) DEFAULT NULL"),
                             ("helpline_email", "VARCHAR(150) DEFAULT NULL"),
                             ("helpline_hours", "VARCHAR(150) DEFAULT NULL"),
+                            ("tender_type", "VARCHAR(100) DEFAULT NULL"),
+                            ("budget_type", "VARCHAR(100) DEFAULT NULL"),
+                            ("source_of_fund", "VARCHAR(150) DEFAULT NULL"),
+                            ("procurement_method", "VARCHAR(100) DEFAULT NULL"),
                             ("opening_date", "VARCHAR(50) DEFAULT NULL"),
                             ("contract_signing_date", "VARCHAR(50) DEFAULT NULL"),
                             ("work_start_date", "VARCHAR(50) DEFAULT NULL"),

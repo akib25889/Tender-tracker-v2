@@ -114,6 +114,11 @@ class TenderBase(BaseModel):
     helpline_phone: Optional[str] = None
     helpline_email: Optional[str] = None
     helpline_hours: Optional[str] = None
+    # Procurement Governance & Sourcing Attributes (Req #21)
+    tender_type: Optional[str] = None
+    budget_type: Optional[str] = None
+    source_of_fund: Optional[str] = None
+    procurement_method: Optional[str] = None
     # Milestone Schedule Dates (Req #20)
     opening_date: Optional[str] = None
     contract_signing_date: Optional[str] = None
@@ -165,6 +170,10 @@ class TenderUpdate(BaseModel):
     helpline_phone: Optional[str] = None
     helpline_email: Optional[str] = None
     helpline_hours: Optional[str] = None
+    tender_type: Optional[str] = None
+    budget_type: Optional[str] = None
+    source_of_fund: Optional[str] = None
+    procurement_method: Optional[str] = None
     opening_date: Optional[str] = None
     contract_signing_date: Optional[str] = None
     work_start_date: Optional[str] = None

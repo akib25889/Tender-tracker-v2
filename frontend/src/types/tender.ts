@@ -192,6 +192,50 @@ export type TenderClassification =
   | 'NOT SOFTWARE / IT RELATED'
   | 'UNCLEAR';
 
+export const STANDARD_TENDER_TYPES = [
+  'National Competitive Bidding (NCB)',
+  'International Competitive Bidding (ICB)',
+  'Request for Proposals (RFP)',
+  'Request for Quotation (RFQ)',
+  'Limited Tendering Method (LTM)',
+  'Direct Contracting / Single Source',
+  'Expression of Interest (EOI)',
+  'Framework Agreement',
+] as const;
+
+export const STANDARD_BUDGET_TYPES = [
+  'Development Budget (ADP / Capex)',
+  'Revenue / Operational Budget (Opex)',
+  'Own Funds / Corporate Budget',
+  'Grant / Aid Budget',
+  'Capital Budget',
+] as const;
+
+export const STANDARD_SOURCE_OF_FUNDS = [
+  'Government of Bangladesh (GoB)',
+  'World Bank (IDA / IBRD)',
+  'Asian Development Bank (ADB)',
+  'JICA (Japan International Cooperation Agency)',
+  'UNDP / UN Agencies',
+  'USAID',
+  'EU (European Union)',
+  'KFW / AFD / EIB',
+  'Organization\'s Own Fund',
+  'Private / Client Equity',
+] as const;
+
+export const STANDARD_PROCUREMENT_METHODS = [
+  'Open Tendering Method (OTM)',
+  'Quality & Cost Based Selection (QCBS)',
+  'Quality Based Selection (QBS)',
+  'Least Cost Selection (LCS)',
+  'Fixed Budget Selection (FBS)',
+  'Single Stage One Envelope (SSOE)',
+  'Single Stage Two Envelope (SSTE)',
+  'Two Stage Tendering Method (TSTM)',
+  'Direct Procurement Method (DPM)',
+] as const;
+
 export interface TenderPersonnelReq {
   position: string;
   qualification: string;
@@ -279,6 +323,10 @@ export interface TenderExtendedSummary {
     hours?: string;
     notes?: string;
   };
+  tenderType?: string;
+  budgetType?: string;
+  sourceOfFund?: string;
+  procurementMethod?: string;
   postAward?: PostAwardData;
   financialModel?: TenderFinancialModel;
 }
@@ -318,6 +366,11 @@ export interface Tender {
   helplinePhone?: string;
   helplineEmail?: string;
   helplineHours?: string;
+  // Procurement Governance & Sourcing (Req #21)
+  tenderType?: string;
+  budgetType?: string;
+  sourceOfFund?: string;
+  procurementMethod?: string;
   // Milestone Schedule (Req #20)
   openingDate?: string;
   contractSigningDate?: string;

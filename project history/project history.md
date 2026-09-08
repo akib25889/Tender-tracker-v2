@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.15.0
+**Current Version:** 2.16.0
 **Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -19,6 +19,25 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 26-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 34 tests), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+### [2026-09-08] — Version 2.16.0: Tender Type, Budget Type, Source of Fund & Procurement Method Governance Framework
+- **Category:** Procurement Governance, Data Architecture, Tender Intake & Executive Reporting
+- **Summary:**
+  - **Procurement Governance Attributes (Req #21):** Implemented full-stack persistence, API serialization, and multi-surface UI representation for 4 critical public procurement governance attributes:
+    1. `tender_type` (e.g. National Competitive Bidding (NCB), International Competitive Bidding (ICB), Request for Proposals (RFP), Direct Contracting).
+    2. `budget_type` (e.g. Development Budget (ADP / Capex), Revenue / Operational Budget (Opex), Own Funds / Corporate Budget, Grant / Aid Budget).
+    3. `source_of_fund` (e.g. Government of Bangladesh (GoB), World Bank (IDA / IBRD), Asian Development Bank (ADB), JICA, UNDP, USAID, Own Fund).
+    4. `procurement_method` (e.g. Open Tendering Method (OTM), Quality & Cost Based Selection (QCBS), Least Cost Selection (LCS), Single Stage Two Envelope (SSTE), Direct Procurement Method (DPM)).
+  - **Backend & Database Auto-Migration:**
+    - Updated `Tender` SQLAlchemy model with all 4 governance columns.
+    - Updated SQLite and MySQL 8.4 boot-time auto-migrations in `backend/app/core/database.py`.
+    - Updated Pydantic schemas (`TenderBase`, `TenderCreate`, `TenderUpdate`, `TenderOut`) and `backend/app/routers/tenders.py` CRUD endpoints.
+    - Seeded sample data for all demo tenders in `backend/app/services/seeder.py`.
+  - **Frontend UI & Reporting Surfaces:**
+    - Added *Procurement Governance & Sourcing* card in `NewTenderModal.tsx` and `TenderRegistryPage.tsx` with standard preset dropdowns and custom input overrides.
+    - Integrated governance attribute badges into Proposal Workspace `TenderDetailPage.tsx` Specification Matrix.
+    - Added governance table rows in the formal 3-Page printable `TenderSummaryDocument.tsx`.
+  - **Verification:** 24/24 backend integration tests passing (including `test_24_tender_procurement_governance_attributes`), Vite production build clean with 0 TypeScript errors.
 
 ### [2026-09-08] — Version 2.15.0: Universal Document Viewer Hub, Requirement Blockers & Collaboration Replies
 - **Category:** Document Operations, Compliance Workflow, Team Collaboration
@@ -1057,6 +1076,15 @@
   3. *Secure Backend Streaming:* Built dedicated inline preview endpoints (`GET /api/documents/{id}/preview`, `GET /api/documents/shared/{token}/preview`, and `GET /api/reusable-documents/{id}/preview`) supporting MIME headers, byte-range streaming, and token permission validation.
   4. *Universal Surface Integration:* Connected Document Vault, Master Reusable Library, Shared Token Portal, and JV Partner Portal with preview action buttons and clickable file names.  
   *Impact:* 100% private, instantaneous in-browser document review across all standard tender file formats with zero external cloud dependencies.
+
+- **ADR-014: Tender Type, Budget Type, Source of Fund & Procurement Method Governance Framework**  
+  *Context:* Public procurement regulations (such as PPA 2006, PPR 2008 in Bangladesh, World Bank Procurement Regulations, and ADB Guidelines) mandate strict tracking of procurement modalities (NCB vs ICB), budget allocations (Development/Capex vs Revenue/Opex), funding sources (GoB, World Bank, JICA, etc.), and procurement methods (OTM, QCBS, LCS, SSTE, DPM). These attributes dictate bidding rules, bid security limits, review tiers, and compliance requirements.  
+  *Decision:*
+  1. *Database Schema & Dual-Mode Compatibility:* Added `tender_type`, `budget_type`, `source_of_fund`, and `procurement_method` as nullable string columns in the `tenders` table. Implemented boot-time auto-migrations for both SQLite (`PRAGMA table_info`) and MySQL 8.4 (`SHOW COLUMNS`).
+  2. *Standardized Sourcing Presets with Custom Override:* Defined standard option sets in `types/tender.ts` for each dimension while allowing tender analysts to supply custom or donor-specific strings seamlessly without database schema alterations.
+  3. *Full Intake & Workspace Integration:* Added interactive selectors to `NewTenderModal.tsx` and `TenderRegistryPage.tsx`, structured cards in `TenderDetailPage.tsx`, and formal rows in printable `TenderSummaryDocument.tsx`.
+  4. *Test Verification:* Integrated comprehensive CRUD validation into `backend/tests/test_api_integration.py` (`test_24_tender_procurement_governance_attributes`).  
+  *Impact:* Comprehensive procurement governance compliance across national and multilateral donor tenders without database overhead or external dependencies.
 
 ---
 

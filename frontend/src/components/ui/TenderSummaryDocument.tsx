@@ -94,6 +94,10 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
             <Row label="Tender ID" value={s?.tenderIdDisplay || tender.id} />
             <Row label="Client / Organization" value={tender.organization} />
             <Row label="Portal" value={s?.portal} />
+            <Row label="Tender Type / Classification" value={tender.tenderType || s?.tenderType} />
+            <Row label="Budget Type" value={tender.budgetType || s?.budgetType} />
+            <Row label="Source of Fund (Financier)" value={tender.sourceOfFund || s?.sourceOfFund} />
+            <Row label="Procurement Method" value={tender.procurementMethod || s?.procurementMethod} />
             <Row label="Published Date" value={s?.publishedDate || null} />
             <Row
               label="Last Date (Submission Deadline)"

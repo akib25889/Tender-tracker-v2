@@ -29,6 +29,10 @@ import {
   TenderRiskPoint,
   ImportantClause,
   TenderFinancialModel,
+  STANDARD_TENDER_TYPES,
+  STANDARD_BUDGET_TYPES,
+  STANDARD_SOURCE_OF_FUNDS,
+  STANDARD_PROCUREMENT_METHODS,
 } from '../../types/tender';
 import { ImportantClausesManager } from '../tender/ImportantClausesManager';
 import { FinancialScenariosEditor } from '../tender/FinancialScenariosEditor';
@@ -172,6 +176,16 @@ export const NewTenderModal: React.FC = () => {
   const [priority, setPriority] = useState<TenderPriority>('HIGH');
   const [category, setCategory] = useState('IT & Cloud Infrastructure');
   const [isCustomCategory, setIsCustomCategory] = useState(false);
+
+  // Procurement Governance & Sourcing Attributes (Req #21)
+  const [tenderType, setTenderType] = useState<string>('International Competitive Bidding (ICB)');
+  const [budgetType, setBudgetType] = useState<string>('Development Budget (ADP / Capex)');
+  const [sourceOfFund, setSourceOfFund] = useState<string>('Government of Bangladesh (GoB)');
+  const [procurementMethod, setProcurementMethod] = useState<string>('Quality & Cost Based Selection (QCBS)');
+  const [isCustomTenderType, setIsCustomTenderType] = useState(false);
+  const [isCustomBudgetType, setIsCustomBudgetType] = useState(false);
+  const [isCustomSourceOfFund, setIsCustomSourceOfFund] = useState(false);
+  const [isCustomProcurementMethod, setIsCustomProcurementMethod] = useState(false);
 
   // Procuring Authority Officer & Helpline Details
   const [procurementManagerName, setProcurementManagerName] = useState('');
@@ -512,6 +526,11 @@ export const NewTenderModal: React.FC = () => {
       helplinePhone,
       helplineEmail,
       helplineHours,
+      // Procurement Governance & Sourcing Attributes (Req #21)
+      tenderType,
+      budgetType,
+      sourceOfFund,
+      procurementMethod,
       priority,
       stage: 'DISCOVERED',
       submissionDeadline: new Date(lastDate).toISOString(),
@@ -535,6 +554,10 @@ export const NewTenderModal: React.FC = () => {
         publishedDate,
         submissionTime,
         mainIdea,
+        tenderType,
+        budgetType,
+        sourceOfFund,
+        procurementMethod,
         procurementManager: {
           name: procurementManagerName,
           designation: procurementManagerDesignation,
@@ -1007,6 +1030,235 @@ export const NewTenderModal: React.FC = () => {
                       ৳{Math.round(liveBdtValue).toLocaleString()} BDT
                     </span>
                   </span>
+                </div>
+              </div>
+
+              {/* Procurement Governance & Sourcing Attributes (Req #21) */}
+              <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
+                <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-[#2563EB]" />
+                    <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                      Procurement Governance &amp; Sourcing Framework
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                    Statutory Governance
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Tender Type */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[11px] font-semibold text-[#0F172A]">
+                        Tender Type *
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsCustomTenderType(!isCustomTenderType);
+                          if (isCustomTenderType && !tenderType) setTenderType(STANDARD_TENDER_TYPES[0]);
+                        }}
+                        className="text-[10px] font-semibold text-[#2563EB] hover:underline"
+                      >
+                        {isCustomTenderType ? '← Select Preset' : '+ Custom Type'}
+                      </button>
+                    </div>
+                    {isCustomTenderType ? (
+                      <input
+                        type="text"
+                        placeholder="e.g. Turnkey EPC, Framework Call-off..."
+                        value={tenderType}
+                        onChange={(e) => setTenderType(e.target.value)}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#2563EB] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    ) : (
+                      <select
+                        value={tenderType}
+                        onChange={(e) => {
+                          if (e.target.value === '__CUSTOM__') {
+                            setIsCustomTenderType(true);
+                            setTenderType('');
+                          } else {
+                            setTenderType(e.target.value);
+                          }
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      >
+                        {STANDARD_TENDER_TYPES.map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                        {!STANDARD_TENDER_TYPES.includes(tenderType as any) && tenderType && (
+                          <option value={tenderType}>{tenderType}</option>
+                        )}
+                        <option value="__CUSTOM__" className="font-bold text-[#2563EB]">
+                          + Add Custom Tender Type...
+                        </option>
+                      </select>
+                    )}
+                  </div>
+
+                  {/* Budget Type */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[11px] font-semibold text-[#0F172A]">
+                        Budget Type *
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsCustomBudgetType(!isCustomBudgetType);
+                          if (isCustomBudgetType && !budgetType) setBudgetType(STANDARD_BUDGET_TYPES[0]);
+                        }}
+                        className="text-[10px] font-semibold text-[#2563EB] hover:underline"
+                      >
+                        {isCustomBudgetType ? '← Select Preset' : '+ Custom Budget'}
+                      </button>
+                    </div>
+                    {isCustomBudgetType ? (
+                      <input
+                        type="text"
+                        placeholder="e.g. Special Trust Fund, Sovereign Loan..."
+                        value={budgetType}
+                        onChange={(e) => setBudgetType(e.target.value)}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#2563EB] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    ) : (
+                      <select
+                        value={budgetType}
+                        onChange={(e) => {
+                          if (e.target.value === '__CUSTOM__') {
+                            setIsCustomBudgetType(true);
+                            setBudgetType('');
+                          } else {
+                            setBudgetType(e.target.value);
+                          }
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      >
+                        {STANDARD_BUDGET_TYPES.map((b) => (
+                          <option key={b} value={b}>
+                            {b}
+                          </option>
+                        ))}
+                        {!STANDARD_BUDGET_TYPES.includes(budgetType as any) && budgetType && (
+                          <option value={budgetType}>{budgetType}</option>
+                        )}
+                        <option value="__CUSTOM__" className="font-bold text-[#2563EB]">
+                          + Add Custom Budget Type...
+                        </option>
+                      </select>
+                    )}
+                  </div>
+
+                  {/* Source of Fund */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[11px] font-semibold text-[#0F172A]">
+                        Source of Fund (Financier) *
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsCustomSourceOfFund(!isCustomSourceOfFund);
+                          if (isCustomSourceOfFund && !sourceOfFund) setSourceOfFund(STANDARD_SOURCE_OF_FUNDS[0]);
+                        }}
+                        className="text-[10px] font-semibold text-[#2563EB] hover:underline"
+                      >
+                        {isCustomSourceOfFund ? '← Select Preset' : '+ Custom Source'}
+                      </button>
+                    </div>
+                    {isCustomSourceOfFund ? (
+                      <input
+                        type="text"
+                        placeholder="e.g. Islamic Development Bank (IsDB)..."
+                        value={sourceOfFund}
+                        onChange={(e) => setSourceOfFund(e.target.value)}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#2563EB] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    ) : (
+                      <select
+                        value={sourceOfFund}
+                        onChange={(e) => {
+                          if (e.target.value === '__CUSTOM__') {
+                            setIsCustomSourceOfFund(true);
+                            setSourceOfFund('');
+                          } else {
+                            setSourceOfFund(e.target.value);
+                          }
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      >
+                        {STANDARD_SOURCE_OF_FUNDS.map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                        {!STANDARD_SOURCE_OF_FUNDS.includes(sourceOfFund as any) && sourceOfFund && (
+                          <option value={sourceOfFund}>{sourceOfFund}</option>
+                        )}
+                        <option value="__CUSTOM__" className="font-bold text-[#2563EB]">
+                          + Add Custom Source of Fund...
+                        </option>
+                      </select>
+                    )}
+                  </div>
+
+                  {/* Procurement Method */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[11px] font-semibold text-[#0F172A]">
+                        Procurement Method *
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsCustomProcurementMethod(!isCustomProcurementMethod);
+                          if (isCustomProcurementMethod && !procurementMethod) setProcurementMethod(STANDARD_PROCUREMENT_METHODS[0]);
+                        }}
+                        className="text-[10px] font-semibold text-[#2563EB] hover:underline"
+                      >
+                        {isCustomProcurementMethod ? '← Select Preset' : '+ Custom Method'}
+                      </button>
+                    </div>
+                    {isCustomProcurementMethod ? (
+                      <input
+                        type="text"
+                        placeholder="e.g. Two-Envelope with Reverse Auction..."
+                        value={procurementMethod}
+                        onChange={(e) => setProcurementMethod(e.target.value)}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#2563EB] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    ) : (
+                      <select
+                        value={procurementMethod}
+                        onChange={(e) => {
+                          if (e.target.value === '__CUSTOM__') {
+                            setIsCustomProcurementMethod(true);
+                            setProcurementMethod('');
+                          } else {
+                            setProcurementMethod(e.target.value);
+                          }
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      >
+                        {STANDARD_PROCUREMENT_METHODS.map((m) => (
+                          <option key={m} value={m}>
+                            {m}
+                          </option>
+                        ))}
+                        {!STANDARD_PROCUREMENT_METHODS.includes(procurementMethod as any) && procurementMethod && (
+                          <option value={procurementMethod}>{procurementMethod}</option>
+                        )}
+                        <option value="__CUSTOM__" className="font-bold text-[#2563EB]">
+                          + Add Custom Method...
+                        </option>
+                      </select>
+                    )}
+                  </div>
                 </div>
               </div>
 

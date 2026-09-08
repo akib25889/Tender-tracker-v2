@@ -35,6 +35,7 @@ import {
   Mail,
   CreditCard,
   TrendingUp,
+  ShieldCheck,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -456,9 +457,73 @@ export const TenderDetailPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* 2x3 Specification Matrix */}
+                {/* Specification Matrix */}
                 <div className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    {/* Tender Type / Invitation */}
+                    <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                        Tender Type / Invitation
+                      </span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-semibold text-[#0F172A] flex items-center gap-2">
+                          <ShieldCheck className="w-4 h-4 text-[#2563EB]" />
+                          {tender.tenderType || tender.summary?.tenderType || 'International Competitive Bidding (ICB)'}
+                        </span>
+                        <span className="text-[10px] font-mono text-[#2563EB] bg-[#EFF6FF] px-1.5 py-0.5 rounded font-bold border border-[#BFDBFE]">
+                          Bidding Mode
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Procurement Method */}
+                    <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                        Procurement Method
+                      </span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-semibold text-[#0F172A] flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#059669]" />
+                          {tender.procurementMethod || tender.summary?.procurementMethod || 'Quality & Cost Based Selection (QCBS)'}
+                        </span>
+                        <span className="text-[10px] font-mono text-[#059669] bg-[#ECFDF5] px-1.5 py-0.5 rounded font-bold border border-[#A7F3D0]">
+                          Method
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Budget Type */}
+                    <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                        Budget Type
+                      </span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-semibold text-[#0F172A] flex items-center gap-1.5">
+                          <CreditCard className="w-3.5 h-3.5 text-[#2563EB]" />
+                          {tender.budgetType || tender.summary?.budgetType || 'Development Budget (ADP / Capex)'}
+                        </span>
+                        <span className="text-[10px] font-mono text-[#B45309] bg-[#FFFBEB] px-1.5 py-0.5 rounded font-bold border border-[#FDE68A]">
+                          Budget
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Source of Fund (Financier) */}
+                    <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                        Source of Fund (Financier)
+                      </span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
+                          <Landmark className="w-3.5 h-3.5 text-[#64748B]" />
+                          {tender.sourceOfFund || tender.summary?.sourceOfFund || 'Government Treasury (GoB)'}
+                        </span>
+                        <span className="text-[10px] text-[#2563EB] bg-[#EFF6FF] px-1.5 py-0.5 rounded font-mono font-bold border border-[#BFDBFE]">
+                          Financier
+                        </span>
+                      </div>
+                    </div>
+
                     {/* Country / Territory */}
                     <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
