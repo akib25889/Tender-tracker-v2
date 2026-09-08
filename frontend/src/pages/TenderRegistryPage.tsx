@@ -1006,30 +1006,7 @@ export const TenderRegistryPage: React.FC = () => {
         {/* Editor Header Bar */}
         <div className="px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              {tenders.length > 1 ? (
-                <select
-                  value={selectedTenderId}
-                  onChange={(e) => setSelectedTenderId(e.target.value)}
-                  className="px-2.5 py-1 text-xs font-mono font-bold text-[#0F172A] bg-white border border-[#CBD5E1] rounded-lg shadow-xs focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer max-w-[220px]"
-                  title="Switch active tender"
-                >
-                  {tenders.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.id} {t.referenceNo ? `(${t.referenceNo})` : ''}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <span className="font-mono text-xs font-bold text-[#0F172A] bg-white border border-[#CBD5E1] px-2 py-0.5 rounded">
-                  {selectedTender?.id}
-                </span>
-              )}
-              <span className="text-xs text-[#64748B] hidden md:inline">
-                Ref: {selectedTender?.referenceNo || 'N/A'}
-              </span>
-            </div>
-            <h2 className="font-display text-base font-bold text-[#0F172A] mt-0.5 line-clamp-1">
+            <h2 className="font-display text-base font-bold text-[#0F172A] line-clamp-1">
               {tenderTitle || 'Untitled Tender Entry'}
             </h2>
           </div>
