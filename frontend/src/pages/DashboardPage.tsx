@@ -265,18 +265,13 @@ export const DashboardPage: React.FC = () => {
             <span className="text-[11px] text-[#16A34A] font-medium mt-0.5 block">
               {tenders.filter((t) => t.stage === 'PREPARATION' || t.stage === 'INTERNAL_REVIEW').length} in active drafting
             </span>
-            <div className="flex items-center gap-2 mt-1">
-              <Link
-                to="/tenders?stage=DISCOVERED"
-                onClick={(e) => e.stopPropagation()}
-                className="text-[10px] text-[#2563EB] font-bold hover:underline inline-flex items-center gap-0.5"
-              >
-                <span>View {tenders.filter((t) => t.stage === 'DISCOVERED').length} Discovered →</span>
-              </Link>
-              <span className="text-[10px] text-[#2563EB] opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
-                • View list ↓
-              </span>
-            </div>
+            <Link
+              to="/tenders?stage=DISCOVERED"
+              onClick={(e) => e.stopPropagation()}
+              className="text-[10px] text-[#2563EB] font-bold hover:underline inline-flex items-center gap-0.5 mt-1"
+            >
+              <span>View {tenders.filter((t) => t.stage === 'DISCOVERED').length} Discovered Bids →</span>
+            </Link>
           </div>
           <div className="w-10 h-10 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
             <FolderGit2 className="w-5 h-5" />
@@ -307,9 +302,6 @@ export const DashboardPage: React.FC = () => {
             <span className="text-[11px] text-[#DC2626] font-medium mt-0.5 block">
               {dueThisWeek.filter((t) => t.daysRemaining <= 2).length} bids &lt; 48h window
             </span>
-            <span className="text-[10px] text-[#DC2626] font-semibold group-hover:underline inline-flex items-center gap-0.5 mt-1">
-              View closing bids ↓
-            </span>
           </div>
           <div className="w-10 h-10 rounded-lg bg-[#FEF2F2] text-[#DC2626] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
             <Clock className="w-5 h-5" />
@@ -339,9 +331,6 @@ export const DashboardPage: React.FC = () => {
             </div>
             <span className="text-[11px] text-[#64748B] dark:text-slate-400 font-medium mt-0.5 block">
               Solvency &amp; Statutory gates
-            </span>
-            <span className="text-[10px] text-[#EA580C] font-semibold group-hover:underline inline-flex items-center gap-0.5 mt-1">
-              View missing docs ↓
             </span>
           </div>
           <div className="w-10 h-10 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -375,9 +364,6 @@ export const DashboardPage: React.FC = () => {
             <div className="w-24 mt-1.5">
               <ReadinessBar score={avgReadiness} showLabel={false} />
             </div>
-            <span className="text-[10px] text-[#2563EB] font-semibold group-hover:underline inline-flex items-center gap-0.5 mt-1">
-              View low readiness ↓
-            </span>
           </div>
           <div className="w-10 h-10 rounded-lg bg-[#F1F5F9] text-[#0F172A] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
             <Activity className="w-5 h-5" />
