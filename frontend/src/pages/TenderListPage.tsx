@@ -161,6 +161,7 @@ export const TenderListPage: React.FC = () => {
 
       {/* Filter & Search Bar */}
       <div className="bg-white p-3.5 rounded-lg border border-[#E2E8F0] shadow-sm space-y-3">
+      <div className="bg-white p-3.5 rounded-lg border border-[#CBD5E1] shadow-sm space-y-3">
         <div className="flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="relative w-full md:w-96">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] w-4 h-4" />
@@ -170,6 +171,7 @@ export const TenderListPage: React.FC = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by tender ID, title, donor..."
               className="w-full pl-9 pr-4 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+              className="w-full pl-9 pr-4 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
             />
           </div>
 
@@ -179,6 +181,7 @@ export const TenderListPage: React.FC = () => {
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A]"
+              className="px-2.5 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
             >
               {categories.map((c) => (
                 <option key={c} value={c}>
@@ -191,6 +194,7 @@ export const TenderListPage: React.FC = () => {
 
         {/* Stage Filter Chips */}
         <div className="flex items-center gap-2 overflow-x-auto pt-2 border-t border-[#F1F5F9]">
+        <div className="flex items-center gap-2 overflow-x-auto pt-2 border-t border-[#E2E8F0]">
           <Filter className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
           <span className="text-xs text-[#64748B] font-medium whitespace-nowrap">Stage:</span>
           {['ALL', 'DISCOVERED', 'SCREENING', 'UNDER_ANALYSIS', 'PREPARATION', 'INTERNAL_REVIEW', 'SUBMITTED', 'ARCHIVED'].map(
@@ -202,6 +206,7 @@ export const TenderListPage: React.FC = () => {
                   selectedStage === stage
                     ? 'bg-[#0F172A] text-white font-semibold'
                     : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A]'
+                    : 'bg-[#F1F5F9] border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
                 }`}
               >
                 {stage === 'ALL'
@@ -287,6 +292,7 @@ export const TenderListPage: React.FC = () => {
         <div className="space-y-3">
           {filteredTenders.length === 0 ? (
             <div className="bg-white rounded-lg border border-[#E2E8F0] p-12 text-center text-[#64748B]">
+            <div className="bg-white rounded-lg border border-[#CBD5E1] p-12 text-center text-[#64748B]">
               <Compass className="w-8 h-8 mx-auto text-[#94A3B8] mb-2" />
               <p className="font-semibold text-sm text-[#0F172A]">No tenders in Bid Discovery</p>
               <p className="text-xs text-[#64748B] mt-1">All discovered opportunities have been advanced or screened.</p>
@@ -297,19 +303,24 @@ export const TenderListPage: React.FC = () => {
                 key={`${tender.id}-${idx}`}
                 className={`bg-white rounded-xl border border-[#E2E8F0] p-4 shadow-xs hover:border-[#CBD5E1] transition-all space-y-3 ${
                   selectedIds.includes(tender.id) ? 'bg-[#EFF6FF]/40 border-[#BFDBFE]' : ''
+                className={`bg-white rounded-xl border border-[#CBD5E1] p-4 shadow-xs hover:border-[#94A3B8] transition-all space-y-3 ${
+                  selectedIds.includes(tender.id) ? 'bg-[#EFF6FF]/40 border-[#93C5FD]' : ''
                 }`}
               >
                 {/* Upper Line: Tender ID & Title */}
                 <div className="flex items-start sm:items-center justify-between gap-3 pb-2.5 border-b border-[#F1F5F9]">
+                <div className="flex items-start sm:items-center justify-between gap-3 pb-2.5 border-b border-[#E2E8F0]">
                   <div className="flex items-center gap-2.5 flex-wrap flex-1">
                     <button type="button" onClick={() => toggleSelect(tender.id)}>
                       {selectedIds.includes(tender.id) ? (
                         <CheckSquare className="w-4 h-4 text-[#2563EB]" />
                       ) : (
                         <Square className="w-4 h-4 text-[#CBD5E1]" />
+                        <Square className="w-4 h-4 text-[#94A3B8]" />
                       )}
                     </button>
                     <span className="font-mono text-xs font-bold text-[#0F172A] bg-[#F1F5F9] px-2 py-0.5 rounded border border-[#E2E8F0]">
+                    <span className="font-mono text-xs font-bold text-[#0F172A] bg-[#F1F5F9] px-2 py-0.5 rounded border border-[#CBD5E1]">
                       {tender.id}
                     </span>
                     {tender.referenceNo &&
@@ -317,6 +328,7 @@ export const TenderListPage: React.FC = () => {
                       tender.referenceNo !== `REF/${tender.id}` &&
                       !tender.referenceNo.endsWith(tender.id) && (
                         <span className="text-[11px] font-mono font-medium text-[#475569] bg-[#F8FAFC] px-1.5 py-0.5 rounded border border-[#E2E8F0]">
+                        <span className="text-[11px] font-mono font-medium text-[#475569] bg-[#F8FAFC] px-1.5 py-0.5 rounded border border-[#CBD5E1]">
                           <span className="text-[10px] text-[#64748B] font-sans font-medium mr-1">Ref:</span>
                           {tender.referenceNo}
                         </span>
@@ -364,6 +376,7 @@ export const TenderListPage: React.FC = () => {
 
                 {/* Third Line: Readiness and all the button */}
                 <div className="flex items-center justify-between gap-4 pt-2.5 border-t border-[#F1F5F9] flex-wrap">
+                <div className="flex items-center justify-between gap-4 pt-2.5 border-t border-[#E2E8F0] flex-wrap">
                   <div className="flex items-center gap-3 w-64 max-w-full">
                     <span className="text-xs text-[#64748B] font-medium shrink-0">Readiness:</span>
                     <div className="w-full">
@@ -375,6 +388,7 @@ export const TenderListPage: React.FC = () => {
                     <Link
                       to={`/registry/summary/${tender.id}`}
                       className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#475569] bg-white hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] transition-colors shadow-2xs"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#475569] bg-white hover:bg-[#F8FAFC] rounded-lg border border-[#CBD5E1] transition-colors shadow-2xs"
                       title="View Document Summary"
                     >
                       <FileText className="w-3.5 h-3.5 text-[#2563EB]" />
@@ -384,6 +398,7 @@ export const TenderListPage: React.FC = () => {
                     <Link
                       to={`/registry?id=${tender.id}`}
                       className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] bg-white hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] transition-colors shadow-2xs"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] bg-white hover:bg-[#F8FAFC] rounded-lg border border-[#CBD5E1] transition-colors shadow-2xs"
                       title="Edit Tender Specifications"
                     >
                       <Edit3 className="w-3.5 h-3.5 text-[#64748B]" />
@@ -433,16 +448,19 @@ export const TenderListPage: React.FC = () => {
       ) : (
         /* Standard Tenders Table for other stages */
         <div className="bg-white rounded-lg border border-[#E2E8F0] shadow-sm overflow-hidden">
+        <div className="bg-white rounded-lg border border-[#CBD5E1] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+                <tr className="bg-[#F8FAFC] border-b border-[#CBD5E1] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
                   <th className="py-3 px-4 w-10">
                     <button onClick={toggleSelectAll}>
                       {selectedIds.length === filteredTenders.length && filteredTenders.length > 0 ? (
                         <CheckSquare className="w-4 h-4 text-[#2563EB]" />
                       ) : (
                         <Square className="w-4 h-4 text-[#CBD5E1]" />
+                        <Square className="w-4 h-4 text-[#94A3B8]" />
                       )}
                     </button>
                   </th>
@@ -457,6 +475,7 @@ export const TenderListPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F1F5F9] dark:divide-slate-800 text-xs">
+              <tbody className="divide-y divide-[#E2E8F0] dark:divide-slate-700 text-xs">
                 {paginatedTenders.map((tender, idx) => (
                   <tr
                     key={`${tender.id}-${idx}`}
@@ -470,6 +489,7 @@ export const TenderListPage: React.FC = () => {
                           <CheckSquare className="w-4 h-4 text-[#2563EB]" />
                         ) : (
                           <Square className="w-4 h-4 text-[#CBD5E1]" />
+                          <Square className="w-4 h-4 text-[#94A3B8]" />
                         )}
                       </button>
                     </td>
@@ -484,6 +504,7 @@ export const TenderListPage: React.FC = () => {
                           tender.referenceNo !== `REF/${tender.id}` &&
                           !tender.referenceNo.endsWith(tender.id) && (
                             <span className="text-[10px] text-[#64748B] dark:text-slate-400 font-mono bg-[#F8FAFC] dark:bg-slate-800 px-1.5 py-0.5 rounded">
+                            <span className="text-[10px] text-[#64748B] dark:text-slate-400 font-mono bg-[#F8FAFC] dark:bg-slate-800 px-1.5 py-0.5 rounded border border-[#E2E8F0] dark:border-slate-700">
                               Ref: {tender.referenceNo}
                             </span>
                           )}
@@ -533,6 +554,7 @@ export const TenderListPage: React.FC = () => {
                         <Link
                           to={`/registry?id=${tender.id}`}
                           className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] dark:text-white bg-white dark:bg-slate-800 hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] dark:border-slate-700 hover:border-[#CBD5E1] transition-colors shadow-2xs"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] dark:text-white bg-white dark:bg-slate-800 hover:bg-[#F8FAFC] rounded-lg border border-[#CBD5E1] dark:border-slate-700 hover:border-[#94A3B8] transition-colors shadow-2xs"
                           title="Edit Tender Specifications"
                         >
                           <Edit3 className="w-3.5 h-3.5 text-[#64748B]" />
@@ -595,6 +617,7 @@ export const TenderListPage: React.FC = () => {
           {/* Table Pagination Controls */}
           {filteredTenders.length > 0 && (
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 bg-white dark:bg-[#0F172A] border-t border-[#F1F5F9] dark:border-slate-800 text-xs">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 bg-white dark:bg-[#0F172A] border-t border-[#CBD5E1] dark:border-slate-700 text-xs">
               <div className="flex items-center gap-3 text-[#64748B] dark:text-slate-400">
                 <span>
                   Showing <strong className="text-[#0F172A] dark:text-white">{Math.min((currentPage - 1) * pageSize + 1, filteredTenders.length)}</strong> to{' '}
@@ -604,6 +627,7 @@ export const TenderListPage: React.FC = () => {
                 </span>
 
                 <div className="flex items-center gap-1.5 pl-3 border-l border-[#E2E8F0] dark:border-slate-800">
+                <div className="flex items-center gap-1.5 pl-3 border-l border-[#CBD5E1] dark:border-slate-700">
                   <span className="text-[11px]">Show:</span>
                   <select
                     value={pageSize}
@@ -612,6 +636,7 @@ export const TenderListPage: React.FC = () => {
                       setCurrentPage(1);
                     }}
                     className="px-2 py-0.5 text-xs rounded border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+                    className="px-2 py-0.5 text-xs rounded border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
                   >
                     <option value={10}>10 per page</option>
                     <option value={25}>25 per page</option>
@@ -628,6 +653,7 @@ export const TenderListPage: React.FC = () => {
                     onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                     disabled={currentPage === 1}
                     className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#CBD5E1] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
                     <span>Previous</span>
@@ -643,6 +669,7 @@ export const TenderListPage: React.FC = () => {
                           currentPage === pageNum
                             ? 'bg-[#2563EB] text-white shadow-xs'
                             : 'text-[#64748B] dark:text-slate-400 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white'
+                            : 'border border-[#E2E8F0] dark:border-slate-700 text-[#64748B] dark:text-slate-400 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white'
                         }`}
                       >
                         {pageNum}
@@ -655,6 +682,7 @@ export const TenderListPage: React.FC = () => {
                     onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                     disabled={currentPage === totalPages}
                     className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#CBD5E1] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
                   >
                     <span>Next</span>
                     <ChevronRight className="w-3.5 h-3.5" />
