@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Plus, Bell, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Search, Plus, Bell, PanelLeftClose, PanelLeftOpen, Sun, Moon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { UserRoleSwitcher } from '../ui/UserRoleSwitcher';
 import { useTenders } from '../../context/TenderContext';
+import { useTheme } from '../../hooks/useTheme';
 
 interface HeaderProps {
   sidebarCollapsed: boolean;
@@ -14,6 +15,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleSidebar,
 }) => {
   const { setIsCommandPaletteOpen } = useTenders();
+  const { theme, toggleTheme } = useTheme();
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
@@ -75,6 +77,20 @@ export const Header: React.FC<HeaderProps> = ({
           <Plus className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">New Opportunity</span>
         </Link>
+
+        {/* Quick Theme Toggle (Light / Dark) */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="p-2 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors cursor-pointer"
+          title={theme === 'dark' ? 'Switch to Light Workspace' : 'Switch to Dark Command Center'}
+        >
+          {theme === 'dark' ? (
+            <Sun className="w-4 h-4 text-amber-400 hover:text-amber-300 transition-colors" />
+          ) : (
+            <Moon className="w-4 h-4 text-[#64748B] hover:text-[#2563EB] transition-colors" />
+          )}
+        </button>
 
         {/* System Alert Bell — live unread badge */}
         <Link

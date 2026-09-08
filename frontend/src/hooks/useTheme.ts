@@ -6,21 +6,31 @@ let currentTheme: Theme = (() => {
   if (typeof window === 'undefined') return 'light';
   const saved = localStorage.getItem('tt_theme');
   if (saved === 'dark' || saved === 'light') return saved as Theme;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return 'light';
 })();
 
 const listeners = new Set<(theme: Theme) => void>();
 
-function notify(theme: Theme) {
-  currentTheme = theme;
+function applyThemeToDOM(theme: Theme) {
   if (typeof document !== 'undefined') {
     const root = document.documentElement;
     if (theme === 'dark') {
       root.classList.add('dark');
+      root.classList.remove('light');
+      root.setAttribute('data-theme', 'dark');
+      root.style.colorScheme = 'dark';
     } else {
+      root.classList.add('light');
       root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+      root.style.colorScheme = 'light';
     }
   }
+}
+
+function notify(theme: Theme) {
+  currentTheme = theme;
+  applyThemeToDOM(theme);
   if (typeof window !== 'undefined') {
     localStorage.setItem('tt_theme', theme);
   }
@@ -28,13 +38,7 @@ function notify(theme: Theme) {
 }
 
 // Ensure initial DOM state is set immediately
-if (typeof document !== 'undefined') {
-  if (currentTheme === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-}
+applyThemeToDOM(currentTheme);
 
 export function useTheme() {
   const [theme, setThemeState] = useState<Theme>(currentTheme);
