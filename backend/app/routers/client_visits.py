@@ -114,7 +114,8 @@ def create_client_visit(
         internal_host_role=payload.internal_host_role or "Business Head",
         visit_type=payload.visit_type or "IN_PERSON_OFFICE",
         status=(payload.status or "SCHEDULED").upper(),
-        scheduled_start=payload.scheduled_start or datetime.now().strftime("%Y-%m-%dT%H:%M"),
+        scheduled_start=payload.scheduled_start
+        or datetime.now().strftime("%Y-%m-%dT%H:%M"),
         scheduled_end=payload.scheduled_end,
         actual_check_in=payload.actual_check_in,
         actual_check_out=payload.actual_check_out,

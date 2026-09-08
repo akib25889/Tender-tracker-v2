@@ -7,7 +7,7 @@
 
 :root {
   /* Surface Hierarchy */
-  --bg-canvas:           #F8FAFC;
+  --bg-canvas:           #FDFBF7;
   --bg-surface:          #FFFFFF;
   --bg-surface-raised:   #FFFFFF;
   --bg-subtle:           #F1F5F9;
@@ -140,6 +140,7 @@ html, body {
 
 /* Main canvas background */
 .dark .min-h-screen,
+.dark [class*="bg-[#FDFBF7]"],
 .dark [class*="bg-[#F8FAFC]"],
 .dark [class*="bg-\\[#F8FAFC\\]"],
 .dark .bg-\[\#F8FAFC\],
