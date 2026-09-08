@@ -21,7 +21,6 @@ import {
   Plus,
   Sliders,
   CheckCircle2,
-  XCircle,
   Eye,
   Download,
   Upload,
@@ -132,8 +131,6 @@ export const MasterPermissionsPage: React.FC = () => {
   const [simTender, setSimTender] = useState<string>(tenders[0]?.id || 'TDR-PRC0190428');
   const [simResource, setSimResource] = useState<string>('');
   const [selectedSimActions, setSelectedSimActions] = useState<string[]>(['*']);
-  const [simResultsList, setSimResultsList] = useState<DiagnosticResult[]>([]);
-  const [inspectedAction, setInspectedAction] = useState<string>('*');
   const [isSimulating, setIsSimulating] = useState(false);
 
   // --- State: Audit Trail ---
@@ -359,10 +356,6 @@ export const MasterPermissionsPage: React.FC = () => {
       });
     }
 
-    setSimResultsList(evaluatedResults);
-    // Focus on first denied permission if any, else first permission
-    const firstDenied = evaluatedResults.find((r) => !r.allowed);
-    setInspectedAction(firstDenied ? firstDenied.permission_code : evaluatedResults[0]?.permission_code || '*');
     setAuditLogs((prev) => [...newLogs, ...prev]);
     setIsSimulating(false);
   };
@@ -522,378 +515,193 @@ export const MasterPermissionsPage: React.FC = () => {
       {/* TAB 1: DIAGNOSTIC SIMULATOR                                               */}
       {/* ========================================================================= */}
       {activeTab === 'simulator' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Simulator Form Left Column */}
-          <div className="lg:col-span-5 space-y-4">
-            <Card
-              title="Authorization Test Simulator"
-              subtitle="Test any user, partner, tender, or resource to trace the 4-layer decision pipeline."
-            >
-              <div className="space-y-4 text-xs">
-                {/* Subject Selector: Internal vs Partner */}
-                <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
-                    Subject Type:
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setSimPartner('NONE')}
-                      className={`p-2.5 rounded-lg border text-center font-semibold transition-all ${
-                        simPartner === 'NONE'
-                          ? 'border-[#2563EB] bg-[#EFF6FF] text-[#1D4ED8]'
-                          : 'border-[#E2E8F0] bg-white text-[#64748B]'
-                      }`}
-                    >
-                      🏢 Internal NYK Staff
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSimPartner(partners[0]?.id || 'ORG-APEX-01')}
-                      className={`p-2.5 rounded-lg border text-center font-semibold transition-all ${
-                        simPartner !== 'NONE'
-                          ? 'border-[#2563EB] bg-[#EFF6FF] text-[#1D4ED8]'
-                          : 'border-[#E2E8F0] bg-white text-[#64748B]'
-                      }`}
-                    >
-                      🤝 External JV Partner
-                    </button>
-                  </div>
+        <div className="max-w-3xl mx-auto space-y-4">
+          <Card
+            title="Authorization Test Simulator"
+            subtitle="Test any user, partner, tender, or resource to trace the 4-layer decision pipeline."
+          >
+            <div className="space-y-4 text-xs">
+              {/* Subject Selector: Internal vs Partner */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Subject Type:
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSimPartner('NONE')}
+                    className={`p-2.5 rounded-lg border text-center font-semibold transition-all cursor-pointer ${
+                      simPartner === 'NONE'
+                        ? 'border-[#2563EB] bg-[#EFF6FF] text-[#1D4ED8]'
+                        : 'border-[#E2E8F0] bg-white text-[#64748B]'
+                    }`}
+                  >
+                    🏢 Internal NYK Staff
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSimPartner(partners[0]?.id || 'ORG-APEX-01')}
+                    className={`p-2.5 rounded-lg border text-center font-semibold transition-all cursor-pointer ${
+                      simPartner !== 'NONE'
+                        ? 'border-[#2563EB] bg-[#EFF6FF] text-[#1D4ED8]'
+                        : 'border-[#E2E8F0] bg-white text-[#64748B]'
+                    }`}
+                  >
+                    🤝 External JV Partner
+                  </button>
                 </div>
+              </div>
 
-                {simPartner === 'NONE' ? (
-                  <div>
-                    <label className="block font-semibold text-[#0F172A] mb-1">
-                      Internal User Profile:
-                    </label>
-                    <select
-                      value={simUser}
-                      onChange={(e) => setSimUser(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-medium text-[#0F172A]"
-                    >
-                      {teamMembers.map((m) => (
-                        <option key={m.id} value={m.id}>
-                          {m.name} ({m.role.replace('_', ' ')})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                ) : (
-                  <div>
-                    <label className="block font-semibold text-[#0F172A] mb-1">
-                      External Partner Organization:
-                    </label>
-                    <select
-                      value={simPartner}
-                      onChange={(e) => setSimPartner(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-medium text-[#0F172A]"
-                    >
-                      {partners.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.name} ({p.partner_type})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                {/* Target Tender Context */}
+              {simPartner === 'NONE' ? (
                 <div>
                   <label className="block font-semibold text-[#0F172A] mb-1">
-                    Tender Workspace Context:
+                    Internal User Profile:
                   </label>
                   <select
-                    value={simTender}
-                    onChange={(e) => setSimTender(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-medium text-[#0F172A]"
+                    value={simUser}
+                    onChange={(e) => setSimUser(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-medium text-[#0F172A] cursor-pointer"
                   >
-                    <option value="">-- Global / No Tender --</option>
-                    {tenders.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        [{t.id}] {t.title.substring(0, 42)}...
+                    {teamMembers.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name} ({m.role.replace('_', ' ')})
                       </option>
                     ))}
                   </select>
                 </div>
-
-                {/* Target Resource ID (Optional) */}
+              ) : (
                 <div>
                   <label className="block font-semibold text-[#0F172A] mb-1">
-                    Specific Resource / Document ID (Optional):
+                    External Partner Organization:
                   </label>
-                  <input
-                    type="text"
-                    value={simResource}
-                    onChange={(e) => setSimResource(e.target.value)}
-                    placeholder="e.g. DOC-01 or DOC-CONFIDENTIAL-01"
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-mono text-[#0F172A]"
-                  />
-                  <span className="text-[10px] text-[#94A3B8] block mt-1">
-                    Leave blank to test general tender-level access.
-                  </span>
-                </div>
-
-                {/* Requested Action Permissions (Multi-Select) */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="block font-semibold text-[#0F172A] text-xs">
-                      Target Permissions to Evaluate:
-                    </label>
-                    <div className="flex items-center gap-1.5 text-[11px]">
-                      <span className="font-bold px-1.5 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] text-[10px]">
-                        {selectedSimActions.length} Selected
-                      </span>
-                      <button
-                        type="button"
-                        onClick={handleSelectAllSimActions}
-                        className="font-semibold text-[#2563EB] hover:underline cursor-pointer"
-                      >
-                        Select All
-                      </button>
-                      <span className="text-[#CBD5E1]">•</span>
-                      <button
-                        type="button"
-                        onClick={handleClearSimActions}
-                        className="font-semibold text-[#64748B] hover:text-[#0F172A] cursor-pointer"
-                      >
-                        Reset (*)
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="max-h-56 overflow-y-auto border border-[#CBD5E1] rounded-lg bg-[#F8FAFC] p-1.5 space-y-1 divide-y divide-[#E2E8F0]/60">
-                    {STANDARD_PERMISSIONS.map((p) => {
-                      const isSelected = selectedSimActions.includes(p.code);
-                      const IconComponent = p.icon;
-                      return (
-                        <div
-                          key={p.code}
-                          onClick={() => toggleSimAction(p.code)}
-                          className={`pt-1 first:pt-0 flex items-center justify-between p-1.5 rounded-md cursor-pointer transition-colors ${
-                            isSelected ? 'bg-white border border-[#BFDBFE] shadow-2xs' : 'hover:bg-white/80 border border-transparent'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2 min-w-0 pr-2">
-                            {isSelected ? (
-                              <CheckSquare className="w-4 h-4 text-[#2563EB] shrink-0" />
-                            ) : (
-                              <Square className="w-4 h-4 text-[#94A3B8] shrink-0" />
-                            )}
-                            <IconComponent className={`w-3.5 h-3.5 shrink-0 ${p.sensitive ? 'text-[#DC2626]' : 'text-[#2563EB]'}`} />
-                            <div className="min-w-0">
-                              <span className="text-xs font-semibold text-[#0F172A] block truncate leading-tight">{p.name}</span>
-                              <span className="font-mono text-[10px] text-[#64748B] block truncate leading-tight">{p.code}</span>
-                            </div>
-                          </div>
-                          {p.sensitive && (
-                            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] shrink-0">
-                              Sensitive
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  disabled={isSimulating || selectedSimActions.length === 0}
-                  onClick={handleRunDiagnostic}
-                  className="w-full py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-xs rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <PlayCircle className="w-4 h-4" />
-                  <span>
-                    {isSimulating
-                      ? `Evaluating ${selectedSimActions.length} Permission${selectedSimActions.length > 1 ? 's' : ''}...`
-                      : `Run 4-Layer Authorization Check (${selectedSimActions.length})`}
-                  </span>
-                </button>
-              </div>
-            </Card>
-          </div>
-
-          {/* Diagnostic Trace Output Right Column */}
-          <div className="lg:col-span-7 space-y-4">
-            <Card
-              title="Resolution Trace &amp; Layer Pipeline"
-              subtitle="Step-by-step verification through Security Blockers, Access Boundaries, Ceilings, and Scope Resolution."
-            >
-              {simResultsList.length > 0 ? (
-                (() => {
-                  const inspectedResult =
-                    simResultsList.find((r) => r.permission_code === inspectedAction) || simResultsList[0];
-                  const totalCount = simResultsList.length;
-                  const allowedCount = simResultsList.filter((r) => r.allowed).length;
-                  const deniedCount = totalCount - allowedCount;
-
-                  return (
-                    <div className="space-y-5">
-                      {/* Multi-Permission Summary Header */}
-                      <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex flex-wrap items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-[#0F172A]">
-                            Evaluated {totalCount} Permission{totalCount > 1 ? 's' : ''}:
-                          </span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0]">
-                            {allowedCount} ALLOWED
-                          </span>
-                          {deniedCount > 0 && (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]">
-                              {deniedCount} DENIED
-                            </span>
-                          )}
-                        </div>
-
-                        <span className="text-[10px] text-[#64748B]">Click any chip below to inspect trace</span>
-                      </div>
-
-                      {/* Evaluated Permission Chips / Selector Ribbon */}
-                      <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-1 bg-white border border-[#E2E8F0] rounded-lg">
-                        {simResultsList.map((res) => {
-                          const isActive = inspectedResult.permission_code === res.permission_code;
-                          return (
-                            <button
-                              key={res.permission_code}
-                              type="button"
-                              onClick={() => setInspectedAction(res.permission_code)}
-                              className={`px-2.5 py-1 rounded-md text-xs font-mono font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
-                                isActive
-                                  ? 'bg-[#0F172A] text-white shadow-xs'
-                                  : res.allowed
-                                  ? 'bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0] hover:bg-[#DCFCE7]'
-                                  : 'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] hover:bg-[#FEE2E2]'
-                              }`}
-                            >
-                              {res.allowed ? (
-                                <CheckCircle2 className={`w-3.5 h-3.5 ${isActive ? 'text-[#4ADE80]' : 'text-[#16A34A]'}`} />
-                              ) : (
-                                <XCircle className={`w-3.5 h-3.5 ${isActive ? 'text-[#F87171]' : 'text-[#DC2626]'}`} />
-                              )}
-                              <span>{res.permission_code}</span>
-                              <span
-                                className={`text-[9px] px-1 py-0.2 rounded font-bold ${
-                                  isActive
-                                    ? res.allowed
-                                      ? 'bg-[#15803D] text-white'
-                                      : 'bg-[#DC2626] text-white'
-                                    : res.allowed
-                                    ? 'bg-[#DCFCE7] text-[#15803D]'
-                                    : 'bg-[#FEE2E2] text-[#DC2626]'
-                                }`}
-                              >
-                                {res.verdict}
-                              </span>
-                            </button>
-                          );
-                        })}
-                      </div>
-
-                      {/* Active Inspected Decision Banner */}
-                      <div
-                        className={`p-4 rounded-xl border flex items-center justify-between ${
-                          inspectedResult.allowed
-                            ? 'bg-[#F0FDF4] border-[#BBF7D0] text-[#15803D]'
-                            : 'bg-[#FEF2F2] border-[#FECACA] text-[#DC2626]'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          {inspectedResult.allowed ? (
-                            <CheckCircle2 className="w-8 h-8 text-[#16A34A] shrink-0" />
-                          ) : (
-                            <XCircle className="w-8 h-8 text-[#DC2626] shrink-0" />
-                          )}
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-display font-bold text-lg">
-                                FINAL DECISION: {inspectedResult.verdict}
-                              </span>
-                              <span className="font-mono text-[11px] px-2 py-0.5 rounded bg-white/80 border border-current">
-                                {inspectedResult.permission_code}
-                              </span>
-                            </div>
-                            <p className="text-xs mt-0.5 opacity-90">
-                              {inspectedResult.denial_message || 'Authorization confirmed. Operation permitted.'}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="text-right font-mono text-[10px] text-[#64748B]">
-                          <span>{inspectedResult.request_id}</span>
-                        </div>
-                      </div>
-
-                      {/* 4-Layer Sequential Pipeline Steps */}
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
-                            Evaluation Breakdown: <span className="font-mono text-[#2563EB]">{inspectedResult.permission_code}</span>
-                          </h4>
-                          <span className="text-[11px] text-[#64748B] font-mono">
-                            Scope: {inspectedResult.matched_rule_scope || 'N/A'}
-                          </span>
-                        </div>
-
-                        {inspectedResult.steps.map((step, idx) => (
-                          <div
-                            key={idx}
-                            className={`p-3 rounded-lg border text-xs flex items-start justify-between transition-all ${
-                              step.passed ? 'bg-[#F8FAFC] border-[#E2E8F0]' : 'bg-[#FEF2F2] border-[#FECACA]'
-                            }`}
-                          >
-                            <div className="flex items-start gap-2.5">
-                              <span
-                                className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 ${
-                                  step.passed ? 'bg-[#DCFCE7] text-[#15803D]' : 'bg-[#FEE2E2] text-[#DC2626]'
-                                }`}
-                              >
-                                {idx + 1}
-                              </span>
-                              <div>
-                                <span className="font-bold text-[#0F172A] block">{step.name}</span>
-                                <span className="text-[11px] text-[#64748B] mt-0.5 block">{step.detail}</span>
-                              </div>
-                            </div>
-
-                            <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
-                                step.passed
-                                  ? 'bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0]'
-                                  : 'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]'
-                              }`}
-                            >
-                              {step.status}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Internal Denial Details */}
-                      {inspectedResult.denial_reason_code && (
-                        <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs space-y-1">
-                          <div className="flex items-center justify-between text-[11px]">
-                            <span className="font-bold text-[#64748B]">Internal Denial Code:</span>
-                            <span className="font-mono font-bold text-[#DC2626]">{inspectedResult.denial_reason_code}</span>
-                          </div>
-                          <div className="flex items-center justify-between text-[11px]">
-                            <span className="font-bold text-[#64748B]">Stopping Layer:</span>
-                            <span className="font-mono text-[#0F172A]">{inspectedResult.matched_rule_scope || 'SECURITY'}</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })()
-              ) : (
-                <div className="py-16 text-center text-xs text-[#94A3B8]">
-                  <Sliders className="w-8 h-8 mx-auto text-[#CBD5E1] mb-2" />
-                  <span>
-                    Select one or more permissions on the left and click <strong>"Run 4-Layer Authorization Check"</strong> to inspect evaluation steps.
-                  </span>
+                  <select
+                    value={simPartner}
+                    onChange={(e) => setSimPartner(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-medium text-[#0F172A] cursor-pointer"
+                  >
+                    {partners.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name} ({p.partner_type})
+                      </option>
+                    ))}
+                  </select>
                 </div>
               )}
-            </Card>
-          </div>
+
+              {/* Target Tender Context */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Tender Workspace Context:
+                </label>
+                <select
+                  value={simTender}
+                  onChange={(e) => setSimTender(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-medium text-[#0F172A] cursor-pointer"
+                >
+                  <option value="">-- Global / No Tender --</option>
+                  {tenders.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      [{t.id}] {t.title.substring(0, 42)}...
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Target Resource ID (Optional) */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Specific Resource / Document ID (Optional):
+                </label>
+                <input
+                  type="text"
+                  value={simResource}
+                  onChange={(e) => setSimResource(e.target.value)}
+                  placeholder="e.g. DOC-01 or DOC-CONFIDENTIAL-01"
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-mono text-[#0F172A]"
+                />
+                <span className="text-[10px] text-[#94A3B8] block mt-1">
+                  Leave blank to test general tender-level access.
+                </span>
+              </div>
+
+              {/* Requested Action Permissions (Multi-Select) */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="block font-semibold text-[#0F172A] text-xs">
+                    Target Permissions to Evaluate:
+                  </label>
+                  <div className="flex items-center gap-1.5 text-[11px]">
+                    <span className="font-bold px-1.5 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] text-[10px]">
+                      {selectedSimActions.length} Selected
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleSelectAllSimActions}
+                      className="font-semibold text-[#2563EB] hover:underline cursor-pointer"
+                    >
+                      Select All
+                    </button>
+                    <span className="text-[#CBD5E1]">•</span>
+                    <button
+                      type="button"
+                      onClick={handleClearSimActions}
+                      className="font-semibold text-[#64748B] hover:text-[#0F172A] cursor-pointer"
+                    >
+                      Reset (*)
+                    </button>
+                  </div>
+                </div>
+
+                <div className="max-h-64 overflow-y-auto border border-[#CBD5E1] rounded-lg bg-[#F8FAFC] p-1.5 space-y-1 divide-y divide-[#E2E8F0]/60">
+                  {STANDARD_PERMISSIONS.map((p) => {
+                    const isSelected = selectedSimActions.includes(p.code);
+                    const IconComponent = p.icon;
+                    return (
+                      <div
+                        key={p.code}
+                        onClick={() => toggleSimAction(p.code)}
+                        className={`pt-1 first:pt-0 flex items-center justify-between p-1.5 rounded-md cursor-pointer transition-colors ${
+                          isSelected ? 'bg-white border border-[#BFDBFE] shadow-2xs' : 'hover:bg-white/80 border border-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0 pr-2">
+                          {isSelected ? (
+                            <CheckSquare className="w-4 h-4 text-[#2563EB] shrink-0" />
+                          ) : (
+                            <Square className="w-4 h-4 text-[#94A3B8] shrink-0" />
+                          )}
+                          <IconComponent className={`w-3.5 h-3.5 shrink-0 ${p.sensitive ? 'text-[#DC2626]' : 'text-[#2563EB]'}`} />
+                          <div className="min-w-0">
+                            <span className="text-xs font-semibold text-[#0F172A] block truncate leading-tight">{p.name}</span>
+                            <span className="font-mono text-[10px] text-[#64748B] block truncate leading-tight">{p.code}</span>
+                          </div>
+                        </div>
+                        {p.sensitive && (
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] shrink-0">
+                            Sensitive
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                disabled={isSimulating || selectedSimActions.length === 0}
+                onClick={handleRunDiagnostic}
+                className="w-full py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-xs rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <PlayCircle className="w-4 h-4" />
+                <span>
+                  {isSimulating
+                    ? `Evaluating ${selectedSimActions.length} Permission${selectedSimActions.length > 1 ? 's' : ''}...`
+                    : `Run 4-Layer Authorization Check (${selectedSimActions.length})`}
+                </span>
+              </button>
+            </div>
+          </Card>
         </div>
       )}
 
