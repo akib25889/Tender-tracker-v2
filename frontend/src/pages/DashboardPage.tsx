@@ -160,6 +160,14 @@ export const DashboardPage: React.FC = () => {
     setCurrentPage(1);
   };
 
+  const handleKpiCardClick = (mode: UrgentFilterMode) => {
+    handleFilterModeChange(mode);
+    const element = document.getElementById('intervention-queue-section');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const handleSearchChange = (val: string) => {
     setSearchQuery(val);
     setCurrentPage(1);
@@ -229,16 +237,25 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 4 Operational KPI Ribbons (Zero Money) */}
+      {/* 4 Operational KPI Ribbons (Interactive Click-to-View) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: Active Opportunities */}
-        <div className="bg-white p-4 rounded-lg border border-[#E2E8F0] shadow-sm flex items-center justify-between">
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => handleKpiCardClick('ALL_TENDERS')}
+          onKeyDown={(e) => e.key === 'Enter' && handleKpiCardClick('ALL_TENDERS')}
+          className={`bg-white dark:bg-slate-900 p-4 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#2563EB] hover:shadow-md transition-all group ${
+            filterMode === 'ALL_TENDERS' ? 'ring-2 ring-[#2563EB] border-[#2563EB]' : ''
+          }`}
+          title="Click to view all live proposals in table"
+        >
           <div>
-            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+            <span className="text-[11px] font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
               Active Opportunities
             </span>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="font-display text-2xl font-bold text-[#0F172A]">
+              <span className="font-display text-2xl font-bold text-[#0F172A] dark:text-white">
                 {activeTenders.length}
               </span>
               <span className="text-xs text-[#2563EB] font-semibold">
@@ -248,20 +265,35 @@ export const DashboardPage: React.FC = () => {
             <span className="text-[11px] text-[#16A34A] font-medium mt-0.5 block">
               {tenders.filter((t) => t.stage === 'PREPARATION' || t.stage === 'INTERNAL_REVIEW').length} in active drafting
             </span>
-            <Link
-              to="/tenders?stage=DISCOVERED"
-              className="text-[10px] text-[#2563EB] font-bold hover:underline inline-flex items-center gap-0.5 mt-1"
-            >
-              <span>View {tenders.filter((t) => t.stage === 'DISCOVERED').length} Discovered Bids →</span>
-            </Link>
+            <div className="flex items-center gap-2 mt-1">
+              <Link
+                to="/tenders?stage=DISCOVERED"
+                onClick={(e) => e.stopPropagation()}
+                className="text-[10px] text-[#2563EB] font-bold hover:underline inline-flex items-center gap-0.5"
+              >
+                <span>View {tenders.filter((t) => t.stage === 'DISCOVERED').length} Discovered →</span>
+              </Link>
+              <span className="text-[10px] text-[#2563EB] opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
+                • View list ↓
+              </span>
+            </div>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
             <FolderGit2 className="w-5 h-5" />
           </div>
         </div>
 
         {/* KPI 2: Closing This Week */}
-        <div className="bg-white p-4 rounded-lg border border-[#E2E8F0] shadow-sm flex items-center justify-between">
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => handleKpiCardClick('CLOSING_SOON')}
+          onKeyDown={(e) => e.key === 'Enter' && handleKpiCardClick('CLOSING_SOON')}
+          className={`bg-white dark:bg-slate-900 p-4 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#DC2626] hover:shadow-md transition-all group ${
+            filterMode === 'CLOSING_SOON' ? 'ring-2 ring-[#DC2626] border-[#DC2626]' : ''
+          }`}
+          title="Click to view closing bids in table"
+        >
           <div>
             <span className="text-[11px] font-semibold text-[#DC2626] uppercase tracking-wider block">
               Closing This Week
@@ -270,57 +302,84 @@ export const DashboardPage: React.FC = () => {
               <span className="font-display text-2xl font-bold text-[#DC2626]">
                 {dueThisWeek.length}
               </span>
-              <span className="text-xs text-[#64748B]">Bids</span>
+              <span className="text-xs text-[#64748B] dark:text-slate-400">Bids</span>
             </div>
             <span className="text-[11px] text-[#DC2626] font-medium mt-0.5 block">
               {dueThisWeek.filter((t) => t.daysRemaining <= 2).length} bids &lt; 48h window
             </span>
+            <span className="text-[10px] text-[#DC2626] font-semibold group-hover:underline inline-flex items-center gap-0.5 mt-1">
+              View closing bids ↓
+            </span>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-[#FEF2F2] text-[#DC2626] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-[#FEF2F2] text-[#DC2626] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
             <Clock className="w-5 h-5" />
           </div>
         </div>
 
         {/* KPI 3: Missing Documents & Blockers */}
-        <div className="bg-white p-4 rounded-lg border border-[#E2E8F0] shadow-sm flex items-center justify-between">
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => handleKpiCardClick('MISSING_DOCS')}
+          onKeyDown={(e) => e.key === 'Enter' && handleKpiCardClick('MISSING_DOCS')}
+          className={`bg-white dark:bg-slate-900 p-4 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#EA580C] hover:shadow-md transition-all group ${
+            filterMode === 'MISSING_DOCS' || filterMode === 'BLOCKERS' ? 'ring-2 ring-[#EA580C] border-[#EA580C]' : ''
+          }`}
+          title="Click to view tenders with missing documents and blockers"
+        >
           <div>
-            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+            <span className="text-[11px] font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
               Missing Docs &amp; Blockers
             </span>
             <div className="flex items-baseline gap-2 mt-1">
               <span className="font-display text-2xl font-bold text-[#EA580C]">
                 {totalMissingDocs}
               </span>
-              <span className="text-xs text-[#64748B]">Pending Files</span>
+              <span className="text-xs text-[#64748B] dark:text-slate-400">Pending Files</span>
             </div>
-            <span className="text-[11px] text-[#64748B] font-medium mt-0.5 block">
+            <span className="text-[11px] text-[#64748B] dark:text-slate-400 font-medium mt-0.5 block">
               Solvency &amp; Statutory gates
             </span>
+            <span className="text-[10px] text-[#EA580C] font-semibold group-hover:underline inline-flex items-center gap-0.5 mt-1">
+              View missing docs ↓
+            </span>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
             <AlertTriangle className="w-5 h-5" />
           </div>
         </div>
 
         {/* KPI 4: Fleet Readiness Score */}
-        <div className="bg-white p-4 rounded-lg border border-[#E2E8F0] shadow-sm flex items-center justify-between">
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => handleKpiCardClick('LOW_READINESS')}
+          onKeyDown={(e) => e.key === 'Enter' && handleKpiCardClick('LOW_READINESS')}
+          className={`bg-white dark:bg-slate-900 p-4 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#2563EB] hover:shadow-md transition-all group ${
+            filterMode === 'LOW_READINESS' ? 'ring-2 ring-[#2563EB] border-[#2563EB]' : ''
+          }`}
+          title="Click to view tenders with low readiness in table"
+        >
           <div>
-            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+            <span className="text-[11px] font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
               Submission Readiness
             </span>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="font-display text-2xl font-bold text-[#0F172A]">
+              <span className="font-display text-2xl font-bold text-[#0F172A] dark:text-white">
                 {avgReadiness}%
               </span>
-              <span className="font-mono text-[10px] text-[#64748B] uppercase font-semibold">
+              <span className="font-mono text-[10px] text-[#64748B] dark:text-slate-400 uppercase font-semibold">
                 Avg Health
               </span>
             </div>
             <div className="w-24 mt-1.5">
               <ReadinessBar score={avgReadiness} showLabel={false} />
             </div>
+            <span className="text-[10px] text-[#2563EB] font-semibold group-hover:underline inline-flex items-center gap-0.5 mt-1">
+              View low readiness ↓
+            </span>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-[#F1F5F9] text-[#0F172A] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-[#F1F5F9] text-[#0F172A] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
             <Activity className="w-5 h-5" />
           </div>
         </div>
@@ -339,7 +398,7 @@ export const DashboardPage: React.FC = () => {
               <Link
                 key={s.stage}
                 to={`/tenders?stage=${s.stage}`}
-                className="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] space-y-1 hover:border-[#2563EB] hover:bg-[#EFF6FF]/50 transition-all block group"
+                className="p-3 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] space-y-1 hover:border-[#2563EB] hover:bg-[#EFF6FF]/50 transition-all block group"
                 title={`Click to show all ${s.label} tenders`}
               >
                 <div className="flex items-center justify-between">
@@ -360,6 +419,7 @@ export const DashboardPage: React.FC = () => {
       </Card>
 
       {/* 10-Second Rule Attention Queue (Zero Money) */}
+      <div id="intervention-queue-section" className="scroll-mt-6">
       <Card
         title="Tenders Requiring Immediate Intervention"
         subtitle="Ranked by deadline proximity, missing statutory credentials, and compliance blockers"
@@ -441,7 +501,6 @@ export const DashboardPage: React.FC = () => {
         }
       >
         {/* Interactive Filter Toolbar */}
-        <div className="flex flex-wrap items-center justify-between gap-2.5 px-4 py-2.5 bg-[#F8FAFC] dark:bg-[#0F172A] border-b border-[#F1F5F9] dark:border-slate-800 -mt-5 -mx-5 mb-5 text-xs">
         <div className="flex flex-wrap items-center justify-between gap-2.5 px-5 py-2.5 bg-[#F8FAFC] dark:bg-[#0F172A] border-b border-[#CBD5E1] dark:border-slate-700 -mt-5 -mx-5 mb-0 text-xs">
           <div className="flex flex-wrap items-center gap-2 flex-1 min-w-[280px]">
             <div className="flex items-center gap-1 text-[#64748B] dark:text-slate-400 shrink-0 font-medium">
@@ -457,7 +516,6 @@ export const DashboardPage: React.FC = () => {
                 placeholder="Search tenders..."
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full pl-8 pr-7 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white placeholder-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                 className="w-full pl-8 pr-7 py-1 text-xs rounded-md border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white placeholder-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
               />
               {searchQuery && (
@@ -475,7 +533,6 @@ export const DashboardPage: React.FC = () => {
             <select
               value={selectedStage}
               onChange={(e) => handleStageChange(e.target.value)}
-              className="px-2 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
               className="px-2 py-1 text-xs rounded-md border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
             >
               <option value="ALL">All Stages</option>
@@ -490,7 +547,6 @@ export const DashboardPage: React.FC = () => {
             <select
               value={selectedCategory}
               onChange={(e) => handleCategoryChange(e.target.value)}
-              className="px-2 py-1 text-xs rounded-md border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
               className="px-2 py-1 text-xs rounded-md border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
             >
               <option value="ALL">All Categories</option>
@@ -538,14 +594,11 @@ export const DashboardPage: React.FC = () => {
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="divide-y divide-[#E2E8F0] dark:divide-slate-700 -mx-5 -my-5">
           <div>
             <div className="divide-y divide-[#E2E8F0] dark:divide-slate-700 -mx-5">
               {paginatedTenders.map((tender) => (
                 <div
                   key={tender.id}
-                  className="p-4 hover:bg-[#F8FAFC] dark:hover:bg-slate-800/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 group"
                   className="px-5 py-4 hover:bg-[#F8FAFC] dark:hover:bg-slate-800/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 group"
                 >
                   {/* Left Details */}
@@ -619,7 +672,6 @@ export const DashboardPage: React.FC = () => {
 
             {/* Pagination Controls Toolbar */}
             {urgentQueue.length > 0 && (
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-[#CBD5E1] dark:border-slate-700 text-xs">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-3 -mx-5 -mb-5 bg-[#F8FAFC]/50 dark:bg-[#0F172A] border-t border-[#CBD5E1] dark:border-slate-700 text-xs">
                 {/* Page Summary & Items Per Page */}
                 <div className="flex items-center gap-3 text-[#64748B] dark:text-slate-400">
@@ -692,6 +744,7 @@ export const DashboardPage: React.FC = () => {
           </div>
         )}
       </Card>
+      </div>
     </div>
   );
 };
