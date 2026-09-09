@@ -54,7 +54,8 @@ Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Kn
 
 | Screen ID | Screen Name | Route | Module |
 | :--- | :--- | :--- | :--- |
-| `screen:login` | Login — Internal & Partner Portal | `/` or `/login` | `auth` |
+| `screen:login` | Login — Internal Bid Team | `/` or `/login` | `auth` |
+| `screen:jv_login` | Login — JV / Partner Portal Direct | `/jv` or `/login/jv` | `auth` |
 | `screen:dashboard` | Tender Command Center Dashboard | `/dashboard` | `dashboard` |
 | `screen:tender_registry` | Tender Registry & Data Entry Console | `/registry` | `registry` |
 | `screen:tender_summary` | Formal 3-Page Tender Document Summary | `/registry/summary/{id}` | `registry` |
