@@ -348,6 +348,13 @@ export const TenderListPage: React.FC = () => {
                     )}
                   </div>
 
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[#64748B] font-medium">Type:</span>
+                    <span className="inline-flex items-center font-semibold text-[#4338CA] bg-[#EEF2FF] px-1.5 py-0.5 rounded border border-[#C7D2FE] text-[11px]">
+                      {tender.tenderType || tender.summary?.tenderType || 'Request for Proposals (RFP)'}
+                    </span>
+                  </div>
+
                   <div className="flex items-center gap-1.5 font-mono">
                     <span className="text-[#64748B] font-sans font-medium text-xs">Value:</span>
                     <span className="font-bold text-[#0F172A]">

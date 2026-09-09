@@ -608,10 +608,15 @@ export const DashboardPage: React.FC = () => {
                       {tender.title}
                     </Link>
 
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#64748B] dark:text-slate-400">
-                      <span>{tender.organization}</span>
-                      <span>•</span>
-                      <span>{tender.country}</span>
+                    <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1 text-xs text-[#64748B] dark:text-slate-400">
+                      {tender.organization && <span>{tender.organization}</span>}
+                      {tender.organization && tender.country && <span>•</span>}
+                      {tender.country && <span>{tender.country}</span>}
+                      {(tender.organization || tender.country) && <span>•</span>}
+                      <span className="inline-flex items-center gap-1 font-medium text-[#4338CA] dark:text-indigo-300 bg-[#EEF2FF] dark:bg-indigo-950/60 px-1.5 py-0.5 rounded border border-[#C7D2FE] dark:border-indigo-800 text-[11px]">
+                        <span className="text-[#6366F1] dark:text-indigo-400 font-bold">Type:</span>
+                        <span>{tender.tenderType || tender.summary?.tenderType || 'Request for Proposals (RFP)'}</span>
+                      </span>
                       <span>•</span>
                       <span className="font-semibold text-[#2563EB] dark:text-blue-400">
                         {tender.category}
