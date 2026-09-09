@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/dashboard" replace />,
+        element: <Navigate to="/login" replace />,
       },
       {
         path: 'dashboard',
@@ -204,4 +204,3 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
-
