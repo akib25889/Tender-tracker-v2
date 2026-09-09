@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
@@ -24,6 +24,8 @@ import {
   Award,
   FileText,
   UserCheck,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 const EMPLOYMENT_TYPE_CONFIG: Record<
@@ -111,6 +113,17 @@ export const UserProfilePage: React.FC = () => {
         task.status !== 'DONE'
     )
   );
+
+  // Track Record pagination / progressive loading (initial 3)
+  const [visibleAssignmentsCount, setVisibleAssignmentsCount] = useState(3);
+
+  useEffect(() => {
+    setVisibleAssignmentsCount(3);
+  }, [targetUser.id]);
+
+  const allAssignments = targetUser.pastAssignments || [];
+  const displayedAssignments = allAssignments.slice(0, visibleAssignmentsCount);
+  const hasMoreAssignments = allAssignments.length > visibleAssignmentsCount;
 
   // Tenders associated with user (via leadOwner, tasks, or activeTenderRoles map)
   const activeTenders = tenders.filter((t) => {
@@ -533,10 +546,17 @@ export const UserProfilePage: React.FC = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-bold text-[#0F172A] tracking-tight flex items-center gap-2">
-              <Briefcase className="w-4 h-4 text-[#2563EB]" />
-              <span>Professional Track Record &amp; Past Project Assignments</span>
-            </h3>
+            <div className="flex items-center gap-2.5">
+              <h3 className="text-base font-bold text-[#0F172A] tracking-tight flex items-center gap-2">
+                <Briefcase className="w-4 h-4 text-[#2563EB]" />
+                <span>Professional Track Record &amp; Past Project Assignments</span>
+              </h3>
+              {allAssignments.length > 0 && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
+                  {allAssignments.length} Recorded
+                </span>
+              )}
+            </div>
             <p className="text-xs text-[#64748B]">
               Verified project history for Form Tech-1 CV generation, past performance scoring, and procuring authority qualification.
             </p>
@@ -545,7 +565,7 @@ export const UserProfilePage: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsAddAssignmentModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-xs cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add Project Assignment</span>
@@ -553,13 +573,13 @@ export const UserProfilePage: React.FC = () => {
         </div>
 
         {/* Assignments Ledger */}
-        {(!targetUser.pastAssignments || targetUser.pastAssignments.length === 0) ? (
+        {allAssignments.length === 0 ? (
           <Card className="py-8 text-center text-[#64748B] text-xs">
             No past project assignments recorded. Click "Add Project Assignment" to build this specialist's tender track record.
           </Card>
         ) : (
           <div className="space-y-3">
-            {targetUser.pastAssignments.map((assignment, idx) => (
+            {displayedAssignments.map((assignment, idx) => (
               <Card
                 key={assignment.id || idx}
                 className="p-5 border border-[#E2E8F0] hover:border-[#CBD5E1] transition-colors"
@@ -637,7 +657,7 @@ export const UserProfilePage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => deletePastAssignment(targetUser.id, assignment.id)}
-                    className="p-1.5 text-[#94A3B8] hover:text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg transition-colors self-start shrink-0"
+                    className="p-1.5 text-[#94A3B8] hover:text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg transition-colors self-start shrink-0 cursor-pointer"
                     title="Remove assignment"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -645,6 +665,49 @@ export const UserProfilePage: React.FC = () => {
                 </div>
               </Card>
             ))}
+
+            {/* Load More & Pagination Controls */}
+            {hasMoreAssignments && (
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
+                <div className="text-xs text-[#64748B]">
+                  Showing <strong className="text-[#0F172A]">{displayedAssignments.length}</strong> of{' '}
+                  <strong className="text-[#0F172A]">{allAssignments.length}</strong> project assignments (Initial 3 loaded)
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setVisibleAssignmentsCount((prev) => prev + 3)}
+                    className="px-3.5 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F1F5F9] rounded-lg text-xs font-semibold text-[#0F172A] flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                  >
+                    <ChevronDown className="w-3.5 h-3.5 text-[#2563EB]" />
+                    <span>Load More (+3)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setVisibleAssignmentsCount(allAssignments.length)}
+                    className="px-3 py-1.5 text-xs text-[#2563EB] hover:underline font-semibold cursor-pointer"
+                  >
+                    Show All ({allAssignments.length})
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {!hasMoreAssignments && allAssignments.length > 3 && (
+              <div className="pt-2 flex items-center justify-between text-xs text-[#64748B] bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
+                <span>
+                  Showing all <strong className="text-[#0F172A]">{allAssignments.length}</strong> project assignments
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setVisibleAssignmentsCount(3)}
+                  className="text-xs text-[#64748B] hover:text-[#0F172A] hover:underline font-semibold cursor-pointer flex items-center gap-1"
+                >
+                  <ChevronUp className="w-3.5 h-3.5 text-[#64748B]" />
+                  <span>Collapse to Initial 3</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
