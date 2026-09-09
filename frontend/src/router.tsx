@@ -40,6 +40,14 @@ export const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
+    path: '/jv',
+    element: <LoginPage initialMode="PARTNER" />,
+  },
+  {
+    path: '/login/jv',
+    element: <LoginPage initialMode="PARTNER" />,
+  },
+  {
     path: '/shared/:token',
     element: <SharedDocumentPortalPage />,
   },

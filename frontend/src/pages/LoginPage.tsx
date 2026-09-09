@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ShieldCheck, Lock, User, ArrowRight, Building2, KeyRound } from 'lucide-react';
 
-export const LoginPage: React.FC = () => {
+interface LoginPageProps {
+  initialMode?: 'INTERNAL' | 'PARTNER';
+}
+
+export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
   const navigate = useNavigate();
-  const [authMode, setAuthMode] = useState<'INTERNAL' | 'PARTNER'>('INTERNAL');
+  const location = useLocation();
+  const defaultMode = initialMode || (location.pathname === '/jv' ? 'PARTNER' : 'INTERNAL');
+  const [authMode, setAuthMode] = useState<'INTERNAL' | 'PARTNER'>(defaultMode);
 
   // Internal Form State
   const [email, setEmail] = useState('s.jenkins@tendertracker.enterprise');
