@@ -9,7 +9,8 @@ interface LoginPageProps {
 export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const defaultMode = initialMode || (location.pathname === '/jv' ? 'PARTNER' : 'INTERNAL');
+  const isJvOnly = initialMode === 'PARTNER' || location.pathname === '/jv' || location.pathname === '/login/jv';
+  const defaultMode = isJvOnly ? 'PARTNER' : (initialMode || 'INTERNAL');
   const [authMode, setAuthMode] = useState<'INTERNAL' | 'PARTNER'>(defaultMode);
 
   // Internal Form State
@@ -48,48 +49,66 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
       <div className="w-full max-w-md bg-white rounded-xl shadow-2xl border border-[#334155] overflow-hidden">
         {/* Header */}
         <div className="p-6 bg-[#1E293B] text-white border-b border-[#334155] text-center space-y-1">
-          <div className="w-10 h-10 rounded-lg bg-[#2563EB] text-white flex items-center justify-center mx-auto mb-2 shadow-md">
-            <ShieldCheck className="w-6 h-6" />
+          <div
+            className={`w-10 h-10 rounded-lg text-white flex items-center justify-center mx-auto mb-2 shadow-md ${
+              isJvOnly ? 'bg-[#059669]' : 'bg-[#2563EB]'
+            }`}
+          >
+            {isJvOnly ? <Building2 className="w-6 h-6" /> : <ShieldCheck className="w-6 h-6" />}
           </div>
           <h1 className="font-display text-lg font-bold tracking-tight">
-            TenderTracker Command Center
+            {isJvOnly ? 'JV & Consortium Partner Portal' : 'TenderTracker Command Center'}
           </h1>
           <p className="text-xs text-[#94A3B8]">
-            Enterprise Multilateral Procurement &amp; Collaborative Vault
+            {isJvOnly
+              ? 'Cryptographic Token Gateway & Multi-Party Document Vault'
+              : 'Enterprise Multilateral Procurement & Collaborative Vault'}
           </p>
         </div>
 
-        {/* Auth Mode Toggle Tabs */}
-        <div className="grid grid-cols-2 bg-[#F1F5F9] p-1 border-b border-[#E2E8F0] text-xs font-semibold">
-          <button
-            type="button"
-            onClick={() => setAuthMode('INTERNAL')}
-            className={`py-2 text-center rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-              authMode === 'INTERNAL'
-                ? 'bg-white text-[#0F172A] shadow-xs'
-                : 'text-[#64748B] hover:text-[#0F172A]'
-            }`}
-          >
-            <User className="w-3.5 h-3.5 text-[#2563EB]" />
-            <span>Internal Bid Team</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setAuthMode('PARTNER')}
-            className={`py-2 text-center rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-              authMode === 'PARTNER'
-                ? 'bg-white text-[#0F172A] shadow-xs'
-                : 'text-[#64748B] hover:text-[#0F172A]'
-            }`}
-          >
-            <Building2 className="w-3.5 h-3.5 text-[#10B981]" />
-            <span>JV / Partner Portal</span>
-          </button>
-        </div>
+        {/* Subheader / Mode Switcher */}
+        {isJvOnly ? (
+          <div className="bg-[#ECFDF5] px-5 py-2.5 border-b border-[#A7F3D0] flex items-center justify-between text-xs font-semibold text-[#065F46]">
+            <div className="flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-[#059669]" />
+              <span>External Consortium &amp; JV Portal Access</span>
+            </div>
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-white text-[#059669] border border-[#A7F3D0]">
+              Token Secured
+            </span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 bg-[#F1F5F9] p-1 border-b border-[#E2E8F0] text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setAuthMode('INTERNAL')}
+              className={`py-2 text-center rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                authMode === 'INTERNAL'
+                  ? 'bg-white text-[#0F172A] shadow-xs'
+                  : 'text-[#64748B] hover:text-[#0F172A]'
+              }`}
+            >
+              <User className="w-3.5 h-3.5 text-[#2563EB]" />
+              <span>Internal Bid Team</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setAuthMode('PARTNER')}
+              className={`py-2 text-center rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                authMode === 'PARTNER'
+                  ? 'bg-white text-[#0F172A] shadow-xs'
+                  : 'text-[#64748B] hover:text-[#0F172A]'
+              }`}
+            >
+              <Building2 className="w-3.5 h-3.5 text-[#10B981]" />
+              <span>JV / Partner Portal</span>
+            </button>
+          </div>
+        )}
 
         {/* Login Form */}
         <form onSubmit={handleLogin} className="p-6 space-y-4 text-xs">
-          {authMode === 'INTERNAL' ? (
+          {authMode === 'INTERNAL' && !isJvOnly ? (
             <>
               <div>
                 <label className="block font-semibold text-[#0F172A] mb-1">
@@ -134,7 +153,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
                       key={r.name}
                       type="button"
                       onClick={() => setEmail(r.email)}
-                      className={`w-full p-2 text-left rounded-lg border transition-colors flex items-center justify-between ${
+                      className={`w-full p-2 text-left rounded-lg border transition-colors flex items-center justify-between cursor-pointer ${
                         email === r.email
                           ? 'bg-[#EFF6FF] border-[#2563EB] text-[#2563EB] font-bold'
                           : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:bg-[#F1F5F9]'
@@ -204,7 +223,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
                       key={p.code}
                       type="button"
                       onClick={() => setPartnerToken(p.token)}
-                      className={`w-full p-2 text-left rounded-lg border transition-colors flex items-center justify-between ${
+                      className={`w-full p-2 text-left rounded-lg border transition-colors flex items-center justify-between cursor-pointer ${
                         partnerToken === p.token
                           ? 'bg-[#ECFDF5] border-[#10B981] text-[#065F46] font-bold'
                           : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:bg-[#F1F5F9]'
@@ -227,21 +246,30 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
           <div className="pt-2">
             <button
               type="submit"
-              className={`w-full py-2.5 text-white rounded-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-md ${
-                authMode === 'INTERNAL'
+              className={`w-full py-2.5 text-white rounded-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-md cursor-pointer ${
+                authMode === 'INTERNAL' && !isJvOnly
                   ? 'bg-[#0F172A] hover:bg-[#1E293B]'
                   : 'bg-[#059669] hover:bg-[#047857]'
               }`}
             >
-              <span>{authMode === 'INTERNAL' ? 'Access Command Center' : 'Access Partner Workspace'}</span>
+              <span>{authMode === 'INTERNAL' && !isJvOnly ? 'Access Command Center' : 'Access Partner Workspace'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </form>
 
-        <div className="p-3 bg-[#F8FAFC] border-t border-[#F1F5F9] text-center text-[11px] text-[#94A3B8]">
-          RBAC Protected • Local SSD Encrypted Vault • v2.5.0
-        </div>
+        {isJvOnly ? (
+          <div className="p-3 bg-[#F8FAFC] border-t border-[#E2E8F0] text-center text-[11px] text-[#64748B]">
+            Internal Bid Team Staff?{' '}
+            <a href="/login" className="text-[#2563EB] font-bold hover:underline">
+              Go to Staff Login →
+            </a>
+          </div>
+        ) : (
+          <div className="p-3 bg-[#F8FAFC] border-t border-[#F1F5F9] text-center text-[11px] text-[#94A3B8]">
+            RBAC Protected • Local SSD Encrypted Vault • v2.18.0
+          </div>
+        )}
       </div>
     </div>
   );
