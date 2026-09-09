@@ -240,18 +240,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
           </div>
         </form>
 
-        {isJvOnly ? (
+        {isJvOnly && (
           <div className="p-3 bg-[#F8FAFC] border-t border-[#E2E8F0] text-center text-[11px] text-[#64748B]">
             Internal Bid Team Staff?{' '}
             <a href="/login" className="text-[#2563EB] font-bold hover:underline">
               Go to Staff Login →
-            </a>
-          </div>
-        ) : (
-          <div className="p-3 bg-[#F8FAFC] border-t border-[#E2E8F0] text-center text-[11px] text-[#64748B]">
-            Joint Venture or Consortium Partner?{' '}
-            <a href="/jv" className="text-[#059669] font-bold hover:underline">
-              Access JV Partner Portal →
             </a>
           </div>
         )}
