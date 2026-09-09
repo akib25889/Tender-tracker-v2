@@ -121,10 +121,16 @@ export interface SubmissionProof {
 }
 
 export type UserRole =
+  | 'SUPER_ADMIN'
   | 'BUSINESS_HEAD'
   | 'EXECUTIVE_MANAGER'
   | 'SENIOR_MANAGER'
   | 'TENDER_ANALYST';
+
+export const isSuperAdminRole = (role?: string): boolean => {
+  if (!role) return false;
+  return role === 'SUPER_ADMIN' || role === 'BUSINESS_HEAD';
+};
 
 export interface PastProjectAssignment {
   id: string;

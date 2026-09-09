@@ -50,7 +50,8 @@ const EMPLOYMENT_TYPE_CONFIG: Record<
 };
 
 const ROLE_DISPLAY: Record<UserRole, string> = {
-  BUSINESS_HEAD: 'Business Head (Super Admin)',
+  SUPER_ADMIN: 'Super Administrator',
+  BUSINESS_HEAD: 'Business Head (Executive Lead)',
   EXECUTIVE_MANAGER: 'Executive Manager',
   SENIOR_MANAGER: 'Senior Manager',
   TENDER_ANALYST: 'Tender Analyst',

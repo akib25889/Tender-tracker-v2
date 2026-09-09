@@ -719,6 +719,23 @@ def seed_database(db: Session):
 
     if (
         not db.query(PermissionRule)
+        .filter(PermissionRule.subject_id == "SUPER_ADMIN")
+        .first()
+    ):
+        for code, _, _, _ in STANDARD_PERMISSIONS:
+            db.add(
+                PermissionRule(
+                    subject_type="ROLE",
+                    subject_id="SUPER_ADMIN",
+                    permission_code=code,
+                    effect="ALLOW",
+                    scope_type="ROLE",
+                    scope_id="SUPER_ADMIN",
+                )
+            )
+
+    if (
+        not db.query(PermissionRule)
         .filter(PermissionRule.subject_id == "TENDER_ANALYST")
         .first()
     ):

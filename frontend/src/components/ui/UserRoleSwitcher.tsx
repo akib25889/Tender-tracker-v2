@@ -8,6 +8,12 @@ const ROLE_BADGES: Record<
   UserRole,
   { label: string; bg: string; text: string; border: string }
 > = {
+  SUPER_ADMIN: {
+    label: 'Super Admin',
+    bg: 'bg-[#FEF2F2]',
+    text: 'text-[#DC2626]',
+    border: 'border-[#FECACA]',
+  },
   BUSINESS_HEAD: {
     label: 'Business Head',
     bg: 'bg-[#F3E8FF]',

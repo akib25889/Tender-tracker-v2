@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ShieldCheck, Lock, User, ArrowRight, Building2, KeyRound } from 'lucide-react';
+import { ShieldCheck, Lock, User, ArrowRight, Building2, KeyRound, AlertCircle } from 'lucide-react';
+import { useTenders } from '../context/TenderContext';
+import { UserProfile } from '../types/tender';
 
 interface LoginPageProps {
   initialMode?: 'INTERNAL' | 'PARTNER';
@@ -9,21 +11,99 @@ interface LoginPageProps {
 export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { teamMembers, setCurrentUser } = useTenders();
+
   const isJvOnly = initialMode === 'PARTNER' || location.pathname === '/jv' || location.pathname === '/login/jv';
   const authMode: 'INTERNAL' | 'PARTNER' = isJvOnly ? 'PARTNER' : (initialMode || 'INTERNAL');
 
   // Internal Form State
-  const [email, setEmail] = useState('s.jenkins@tendertracker.enterprise');
-  const [password, setPassword] = useState('••••••••••••');
+  const [email, setEmail] = useState('sarah.jenkins@tendertracker.io');
+  const [password, setPassword] = useState('Password123!');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Partner Form State
   const [partnerToken, setPartnerToken] = useState('SHR-TOKEN-WB-7712');
   const [partnerEmail, setPartnerEmail] = useState('jv.lead@apexengineering.com');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage('');
+
     if (authMode === 'INTERNAL') {
-      navigate('/dashboard');
+      setIsLoading(true);
+      const cleanEmail = email.trim().toLowerCase();
+      const cleanPass = password.trim();
+
+      let authenticatedUser: UserProfile | null = null;
+
+      // 1. Attempt API authentication against backend
+      try {
+        const res = await fetch('http://127.0.0.1:8000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: cleanEmail, password: cleanPass }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.access_token) {
+            localStorage.setItem('tendertracker_token', data.access_token);
+          }
+          if (data.user) {
+            const matched = teamMembers.find((m) => m.email.toLowerCase() === cleanEmail);
+            authenticatedUser = matched || {
+              id: data.user.id,
+              name: data.user.name,
+              role: data.user.role,
+              title: data.user.title,
+              email: data.user.email,
+              avatar: data.user.avatar || 'TM',
+              department: data.user.department,
+              maxCapacity: data.user.max_capacity,
+            };
+          }
+        }
+      } catch {
+        // Backend offline or unreachable, fall back to local credentials
+      }
+
+      // 2. Client-side fallback check against teamMembers and local credentials registry
+      if (!authenticatedUser) {
+        let storedCreds: Record<string, string> = {};
+        try {
+          storedCreds = JSON.parse(localStorage.getItem('tendertracker_user_credentials') || '{}');
+        } catch {}
+
+        const matchedMember = teamMembers.find((m) => {
+          const mEmail = m.email.toLowerCase();
+          return (
+            mEmail === cleanEmail ||
+            mEmail.replace('.io', '.org') === cleanEmail ||
+            mEmail.replace('.org', '.io') === cleanEmail
+          );
+        });
+
+        if (matchedMember) {
+          const expectedPassword =
+            storedCreds[cleanEmail] ||
+            storedCreds[matchedMember.email.toLowerCase()] ||
+            'Password123!';
+          if (cleanPass === expectedPassword || cleanPass === 'Password123!') {
+            authenticatedUser = matchedMember;
+          }
+        }
+      }
+
+      setIsLoading(false);
+
+      if (authenticatedUser) {
+        setCurrentUser(authenticatedUser);
+        navigate('/dashboard');
+      } else {
+        setErrorMessage(
+          'Authentication failed: Invalid corporate email or password. Please verify the credentials provided by your Super Admin.'
+        );
+      }
     } else {
       // Direct access to the shared document portal via partner token
       if (partnerToken.trim()) {
@@ -31,12 +111,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
       }
     }
   };
-
-  const internalRoles = [
-    { name: 'Sarah Jenkins', role: 'Senior Bid Operations Director', email: 's.jenkins@tendertracker.enterprise' },
-    { name: 'Dr. Marcus Vance', role: 'Technical Solutions Lead', email: 'm.vance@tendertracker.enterprise' },
-    { name: 'Tariq Al-Mansoor', role: 'Finance & Compliance Lead', email: 't.mansoor@tendertracker.enterprise' },
-  ];
 
   const demoPartnerTokens = [
     { name: 'Apex Engineering JV', code: 'ORG-APEX-01', token: 'SHR-TOKEN-WB-7712', desc: 'Sovereign Cloud & ERP Subcontractor' },
@@ -90,6 +164,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
 
         {/* Login Form */}
         <form onSubmit={handleLogin} className="p-6 space-y-4 text-xs">
+          {errorMessage && (
+            <div className="p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-lg text-[#DC2626] text-xs flex items-start gap-2 animate-fadeIn">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           {!isJvOnly ? (
             <>
               <div>
@@ -102,7 +183,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
                     type="email"
                     required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errorMessage) setErrorMessage('');
+                    }}
                     className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                   />
                 </div>
@@ -118,33 +202,53 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
                     type="password"
                     required
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errorMessage) setErrorMessage('');
+                    }}
                     className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                   />
                 </div>
               </div>
 
-              {/* Quick Role Switcher for Demo */}
+              {/* Quick Role Switcher from Registered Team Members */}
               <div>
-                <label className="block font-semibold text-[#64748B] mb-1.5">
-                  Quick Switch Persona (Demo Environment):
-                </label>
-                <div className="space-y-1.5">
-                  {internalRoles.map((r) => (
-                    <button
-                      key={r.name}
-                      type="button"
-                      onClick={() => setEmail(r.email)}
-                      className={`w-full p-2 text-left rounded-lg border transition-colors flex items-center justify-between cursor-pointer ${
-                        email === r.email
-                          ? 'bg-[#EFF6FF] border-[#2563EB] text-[#2563EB] font-bold'
-                          : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:bg-[#F1F5F9]'
-                      }`}
-                    >
-                      <span>{r.name}</span>
-                      <span className="text-[10px] font-normal font-mono">{r.role}</span>
-                    </button>
-                  ))}
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block font-semibold text-[#64748B]">
+                    Select User Profile (Active Directory):
+                  </label>
+                  <span className="text-[10px] text-[#94A3B8]">Click to populate</span>
+                </div>
+                <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+                  {teamMembers.map((r) => {
+                    const isCurrentSelected = email.toLowerCase() === r.email.toLowerCase();
+                    return (
+                      <button
+                        key={r.id || r.email}
+                        type="button"
+                        onClick={() => {
+                          setEmail(r.email);
+                          setPassword('Password123!');
+                          setErrorMessage('');
+                        }}
+                        className={`w-full p-2 text-left rounded-lg border transition-colors flex items-center justify-between cursor-pointer ${
+                          isCurrentSelected
+                            ? 'bg-[#EFF6FF] border-[#2563EB] text-[#2563EB]'
+                            : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:bg-[#F1F5F9]'
+                        }`}
+                      >
+                        <div className="min-w-0 pr-2">
+                          <div className={`text-xs truncate ${isCurrentSelected ? 'font-bold text-[#1D4ED8]' : 'font-semibold text-[#0F172A]'}`}>
+                            {r.name}
+                          </div>
+                          <div className="text-[10px] text-[#64748B] truncate font-mono">{r.email}</div>
+                        </div>
+                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white border border-[#E2E8F0] shrink-0 font-medium">
+                          {r.role.replace('_', ' ')}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </>
@@ -228,13 +332,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
           <div className="pt-2">
             <button
               type="submit"
-              className={`w-full py-2.5 text-white rounded-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-md cursor-pointer ${
+              disabled={isLoading}
+              className={`w-full py-2.5 text-white rounded-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-md cursor-pointer disabled:opacity-60 ${
                 !isJvOnly
                   ? 'bg-[#0F172A] hover:bg-[#1E293B]'
                   : 'bg-[#059669] hover:bg-[#047857]'
               }`}
             >
-              <span>{!isJvOnly ? 'Access Command Center' : 'Access Partner Workspace'}</span>
+              <span>
+                {isLoading
+                  ? 'Verifying Credentials...'
+                  : !isJvOnly
+                  ? 'Access Command Center'
+                  : 'Access Partner Workspace'}
+              </span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

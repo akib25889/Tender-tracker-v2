@@ -93,7 +93,7 @@ interface TenderContextType {
   submitTenderProof: (tenderId: string, portalReference: string) => void;
   // RBAC
   currentUser: UserProfile;
-  setCurrentUser: (user: UserProfile) => void;
+  setCurrentUser: React.Dispatch<React.SetStateAction<UserProfile>>;
   teamMembers: UserProfile[];
   addTeamMember: (member: {
     name: string;
@@ -102,6 +102,7 @@ interface TenderContextType {
     email: string;
     dept?: string;
     maxCapacity?: number;
+    password?: string;
   }) => void;
   updateUserProfile: (userId: string, updates: Partial<UserProfile>) => Promise<void>;
   addPastAssignment: (userId: string, assignment: PastProjectAssignment) => Promise<void>;
@@ -1905,7 +1906,26 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     return TEAM_PROFILES;
   });
 
-  const [currentUser, setCurrentUser] = useState<UserProfile>(teamMembers[0] || TEAM_PROFILES[0]);
+  const [currentUser, setCurrentUserState] = useState<UserProfile>(() => {
+    const saved = localStorage.getItem('tendertracker_auth_user');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.id) return parsed;
+      } catch (e) {}
+    }
+    return teamMembers[0] || TEAM_PROFILES[0];
+  });
+
+  const setCurrentUser: React.Dispatch<React.SetStateAction<UserProfile>> = (value) => {
+    setCurrentUserState((prev) => {
+      const next = typeof value === 'function' ? (value as (prev: UserProfile) => UserProfile)(prev) : value;
+      try {
+        localStorage.setItem('tendertracker_auth_user', JSON.stringify(next));
+      } catch (e) {}
+      return next;
+    });
+  };
   const [sharedLinks, setSharedLinks] = useState<DocumentShareLink[]>([]);
   const [activeDocForShare, setActiveDocForShare] = useState<{
     tenderId: string;
@@ -2095,6 +2115,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     email: string;
     dept?: string;
     maxCapacity?: number;
+    password?: string;
   }) => {
     const initials = member.name
       .split(' ')
@@ -2114,13 +2135,15 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       maxCapacity: member.maxCapacity || 5,
     };
 
+    const initialPassword = member.password?.trim() || 'Password123!';
+
     fetch('http://127.0.0.1:8000/api/auth/team', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: member.name,
         email: member.email,
-        password: 'Password123!',
+        password: initialPassword,
         role: member.role,
         title: member.title || member.role.replace('_', ' '),
         department: member.dept || 'Bid Operations',
@@ -2128,6 +2151,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         avatar: initials || 'TM',
       }),
     }).catch(() => {});
+
+    try {
+      const creds = JSON.parse(localStorage.getItem('tendertracker_user_credentials') || '{}');
+      creds[member.email.toLowerCase()] = initialPassword;
+      localStorage.setItem('tendertracker_user_credentials', JSON.stringify(creds));
+    } catch (e) {}
 
     const updated = [...teamMembers, newProfile];
     setTeamMembers(updated);

@@ -8,6 +8,7 @@ import {
   DiagnosticResult,
   AuthorizationAuditLog,
 } from '../types/permission';
+import { isSuperAdminRole } from '../types/tender';
 import {
   Shield,
   ShieldCheck,
@@ -52,6 +53,7 @@ const STANDARD_PERMISSIONS = [
 
 export const MasterPermissionsPage: React.FC = () => {
   const { tenders, teamMembers, currentUser } = useTenders();
+  const isSuperAdmin = isSuperAdminRole(currentUser.role);
 
   // Active Tab
   const [activeTab, setActiveTab] = useState<'simulator' | 'partners' | 'roles' | 'blocks' | 'audit'>('simulator');
@@ -362,6 +364,7 @@ export const MasterPermissionsPage: React.FC = () => {
 
   // Toggle ceiling locally
   const toggleCeiling = (code: string) => {
+    if (!isSuperAdmin) return;
     setCeilings((prev) => {
       const next = { ...prev, [code]: !prev[code] };
       // Sync to backend
@@ -376,6 +379,7 @@ export const MasterPermissionsPage: React.FC = () => {
 
   // Allow or Deny all ceilings at once
   const handleSetAllCeilings = (allow: boolean) => {
+    if (!isSuperAdmin) return;
     const updatedCeilings: Record<string, boolean> = {};
     STANDARD_PERMISSIONS.forEach((p) => {
       updatedCeilings[p.code] = allow;
@@ -442,6 +446,21 @@ export const MasterPermissionsPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {!isSuperAdmin && (
+        <div className="p-3.5 bg-[#FFFBEB] border border-[#FDE68A] rounded-xl text-xs text-[#92400E] flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs">
+          <div className="flex items-center gap-2">
+            <Lock className="w-4 h-4 text-[#D97706] shrink-0" />
+            <span>
+              <strong>Read-Only Governance Mode:</strong> You are authenticated as{' '}
+              <strong>{currentUser.name}</strong> ({currentUser.role.replace('_', ' ')}). Modifying partner permission ceilings, role rules, and security suspensions is restricted to <strong>Super Admin</strong>.
+            </span>
+          </div>
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white border border-[#FDE68A] text-[#B45309] font-bold shrink-0 self-start sm:self-auto">
+            Super Admin Required
+          </span>
+        </div>
+      )}
 
       {/* Tabs Navigation Bar */}
       <div className="flex items-center gap-1 border-b border-[#E2E8F0] overflow-x-auto pb-px">
@@ -760,18 +779,20 @@ export const MasterPermissionsPage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
+                  disabled={!isSuperAdmin}
                   onClick={() => handleSetAllCeilings(true)}
-                  className="px-2.5 py-1 text-xs font-semibold bg-[#EFF6FF] text-[#2563EB] hover:bg-[#DBEAFE] rounded-md border border-[#BFDBFE] transition-colors flex items-center gap-1 cursor-pointer"
-                  title="Grant ALLOW for all permissions to this partner"
+                  className="px-2.5 py-1 text-xs font-semibold bg-[#EFF6FF] text-[#2563EB] hover:bg-[#DBEAFE] rounded-md border border-[#BFDBFE] transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  title={isSuperAdmin ? "Grant ALLOW for all permissions to this partner" : "Ceiling modification restricted to Super Admin"}
                 >
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Allow All Permissions</span>
                 </button>
                 <button
                   type="button"
+                  disabled={!isSuperAdmin}
                   onClick={() => handleSetAllCeilings(false)}
-                  className="px-2.5 py-1 text-xs font-semibold bg-[#FEF2F2] text-[#DC2626] hover:bg-[#FEE2E2] rounded-md border border-[#FECACA] transition-colors cursor-pointer"
-                  title="Set all permissions to DENY for this partner"
+                  className="px-2.5 py-1 text-xs font-semibold bg-[#FEF2F2] text-[#DC2626] hover:bg-[#FEE2E2] rounded-md border border-[#FECACA] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  title={isSuperAdmin ? "Set all permissions to DENY for this partner" : "Ceiling modification restricted to Super Admin"}
                 >
                   <span>Deny All</span>
                 </button>
@@ -802,12 +823,14 @@ export const MasterPermissionsPage: React.FC = () => {
 
                     <button
                       type="button"
+                      disabled={!isSuperAdmin}
                       onClick={() => toggleCeiling(perm.code)}
-                      className={`px-2.5 py-1 rounded text-[11px] font-bold transition-colors shrink-0 cursor-pointer ${
+                      className={`px-2.5 py-1 rounded text-[11px] font-bold transition-colors shrink-0 disabled:opacity-60 disabled:cursor-not-allowed ${
                         isAllowed
                           ? 'bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0] hover:bg-[#DCFCE7]'
                           : 'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] hover:bg-[#FEE2E2]'
-                      }`}
+                      } ${isSuperAdmin ? 'cursor-pointer' : ''}`}
+                      title={!isSuperAdmin ? "Ceiling modifications restricted to Super Admin" : undefined}
                     >
                       {isAllowed ? 'ALLOW' : 'DENY'}
                     </button>
