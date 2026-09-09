@@ -375,6 +375,10 @@ export interface Tender {
   budgetType?: string;
   sourceOfFund?: string;
   procurementMethod?: string;
+  // 2-Stage Procurement Lineage (EOI -> RFP) & Shortlisting
+  parentEoiId?: string;
+  spawnedRfpId?: string;
+  eoiShortlistStatus?: 'PENDING' | 'SHORTLISTED' | 'NOT_SHORTLISTED' | string;
   // Milestone Schedule (Req #20)
   openingDate?: string;
   contractSigningDate?: string;

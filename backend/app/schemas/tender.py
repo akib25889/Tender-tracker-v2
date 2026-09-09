@@ -119,6 +119,10 @@ class TenderBase(BaseModel):
     budget_type: Optional[str] = None
     source_of_fund: Optional[str] = None
     procurement_method: Optional[str] = None
+    # 2-Stage Procurement Lineage (EOI -> RFP) & Shortlisting
+    parent_eoi_id: Optional[str] = None
+    spawned_rfp_id: Optional[str] = None
+    eoi_shortlist_status: Optional[str] = None
     # Milestone Schedule Dates (Req #20)
     opening_date: Optional[str] = None
     contract_signing_date: Optional[str] = None
@@ -174,6 +178,9 @@ class TenderUpdate(BaseModel):
     budget_type: Optional[str] = None
     source_of_fund: Optional[str] = None
     procurement_method: Optional[str] = None
+    parent_eoi_id: Optional[str] = None
+    spawned_rfp_id: Optional[str] = None
+    eoi_shortlist_status: Optional[str] = None
     opening_date: Optional[str] = None
     contract_signing_date: Optional[str] = None
     work_start_date: Optional[str] = None

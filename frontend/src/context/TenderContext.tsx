@@ -514,6 +514,13 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                       },
                     }
                   : dbSummary,
+                tenderType: dbt.tender_type || existing?.tenderType,
+                budgetType: dbt.budget_type || existing?.budgetType,
+                sourceOfFund: dbt.source_of_fund || existing?.sourceOfFund,
+                procurementMethod: dbt.procurement_method || existing?.procurementMethod,
+                parentEoiId: dbt.parent_eoi_id || existing?.parentEoiId,
+                spawnedRfpId: dbt.spawned_rfp_id || existing?.spawnedRfpId,
+                eoiShortlistStatus: dbt.eoi_shortlist_status || existing?.eoiShortlistStatus,
                 importantClauses: Array.isArray(dbt.important_clauses)
                   ? dbt.important_clauses
                   : existing?.importantClauses || [],
@@ -1099,6 +1106,13 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       schedulePurchaseMethod: tenderData.schedulePurchaseMethod,
       tenderSecurityAmount: tenderData.tenderSecurityAmount,
       tenderSecurityMethod: tenderData.tenderSecurityMethod,
+      tenderType: tenderData.tenderType,
+      budgetType: tenderData.budgetType,
+      sourceOfFund: tenderData.sourceOfFund,
+      procurementMethod: tenderData.procurementMethod,
+      parentEoiId: tenderData.parentEoiId,
+      spawnedRfpId: tenderData.spawnedRfpId,
+      eoiShortlistStatus: tenderData.eoiShortlistStatus,
       postAward: tenderData.postAward,
       financialModel: tenderData.financialModel,
       summary: tenderData.summary,
@@ -1128,6 +1142,13 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         helpline_phone: newTender.helplinePhone,
         helpline_email: newTender.helplineEmail,
         helpline_hours: newTender.helplineHours,
+        tender_type: newTender.tenderType,
+        budget_type: newTender.budgetType,
+        source_of_fund: newTender.sourceOfFund,
+        procurement_method: newTender.procurementMethod,
+        parent_eoi_id: newTender.parentEoiId,
+        spawned_rfp_id: newTender.spawnedRfpId,
+        eoi_shortlist_status: newTender.eoiShortlistStatus,
         opening_date: newTender.openingDate,
         contract_signing_date: newTender.contractSigningDate,
         work_start_date: newTender.workStartDate,
@@ -1188,6 +1209,13 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (updates.organization !== undefined) payload.organization = updates.organization;
     if (updates.country !== undefined) payload.country = updates.country;
     if (updates.category !== undefined) payload.category = updates.category;
+    if (updates.tenderType !== undefined) payload.tender_type = updates.tenderType;
+    if (updates.budgetType !== undefined) payload.budget_type = updates.budgetType;
+    if (updates.sourceOfFund !== undefined) payload.source_of_fund = updates.sourceOfFund;
+    if (updates.procurementMethod !== undefined) payload.procurement_method = updates.procurementMethod;
+    if (updates.parentEoiId !== undefined) payload.parent_eoi_id = updates.parentEoiId;
+    if (updates.spawnedRfpId !== undefined) payload.spawned_rfp_id = updates.spawnedRfpId;
+    if (updates.eoiShortlistStatus !== undefined) payload.eoi_shortlist_status = updates.eoiShortlistStatus;
     if (updates.estimatedValue !== undefined) payload.estimated_value = updates.estimatedValue;
     if (updates.currency !== undefined) payload.currency = updates.currency;
     if (updates.exchangeRateToBdt !== undefined) payload.exchange_rate_to_bdt = updates.exchangeRateToBdt;

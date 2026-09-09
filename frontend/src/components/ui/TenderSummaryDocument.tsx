@@ -95,6 +95,20 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
             <Row label="Client / Organization" value={tender.organization} />
             <Row label="Portal" value={s?.portal} />
             <Row label="Tender Type / Classification" value={tender.tenderType || s?.tenderType} />
+            <Row
+              label="Procurement Modality & Stage"
+              value={
+                tender.parentEoiId
+                  ? `2-Stage Procurement (Spawned from Originating EOI #${tender.parentEoiId})`
+                  : tender.spawnedRfpId
+                  ? `2-Stage Procurement (Parent EOI with Linked RFP #${tender.spawnedRfpId})`
+                  : tender.tenderType === 'Request for Proposals (RFP)'
+                  ? 'Direct RFP Modality (Single-Stage Open Procurement)'
+                  : tender.tenderType === 'Expression of Interest (EOI)'
+                  ? 'EOI Qualification Stage (Prequalification for upcoming RFP)'
+                  : 'Standard Single-Stage Procurement'
+              }
+            />
             <Row label="Budget Type" value={tender.budgetType || s?.budgetType} />
             <Row label="Source of Fund (Financier)" value={tender.sourceOfFund || s?.sourceOfFund} />
             <Row label="Procurement Method" value={tender.procurementMethod || s?.procurementMethod} />

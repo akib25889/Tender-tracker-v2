@@ -1727,3 +1727,100 @@ def test_25_client_visits_and_meetings_crud():
     # 7. Confirm 404 after deletion
     get_after_del = client.get(f"/api/v1/client-visits/{visit_id}")
     assert get_after_del.status_code == 404
+
+
+def test_30_two_stage_eoi_rfp_lineage_and_direct_rfp():
+    eoi_id = "TDR-2026-EOI-TEST-99"
+    rfp_spawned_id = "TDR-2026-RFP-SPAWNED-99"
+    direct_rfp_id = "TDR-2026-RFP-DIRECT-99"
+
+    # Clean slate
+    for tid in [eoi_id, rfp_spawned_id, direct_rfp_id]:
+        client.delete(f"/api/tenders/{tid}")
+
+    # 1. Create an EOI tender
+    eoi_payload = {
+        "id": eoi_id,
+        "title": "Expression of Interest (EOI) for National Cloud Modernization",
+        "organization": "ICT Division, Bangladesh",
+        "country": "Bangladesh",
+        "category": "Cloud & Cyber Security",
+        "tender_type": "Expression of Interest (EOI)",
+        "estimated_value": 3500000.0,
+        "currency": "USD",
+        "stage": "DISCOVERED",
+        "decision": "PENDING",
+    }
+    eoi_res = client.post("/api/tenders", json=eoi_payload)
+    assert eoi_res.status_code == 201
+    created_eoi = eoi_res.json()
+    assert created_eoi["id"] == eoi_id
+    assert created_eoi["tender_type"] == "Expression of Interest (EOI)"
+    assert created_eoi["parent_eoi_id"] is None
+    assert created_eoi["spawned_rfp_id"] is None
+
+    # 2. Record EOI Shortlisting Outcome
+    update_eoi_res = client.put(
+        f"/api/tenders/{eoi_id}",
+        json={
+            "eoi_shortlist_status": "SHORTLISTED",
+            "stage": "AWARDED",
+            "decision": "GO",
+        },
+    )
+    assert update_eoi_res.status_code == 200
+    updated_eoi = update_eoi_res.json()
+    assert updated_eoi["eoi_shortlist_status"] == "SHORTLISTED"
+
+    # 3. Create Linked RFP Stage from Shortlisted EOI
+    rfp_linked_payload = {
+        "id": rfp_spawned_id,
+        "title": "Request for Proposals (RFP) for National Cloud Modernization",
+        "organization": "ICT Division, Bangladesh",
+        "country": "Bangladesh",
+        "category": "Cloud & Cyber Security",
+        "tender_type": "Request for Proposals (RFP)",
+        "parent_eoi_id": eoi_id,
+        "estimated_value": 3500000.0,
+        "currency": "USD",
+        "stage": "DISCOVERED",
+        "decision": "GO",
+    }
+    rfp_res = client.post("/api/tenders", json=rfp_linked_payload)
+    assert rfp_res.status_code == 201
+    created_rfp = rfp_res.json()
+    assert created_rfp["id"] == rfp_spawned_id
+    assert created_rfp["parent_eoi_id"] == eoi_id
+    assert created_rfp["tender_type"] == "Request for Proposals (RFP)"
+
+    # Check that parent EOI was automatically linked
+    eoi_check_res = client.get(f"/api/tenders/{eoi_id}")
+    assert eoi_check_res.status_code == 200
+    eoi_data = eoi_check_res.json()
+    assert eoi_data["spawned_rfp_id"] == rfp_spawned_id
+    assert eoi_data["eoi_shortlist_status"] == "SHORTLISTED"
+
+    # 4. Create Direct RFP (No EOI Required / Open Tender)
+    direct_rfp_payload = {
+        "id": direct_rfp_id,
+        "title": "Direct Request for Proposals (RFP) for Hospital Management ERP",
+        "organization": "Ministry of Health",
+        "country": "Bangladesh",
+        "category": "Healthcare & Medical Systems",
+        "tender_type": "Request for Proposals (RFP)",
+        "parent_eoi_id": None,
+        "estimated_value": 1800000.0,
+        "currency": "USD",
+        "stage": "DISCOVERED",
+        "decision": "PENDING",
+    }
+    direct_res = client.post("/api/tenders", json=direct_rfp_payload)
+    assert direct_res.status_code == 201
+    created_direct_rfp = direct_res.json()
+    assert created_direct_rfp["id"] == direct_rfp_id
+    assert created_direct_rfp["parent_eoi_id"] is None
+    assert created_direct_rfp["tender_type"] == "Request for Proposals (RFP)"
+
+    # Clean up test tenders
+    for tid in [eoi_id, rfp_spawned_id, direct_rfp_id]:
+        client.delete(f"/api/tenders/{tid}")

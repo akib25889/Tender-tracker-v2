@@ -125,11 +125,24 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
         budget_type=tender_in.budget_type,
         source_of_fund=tender_in.source_of_fund,
         procurement_method=tender_in.procurement_method,
+        parent_eoi_id=tender_in.parent_eoi_id,
+        spawned_rfp_id=tender_in.spawned_rfp_id,
+        eoi_shortlist_status=tender_in.eoi_shortlist_status,
         post_award_data=tender_in.post_award_data,
         financial_model=tender_in.financial_model or {},
     )
     db.add(db_tender)
     db.flush()
+
+    # If this RFP was spawned from a parent EOI, link them bidirectionally
+    if db_tender.parent_eoi_id:
+        parent_eoi = (
+            db.query(Tender).filter(Tender.id == db_tender.parent_eoi_id).first()
+        )
+        if parent_eoi:
+            parent_eoi.spawned_rfp_id = db_tender.id
+            if not parent_eoi.eoi_shortlist_status:
+                parent_eoi.eoi_shortlist_status = "SHORTLISTED"
 
     # Auto-provision local SSD storage vault folders
     ensure_tender_directories(db_tender.id)

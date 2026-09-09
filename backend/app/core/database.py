@@ -136,6 +136,24 @@ def run_migrations():
                             "ALTER TABLE tenders ADD COLUMN procurement_method VARCHAR(100) DEFAULT NULL"
                         )
                     )
+                if "parent_eoi_id" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN parent_eoi_id VARCHAR(50) DEFAULT NULL"
+                        )
+                    )
+                if "spawned_rfp_id" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN spawned_rfp_id VARCHAR(50) DEFAULT NULL"
+                        )
+                    )
+                if "eoi_shortlist_status" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN eoi_shortlist_status VARCHAR(50) DEFAULT NULL"
+                        )
+                    )
                 # Milestone Schedule & Commercial migrations (Req #17 & #20)
                 if "opening_date" not in existing_cols:
                     conn.execute(
@@ -393,6 +411,9 @@ def run_migrations():
                             ("budget_type", "VARCHAR(100) DEFAULT NULL"),
                             ("source_of_fund", "VARCHAR(150) DEFAULT NULL"),
                             ("procurement_method", "VARCHAR(100) DEFAULT NULL"),
+                            ("parent_eoi_id", "VARCHAR(50) DEFAULT NULL"),
+                            ("spawned_rfp_id", "VARCHAR(50) DEFAULT NULL"),
+                            ("eoi_shortlist_status", "VARCHAR(50) DEFAULT NULL"),
                             ("opening_date", "VARCHAR(50) DEFAULT NULL"),
                             ("contract_signing_date", "VARCHAR(50) DEFAULT NULL"),
                             ("work_start_date", "VARCHAR(50) DEFAULT NULL"),

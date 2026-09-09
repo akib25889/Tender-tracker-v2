@@ -41,6 +41,10 @@ class Tender(Base):
     budget_type = Column(String(100), nullable=True)
     source_of_fund = Column(String(150), nullable=True)
     procurement_method = Column(String(100), nullable=True)
+    # 2-Stage Procurement Lineage (EOI -> RFP) & Shortlisting
+    parent_eoi_id = Column(String(50), nullable=True, index=True)
+    spawned_rfp_id = Column(String(50), nullable=True)
+    eoi_shortlist_status = Column(String(50), nullable=True)
     # Milestone Schedule Dates (Req #20)
     opening_date = Column(String(50), nullable=True)
     contract_signing_date = Column(String(50), nullable=True)

@@ -227,10 +227,22 @@ export const TenderRegistryPage: React.FC = () => {
   const [procurementMethod, setProcurementMethod] = useState<string>(
     selectedTender?.procurementMethod || selectedTender?.summary?.procurementMethod || STANDARD_PROCUREMENT_METHODS[0]
   );
+  const [parentEoiId, setParentEoiId] = useState<string>(
+    selectedTender?.parentEoiId || ''
+  );
   const [isCustomTenderType, setIsCustomTenderType] = useState(false);
   const [isCustomBudgetType, setIsCustomBudgetType] = useState(false);
   const [isCustomSourceOfFund, setIsCustomSourceOfFund] = useState(false);
   const [isCustomProcurementMethod, setIsCustomProcurementMethod] = useState(false);
+
+  const eligibleParentEois = useMemo(() => {
+    return (tenders || []).filter(
+      (t) =>
+        t.tenderType === 'Expression of Interest (EOI)' ||
+        t.tenderType?.toLowerCase().includes('expression of interest') ||
+        t.eoiShortlistStatus === 'SHORTLISTED'
+    );
+  }, [tenders]);
 
   // Procuring Authority Officer & Helpline Details
   const [procurementManagerName, setProcurementManagerName] = useState(
@@ -569,6 +581,7 @@ export const TenderRegistryPage: React.FC = () => {
     setProcurementMethod(
       selectedTender.procurementMethod || selectedTender.summary?.procurementMethod || STANDARD_PROCUREMENT_METHODS[0]
     );
+    setParentEoiId(selectedTender.parentEoiId || '');
     setIsCustomTenderType(false);
     setIsCustomBudgetType(false);
     setIsCustomSourceOfFund(false);
@@ -856,6 +869,7 @@ export const TenderRegistryPage: React.FC = () => {
       budgetType,
       sourceOfFund,
       procurementMethod,
+      parentEoiId: parentEoiId || undefined,
       openingDate: openingDate || '',
       contractSigningDate: contractSigningDate || '',
       workStartDate: workStartDate || '',
@@ -1521,6 +1535,57 @@ export const TenderRegistryPage: React.FC = () => {
                         </select>
                       )}
                     </div>
+
+                    {/* Originating EOI Selector (Rendered when RFP mode is active) */}
+                    {tenderType === 'Request for Proposals (RFP)' && (
+                      <div className="sm:col-span-2 p-3 bg-blue-50/70 border border-blue-200 rounded-xl space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="block text-[11px] font-bold text-[#1E40AF] flex items-center gap-1.5">
+                            <span>🔗 Originating EOI (Optional — 2-Stage Procurement Flow)</span>
+                          </label>
+                          <span className="text-[10px] font-semibold text-[#2563EB] bg-blue-100/80 px-2 py-0.5 rounded">
+                            {parentEoiId ? 'EOI-Linked RFP' : 'Direct RFP Modality'}
+                          </span>
+                        </div>
+                        <select
+                          value={parentEoiId}
+                          onChange={(e) => {
+                            const selectedId = e.target.value;
+                            setParentEoiId(selectedId);
+                            if (selectedId) {
+                              const eoi = tenders.find((t) => t.id === selectedId);
+                              if (eoi) {
+                                if (!tenderTitle || tenderTitle.startsWith('Request for Proposals (RFP)')) {
+                                  setTenderTitle(`Request for Proposals (RFP) for ${eoi.title.replace(/^EOI\s*[-–:]\s*/i, '')}`);
+                                }
+                                if (eoi.organization) setClient(eoi.organization);
+                                if (eoi.country) setCountry(eoi.country);
+                                if (eoi.category) setCategory(eoi.category);
+                                if (eoi.budgetType) setBudgetType(eoi.budgetType);
+                                if (eoi.sourceOfFund) setSourceOfFund(eoi.sourceOfFund);
+                                if (eoi.procurementManagerName) setProcurementManagerName(eoi.procurementManagerName);
+                                if (eoi.procurementManagerDesignation) setProcurementManagerDesignation(eoi.procurementManagerDesignation);
+                                if (eoi.procurementManagerEmail) setProcurementManagerEmail(eoi.procurementManagerEmail);
+                                if (eoi.procurementManagerPhone) setProcurementManagerPhone(eoi.procurementManagerPhone);
+                              }
+                            }
+                          }}
+                          className="w-full px-2.5 py-1.5 bg-white border border-blue-300 rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        >
+                          <option value="">-- Direct RFP (Open Tender / No EOI Required) --</option>
+                          {eligibleParentEois.map((eoi) => (
+                            <option key={eoi.id} value={eoi.id}>
+                              [Shortlisted EOI] {eoi.id} — {eoi.title} ({eoi.organization})
+                            </option>
+                          ))}
+                        </select>
+                        <p className="text-[10px] text-[#3B82F6]">
+                          {parentEoiId
+                            ? `Linked to Parent EOI #${parentEoiId}. Organization, country, and statutory references are synchronized.`
+                            : 'Direct RFP: Organizations can publish RFPs directly without any prior EOI stage required.'}
+                        </p>
+                      </div>
+                    )}
 
                     {/* Budget Type */}
                     <div>
