@@ -26,7 +26,13 @@ import {
   UserCheck,
   ChevronDown,
   ChevronUp,
+  Printer,
+  FileSpreadsheet,
 } from 'lucide-react';
+import {
+  exportPersonnelDossierAsPDF,
+  exportPersonnelDossierAsExcel,
+} from '../utils/exportUtils';
 
 const EMPLOYMENT_TYPE_CONFIG: Record<
   EmploymentType,
@@ -249,22 +255,42 @@ export const UserProfilePage: React.FC = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
+          <button
+            type="button"
+            onClick={() => exportPersonnelDossierAsPDF(targetUser)}
+            className="flex items-center gap-1.5 px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-xs cursor-pointer"
+            title="Generate printable Form Tech-1 CV PDF dossier"
+          >
+            <Printer className="w-3.5 h-3.5 text-[#DC2626]" />
+            <span>Export PDF</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => exportPersonnelDossierAsExcel(targetUser)}
+            className="flex items-center gap-1.5 px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-xs cursor-pointer"
+            title="Export full project ledger and credentials as Excel spreadsheet (.csv)"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A34A]" />
+            <span>Export Excel</span>
+          </button>
+
           <button
             type="button"
             onClick={handleExportCV}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-xs cursor-pointer"
             title="Copy formatted CV markdown for tender annexures"
           >
             {copiedDossier ? (
               <>
-                <Check className="w-4 h-4 text-[#16A34A]" />
-                <span className="text-[#16A34A]">Dossier Copied!</span>
+                <Check className="w-3.5 h-3.5 text-[#16A34A]" />
+                <span className="text-[#16A34A]">Copied!</span>
               </>
             ) : (
               <>
-                <FileText className="w-4 h-4 text-[#64748B]" />
-                <span>Export CV Dossier</span>
+                <FileText className="w-3.5 h-3.5 text-[#64748B]" />
+                <span>Copy Markdown</span>
               </>
             )}
           </button>
@@ -562,14 +588,27 @@ export const UserProfilePage: React.FC = () => {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setIsAddAssignmentModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-xs cursor-pointer"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Add Project Assignment</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {allAssignments.length > 0 && (
+              <button
+                type="button"
+                onClick={() => exportPersonnelDossierAsExcel(targetUser)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-xs cursor-pointer"
+                title="Download assignments ledger as Excel spreadsheet (.csv)"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A34A]" />
+                <span>Export Ledger (.csv)</span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => setIsAddAssignmentModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-xs cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Add Project Assignment</span>
+            </button>
+          </div>
         </div>
 
         {/* Assignments Ledger */}

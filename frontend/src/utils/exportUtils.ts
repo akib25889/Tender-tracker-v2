@@ -1,4 +1,4 @@
-import { Tender } from '../types/tender';
+import { Tender, UserProfile } from '../types/tender';
 
 const downloadFile = (content: string, filename: string, mimeType: string) => {
   const blob = new Blob([content], { type: mimeType });
@@ -459,4 +459,489 @@ export const exportPipelineAsPDF = (tenders: Tender[]) => {
   `);
   printWindow.document.close();
 };
+
+// ==========================================
+// 3. KEY PERSONNEL DOSSIER EXPORTERS (FORM TECH-1)
+// ==========================================
+
+export const exportPersonnelDossierAsPDF = (user: UserProfile) => {
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('Please allow popups to open the PDF preview.');
+    return;
+  }
+
+  const pastAssignments = user.pastAssignments || [];
+  const certs = user.certifications || [];
+  const education = user.education || [];
+
+  printWindow.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Key Personnel Dossier - ${user.name}</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 14mm 12mm;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 9pt;
+      line-height: 1.45;
+      color: #0F172A;
+      background: #FFFFFF;
+      margin: 0;
+      padding: 24px;
+    }
+    .header-banner {
+      border-bottom: 2.5px solid #0F172A;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .top-tag {
+      font-size: 8pt;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #64748B;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .person-name {
+      font-size: 20pt;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0 0 4px 0;
+      letter-spacing: -0.5px;
+    }
+    .proposed-title {
+      font-size: 11pt;
+      font-weight: 600;
+      color: #2563EB;
+      margin: 0;
+    }
+    .meta-card {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 18px;
+    }
+    .meta-field {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 7.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748B;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .meta-value {
+      font-size: 8.5pt;
+      font-weight: 600;
+      color: #0F172A;
+    }
+    h2 {
+      font-size: 10.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #0F172A;
+      border-bottom: 1.5px solid #CBD5E1;
+      padding-bottom: 4px;
+      margin: 18px 0 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .cert-pill {
+      display: inline-block;
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
+      font-size: 8pt;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin: 2px 4px 4px 0;
+    }
+    .edu-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 8.5pt;
+    }
+    .edu-table th {
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      padding: 6px 8px;
+      text-align: left;
+      font-weight: 700;
+      color: #334155;
+    }
+    .edu-table td {
+      border: 1px solid #CBD5E1;
+      padding: 6px 8px;
+      color: #0F172A;
+    }
+    .assignment-item {
+      border: 1px solid #E2E8F0;
+      border-left: 3.5px solid #2563EB;
+      background: #FFFFFF;
+      border-radius: 4px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      page-break-inside: avoid;
+    }
+    .assignment-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+    .assignment-name {
+      font-size: 10pt;
+      font-weight: 700;
+      color: #0F172A;
+    }
+    .assignment-duration {
+      font-size: 8pt;
+      font-weight: 600;
+      color: #64748B;
+      background: #F1F5F9;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .assignment-subhead {
+      font-size: 8.5pt;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+    .assignment-role {
+      font-weight: 700;
+      color: #2563EB;
+    }
+    .assignment-client {
+      font-weight: 600;
+      color: #0F172A;
+    }
+    .assignment-desc {
+      font-size: 8.5pt;
+      color: #334155;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .tag-pill {
+      display: inline-block;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      color: #334155;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin: 1px 3px 1px 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 7.5pt;
+    }
+    .deliverable-pill {
+      display: inline-block;
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      color: #166534;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin: 1px 3px 1px 0;
+      font-size: 7.5pt;
+    }
+    .declaration-box {
+      margin-top: 24px;
+      padding: 12px;
+      background: #F8FAFC;
+      border: 1px dashed #CBD5E1;
+      border-radius: 6px;
+      font-size: 8pt;
+      color: #475569;
+      page-break-inside: avoid;
+    }
+    .sign-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 30px;
+      padding-top: 10px;
+    }
+    .sign-line {
+      border-top: 1px solid #94A3B8;
+      padding-top: 4px;
+      font-size: 8pt;
+      font-weight: 600;
+      color: #0F172A;
+    }
+    @media print {
+      body { padding: 0; }
+      @page { margin: 12mm; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header-banner">
+    <div class="top-tag">TenderTracker Command Center &bull; Key Personnel Dossier (Form Tech-1)</div>
+    <div class="person-name">${user.name}</div>
+    <div class="proposed-title">Proposed Tender Role: ${user.proposedDesignation || user.title}</div>
+  </div>
+
+  <div class="meta-card">
+    <div class="meta-field">
+      <span class="meta-label">Corporate Title</span>
+      <span class="meta-value">${user.title}</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Department</span>
+      <span class="meta-value">${user.department || 'Bid Operations & Strategy'}</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Employment Type</span>
+      <span class="meta-value">${user.employmentType || 'PERMANENT'}</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Email Address</span>
+      <span class="meta-value">${user.email}</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Phone / Contact</span>
+      <span class="meta-value">${user.phone || 'N/A'}</span>
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Station / Location</span>
+      <span class="meta-value">${user.location || 'Dhaka, Bangladesh'}</span>
+    </div>
+  </div>
+
+  <h2>1. Statutory & Professional Certifications</h2>
+  <div>
+    ${
+      certs.length > 0
+        ? certs.map((c) => `<span class="cert-pill">&check; ${c}</span>`).join('')
+        : '<p style="color: #64748B; font-size: 8.5pt;">No statutory certifications recorded.</p>'
+    }
+  </div>
+
+  <h2>2. Academic Credentials & Higher Education</h2>
+  ${
+    education.length > 0
+      ? `
+    <table class="edu-table">
+      <thead>
+        <tr>
+          <th>Degree / Qualification</th>
+          <th>Institution / University</th>
+          <th style="width: 110px;">Graduation Year</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${education
+          .map(
+            (e) => `
+          <tr>
+            <td><strong>${e.degree}</strong></td>
+            <td>${e.institution}</td>
+            <td>${e.year || 'N/A'}</td>
+          </tr>`
+          )
+          .join('')}
+      </tbody>
+    </table>`
+      : '<p style="color: #64748B; font-size: 8.5pt;">No higher education entries recorded.</p>'
+  }
+
+  <h2>
+    <span>3. Professional Track Record & Past Project Assignments</span>
+    <span style="font-size: 8pt; font-weight: normal; color: #64748B;">Total: ${pastAssignments.length} Verified Projects</span>
+  </h2>
+  <div>
+    ${
+      pastAssignments.length > 0
+        ? pastAssignments
+            .map(
+              (a) => `
+      <div class="assignment-item">
+        <div class="assignment-head">
+          <span class="assignment-name">${a.projectName}</span>
+          <span class="assignment-duration">${a.duration} ${a.deploymentMonths ? `(${a.deploymentMonths} Mo)` : ''}</span>
+        </div>
+        <div class="assignment-subhead">
+          Role: <span class="assignment-role">${a.role}</span> &bull; Client / Authority: <span class="assignment-client">${a.client}</span>
+        </div>
+        <div class="assignment-desc">${a.coreResponsibilities}</div>
+        <div style="margin-top: 4px;">
+          ${(a.keyDeliverables || [])
+            .map((d) => `<span class="deliverable-pill">&bull; ${d}</span>`)
+            .join('')}
+        </div>
+        <div style="margin-top: 4px;">
+          ${(a.technologiesUsed || [])
+            .map((t) => `<span class="tag-pill">${t}</span>`)
+            .join('')}
+        </div>
+      </div>`
+            )
+            .join('')
+        : '<p style="color: #64748B; font-size: 8.5pt;">No past project assignments recorded.</p>'
+    }
+  </div>
+
+  <div class="declaration-box">
+    <strong>Statutory Certification Statement (Multilateral Tech-1 Standard):</strong><br />
+    I, the undersigned, certify that to the best of my knowledge and belief, this CV correctly describes myself, my qualifications, and my professional experience. I understand that any willful misstatement described herein may lead to disqualification or dismissal by the procuring entity.
+    <div class="sign-row">
+      <div class="sign-line">
+        Signature of Key Personnel &bull; Date: ${new Date().toLocaleDateString('en-GB')}
+      </div>
+      <div class="sign-line">
+        Authorized Bid Representative &bull; TenderTracker Command Center
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() { window.print(); }
+  </script>
+</body>
+</html>
+  `);
+  printWindow.document.close();
+};
+
+export const exportPersonnelDossierAsExcel = (user: UserProfile) => {
+  const escapeCSV = (val: unknown): string => {
+    if (val === null || val === undefined) return '""';
+    const str = String(val);
+    return `"${str.replace(/"/g, '""')}"`;
+  };
+
+  const rows: string[] = [];
+
+  // Title & Metadata
+  rows.push(`${escapeCSV('KEY PERSONNEL DOSSIER & PROFESSIONAL TRACK RECORD')},,,,`);
+  rows.push(`${escapeCSV('Generated Date')},${escapeCSV(new Date().toLocaleDateString('en-GB') + ' ' + new Date().toLocaleTimeString('en-GB'))},,,,`);
+  rows.push(`,,,,`);
+
+  // Personnel Profile Metadata
+  rows.push(`${escapeCSV('1. PERSONNEL PROFILE & STATUTORY DETAILS')},,,,`);
+  rows.push(`${escapeCSV('Full Name')},${escapeCSV(user.name)},,,,`);
+  rows.push(`${escapeCSV('Proposed Tender Designation')},${escapeCSV(user.proposedDesignation || user.title)},,,,`);
+  rows.push(`${escapeCSV('Official Title')},${escapeCSV(user.title)},,,,`);
+  rows.push(`${escapeCSV('Department')},${escapeCSV(user.department || 'Bid Operations & Strategy')},,,,`);
+  rows.push(`${escapeCSV('Employment Relationship')},${escapeCSV(user.employmentType || 'PERMANENT')},,,,`);
+  rows.push(`${escapeCSV('Email Address')},${escapeCSV(user.email)},,,,`);
+  rows.push(`${escapeCSV('Contact Phone')},${escapeCSV(user.phone || 'N/A')},,,,`);
+  rows.push(`${escapeCSV('Official Station / Location')},${escapeCSV(user.location || 'N/A')},,,,`);
+  rows.push(`,,,,`);
+
+  // Certifications
+  rows.push(`${escapeCSV('2. PROFESSIONAL CERTIFICATIONS')},,,,`);
+  if (user.certifications && user.certifications.length > 0) {
+    user.certifications.forEach((cert, idx) => {
+      rows.push(`${escapeCSV(`Certification #${idx + 1}`)},${escapeCSV(cert)},,,,`);
+    });
+  } else {
+    rows.push(`${escapeCSV('Certifications')},${escapeCSV('None recorded')},,,,`);
+  }
+  rows.push(`,,,,`);
+
+  // Education
+  rows.push(`${escapeCSV('3. ACADEMIC CREDENTIALS')},,,,`);
+  rows.push(`${escapeCSV('Degree')},${escapeCSV('Institution')},${escapeCSV('Graduation Year')},,`);
+  if (user.education && user.education.length > 0) {
+    user.education.forEach((edu) => {
+      rows.push(`${escapeCSV(edu.degree)},${escapeCSV(edu.institution)},${escapeCSV(edu.year || 'N/A')},,`);
+    });
+  } else {
+    rows.push(`${escapeCSV('No academic records recorded')},,,,`);
+  }
+  rows.push(`,,,,`);
+
+  // Past Project Assignments Ledger
+  rows.push(`${escapeCSV('4. PROFESSIONAL TRACK RECORD & PAST PROJECT ASSIGNMENTS')},,,,,,,,`);
+  rows.push(
+    [
+      escapeCSV('Assignment ID'),
+      escapeCSV('Project Name'),
+      escapeCSV('Client / Authority'),
+      escapeCSV('Role in Project'),
+      escapeCSV('Duration'),
+      escapeCSV('Deployment (Months)'),
+      escapeCSV('Key Deliverables'),
+      escapeCSV('Technologies & Stack'),
+      escapeCSV('Core Responsibilities'),
+    ].join(',')
+  );
+
+  if (user.pastAssignments && user.pastAssignments.length > 0) {
+    user.pastAssignments.forEach((a) => {
+      rows.push(
+        [
+          escapeCSV(a.id),
+          escapeCSV(a.projectName),
+          escapeCSV(a.client),
+          escapeCSV(a.role),
+          escapeCSV(a.duration),
+          escapeCSV(a.deploymentMonths || ''),
+          escapeCSV(a.keyDeliverables.join('; ')),
+          escapeCSV(a.technologiesUsed.join(', ')),
+          escapeCSV(a.coreResponsibilities),
+        ].join(',')
+      );
+    });
+  } else {
+    rows.push(`${escapeCSV('No project assignments recorded')},,,,,,,,`);
+  }
+
+  // Prepend UTF-8 BOM so Excel opens it with proper character encoding
+  const csvContent = '\uFEFF' + rows.join('\r\n');
+  const filename = `${user.name.replace(/\s+/g, '_')}_CV_Dossier.csv`;
+  downloadFile(csvContent, filename, 'text/csv;charset=utf-8;');
+};
+
+export const exportPersonnelDossierAsMarkdown = (user: UserProfile) => {
+  const lines = [
+    `# KEY PERSONNEL DOSSIER & CV SUMMARY`,
+    `**Name:** ${user.name}`,
+    `**Proposed Tender Designation:** ${user.proposedDesignation || user.title}`,
+    `**Official Title:** ${user.title}`,
+    `**Department:** ${user.department || 'Bid Operations & Strategy'}`,
+    `**Employment Relationship:** ${user.employmentType || 'PERMANENT'}`,
+    `**Contact:** ${user.email} | ${user.phone || 'N/A'} | ${user.location || 'N/A'}`,
+    ``,
+    `## Professional Certifications`,
+    ...(user.certifications || []).map((c) => `- ${c}`),
+    ``,
+    `## Academic Credentials`,
+    ...(user.education || []).map((e) => `- ${e.degree} — ${e.institution} (${e.year || 'N/A'})`),
+    ``,
+    `## Project Track Record & Past Assignments`,
+    ...(user.pastAssignments || []).map(
+      (a) =>
+        `### ${a.projectName}\n- **Client:** ${a.client}\n- **Role:** ${a.role}\n- **Duration:** ${a.duration} (${a.deploymentMonths || 'N/A'} months)\n- **Deliverables:** ${a.keyDeliverables.join(', ')}\n- **Technologies:** ${a.technologiesUsed.join(', ')}\n- **Responsibilities:** ${a.coreResponsibilities}\n`
+    ),
+    ``,
+    `---`,
+    `*Generated by TenderTracker Command Center on ${new Date().toLocaleDateString('en-GB')}*`,
+  ];
+  const content = lines.join('\n');
+  downloadFile(content, `${user.name.replace(/\s+/g, '_')}_CV_Dossier.md`, 'text/markdown');
+};
+
+export const exportPersonnelDossierAsJSON = (user: UserProfile) => {
+  const content = JSON.stringify(user, null, 2);
+  downloadFile(content, `${user.name.replace(/\s+/g, '_')}_profile.json`, 'application/json');
+};
+
 

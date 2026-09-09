@@ -7,7 +7,7 @@ import {
   Printer,
   ChevronDown,
 } from 'lucide-react';
-import { Tender } from '../../types/tender';
+import { Tender, UserProfile } from '../../types/tender';
 import {
   exportTenderAsJSON,
   exportTenderAsMarkdown,
@@ -17,11 +17,16 @@ import {
   exportPipelineAsMarkdown,
   exportPipelineAsWord,
   exportPipelineAsPDF,
+  exportPersonnelDossierAsPDF,
+  exportPersonnelDossierAsExcel,
+  exportPersonnelDossierAsMarkdown,
+  exportPersonnelDossierAsJSON,
 } from '../../utils/exportUtils';
 
 interface ExportDropdownProps {
   tender?: Tender;
   tenders?: Tender[];
+  user?: UserProfile;
   label?: string;
   className?: string;
 }
@@ -29,6 +34,7 @@ interface ExportDropdownProps {
 export const ExportDropdown: React.FC<ExportDropdownProps> = ({
   tender,
   tenders,
+  user,
   label = 'Export',
   className = '',
 }) => {
@@ -51,7 +57,22 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({
   const handleExport = (format: 'PDF' | 'DOCX' | 'MD' | 'JSON') => {
     setIsOpen(false);
 
-    if (tender) {
+    if (user) {
+      switch (format) {
+        case 'PDF':
+          exportPersonnelDossierAsPDF(user);
+          break;
+        case 'DOCX':
+          exportPersonnelDossierAsExcel(user);
+          break;
+        case 'MD':
+          exportPersonnelDossierAsMarkdown(user);
+          break;
+        case 'JSON':
+          exportPersonnelDossierAsJSON(user);
+          break;
+      }
+    } else if (tender) {
       switch (format) {
         case 'PDF':
           exportTenderAsPDF(tender);
@@ -108,7 +129,7 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({
                 <div>
                   <span className="font-semibold block text-xs">PDF Document</span>
                   <span className="text-[10px] text-[#64748B]">
-                    Print / save as .pdf
+                    {user ? 'Print / save Tech-1 CV' : 'Print / save as .pdf'}
                   </span>
                 </div>
               </div>
@@ -120,15 +141,19 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({
               className="w-full text-left px-3 py-2 rounded-md hover:bg-[#F8FAFC] text-[#0F172A] flex items-center justify-between group transition-colors"
             >
               <div className="flex items-center gap-2.5">
-                <FileSpreadsheet className="w-4 h-4 text-[#2563EB]" />
+                <FileSpreadsheet className={`w-4 h-4 ${user ? 'text-[#16A34A]' : 'text-[#2563EB]'}`} />
                 <div>
-                  <span className="font-semibold block text-xs">Word Document</span>
+                  <span className="font-semibold block text-xs">
+                    {user ? 'Excel Spreadsheet' : 'Word Document'}
+                  </span>
                   <span className="text-[10px] text-[#64748B]">
-                    Editable .docx / .doc
+                    {user ? 'Project ledger .csv' : 'Editable .docx / .doc'}
                   </span>
                 </div>
               </div>
-              <span className="font-mono text-[10px] text-[#94A3B8] font-bold">.docx</span>
+              <span className="font-mono text-[10px] text-[#94A3B8] font-bold">
+                {user ? '.csv' : '.docx'}
+              </span>
             </button>
 
             <button
