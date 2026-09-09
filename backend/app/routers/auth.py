@@ -8,6 +8,7 @@ from app.schemas.user import UserLogin, Token, UserProfile, UserCreate
 
 router = APIRouter(prefix="/auth", tags=["Authentication & Team"])
 
+
 @router.post("/login", response_model=Token)
 def login(login_data: UserLogin, db: Session = Depends(get_db)):
     clean_email = login_data.email.strip().lower()
@@ -32,19 +33,23 @@ def login(login_data: UserLogin, db: Session = Depends(get_db)):
         "user": user,
     }
 
+
 @router.get("/team", response_model=List[UserProfile])
 def get_team_members(db: Session = Depends(get_db)):
     return db.query(User).all()
+
 
 @router.post("/team", response_model=UserProfile, status_code=status.HTTP_201_CREATED)
 def create_team_member(member: UserCreate, db: Session = Depends(get_db)):
     existing = db.query(User).filter(User.email == member.email).first()
     if existing:
-        raise HTTPException(status_code=400, detail="User with this email already exists")
-    
+        raise HTTPException(
+            status_code=400, detail="User with this email already exists"
+        )
+
     count = db.query(User).count()
     user_id = f"USR-0{count + 1}"
-    
+
     db_user = User(
         id=user_id,
         name=member.name,

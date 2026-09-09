@@ -22,10 +22,8 @@ import {
   Shield,
   GraduationCap,
   Award,
-  AlertTriangle,
   FileText,
   UserCheck,
-  Clock,
 } from 'lucide-react';
 
 const EMPLOYMENT_TYPE_CONFIG: Record<
@@ -105,7 +103,6 @@ export const UserProfilePage: React.FC = () => {
     coreResponsibilities: '',
   });
 
-  // Calculate live workload stats for targetUser
   const memberName = (targetUser.name || '').toLowerCase();
   const assignedTasks = tenders.flatMap((t) =>
     (t.tasks || []).filter(
@@ -126,14 +123,6 @@ export const UserProfilePage: React.FC = () => {
       targetUser.activeTenderRoles && targetUser.activeTenderRoles[t.id];
     return isLead || hasTasks || hasRoleInMap;
   });
-
-  const maxCap = targetUser.maxCapacity || 5;
-  const loadPercent = Math.min(
-    100,
-    Math.round(((activeTenders.length * 1.5 + assignedTasks.length * 0.5) / maxCap) * 50)
-  );
-  const isOverallocated = loadPercent >= 85;
-  const isNearCapacity = loadPercent >= 65 && loadPercent < 85;
 
   const handleCopyDesignation = () => {
     const textToCopy =
@@ -439,90 +428,6 @@ export const UserProfilePage: React.FC = () => {
                 </>
               )}
             </button>
-          </div>
-        </div>
-      </Card>
-
-      {/* PILLAR 5: Workload & Capacity Management Sentinel */}
-      <Card
-        title="Live Workload & Capacity Sentinel"
-        subtitle="Real-time bandwidth calculation across assigned tenders and operational tasks to prevent team burnout"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-          {/* Capacity Meter */}
-          <div className="md:col-span-2 space-y-3">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-[#0F172A]">
-                Resource Bandwidth Utilization
-              </span>
-              <span
-                className={`font-mono font-bold text-sm ${
-                  isOverallocated
-                    ? 'text-[#DC2626]'
-                    : isNearCapacity
-                    ? 'text-[#D97706]'
-                    : 'text-[#16A34A]'
-                }`}
-              >
-                {loadPercent}% Capacity Load ({activeTenders.length} active tenders / {maxCap} max concurrent)
-              </span>
-            </div>
-
-            {/* Visual Progress Bar */}
-            <div className="w-full h-3 bg-[#F1F5F9] rounded-full overflow-hidden p-0.5 border border-[#E2E8F0]">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${
-                  isOverallocated
-                    ? 'bg-gradient-to-r from-[#DC2626] to-[#EF4444]'
-                    : isNearCapacity
-                    ? 'bg-gradient-to-r from-[#D97706] to-[#F59E0B]'
-                    : 'bg-gradient-to-r from-[#16A34A] to-[#22C55E]'
-                }`}
-                style={{ width: `${Math.min(100, Math.max(5, loadPercent))}%` }}
-              />
-            </div>
-
-            {/* Indicator explanation */}
-            <div className="flex items-center justify-between text-[11px] text-[#64748B]">
-              <span>Optimal Bandwidth (0 - 64%)</span>
-              <span>Near Capacity (65 - 84%)</span>
-              <span>Overallocated Risk (85%+)</span>
-            </div>
-          </div>
-
-          {/* Burnout Risk Assessment Card */}
-          <div
-            className={`p-4 rounded-xl border flex items-start gap-3 ${
-              isOverallocated
-                ? 'bg-[#FEF2F2] border-[#FCA5A5] text-[#991B1B]'
-                : isNearCapacity
-                ? 'bg-[#FFFBEB] border-[#FDE68A] text-[#92400E]'
-                : 'bg-[#F0FDF4] border-[#BBF7D0] text-[#166534]'
-            }`}
-          >
-            {isOverallocated ? (
-              <AlertTriangle className="w-5 h-5 shrink-0 text-[#DC2626] mt-0.5" />
-            ) : isNearCapacity ? (
-              <Clock className="w-5 h-5 shrink-0 text-[#D97706] mt-0.5" />
-            ) : (
-              <Check className="w-5 h-5 shrink-0 text-[#16A34A] mt-0.5" />
-            )}
-            <div>
-              <div className="font-bold text-xs">
-                {isOverallocated
-                  ? 'Overallocated — High Burnout Risk'
-                  : isNearCapacity
-                  ? 'High Load — Balanced Capacity'
-                  : 'Healthy Bandwidth — Available for Bids'}
-              </div>
-              <p className="text-[11px] mt-0.5 leading-relaxed opacity-90">
-                {isOverallocated
-                  ? 'This specialist is engaged across multiple critical path deliverables. Reassign secondary tasks to avoid delivery delays.'
-                  : isNearCapacity
-                  ? 'Approaching maximum capacity ceiling. Additional proposal assignments should be balanced with team co-leads.'
-                  : 'Sufficient bandwidth available. Suitable for assignment as Lead Author or Primary Evaluator on upcoming tenders.'}
-              </p>
-            </div>
           </div>
         </div>
       </Card>
