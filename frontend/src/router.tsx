@@ -32,6 +32,10 @@ import { ClientVisitsPage } from './pages/ClientVisitsPage';
 
 export const router = createBrowserRouter([
   {
+    path: '/',
+    element: <LoginPage />,
+  },
+  {
     path: '/login',
     element: <LoginPage />,
   },
@@ -44,15 +48,10 @@ export const router = createBrowserRouter([
     element: <PartnerPortalPage />,
   },
   {
-    path: '/',
     element: <AppLayout />,
     children: [
       {
-        index: true,
-        element: <Navigate to="/login" replace />,
-      },
-      {
-        path: 'dashboard',
+        path: '/dashboard',
         element: <DashboardPage />,
       },
       {
