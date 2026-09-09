@@ -10,8 +10,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isJvOnly = initialMode === 'PARTNER' || location.pathname === '/jv' || location.pathname === '/login/jv';
-  const defaultMode = isJvOnly ? 'PARTNER' : (initialMode || 'INTERNAL');
-  const [authMode, setAuthMode] = useState<'INTERNAL' | 'PARTNER'>(defaultMode);
+  const authMode: 'INTERNAL' | 'PARTNER' = isJvOnly ? 'PARTNER' : (initialMode || 'INTERNAL');
 
   // Internal Form State
   const [email, setEmail] = useState('s.jenkins@tendertracker.enterprise');
@@ -66,7 +65,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
           </p>
         </div>
 
-        {/* Subheader / Mode Switcher */}
+        {/* Subheader Badge */}
         {isJvOnly ? (
           <div className="bg-[#ECFDF5] px-5 py-2.5 border-b border-[#A7F3D0] flex items-center justify-between text-xs font-semibold text-[#065F46]">
             <div className="flex items-center gap-2">
@@ -78,37 +77,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
             </span>
           </div>
         ) : (
-          <div className="grid grid-cols-2 bg-[#F1F5F9] p-1 border-b border-[#E2E8F0] text-xs font-semibold">
-            <button
-              type="button"
-              onClick={() => setAuthMode('INTERNAL')}
-              className={`py-2 text-center rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                authMode === 'INTERNAL'
-                  ? 'bg-white text-[#0F172A] shadow-xs'
-                  : 'text-[#64748B] hover:text-[#0F172A]'
-              }`}
-            >
-              <User className="w-3.5 h-3.5 text-[#2563EB]" />
-              <span>Internal Bid Team</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setAuthMode('PARTNER')}
-              className={`py-2 text-center rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                authMode === 'PARTNER'
-                  ? 'bg-white text-[#0F172A] shadow-xs'
-                  : 'text-[#64748B] hover:text-[#0F172A]'
-              }`}
-            >
-              <Building2 className="w-3.5 h-3.5 text-[#10B981]" />
-              <span>JV / Partner Portal</span>
-            </button>
+          <div className="bg-[#EFF6FF] px-5 py-2.5 border-b border-[#BFDBFE] flex items-center justify-between text-xs font-semibold text-[#1D4ED8]">
+            <div className="flex items-center gap-2">
+              <User className="w-4 h-4 text-[#2563EB]" />
+              <span>Internal Bid Team Access</span>
+            </div>
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-white text-[#2563EB] border border-[#BFDBFE]">
+              SSO / RBAC
+            </span>
           </div>
         )}
 
         {/* Login Form */}
         <form onSubmit={handleLogin} className="p-6 space-y-4 text-xs">
-          {authMode === 'INTERNAL' && !isJvOnly ? (
+          {!isJvOnly ? (
             <>
               <div>
                 <label className="block font-semibold text-[#0F172A] mb-1">
@@ -247,12 +229,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
             <button
               type="submit"
               className={`w-full py-2.5 text-white rounded-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-md cursor-pointer ${
-                authMode === 'INTERNAL' && !isJvOnly
+                !isJvOnly
                   ? 'bg-[#0F172A] hover:bg-[#1E293B]'
                   : 'bg-[#059669] hover:bg-[#047857]'
               }`}
             >
-              <span>{authMode === 'INTERNAL' && !isJvOnly ? 'Access Command Center' : 'Access Partner Workspace'}</span>
+              <span>{!isJvOnly ? 'Access Command Center' : 'Access Partner Workspace'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -266,8 +248,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
             </a>
           </div>
         ) : (
-          <div className="p-3 bg-[#F8FAFC] border-t border-[#F1F5F9] text-center text-[11px] text-[#94A3B8]">
-            RBAC Protected • Local SSD Encrypted Vault • v2.18.0
+          <div className="p-3 bg-[#F8FAFC] border-t border-[#E2E8F0] text-center text-[11px] text-[#64748B]">
+            Joint Venture or Consortium Partner?{' '}
+            <a href="/jv" className="text-[#059669] font-bold hover:underline">
+              Access JV Partner Portal →
+            </a>
           </div>
         )}
       </div>
