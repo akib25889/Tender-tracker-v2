@@ -83,6 +83,70 @@ export const TEAM_PROFILES: UserProfile[] = [
         coreResponsibilities:
           'Authored technical compliance matrix across 420 statutory clauses with 100% compliance clearance.',
       },
+      {
+        id: 'PA-008',
+        projectName: 'Sovereign Cloud Data Center & Disaster Recovery Infrastructure',
+        client: 'Bangladesh Computer Council (BCC), ICT Division',
+        role: 'Lead Procurement Capture Director',
+        duration: 'Aug 2021 - Apr 2022',
+        deploymentMonths: 9,
+        keyDeliverables: [
+          'Tier-IV Data Center Tender Dossier',
+          'Dual-Active Site SLA Framework',
+          'Hardware OEM Consortium Packaging',
+        ],
+        technologiesUsed: ['OpenStack', 'Ceph Storage', 'Figma', 'LaTeX', 'BIM 360'],
+        coreResponsibilities:
+          'Spearheaded procurement structuring and consortium negotiations across 4 international OEMs, ensuring 100% statutory clearance under World Bank guidelines.',
+      },
+      {
+        id: 'PA-009',
+        projectName: 'National Automated Revenue Management & VAT Electronic Invoicing',
+        client: 'National Board of Revenue (NBR)',
+        role: 'Commercial Bid Strategist & Principal Architect',
+        duration: 'Jan 2020 - Oct 2020',
+        deploymentMonths: 10,
+        keyDeliverables: [
+          'Real-Time VAT Transaction Gateway',
+          'High-Throughput Fiscal Audit Matrix',
+          'Cybersecurity Baseline Compliance',
+        ],
+        technologiesUsed: ['PostgreSQL', 'Kafka', 'ISO 27001', 'Docker', 'Python'],
+        coreResponsibilities:
+          'Drafted technical response across 350 statutory specifications and managed consortium financial rate structures, securing contract award of $6.8M.',
+      },
+      {
+        id: 'PA-010',
+        projectName: 'Multi-Modal Transport Ticketing & AFC Interoperability Hub',
+        client: 'Dhaka Transport Coordination Authority (DTCA)',
+        role: 'Senior Tender Operations Lead',
+        duration: 'Mar 2019 - Dec 2019',
+        deploymentMonths: 10,
+        keyDeliverables: [
+          'Rapid Pass Clearinghouse Architecture',
+          'Bank Settlement Protocol',
+          'Consortium JV Governance Framework',
+        ],
+        technologiesUsed: ['ISO 8583', 'C++', 'Oracle RAC', 'FastAPI'],
+        coreResponsibilities:
+          'Negotiated JV allocation percentages and authored procurement risk matrices preventing $1.2M in foreign exchange hedging exposure.',
+      },
+      {
+        id: 'PA-011',
+        projectName: 'Smart City CCTV Surveillance & Integrated Command Control Center',
+        client: 'Dhaka North City Corporation (DNCC)',
+        role: 'Proposal Author & Systems Integration Specialist',
+        duration: 'Jul 2018 - Feb 2019',
+        deploymentMonths: 8,
+        keyDeliverables: [
+          'Optical Fiber Backbone SOW',
+          'AI Edge Analytics Camera BOQ',
+          '24/7 Operations Center SLA',
+        ],
+        technologiesUsed: ['Milestone XProtect', 'Kubernetes', 'MQTT', 'GIS Mapping'],
+        coreResponsibilities:
+          'Synthesized vendor compliance statements across 500+ statutory clauses with zero non-conformances.',
+      },
     ],
   },
   {

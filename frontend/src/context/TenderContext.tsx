@@ -1888,7 +1888,10 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
             return {
               ...seed,
               ...p,
-              pastAssignments: p.pastAssignments && p.pastAssignments.length > 0 ? p.pastAssignments : seed.pastAssignments,
+              pastAssignments:
+                p.pastAssignments && p.pastAssignments.length >= (seed.pastAssignments || []).length
+                  ? p.pastAssignments
+                  : seed.pastAssignments,
               certifications: p.certifications && p.certifications.length > 0 ? p.certifications : seed.certifications,
               education: p.education && p.education.length > 0 ? p.education : seed.education,
               activeTenderRoles: p.activeTenderRoles || seed.activeTenderRoles,
