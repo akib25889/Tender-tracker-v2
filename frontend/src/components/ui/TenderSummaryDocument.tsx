@@ -13,7 +13,7 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
       ? new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
       : date || '';
 
-  const Row = ({ label, value }: { label: string; value?: string | null }) => (
+  const Row = ({ label, value }: { label: string; value?: React.ReactNode }) => (
     <tr className="border-b border-[#E8EDF2] last:border-0">
       <td
         className="py-2.5 px-4 font-semibold text-[#1A2B4A] bg-[#F0F4F8] w-56 text-sm align-top border-r border-[#E8EDF2]"
@@ -95,6 +95,22 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
             <Row label="Client / Organization" value={tender.organization} />
             <Row label="Portal" value={s?.portal} />
             <Row label="Tender Type / Classification" value={tender.tenderType || s?.tenderType} />
+            {tender.aiChatShareLink && (
+              <Row
+                label="AI Knowledge / Chat Link"
+                value={
+                  <a
+                    href={tender.aiChatShareLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#1D4ED8] underline hover:text-[#1E40AF] font-mono text-xs break-all inline-flex items-center gap-1"
+                  >
+                    <span>{tender.aiChatShareLink}</span>
+                    <span className="no-underline text-xs">↗</span>
+                  </a>
+                }
+              />
+            )}
             <Row
               label="Procurement Modality & Stage"
               value={

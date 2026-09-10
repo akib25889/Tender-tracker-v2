@@ -143,6 +143,7 @@ interface TenderContextType {
   currency: CurrencyMode;
   setCurrency: (c: CurrencyMode) => void;
   formatCurrency: (amountInUSD: number) => string;
+  updateTenderAiChatLink: (tenderId: string, link: string) => Promise<void>;
   // Category Management
   categories: TenderCategory[];
   addCategory: (categoryData: { name: string; description?: string; color_badge?: string }) => Promise<TenderCategory | null>;
@@ -527,6 +528,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                   : existing?.importantClauses || [],
                 postAward: dbt.post_award_data || existing?.postAward,
                 financialModel: dbt.financial_model || existing?.financialModel,
+                aiChatShareLink: dbt.ai_chat_share_link || existing?.aiChatShareLink,
               });
             }
             return Array.from(map.values());
@@ -1118,6 +1120,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       financialModel: tenderData.financialModel,
       summary: tenderData.summary,
       importantClauses: tenderData.importantClauses || [],
+      aiChatShareLink: tenderData.aiChatShareLink,
     };
 
     // Persist new tender to FastAPI backend
@@ -1162,6 +1165,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         tender_security_method: newTender.tenderSecurityMethod,
         post_award_data: newTender.postAward,
         financial_model: newTender.financialModel || {},
+        ai_chat_share_link: newTender.aiChatShareLink,
         stage: newTender.stage,
         decision: newTender.decision,
         priority: newTender.priority,
@@ -1248,6 +1252,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (updates.readinessScore !== undefined) payload.readiness_score = updates.readinessScore;
     if (updates.importantClauses !== undefined) payload.important_clauses = updates.importantClauses;
     if (updates.summary !== undefined) payload.summary_json = JSON.stringify(updates.summary);
+    if (updates.aiChatShareLink !== undefined) payload.ai_chat_share_link = updates.aiChatShareLink;
 
     if (Object.keys(payload).length > 0) {
       fetch(`http://127.0.0.1:8000/api/tenders/${id}`, {
@@ -1260,6 +1265,22 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     setTenders((prev) =>
       prev.map((t) => (t.id === id ? { ...t, ...updates } : t))
     );
+  };
+
+  const updateTenderAiChatLink = async (tenderId: string, link: string) => {
+    const trimmed = link.trim();
+    setTenders((prev) =>
+      prev.map((t) => (t.id === tenderId ? { ...t, aiChatShareLink: trimmed } : t))
+    );
+    try {
+      await fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/ai-chat-link`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ai_chat_share_link: trimmed || null }),
+      });
+    } catch (err) {
+      console.error('Failed to sync AI chat link to backend', err);
+    }
   };
 
   const deleteTender = (id: string) => {
@@ -2415,6 +2436,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         currency,
         setCurrency,
         formatCurrency,
+        updateTenderAiChatLink,
         categories,
         addCategory,
         updateCategory,

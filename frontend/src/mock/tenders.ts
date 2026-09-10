@@ -18,6 +18,7 @@ export const MOCK_TENDERS: Tender[] = [
     country: "Ghana and Côte d'Ivoire (pilot markets)",
     category: 'Software / IT Related',
     estimatedValue: 0,
+    aiChatShareLink: 'https://chatgpt.com/share/67a213ff-acri-ratings-platform-knowledge',
     tenderType: 'International Competitive Bidding (ICB)',
     budgetType: 'Grant / Aid Budget',
     sourceOfFund: 'UNDP / UN Agencies',

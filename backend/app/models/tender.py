@@ -61,6 +61,8 @@ class Tender(Base):
     post_award_data = Column(JSON, nullable=True, default=dict)
     # Financial Scenarios & Cash Flow Rules Model (Unified JSON)
     financial_model = Column(JSON, nullable=True, default=dict)
+    # External AI Context & Chat Session Link
+    ai_chat_share_link = Column(Text, nullable=True)
     archived_from_stage = Column(String(50), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(

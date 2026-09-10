@@ -139,6 +139,7 @@ class TenderBase(BaseModel):
     post_award_data: Optional[Dict[str, Any]] = None
     # Financial Scenarios & Cash Flow Rules Model (Unified JSON)
     financial_model: Optional[Dict[str, Any]] = None
+    ai_chat_share_link: Optional[str] = None
 
 
 class TenderCreate(TenderBase):
@@ -193,7 +194,12 @@ class TenderUpdate(BaseModel):
     tender_security_method: Optional[str] = None
     post_award_data: Optional[Dict[str, Any]] = None
     financial_model: Optional[Dict[str, Any]] = None
+    ai_chat_share_link: Optional[str] = None
     archived_from_stage: Optional[str] = None
+
+
+class AiChatLinkUpdate(BaseModel):
+    ai_chat_share_link: Optional[str] = None
 
 
 class TenderOut(TenderBase):

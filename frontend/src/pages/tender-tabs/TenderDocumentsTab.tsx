@@ -22,6 +22,10 @@ import {
   Clock,
   Send,
   Eye,
+  Sparkles,
+  ExternalLink,
+  Edit3,
+  Copy,
 } from 'lucide-react';
 import { DocumentPreviewModal } from '../../components/modals/DocumentPreviewModal';
 
@@ -74,9 +78,50 @@ export const TenderDocumentsTab: React.FC = () => {
     requestNewDocumentUpload,
     resolveDocumentReupload,
     companyProfiles,
+    updateTenderAiChatLink,
   } = useTenders();
 
   const tender = tenders.find((t) => t.id === id) || tenders[0];
+
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [aiLinkInput, setAiLinkInput] = useState('');
+  const [isSavingAiLink, setIsSavingAiLink] = useState(false);
+  const [copiedAiLink, setCopiedAiLink] = useState(false);
+
+  const handleOpenAiModal = () => {
+    setAiLinkInput(tender?.aiChatShareLink || '');
+    setIsAiModalOpen(true);
+  };
+
+  const handleSaveAiChatLink = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setIsSavingAiLink(true);
+    try {
+      await updateTenderAiChatLink(tender.id, aiLinkInput.trim());
+      setIsAiModalOpen(false);
+    } finally {
+      setIsSavingAiLink(false);
+    }
+  };
+
+  const handleClearAiChatLink = async () => {
+    setIsSavingAiLink(true);
+    try {
+      await updateTenderAiChatLink(tender.id, '');
+      setAiLinkInput('');
+      setIsAiModalOpen(false);
+    } finally {
+      setIsSavingAiLink(false);
+    }
+  };
+
+  const handleCopyAiLink = () => {
+    if (tender?.aiChatShareLink) {
+      navigator.clipboard.writeText(tender.aiChatShareLink);
+      setCopiedAiLink(true);
+      setTimeout(() => setCopiedAiLink(false), 2000);
+    }
+  };
 
   const [activeFolderFilter, setActiveFolderFilter] = useState<string>('ALL');
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
@@ -397,6 +442,89 @@ export const TenderDocumentsTab: React.FC = () => {
             className="text-emerald-700 hover:text-emerald-900 p-1"
           >
             <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* AI KNOWLEDGE SESSION BANNER / INTEGRATION CARD */}
+      {tender.aiChatShareLink ? (
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-violet-50 via-purple-50 to-indigo-50 border border-violet-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-violet-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-sm font-bold text-[#0F172A]">
+                  AI Tender Assistant &amp; Indexed Document Session
+                </h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-violet-100 text-violet-800 border border-violet-200">
+                  Ready to Query
+                </span>
+              </div>
+              <p className="text-xs text-[#475569] leading-relaxed max-w-2xl">
+                This tender&apos;s RFP specs, BOQs, and requirements are pre-uploaded in your external AI session. Team members can query specifications without re-uploading large PDF batches.
+              </p>
+              <div className="pt-0.5 flex items-center gap-2 text-[11px] font-mono text-violet-900 truncate max-w-md">
+                <span className="text-[#64748B] font-sans font-medium">Link:</span>
+                <span className="truncate">{tender.aiChatShareLink}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 shrink-0 self-start md:self-center">
+            <button
+              type="button"
+              onClick={handleCopyAiLink}
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-violet-200 hover:bg-violet-100/60 text-violet-700 text-xs font-semibold rounded-xl transition-colors shadow-2xs"
+              title="Copy AI chat link to clipboard"
+            >
+              {copiedAiLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copiedAiLink ? 'Link Copied' : 'Copy Link'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleOpenAiModal}
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-violet-200 hover:bg-violet-100/60 text-violet-700 text-xs font-semibold rounded-xl transition-colors shadow-2xs"
+              title="Edit or update AI chat link"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+              <span>Change Link</span>
+            </button>
+            <a
+              href={tender.aiChatShareLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Open AI Chat</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        </div>
+      ) : (
+        <div className="p-4 rounded-2xl bg-[#F8FAFC] border border-dashed border-violet-300 hover:border-violet-400 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shrink-0">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-[#0F172A]">
+                Connect Pre-Indexed AI Chat Session (ChatGPT / Claude / NotebookLM / Gemini)
+              </h4>
+              <p className="text-[11px] text-[#64748B] leading-relaxed">
+                Save an external AI conversation link where tender files are pre-loaded so you and your team don&apos;t have to upload all documents again.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleOpenAiModal}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-violet-50 hover:bg-violet-100 text-violet-800 border border-violet-200 text-xs font-semibold rounded-lg transition-colors shadow-2xs shrink-0 self-start sm:self-center"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-violet-600" />
+            <span>+ Link AI Chat Session</span>
           </button>
         </div>
       )}
@@ -1514,6 +1642,114 @@ export const TenderDocumentsTab: React.FC = () => {
           }
         }}
       />
+
+      {/* AI Knowledge Session Link Modal */}
+      {isAiModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-2xl max-w-lg w-full p-6 space-y-5 animate-scaleIn">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center text-violet-700">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#0F172A]">AI Knowledge &amp; Chat Session</h3>
+                  <p className="text-xs text-[#64748B]">Tender: <span className="font-semibold text-[#0F172A]">{tender.id}</span></p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAiModalOpen(false)}
+                className="text-[#94A3B8] hover:text-[#0F172A] text-lg font-bold p-1 rounded-md"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-[#475569] leading-relaxed">
+              Link an external AI chat or notebook (e.g. <strong>ChatGPT Shared Chat</strong>, <strong>Google NotebookLM</strong>, <strong>Claude Project</strong>, or <strong>Gemini</strong>) where this tender&apos;s documents are already uploaded. Anyone on the bid team can launch it without re-uploading documents.
+            </p>
+
+            <form onSubmit={handleSaveAiChatLink} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-[#0F172A] mb-1.5">
+                  AI Chat / Notebook Share URL
+                </label>
+                <input
+                  type="url"
+                  value={aiLinkInput}
+                  onChange={(e) => setAiLinkInput(e.target.value)}
+                  placeholder="https://chatgpt.com/share/... or https://notebooklm.google.com/notebook/..."
+                  className="w-full px-3.5 py-2.5 text-xs text-[#0F172A] bg-white border border-[#CBD5E1] rounded-xl focus:outline-hidden focus:ring-2 focus:ring-violet-500 focus:border-violet-500 placeholder:text-[#94A3B8]"
+                  autoFocus
+                />
+                <div className="flex items-center gap-2 mt-2 text-[11px] text-[#64748B]">
+                  <span className="font-semibold">Compatible:</span>
+                  <span>ChatGPT Shares</span> • <span>NotebookLM</span> • <span>Claude Projects</span> • <span>Gemini</span>
+                </div>
+              </div>
+
+              {tender.aiChatShareLink && (
+                <div className="flex items-center justify-between p-3 rounded-xl bg-violet-50/80 border border-violet-100 text-xs">
+                  <div className="truncate max-w-[260px] text-violet-900 font-mono text-[11px]">
+                    {tender.aiChatShareLink}
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={handleCopyAiLink}
+                      className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-violet-200 hover:bg-violet-100/50 rounded-md text-[11px] font-semibold text-violet-700 transition-colors"
+                    >
+                      {copiedAiLink ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedAiLink ? 'Copied' : 'Copy'}</span>
+                    </button>
+                    <a
+                      href={tender.aiChatShareLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-2 py-1 bg-violet-600 hover:bg-violet-700 text-white rounded-md text-[11px] font-semibold transition-colors"
+                    >
+                      <span>Open</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between pt-3 border-t border-[#F1F5F9]">
+                {tender.aiChatShareLink ? (
+                  <button
+                    type="button"
+                    onClick={handleClearAiChatLink}
+                    disabled={isSavingAiLink}
+                    className="text-xs font-semibold text-red-600 hover:text-red-700 hover:underline transition-colors"
+                  >
+                    Remove Link
+                  </button>
+                ) : <div />}
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsAiModalOpen(false)}
+                    className="px-4 py-2 text-xs font-semibold text-[#475569] hover:bg-[#F1F5F9] rounded-xl transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSavingAiLink}
+                    className="px-4 py-2 text-xs font-semibold text-white bg-violet-600 hover:bg-violet-700 disabled:opacity-50 rounded-xl transition-colors shadow-2xs inline-flex items-center gap-1.5"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>{isSavingAiLink ? 'Saving...' : 'Save AI Link'}</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

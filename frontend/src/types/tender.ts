@@ -339,6 +339,7 @@ export interface TenderExtendedSummary {
   procurementMethod?: string;
   postAward?: PostAwardData;
   financialModel?: TenderFinancialModel;
+  aiChatShareLink?: string;
 }
 
 export interface PostAwardData {
@@ -430,6 +431,7 @@ export interface Tender {
   archivedFromStage?: TenderStage;
   archivedAt?: string;
   importantClauses?: ImportantClause[];
+  aiChatShareLink?: string;
 }
 
 export type ClauseCriticality = 'CRITICAL' | 'HIGH' | 'MEDIUM';

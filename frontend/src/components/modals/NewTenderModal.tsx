@@ -19,6 +19,7 @@ import {
   Check,
   FileText,
   CreditCard,
+  Sparkles,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 import {
@@ -176,6 +177,8 @@ export const NewTenderModal: React.FC = () => {
   const [priority, setPriority] = useState<TenderPriority>('HIGH');
   const [category, setCategory] = useState('IT & Cloud Infrastructure');
   const [isCustomCategory, setIsCustomCategory] = useState(false);
+
+  const [aiChatShareLink, setAiChatShareLink] = useState('');
 
   // Procurement Governance & Sourcing Attributes (Req #21)
   const [tenderType, setTenderType] = useState<string>('International Competitive Bidding (ICB)');
@@ -558,6 +561,7 @@ export const NewTenderModal: React.FC = () => {
       tenderDocPrice: tenderDocPrice || undefined,
       tenderSecurityAmount: tenderSecurityAmount ? Number(tenderSecurityAmount) : undefined,
       tenderSecurityMethod: tenderSecurityMethod || undefined,
+      aiChatShareLink: aiChatShareLink.trim() || undefined,
       summary: {
         classification,
         projectName,
@@ -950,6 +954,24 @@ export const NewTenderModal: React.FC = () => {
                     </select>
                   )}
                 </div>
+              </div>
+
+              {/* AI Chat & Document Knowledge Share Link */}
+              <div className="p-3.5 bg-violet-50/70 rounded-xl border border-violet-200 space-y-1.5">
+                <label className="block text-xs font-bold text-violet-950 flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-violet-600" />
+                  <span>AI Chat &amp; Document Knowledge Link (ChatGPT / Claude / NotebookLM / Gemini)</span>
+                </label>
+                <input
+                  type="url"
+                  placeholder="e.g. https://chatgpt.com/share/67a213ff... or https://notebooklm.google.com/notebook/..."
+                  value={aiChatShareLink}
+                  onChange={(e) => setAiChatShareLink(e.target.value)}
+                  className="w-full px-3 py-2 bg-white border border-violet-200 rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-hidden focus:ring-1 focus:ring-violet-500 focus:border-violet-500 font-mono"
+                />
+                <p className="text-[11px] text-[#64748B]">
+                  Optional: Link an external AI conversation or notebook where documents have been pre-loaded to avoid uploading files again.
+                </p>
               </div>
 
               {/* Currency & Financial Valuation */}

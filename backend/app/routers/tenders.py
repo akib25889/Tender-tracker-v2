@@ -14,6 +14,7 @@ from app.schemas.tender import (
     SignOffRequest,
     DecisionMatrixIn,
     DecisionMatrixOut,
+    AiChatLinkUpdate,
 )
 from app.services.storage import ensure_tender_directories
 
@@ -130,6 +131,7 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
         eoi_shortlist_status=tender_in.eoi_shortlist_status,
         post_award_data=tender_in.post_award_data,
         financial_model=tender_in.financial_model or {},
+        ai_chat_share_link=tender_in.ai_chat_share_link,
     )
     db.add(db_tender)
     db.flush()
@@ -199,6 +201,21 @@ def update_tender(tender_id: str, updates: TenderUpdate, db: Session = Depends(g
     db.commit()
     db.refresh(tender)
     return tender
+
+
+@router.patch("/{tender_id}/ai-chat-link")
+def update_ai_chat_link(
+    tender_id: str,
+    payload: AiChatLinkUpdate,
+    db: Session = Depends(get_db),
+):
+    tender = db.query(Tender).filter(Tender.id == tender_id).first()
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
+    tender.ai_chat_share_link = payload.ai_chat_share_link
+    db.commit()
+    db.refresh(tender)
+    return {"id": tender.id, "ai_chat_share_link": tender.ai_chat_share_link}
 
 
 @router.post("/{tender_id}/decision", response_model=DecisionMatrixOut)

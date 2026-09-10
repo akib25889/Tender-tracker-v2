@@ -227,6 +227,12 @@ def run_migrations():
                             "ALTER TABLE tenders ADD COLUMN financial_model JSON DEFAULT '{}'"
                         )
                     )
+                if "ai_chat_share_link" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN ai_chat_share_link TEXT DEFAULT NULL"
+                        )
+                    )
                 # Ensure tender_financial_rules table exists in SQLite
                 conn.execute(text("""
                         CREATE TABLE IF NOT EXISTS tender_financial_rules (
@@ -426,6 +432,7 @@ def run_migrations():
                             ("tender_security_method", "VARCHAR(50) DEFAULT NULL"),
                             ("post_award_data", "JSON DEFAULT NULL"),
                             ("financial_model", "JSON DEFAULT NULL"),
+                            ("ai_chat_share_link", "TEXT DEFAULT NULL"),
                         ],
                     ),
                     (

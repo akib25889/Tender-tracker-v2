@@ -19,6 +19,7 @@ import {
   Calendar,
   ArrowRight,
   CreditCard,
+  Sparkles,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import {
@@ -213,6 +214,9 @@ export const TenderRegistryPage: React.FC = () => {
     selectedTender?.category || 'IT & Cloud Infrastructure'
   );
   const [isCustomCategory, setIsCustomCategory] = useState(false);
+  const [aiChatShareLink, setAiChatShareLink] = useState(
+    selectedTender?.aiChatShareLink || ''
+  );
 
   // Procurement Governance & Sourcing Attributes (Req #21)
   const [tenderType, setTenderType] = useState<string>(
@@ -568,6 +572,7 @@ export const TenderRegistryPage: React.FC = () => {
     setPriority(selectedTender.priority);
     setCategory(selectedTender.category);
     setIsCustomCategory(false);
+    setAiChatShareLink(selectedTender.aiChatShareLink || '');
 
     setTenderType(
       selectedTender.tenderType || selectedTender.summary?.tenderType || STANDARD_TENDER_TYPES[0]
@@ -957,6 +962,7 @@ export const TenderRegistryPage: React.FC = () => {
       },
       financialModel,
       importantClauses,
+      aiChatShareLink: aiChatShareLink.trim() || undefined,
     });
 
     setSaveSuccess(true);
@@ -1376,6 +1382,37 @@ export const TenderRegistryPage: React.FC = () => {
                       className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
                     />
                   </div>
+                </div>
+
+                {/* AI Chat & Document Knowledge Share Link */}
+                <div className="p-3.5 bg-violet-50/70 rounded-xl border border-violet-200 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-bold text-violet-950 flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-violet-600" />
+                      <span>AI Chat &amp; Document Knowledge Link (ChatGPT / Claude / NotebookLM / Gemini)</span>
+                    </label>
+                    {aiChatShareLink && (
+                      <a
+                        href={aiChatShareLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] font-bold text-violet-700 hover:text-violet-900 flex items-center gap-1"
+                      >
+                        <span>Test Link</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
+                  <input
+                    type="url"
+                    placeholder="e.g. https://chatgpt.com/share/67a213ff... or https://notebooklm.google.com/notebook/..."
+                    value={aiChatShareLink}
+                    onChange={(e) => setAiChatShareLink(e.target.value)}
+                    className="w-full px-3 py-2 bg-white border border-violet-200 rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-hidden focus:ring-1 focus:ring-violet-500 focus:border-violet-500 font-mono"
+                  />
+                  <p className="text-[11px] text-[#64748B]">
+                    Share link to an external AI conversation or notebook with tender RFPs pre-loaded so your team doesn&apos;t have to re-upload files to inquire.
+                  </p>
                 </div>
 
                 {/* Currency & Financial Valuation */}
