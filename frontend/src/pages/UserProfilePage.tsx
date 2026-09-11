@@ -285,7 +285,7 @@ export const UserProfilePage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fadeIn pb-12">
-      {/* Top Header & Team Member Switcher Bar */}
+      {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
         <div>
           <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
@@ -367,41 +367,6 @@ export const UserProfilePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Personnel Selector Carousel / Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-        <span className="text-xs font-bold text-[#64748B] shrink-0 mr-1 uppercase tracking-wider">
-          Team Member:
-        </span>
-        {teamMembers.map((member) => {
-          const isSelected = member.id === targetUser.id;
-          return (
-            <button
-              key={member.id}
-              onClick={() => navigate(`/profile/${member.id}`)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 border ${
-                isSelected
-                  ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-xs'
-                  : 'bg-white text-[#475569] border-[#E2E8F0] hover:bg-[#F8FAFC]'
-              }`}
-            >
-              <div
-                className={`w-5 h-5 rounded-full overflow-hidden shrink-0 flex items-center justify-center text-[10px] font-bold ${
-                  isSelected ? 'ring-1 ring-white/50' : ''
-                }`}
-              >
-                {member.profilePic ? (
-                  <img src={member.profilePic} alt={member.name} className="w-full h-full object-cover" />
-                ) : (
-                  <div className={`w-full h-full flex items-center justify-center ${isSelected ? 'bg-white/20 text-white' : 'bg-[#0F172A] text-white'}`}>
-                    {member.avatar}
-                  </div>
-                )}
-              </div>
-              <span>{member.name}</span>
-            </button>
-          );
-        })}
-      </div>
 
       {/* PILLAR 1: User Identity & Core Profile Card */}
       <Card className="p-6 bg-white border border-[#E2E8F0] shadow-sm rounded-xl">
