@@ -7,6 +7,7 @@ vendor/
 .env*.local
 *.pem
 *.key
+tendertracker-vm_key.pem
 
 # Python
 __pycache__/
