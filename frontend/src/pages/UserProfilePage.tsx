@@ -13,13 +13,10 @@ import {
   Phone,
   MapPin,
   Briefcase,
-  Copy,
-  Check,
   Plus,
   Trash2,
   Calendar,
   ExternalLink,
-  Shield,
   GraduationCap,
   Award,
   UserCheck,
@@ -60,7 +57,6 @@ export const UserProfilePage: React.FC = () => {
     currentUser ||
     teamMembers[0];
 
-  const [copiedDesignation, setCopiedDesignation] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddAssignmentModalOpen, setIsAddAssignmentModalOpen] = useState(false);
 
@@ -153,15 +149,6 @@ export const UserProfilePage: React.FC = () => {
       targetUser.activeTenderRoles && targetUser.activeTenderRoles[t.id];
     return isLead || hasTasks || hasRoleInMap;
   });
-
-  const handleCopyDesignation = () => {
-    const textToCopy =
-      targetUser.proposedDesignation ||
-      `${targetUser.name} — ${targetUser.title}`;
-    navigator.clipboard.writeText(textToCopy);
-    setCopiedDesignation(true);
-    setTimeout(() => setCopiedDesignation(false), 2000);
-  };
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -384,44 +371,6 @@ export const UserProfilePage: React.FC = () => {
           </div>
         </div>
 
-        {/* PILLAR 2: Tender-Specific Identity (Proposed Role) */}
-        <div className="mt-6 pt-5 border-t border-[#F1F5F9] dark:border-slate-800">
-          <div className="bg-gradient-to-r from-[#F0FDF4] via-[#EFF6FF] to-[#FAF5FF] dark:from-[#131d2e] dark:via-[#162238] dark:to-[#131d2e] border border-[#BFDBFE] dark:border-blue-900/40 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-[#2563EB] dark:text-blue-400" />
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#1E40AF] dark:text-blue-300">
-                  Tender-Specific Identity &amp; Proposed Bid Role
-                </span>
-              </div>
-              <div className="text-sm font-bold text-[#0F172A] dark:text-slate-100 font-display">
-                {targetUser.proposedDesignation ||
-                  `${targetUser.name} — ${targetUser.title}`}
-              </div>
-              <p className="text-[11px] text-[#64748B] dark:text-slate-400">
-                Official designation formatted for Technical Proposal Submissions, Form Tech-1 CV annexures, and Procuring Authority scoring.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleCopyDesignation}
-              className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-slate-800/90 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs font-bold text-[#0F172A] dark:text-slate-200 hover:bg-[#F8FAFC] dark:hover:bg-slate-700/60 transition-colors shrink-0 shadow-xs self-start md:self-auto"
-            >
-              {copiedDesignation ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-[#16A34A] dark:text-emerald-400" />
-                  <span className="text-[#16A34A] dark:text-emerald-400">Copied to Clipboard</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3.5 h-3.5 text-[#64748B] dark:text-slate-400" />
-                  <span>Copy Designation</span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
       </Card>
 
       {/* PILLAR 4: Active Assignments & Workspace Integration */}
