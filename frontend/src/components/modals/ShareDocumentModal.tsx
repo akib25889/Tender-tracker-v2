@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../../utils/apiConfig';
 import React, { useState, useEffect } from 'react';
 import { useTenders } from '../../context/TenderContext';
 import {
@@ -49,7 +50,7 @@ export const ShareDocumentModal: React.FC = () => {
     if (!doc?.id) return;
     try {
       setLoadingShares(true);
-      const res = await fetch(`http://127.0.0.1:8000/api/documents/${doc.id}/shares`);
+      const res = await fetch(`${API_BASE_URL}/documents/${doc.id}/shares`);
       if (res.ok) {
         const data = await res.json();
         setActiveShares(data);
@@ -74,7 +75,7 @@ export const ShareDocumentModal: React.FC = () => {
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/documents/${doc.id}/share`, {
+      const res = await fetch(`${API_BASE_URL}/documents/${doc.id}/share`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -113,7 +114,7 @@ export const ShareDocumentModal: React.FC = () => {
 
   const handleRevokeShare = async (shareId: number) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/shares/${shareId}`, {
+      const res = await fetch(`${API_BASE_URL}/shares/${shareId}`, {
         method: 'DELETE',
       });
       if (res.ok) {

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../../utils/apiConfig';
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
@@ -80,7 +81,7 @@ export const TenderPartnersTab: React.FC = () => {
     if (!tender) return;
     try {
       setLoading(true);
-      const res = await fetch(`http://127.0.0.1:8000/api/permissions/tenders/${tender.id}/partners`);
+      const res = await fetch(`${API_BASE_URL}/permissions/tenders/${tender.id}/partners`);
       if (res.ok) {
         const data = await res.json();
         setAssignedPartners(data);
@@ -94,7 +95,7 @@ export const TenderPartnersTab: React.FC = () => {
 
   const fetchAllPartners = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/permissions/partners');
+      const res = await fetch(`${API_BASE_URL}/permissions/partners`);
       if (res.ok) {
         const data = await res.json();
         setAllPartners(data);
@@ -114,7 +115,7 @@ export const TenderPartnersTab: React.FC = () => {
     if (!selectedOrgId) return;
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/permissions/partners/${selectedOrgId}/assign`, {
+      const res = await fetch(`${API_BASE_URL}/permissions/partners/${selectedOrgId}/assign`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -144,7 +145,7 @@ export const TenderPartnersTab: React.FC = () => {
     }
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/permissions/tenders/${tender.id}/partners/${partnerOrgId}`, {
+      const res = await fetch(`${API_BASE_URL}/permissions/tenders/${tender.id}/partners/${partnerOrgId}`, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -160,7 +161,7 @@ export const TenderPartnersTab: React.FC = () => {
   const handleToggleCeiling = async (partnerOrgId: string, permCode: string, currentVal: boolean) => {
     try {
       const updated = { [permCode]: !currentVal };
-      const res = await fetch(`http://127.0.0.1:8000/api/permissions/partners/${partnerOrgId}/ceilings`, {
+      const res = await fetch(`${API_BASE_URL}/permissions/partners/${partnerOrgId}/ceilings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ceilings: updated }),
@@ -186,7 +187,7 @@ export const TenderPartnersTab: React.FC = () => {
 
   const handleSaveAccessDuration = async (partner: TenderPartner, newEndDate: string) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/permissions/partners/${partner.organization_id}/assign`, {
+      const res = await fetch(`${API_BASE_URL}/permissions/partners/${partner.organization_id}/assign`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

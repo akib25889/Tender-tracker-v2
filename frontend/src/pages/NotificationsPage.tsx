@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../utils/apiConfig';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card } from '../components/ui/Card';
 import {
@@ -62,7 +63,7 @@ export const NotificationsPage: React.FC = () => {
 
   const fetchAlerts = useCallback(() => {
     setLoading(true);
-    fetch('http://127.0.0.1:8000/api/alerts')
+    fetch(`${API_BASE_URL}/alerts`)
       .then((r) => r.json())
       .then((data) => {
         const fetched = data.alerts ?? [];

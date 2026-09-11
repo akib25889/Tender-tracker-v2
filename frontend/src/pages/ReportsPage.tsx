@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../utils/apiConfig';
 import React, { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
@@ -53,7 +54,7 @@ export const ReportsPage: React.FC = () => {
   const [reportMode, setReportMode] = useState<ReportMode>('GENERAL');
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/dashboard/reports/analytics')
+    fetch(`${API_BASE_URL}/dashboard/reports/analytics`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data) setAnalytics(data);

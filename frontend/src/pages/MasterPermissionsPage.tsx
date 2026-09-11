@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../utils/apiConfig';
 import React, { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
@@ -190,28 +191,28 @@ export const MasterPermissionsPage: React.FC = () => {
 
   // Fetch from backend API if available
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/permissions/partners')
+    fetch(`${API_BASE_URL}/permissions/partners`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && Array.isArray(data) && data.length > 0) setPartners(data);
       })
       .catch(() => {});
 
-    fetch('http://127.0.0.1:8000/api/permissions/rules')
+    fetch(`${API_BASE_URL}/permissions/rules`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && Array.isArray(data) && data.length > 0) setRules(data);
       })
       .catch(() => {});
 
-    fetch('http://127.0.0.1:8000/api/permissions/blocks')
+    fetch(`${API_BASE_URL}/permissions/blocks`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && Array.isArray(data) && data.length > 0) setBlocks(data);
       })
       .catch(() => {});
 
-    fetch('http://127.0.0.1:8000/api/permissions/audit-logs')
+    fetch(`${API_BASE_URL}/permissions/audit-logs`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && Array.isArray(data) && data.length > 0) setAuditLogs(data);
@@ -259,7 +260,7 @@ export const MasterPermissionsPage: React.FC = () => {
       let evaluated: DiagnosticResult | null = null;
 
       try {
-        const res = await fetch('http://127.0.0.1:8000/api/permissions/diagnose', {
+        const res = await fetch(`${API_BASE_URL}/permissions/diagnose`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -368,7 +369,7 @@ export const MasterPermissionsPage: React.FC = () => {
     setCeilings((prev) => {
       const next = { ...prev, [code]: !prev[code] };
       // Sync to backend
-      fetch(`http://127.0.0.1:8000/api/permissions/partners/${selectedPartnerForCeiling}/ceilings`, {
+      fetch(`${API_BASE_URL}/permissions/partners/${selectedPartnerForCeiling}/ceilings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ceilings: { [code]: next[code] } }),
@@ -387,7 +388,7 @@ export const MasterPermissionsPage: React.FC = () => {
     setCeilings((prev) => ({ ...prev, ...updatedCeilings }));
 
     // Sync to backend
-    fetch(`http://127.0.0.1:8000/api/permissions/partners/${selectedPartnerForCeiling}/ceilings`, {
+    fetch(`${API_BASE_URL}/permissions/partners/${selectedPartnerForCeiling}/ceilings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ceilings: updatedCeilings }),
@@ -886,7 +887,7 @@ export const MasterPermissionsPage: React.FC = () => {
                     effect: 'ALLOW',
                   };
                   setRules((prev) => [newRule, ...prev]);
-                  fetch('http://127.0.0.1:8000/api/permissions/rules', {
+                  fetch(`${API_BASE_URL}/permissions/rules`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(newRule),
@@ -1034,7 +1035,7 @@ export const MasterPermissionsPage: React.FC = () => {
               </div>
 
               <a
-                href="http://127.0.0.1:8000/api/permissions/audit-logs/export?format=csv"
+                href={`${API_BASE_URL}/permissions/audit-logs/export?format=csv`}
                 target="_blank"
                 rel="noreferrer"
                 download="authorization_audit_log.csv"
@@ -1046,7 +1047,7 @@ export const MasterPermissionsPage: React.FC = () => {
               </a>
 
               <a
-                href="http://127.0.0.1:8000/api/permissions/audit-logs/export?format=json"
+                href={`${API_BASE_URL}/permissions/audit-logs/export?format=json`}
                 target="_blank"
                 rel="noreferrer"
                 download="authorization_audit_log.json"

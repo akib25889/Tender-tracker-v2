@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './apiConfig';
 // Zero-dependency pure TypeScript PKZIP generator & downloader
 // Fulfills Ponytail Principle 3 & 4 (Native platform features, standard web APIs)
 
@@ -160,7 +161,7 @@ export async function downloadFolderAsZip(
 ) {
   // 1. Try backend streaming API first
   try {
-    const backendUrl = `http://127.0.0.1:8000/api/tenders/${tenderId}/folders/${folderName}/zip`;
+    const backendUrl = `${API_BASE_URL}/tenders/${tenderId}/folders/${folderName}/zip`;
     const res = await fetch(backendUrl);
     if (res.ok) {
       const blob = await res.blob();
@@ -238,7 +239,7 @@ export async function downloadAllVaultAsZip(
 ) {
   // 1. Try backend streaming API first
   try {
-    const backendUrl = `http://127.0.0.1:8000/api/tenders/${tenderId}/documents/zip`;
+    const backendUrl = `${API_BASE_URL}/tenders/${tenderId}/documents/zip`;
     const res = await fetch(backendUrl);
     if (res.ok) {
       const blob = await res.blob();

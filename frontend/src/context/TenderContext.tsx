@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../utils/apiConfig';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import {
   Tender,
@@ -294,7 +295,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const refreshCategories = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/categories');
+      const res = await fetch(`${API_BASE_URL}/categories`);
       if (res.ok) {
         const data: TenderCategory[] = await res.json();
         if (Array.isArray(data) && data.length > 0) {
@@ -308,7 +309,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const refreshTendersFromBackend = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/tenders');
+      const res = await fetch(`${API_BASE_URL}/tenders`);
       if (res.ok) {
         const dbTenders = await res.json();
         if (Array.isArray(dbTenders) && dbTenders.length > 0) {
@@ -547,7 +548,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const refreshOrganizations = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/organizations');
+      const res = await fetch(`${API_BASE_URL}/organizations`);
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
@@ -559,7 +560,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const refreshTeamMembers = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/auth/team');
+      const res = await fetch(`${API_BASE_URL}/auth/team`);
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
@@ -583,7 +584,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const refreshReusableDocuments = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/documents/reusable');
+      const res = await fetch(`${API_BASE_URL}/documents/reusable`);
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
@@ -610,7 +611,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const refreshCompanyProjects = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/companies/projects');
+      const res = await fetch(`${API_BASE_URL}/companies/projects`);
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data)) {
@@ -646,7 +647,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addCompanyProject = async (projectData: Partial<CompanyProjectCredential>) => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/companies/projects', {
+      const res = await fetch(`${API_BASE_URL}/companies/projects`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -674,7 +675,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateCompanyProject = async (id: string, updates: Partial<CompanyProjectCredential>) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/companies/projects/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/companies/projects/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -701,7 +702,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const deleteCompanyProject = async (id: string) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/companies/projects/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/companies/projects/${id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -718,7 +719,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const res = await fetch(`http://127.0.0.1:8000/api/companies/projects/${projectId}/upload-work-order`, {
+      const res = await fetch(`${API_BASE_URL}/companies/projects/${projectId}/upload-work-order`, {
         method: 'POST',
         body: formData,
       });
@@ -736,7 +737,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const res = await fetch(`http://127.0.0.1:8000/api/companies/projects/${projectId}/upload-completion-cert`, {
+      const res = await fetch(`${API_BASE_URL}/companies/projects/${projectId}/upload-completion-cert`, {
         method: 'POST',
         body: formData,
       });
@@ -752,7 +753,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const linkProjectToTender = async (projectId: string, tenderId: string, targetFolder: string) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/companies/projects/${projectId}/link-to-tender`, {
+      const res = await fetch(`${API_BASE_URL}/companies/projects/${projectId}/link-to-tender`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -775,7 +776,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const refreshCompanyProfiles = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/companies/profiles');
+      const res = await fetch(`${API_BASE_URL}/companies/profiles`);
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data)) {
@@ -787,7 +788,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addCompanyProfile = async (profileData: Partial<CompanyProfile>): Promise<CompanyProfile | null> => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/companies/profiles', {
+      const res = await fetch(`${API_BASE_URL}/companies/profiles`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(profileData),
@@ -805,7 +806,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateCompanyProfile = async (id: string, updates: Partial<CompanyProfile>): Promise<CompanyProfile | null> => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/companies/profiles/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/companies/profiles/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
@@ -823,7 +824,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const deleteCompanyProfile = async (id: string): Promise<boolean> => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/companies/profiles/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/companies/profiles/${id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -848,7 +849,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addCategory = async (categoryData: { name: string; description?: string; color_badge?: string }): Promise<TenderCategory | null> => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/categories', {
+      const res = await fetch(`${API_BASE_URL}/categories`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(categoryData),
@@ -877,7 +878,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateCategory = async (id: number, updates: { name?: string; description?: string; color_badge?: string }): Promise<TenderCategory | null> => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/categories/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
@@ -906,7 +907,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const deleteCategory = async (id: number): Promise<boolean> => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/categories/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -945,7 +946,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       createdAt: new Date().toISOString(),
     };
 
-    fetch('http://127.0.0.1:8000/api/organizations', {
+    fetch(`${API_BASE_URL}/organizations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newOrg),
@@ -956,7 +957,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const updateOrganization = (id: string, updates: Partial<Organization>) => {
-    fetch(`http://127.0.0.1:8000/api/organizations/${id}`, {
+    fetch(`${API_BASE_URL}/organizations/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updates),
@@ -968,7 +969,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const deleteOrganization = (id: string) => {
-    fetch(`http://127.0.0.1:8000/api/organizations/${id}`, {
+    fetch(`${API_BASE_URL}/organizations/${id}`, {
       method: 'DELETE',
     }).catch(() => {});
 
@@ -1130,7 +1131,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     // Persist new tender to FastAPI backend
-    fetch('http://127.0.0.1:8000/api/tenders', {
+    fetch(`${API_BASE_URL}/tenders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1261,7 +1262,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (updates.aiChatShareLink !== undefined) payload.ai_chat_share_link = updates.aiChatShareLink;
 
     if (Object.keys(payload).length > 0) {
-      fetch(`http://127.0.0.1:8000/api/tenders/${id}`, {
+      fetch(`${API_BASE_URL}/tenders/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -1279,7 +1280,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       prev.map((t) => (t.id === tenderId ? { ...t, aiChatShareLink: trimmed } : t))
     );
     try {
-      await fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/ai-chat-link`, {
+      await fetch(`${API_BASE_URL}/tenders/${tenderId}/ai-chat-link`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ai_chat_share_link: trimmed || null }),
@@ -1290,19 +1291,19 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const deleteTender = (id: string) => {
-    fetch(`http://127.0.0.1:8000/api/tenders/${id}`, { method: 'DELETE' }).catch(() => {});
+    fetch(`${API_BASE_URL}/tenders/${id}`, { method: 'DELETE' }).catch(() => {});
     setTenders((prev) => prev.filter((t) => t.id !== id));
   };
 
   const deleteMultipleTenders = (ids: string[]) => {
     ids.forEach((id) => {
-      fetch(`http://127.0.0.1:8000/api/tenders/${id}`, { method: 'DELETE' }).catch(() => {});
+      fetch(`${API_BASE_URL}/tenders/${id}`, { method: 'DELETE' }).catch(() => {});
     });
     setTenders((prev) => prev.filter((t) => !ids.includes(t.id)));
   };
 
   const updateTenderStage = (tenderId: string, stage: TenderStage) => {
-    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}`, {
+    fetch(`${API_BASE_URL}/tenders/${tenderId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ stage }),
@@ -1325,7 +1326,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const archiveTender = (tenderId: string) => {
-    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/archive`, { method: 'POST' }).catch(() => {});
+    fetch(`${API_BASE_URL}/tenders/${tenderId}/archive`, { method: 'POST' }).catch(() => {});
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -1341,7 +1342,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const restoreTender = (tenderId: string) => {
-    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/restore`, { method: 'POST' }).catch(() => {});
+    fetch(`${API_BASE_URL}/tenders/${tenderId}/restore`, { method: 'POST' }).catch(() => {});
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
@@ -1361,7 +1362,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     decision: DecisionStatus,
     matrix: TenderDecisionMatrix
   ) => {
-    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/decision`, {
+    fetch(`${API_BASE_URL}/tenders/${tenderId}/decision`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1395,7 +1396,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   const addTask = async (tenderId: string, taskData: Omit<TenderTask, 'id'>) => {
     let generatedId = `TSK-${Math.floor(100 + Math.random() * 900)}`;
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/tasks/tender/${tenderId}`, {
+      const res = await fetch(`${API_BASE_URL}/tasks/tender/${tenderId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1438,7 +1439,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const moveTask = (tenderId: string, taskId: string, newStatus: TaskStatus) => {
-    fetch(`http://127.0.0.1:8000/api/tasks/${taskId}`, {
+    fetch(`${API_BASE_URL}/tasks/${taskId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus }),
@@ -1510,7 +1511,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const addFolder = (tenderId: string, folder: { name: string; label: string }) => {
-    fetch(`http://127.0.0.1:8000/api/documents/tender/${tenderId}/folders`, {
+    fetch(`${API_BASE_URL}/documents/tender/${tenderId}/folders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(folder),
@@ -1530,7 +1531,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const updateFolder = (tenderId: string, folderName: string, newLabel: string) => {
-    fetch(`http://127.0.0.1:8000/api/documents/tender/${tenderId}/folders/${encodeURIComponent(folderName)}`, {
+    fetch(`${API_BASE_URL}/documents/tender/${tenderId}/folders/${encodeURIComponent(folderName)}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ label: newLabel }),
@@ -1567,7 +1568,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const deleteFolder = (tenderId: string, folderName: string) => {
-    fetch(`http://127.0.0.1:8000/api/documents/tender/${tenderId}/folders/${encodeURIComponent(folderName)}`, {
+    fetch(`${API_BASE_URL}/documents/tender/${tenderId}/folders/${encodeURIComponent(folderName)}`, {
       method: 'DELETE',
     }).catch(() => {});
 
@@ -1604,7 +1605,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     docId: string,
     targetFolder: string
   ) => {
-    fetch(`http://127.0.0.1:8000/api/documents/documents/${docId}`, {
+    fetch(`${API_BASE_URL}/documents/documents/${docId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ folder: targetFolder }),
@@ -1629,7 +1630,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     payload: { reason: string; comment: string; dueDate?: string; requestedBy?: string }
   ): Promise<boolean> => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/documents/${docId}/request-reupload`, {
+      const res = await fetch(`${API_BASE_URL}/documents/${docId}/request-reupload`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -1695,7 +1696,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     requestedBy?: string;
   }): Promise<boolean> => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/documents/request-upload', {
+      const res = await fetch(`${API_BASE_URL}/documents/request-upload`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1786,7 +1787,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       formData.append('file', file);
       if (comment) formData.append('comment', comment);
 
-      const res = await fetch(`http://127.0.0.1:8000/api/documents/${docId}/resolve-reupload`, {
+      const res = await fetch(`${API_BASE_URL}/documents/${docId}/resolve-reupload`, {
         method: 'POST',
         body: formData,
       });
@@ -1857,7 +1858,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     reqId: string,
     newStatus: RequirementStatus
   ) => {
-    fetch(`http://127.0.0.1:8000/api/requirements/${reqId}`, {
+    fetch(`${API_BASE_URL}/requirements/${reqId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus }),
@@ -1882,7 +1883,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const submitTenderProof = (tenderId: string, portalReference: string) => {
-    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/submission`, {
+    fetch(`${API_BASE_URL}/tenders/${tenderId}/submission`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -2017,7 +2018,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       description: doc.description,
     };
 
-    fetch('http://127.0.0.1:8000/api/documents/reusable', {
+    fetch(`${API_BASE_URL}/documents/reusable`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -2037,7 +2038,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const updateDocumentAccess = (docId: string, newAccess: DocumentAccessLevel) => {
-    fetch(`http://127.0.0.1:8000/api/documents/reusable-documents/${docId}`, {
+    fetch(`${API_BASE_URL}/documents/reusable-documents/${docId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ access_level: newAccess }),
@@ -2053,7 +2054,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     docId: string,
     newAccess: DocumentAccessLevel
   ) => {
-    fetch(`http://127.0.0.1:8000/api/documents/documents/${docId}`, {
+    fetch(`${API_BASE_URL}/documents/documents/${docId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ access_level: newAccess }),
@@ -2100,7 +2101,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       accessLevel: masterDoc.accessLevel,
     };
 
-    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/link-reusable`, {
+    fetch(`${API_BASE_URL}/tenders/${tenderId}/link-reusable`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -2173,7 +2174,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const initialPassword = member.password?.trim() || 'Password123!';
 
-    fetch('http://127.0.0.1:8000/api/auth/team', {
+    fetch(`${API_BASE_URL}/auth/team`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -2208,7 +2209,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (updates.activeTenderRoles !== undefined) payload.active_tender_roles = updates.activeTenderRoles;
     if (updates.profilePic !== undefined) payload.profile_pic = updates.profilePic;
 
-    fetch(`http://127.0.0.1:8000/api/users/${userId}`, {
+    fetch(`${API_BASE_URL}/users/${userId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -2229,7 +2230,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const addPastAssignment = async (userId: string, assignment: PastProjectAssignment) => {
-    fetch(`http://127.0.0.1:8000/api/users/${userId}/assignments`, {
+    fetch(`${API_BASE_URL}/users/${userId}/assignments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(assignment),
@@ -2255,7 +2256,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const deletePastAssignment = async (userId: string, assignmentId: string) => {
-    fetch(`http://127.0.0.1:8000/api/users/${userId}/assignments/${assignmentId}`, {
+    fetch(`${API_BASE_URL}/users/${userId}/assignments/${assignmentId}`, {
       method: 'DELETE',
     }).catch((err) => console.warn('Failed to delete assignment on backend:', err));
 
@@ -2286,7 +2287,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     taskId: string,
     newAssignee: string
   ) => {
-    fetch(`http://127.0.0.1:8000/api/tasks/${taskId}`, {
+    fetch(`${API_BASE_URL}/tasks/${taskId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ assignee: newAssignee }),
@@ -2306,7 +2307,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const addComment = (tenderId: string, content: string) => {
-    fetch(`http://127.0.0.1:8000/api/comments`, {
+    fetch(`${API_BASE_URL}/comments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -2340,7 +2341,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const deleteComment = (tenderId: string, commentId: string) => {
-    fetch(`http://127.0.0.1:8000/api/comments/${commentId}`, {
+    fetch(`${API_BASE_URL}/comments/${commentId}`, {
       method: 'DELETE',
     }).catch(() => {});
 
@@ -2376,7 +2377,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       createdAt: new Date().toISOString(),
     };
 
-    fetch(`http://127.0.0.1:8000/api/documents/documents/${docId}/share`, {
+    fetch(`${API_BASE_URL}/documents/documents/${docId}/share`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

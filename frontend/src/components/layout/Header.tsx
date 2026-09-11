@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../../utils/apiConfig';
 import React, { useEffect, useState } from 'react';
 import { Search, Plus, Bell, PanelLeftClose, PanelLeftOpen, Sun, Moon } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -20,7 +21,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   useEffect(() => {
     const fetchUnread = () => {
-      fetch('http://127.0.0.1:8000/api/alerts')
+      fetch(`${API_BASE_URL}/alerts`)
         .then((r) => r.json())
         .then((data) => setUnreadCount(data.unread ?? 0))
         .catch(() => {});

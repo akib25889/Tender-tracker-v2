@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../utils/apiConfig';
 import React, { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card';
 import {
@@ -149,7 +150,7 @@ export const SettingsPage: React.FC = () => {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/settings')
+    fetch(`${API_BASE_URL}/settings`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data: Record<string, string> | null) => {
         if (data) {
@@ -170,7 +171,7 @@ export const SettingsPage: React.FC = () => {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch('http://127.0.0.1:8000/api/settings', {
+      await fetch(`${API_BASE_URL}/settings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

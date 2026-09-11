@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../utils/apiConfig';
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTenders } from '../context/TenderContext';
@@ -171,7 +172,7 @@ export const ChatDiscussionsPage: React.FC = () => {
 
   useEffect(() => {
     if (!activeChannelId.startsWith('tdr-')) {
-      fetch(`http://127.0.0.1:8000/api/chat/channels/${activeChannelId}/messages`)
+      fetch(`${API_BASE_URL}/chat/channels/${activeChannelId}/messages`)
         .then((r) => (r.ok ? r.json() : null))
         .then((data) => {
           if (Array.isArray(data) && data.length > 0) {
@@ -246,7 +247,7 @@ export const ChatDiscussionsPage: React.FC = () => {
       };
       setGeneralMessages((prev) => [...prev, newMsg]);
 
-      fetch(`http://127.0.0.1:8000/api/chat/channels/${activeChannelId}/messages`, {
+      fetch(`${API_BASE_URL}/chat/channels/${activeChannelId}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

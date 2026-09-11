@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../utils/apiConfig';
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
@@ -45,7 +46,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(`http://127.0.0.1:8000/api/shared/${token}`);
+        const res = await fetch(`${API_BASE_URL}/shared/${token}`);
         if (!res.ok) {
           // Check for demo token fallbacks before erroring out
           if (token === 'SHR-TOKEN-WB-7712') {
@@ -295,7 +296,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
 
                   {data.can_download ? (
                     <a
-                      href={`http://127.0.0.1:8000/api/shared/${token}/download`}
+                      href={`${API_BASE_URL}/shared/${token}/download`}
                       className="w-full py-3 px-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 transition-all cursor-pointer"
                     >
                       <Download className="w-4 h-4" />
@@ -332,8 +333,8 @@ export const SharedDocumentPortalPage: React.FC = () => {
             size: data.size,
             sha256: data.sha256,
             uploadedAt: 'Verified Shared Link',
-            previewUrl: `http://127.0.0.1:8000/api/shared/${token}/preview`,
-            downloadUrl: `http://127.0.0.1:8000/api/shared/${token}/download`,
+            previewUrl: `${API_BASE_URL}/shared/${token}/preview`,
+            downloadUrl: `${API_BASE_URL}/shared/${token}/download`,
           }}
           tenderId={data.tender_id}
         />
