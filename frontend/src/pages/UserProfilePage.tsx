@@ -36,27 +36,6 @@ import {
   exportPersonnelDossierAsExcel,
 } from '../utils/exportUtils';
 
-const EMPLOYMENT_TYPE_CONFIG: Record<
-  EmploymentType,
-  { label: string; badgeClass: string; desc: string }
-> = {
-  PERMANENT: {
-    label: 'Permanent Core Employee',
-    badgeClass: 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]',
-    desc: 'Full-time core team member of prime bidder entity',
-  },
-  JV_PARTNER_STAFF: {
-    label: 'JV Partner Staff',
-    badgeClass: 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]',
-    desc: 'Consortium / Joint-Venture Partner Key Personnel',
-  },
-  EXTERNAL_CONSULTANT: {
-    label: 'Dedicated External Consultant',
-    badgeClass: 'bg-[#FFFBEB] text-[#B45309] border-[#FDE68A]',
-    desc: 'Third-party advisory expert retained for specific tender scope',
-  },
-};
-
 const ROLE_DISPLAY: Record<UserRole, string> = {
   SUPER_ADMIN: 'Super Administrator',
   BUSINESS_HEAD: 'Business Head (Executive Lead)',
@@ -278,11 +257,6 @@ export const UserProfilePage: React.FC = () => {
     setTimeout(() => setCopiedDossier(false), 2500);
   };
 
-  const empTypeConfig =
-    EMPLOYMENT_TYPE_CONFIG[
-      (targetUser.employmentType as EmploymentType) || 'PERMANENT'
-    ] || EMPLOYMENT_TYPE_CONFIG.PERMANENT;
-
   return (
     <div className="space-y-6 animate-fadeIn pb-12">
       {/* Top Header */}
@@ -419,13 +393,6 @@ export const UserProfilePage: React.FC = () => {
                 {/* System Role Badge */}
                 <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-[#F1F5F9] text-[#334155] border border-[#E2E8F0]">
                   {ROLE_DISPLAY[targetUser.role] || targetUser.role}
-                </span>
-                {/* Employment Type Badge */}
-                <span
-                  className={`px-2.5 py-0.5 rounded-md text-xs font-bold border ${empTypeConfig.badgeClass}`}
-                  title={empTypeConfig.desc}
-                >
-                  {empTypeConfig.label}
                 </span>
               </div>
 
