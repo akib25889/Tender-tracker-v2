@@ -1614,15 +1614,15 @@ export const NewTenderModal: React.FC = () => {
               </div>
 
               {/* Tender Security Deposit & Smart 2.5% Reverse Budget Calculator */}
-              <div className="p-4 bg-gradient-to-br from-[#EFF6FF]/60 to-[#F8FAFC] rounded-xl border border-[#BFDBFE] space-y-4">
-                <div className="flex flex-wrap items-center justify-between border-b border-[#BFDBFE] pb-2.5 gap-2">
+              <div className="p-4 bg-gradient-to-br from-[#EFF6FF]/60 to-[#F8FAFC] dark:from-slate-800/60 dark:to-slate-900 rounded-xl border border-[#BFDBFE] dark:border-slate-700 space-y-4">
+                <div className="flex flex-wrap items-center justify-between border-b border-[#BFDBFE] dark:border-slate-700 pb-2.5 gap-2">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-[#2563EB]" />
-                    <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    <ShieldCheck className="w-4 h-4 text-[#2563EB] dark:text-blue-400" />
+                    <span className="text-xs font-bold text-[#0F172A] dark:text-slate-100 uppercase tracking-wider">
                       Tender Security / Earnest Money Deposit (EMD)
                     </span>
                   </div>
-                  <span className="text-[10px] font-semibold bg-[#DBEAFE] text-[#1D4ED8] px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-semibold bg-[#DBEAFE] dark:bg-blue-900/40 text-[#1D4ED8] dark:text-blue-300 px-2 py-0.5 rounded-full">
                     Standard Guideline: ~2.5% of Budget
                   </span>
                 </div>

@@ -872,40 +872,40 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
         </div>
 
         {/* Computed TCV / ACV Output Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-3.5 bg-gradient-to-r from-indigo-50/50 to-blue-50/50 rounded-xl border border-indigo-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-3.5 bg-gradient-to-r from-indigo-50/50 to-blue-50/50 dark:from-slate-800/80 dark:to-slate-900/80 rounded-xl border border-indigo-100 dark:border-slate-700">
           <div>
-            <span className="block text-[10px] uppercase font-bold text-indigo-900 tracking-wider">
+            <span className="block text-[10px] uppercase font-bold text-indigo-900 dark:text-indigo-300 tracking-wider">
               Total Contract Value (TCV)
             </span>
-            <span className="text-base font-extrabold text-indigo-700">
+            <span className="text-base font-extrabold text-indigo-700 dark:text-indigo-400">
               {curSymbol} {saasStats.tcv.toLocaleString()}
             </span>
-            <span className="block text-[10px] text-indigo-600 mt-0.5">
+            <span className="block text-[10px] text-indigo-600 dark:text-indigo-400 mt-0.5">
               Over {value.subscriptionModel?.durationYears || 1} Years full lifecycle
             </span>
           </div>
 
           <div>
-            <span className="block text-[10px] uppercase font-bold text-blue-900 tracking-wider">
+            <span className="block text-[10px] uppercase font-bold text-blue-900 dark:text-blue-300 tracking-wider">
               Annual Contract Value (ACV)
             </span>
-            <span className="text-base font-extrabold text-blue-700">
+            <span className="text-base font-extrabold text-blue-700 dark:text-blue-400">
               {curSymbol} {saasStats.acv.toLocaleString()}
             </span>
-            <span className="block text-[10px] text-blue-600 mt-0.5">
+            <span className="block text-[10px] text-blue-600 dark:text-blue-400 mt-0.5">
               Average annualized recurring revenue
             </span>
           </div>
 
           <div>
-            <span className="block text-[10px] uppercase font-bold text-slate-700 tracking-wider">
+            <span className="block text-[10px] uppercase font-bold text-slate-700 dark:text-slate-300 tracking-wider">
               Year-by-Year Schedule
             </span>
             <div className="flex items-center gap-1.5 mt-1 overflow-x-auto text-[10px]">
               {saasStats.tiers.map((t) => (
                 <span
                   key={t.year}
-                  className="px-1.5 py-0.5 bg-white border border-indigo-200 rounded text-slate-800 font-mono font-semibold shrink-0"
+                  className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 rounded text-slate-800 dark:text-slate-200 font-mono font-semibold shrink-0"
                 >
                   Y{t.year}: {curSymbol}{Math.round(t.escalated / 1000).toLocaleString()}k
                 </span>
