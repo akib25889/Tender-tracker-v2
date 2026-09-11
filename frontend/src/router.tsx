@@ -10,7 +10,6 @@ import { TenderDetailPage } from './pages/TenderDetailPage';
 import { TenderRequirementsTab } from './pages/tender-tabs/TenderRequirementsTab';
 import { TenderTasksTab } from './pages/tender-tabs/TenderTasksTab';
 import { TenderDocumentsTab } from './pages/tender-tabs/TenderDocumentsTab';
-import { TenderReviewTab } from './pages/tender-tabs/TenderReviewTab';
 import { TenderSubmissionTab } from './pages/tender-tabs/TenderSubmissionTab';
 import { TenderResultTab } from './pages/tender-tabs/TenderResultTab';
 import { MyTasksPage } from './pages/MyTasksPage';
@@ -100,7 +99,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'review',
-            element: <TenderReviewTab />,
+            element: <Navigate to="../submission" replace />,
           },
           {
             path: 'submission',

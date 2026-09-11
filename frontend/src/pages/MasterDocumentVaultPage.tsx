@@ -9,7 +9,6 @@ import {
   FileCheck,
   Plus,
   Search,
-  Filter,
   Download,
   Shield,
   Lock,
@@ -26,48 +25,97 @@ import {
   Share2,
   Briefcase,
   Eye,
+  Copy,
+  Check,
+  Clock,
+  AlertTriangle,
+  RotateCcw,
+  ShieldCheck,
 } from 'lucide-react';
 import { DocumentPreviewModal } from '../components/modals/DocumentPreviewModal';
 
-const CATEGORY_ICONS: Record<string, any> = {
-  'Company Statutory': Building2,
-  'Financial & Tax': DollarSign,
-  'Certifications & ISO': Award,
-  'Key Personnel CV': Users,
-  'Past Credentials': CheckCircle2,
-  'Legal & Governance': Scale,
+const CATEGORY_CONFIG: Record<
+  string,
+  { icon: React.ElementType; color: string; bg: string; border: string; label: string }
+> = {
+  'Company Statutory': {
+    icon: Building2,
+    color: 'text-blue-600 dark:text-blue-400',
+    bg: 'bg-blue-50 dark:bg-blue-950/40',
+    border: 'border-blue-200 dark:border-blue-800/40',
+    label: 'Statutory & Corporate',
+  },
+  'Financial & Tax': {
+    icon: DollarSign,
+    color: 'text-emerald-600 dark:text-emerald-400',
+    bg: 'bg-emerald-50 dark:bg-emerald-950/40',
+    border: 'border-emerald-200 dark:border-emerald-800/40',
+    label: 'Financial Audits & Tax',
+  },
+  'Certifications & ISO': {
+    icon: Award,
+    color: 'text-purple-600 dark:text-purple-400',
+    bg: 'bg-purple-50 dark:bg-purple-950/40',
+    border: 'border-purple-200 dark:border-purple-800/40',
+    label: 'Certifications & ISO',
+  },
+  'Key Personnel CV': {
+    icon: Users,
+    color: 'text-cyan-600 dark:text-cyan-400',
+    bg: 'bg-cyan-50 dark:bg-cyan-950/40',
+    border: 'border-cyan-200 dark:border-cyan-800/40',
+    label: 'Personnel & CVs',
+  },
+  'Past Credentials': {
+    icon: CheckCircle2,
+    color: 'text-indigo-600 dark:text-indigo-400',
+    bg: 'bg-indigo-50 dark:bg-indigo-950/40',
+    border: 'border-indigo-200 dark:border-indigo-800/40',
+    label: 'Past Experience & CC',
+  },
+  'Legal & Governance': {
+    icon: Scale,
+    color: 'text-amber-600 dark:text-amber-400',
+    bg: 'bg-amber-50 dark:bg-amber-950/40',
+    border: 'border-amber-200 dark:border-amber-800/40',
+    label: 'Legal & Governance',
+  },
 };
 
 const ACCESS_CONFIG: Record<
   DocumentAccessLevel,
-  { label: string; bg: string; text: string; border: string; desc: string }
+  { label: string; bg: string; text: string; border: string; dot: string; desc: string }
 > = {
   ALL_TEAM: {
     label: 'All Team Members',
-    bg: 'bg-[#F0FDF4]',
-    text: 'text-[#15803D]',
-    border: 'border-[#BBF7D0]',
+    bg: 'bg-emerald-50 dark:bg-emerald-950/40',
+    text: 'text-emerald-700 dark:text-emerald-300',
+    border: 'border-emerald-200 dark:border-emerald-800/50',
+    dot: 'bg-emerald-500',
     desc: 'Accessible by all staff and analysts',
   },
   MANAGEMENT_ONLY: {
     label: 'Management Only',
-    bg: 'bg-[#EFF6FF]',
-    text: 'text-[#1D4ED8]',
-    border: 'border-[#BFDBFE]',
+    bg: 'bg-blue-50 dark:bg-blue-950/40',
+    text: 'text-blue-700 dark:text-blue-300',
+    border: 'border-blue-200 dark:border-blue-800/50',
+    dot: 'bg-blue-500',
     desc: 'Directors and Managers only',
   },
   RESTRICTED_FINANCE: {
     label: 'Finance & Legal Only',
-    bg: 'bg-[#FFFBEB]',
-    text: 'text-[#B45309]',
-    border: 'border-[#FDE68A]',
+    bg: 'bg-amber-50 dark:bg-amber-950/40',
+    text: 'text-amber-700 dark:text-amber-300',
+    border: 'border-amber-200 dark:border-amber-800/50',
+    dot: 'bg-amber-500',
     desc: 'Commercial Finance and Executive Board',
   },
   EXECUTIVE_ONLY: {
     label: 'Executive Board Only',
-    bg: 'bg-[#FEF2F2]',
-    text: 'text-[#B91C1C]',
-    border: 'border-[#FECACA]',
+    bg: 'bg-rose-50 dark:bg-rose-950/40',
+    text: 'text-rose-700 dark:text-rose-300',
+    border: 'border-rose-200 dark:border-rose-800/50',
+    dot: 'bg-rose-500',
     desc: 'Strictly restricted to Business Head',
   },
 };
@@ -100,6 +148,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
   const [selectedAccess, setSelectedAccess] = useState<string>('ALL');
   const [selectedCompany, setSelectedCompany] = useState<string>('ALL');
   const [previewDoc, setPreviewDoc] = useState<any>(null);
+  const [copiedHashId, setCopiedHashId] = useState<string | null>(null);
 
   // Modal: Add New Reusable Document
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -126,6 +175,25 @@ export const MasterDocumentVaultPage: React.FC = () => {
     'Legal & Governance',
   ];
 
+  const handleCopyHash = (id: string, hash: string) => {
+    navigator.clipboard.writeText(hash);
+    setCopiedHashId(id);
+    setTimeout(() => setCopiedHashId(null), 2000);
+  };
+
+  const hasActiveFilters =
+    searchQuery.trim() !== '' ||
+    selectedCategory !== 'ALL' ||
+    selectedAccess !== 'ALL' ||
+    selectedCompany !== 'ALL';
+
+  const handleResetFilters = () => {
+    setSearchQuery('');
+    setSelectedCategory('ALL');
+    setSelectedAccess('ALL');
+    setSelectedCompany('ALL');
+  };
+
   const filteredDocs = reusableDocuments.filter((doc) => {
     const matchesCategory =
       selectedCategory === 'ALL' || doc.category === selectedCategory;
@@ -137,7 +205,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
       (selectedCompany === 'LEAD' && (!doc.isJvPartner && doc.companyRole !== 'JV_PARTNER')) ||
       doc.companyName === selectedCompany;
     const matchesSearch = fuzzyMatch(
-      [doc.name, doc.category, doc.companyName, doc.description],
+      [doc.name, doc.category, doc.companyName, doc.description, doc.sha256],
       searchQuery
     );
     return matchesCategory && matchesAccess && matchesCompany && matchesSearch;
@@ -182,21 +250,61 @@ export const MasterDocumentVaultPage: React.FC = () => {
     }, 2000);
   };
 
+  const renderValidityBadge = (expiryDate?: string) => {
+    if (!expiryDate) {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 whitespace-nowrap">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+          <span>Perpetual</span>
+        </span>
+      );
+    }
+
+    const now = new Date();
+    const expiry = new Date(expiryDate);
+    const diffDays = Math.ceil((expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200 dark:border-rose-800/40 whitespace-nowrap">
+          <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />
+          <span>Expired ({expiryDate})</span>
+        </span>
+      );
+    }
+
+    if (diffDays <= 60) {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 whitespace-nowrap">
+          <Clock className="w-3.5 h-3.5 text-amber-500" />
+          <span>Expires in {diffDays}d</span>
+        </span>
+      );
+    }
+
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-100 text-slate-700 dark:bg-slate-800/60 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 whitespace-nowrap">
+        <Calendar className="w-3.5 h-3.5 text-slate-400" />
+        <span>Valid to {expiryDate}</span>
+      </span>
+    );
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fadeIn">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
             <span>Corporate Repository</span>
             <span>•</span>
-            <span className="font-semibold text-[#0F172A]">Master Reusable Vault</span>
+            <span className="font-semibold text-blue-600 dark:text-blue-400">Master Reusable Vault</span>
           </div>
-          <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
+          <h1 className="font-display text-2xl font-bold text-[#0F172A] dark:text-slate-100 tracking-tight">
             Reusable Master Document Library
           </h1>
-          <p className="text-xs text-[#64748B] mt-0.5">
-            Central repository of reusable credentials, audited balance sheets, ISO certifications, and CVs. Reference them into any tender proposal with 1 click.
+          <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5 max-w-2xl">
+            Central repository of statutory credentials, audited balance sheets, ISO certifications, and CVs. Reference into any tender with 1 click.
           </p>
         </div>
 
@@ -204,7 +312,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm self-start sm:self-auto"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold transition-all shadow-sm hover:shadow-md active:scale-98 shrink-0 self-start md:self-auto cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Upload Reusable Master File</span>
@@ -213,19 +321,19 @@ export const MasterDocumentVaultPage: React.FC = () => {
       </div>
 
       {/* Primary Vault Mode Switcher: Reusable Documents vs Company Past Projects & Credentials */}
-      <div className="flex items-center gap-1.5 bg-[#F1F5F9] p-1 rounded-xl w-fit border border-[#E2E8F0]">
+      <div className="flex items-center gap-1.5 bg-[#F1F5F9] dark:bg-slate-900/80 p-1.5 rounded-2xl w-fit border border-[#E2E8F0] dark:border-slate-800 shadow-2xs overflow-x-auto max-w-full">
         <button
           type="button"
           onClick={() => handleSwitchTab('DOCUMENTS')}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
             activeLibraryTab === 'DOCUMENTS'
-              ? 'bg-white text-[#0F172A] shadow-xs'
-              : 'text-[#64748B] hover:text-[#0F172A]'
+              ? 'bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 shadow-xs'
+              : 'text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200'
           }`}
         >
-          <FileCheck className="w-4 h-4 text-[#2563EB]" />
+          <FileCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
           <span>Statutory &amp; Master Documents</span>
-          <span className="text-[10px] font-mono bg-[#EFF6FF] text-[#2563EB] px-2 py-0.5 rounded-full font-bold">
+          <span className="text-[10px] font-mono bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full font-bold border border-blue-200 dark:border-blue-900/40">
             {reusableDocuments.length}
           </span>
         </button>
@@ -233,26 +341,26 @@ export const MasterDocumentVaultPage: React.FC = () => {
         <button
           type="button"
           onClick={() => handleSwitchTab('PROJECT_CREDENTIALS')}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
             activeLibraryTab === 'PROJECT_CREDENTIALS'
-              ? 'bg-white text-[#0F172A] shadow-xs'
-              : 'text-[#64748B] hover:text-[#0F172A]'
+              ? 'bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 shadow-xs'
+              : 'text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200'
           }`}
         >
-          <Briefcase className="w-4 h-4 text-emerald-600" />
-          <span>Company Past Projects &amp; Credentials (WO &amp; CC)</span>
-          <span className="text-[10px] font-mono bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-bold border border-emerald-200">
+          <Briefcase className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <span>Past Projects &amp; Work Orders (WO &amp; CC)</span>
+          <span className="text-[10px] font-mono bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full font-bold border border-emerald-200 dark:border-emerald-900/40">
             {companyProjects.length}
           </span>
         </button>
 
         <Link
           to="/tools/company-profiles"
-          className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all text-[#64748B] hover:text-[#0F172A] hover:bg-white/60"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-800/40"
         >
-          <Building2 className="w-4 h-4 text-purple-600" />
-          <span>Full Company Profiles &amp; Financials</span>
-          <span className="text-[10px] font-mono bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-bold border border-purple-200">
+          <Building2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+          <span>Corporate Profiles &amp; Financials</span>
+          <span className="text-[10px] font-mono bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded-full font-bold border border-purple-200 dark:border-purple-900/40">
             {companyProfiles.length}
           </span>
         </Link>
@@ -264,323 +372,464 @@ export const MasterDocumentVaultPage: React.FC = () => {
         <>
           {/* KPI Stats Summary */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-4 space-y-1">
-          <div className="flex items-center justify-between text-xs text-[#64748B]">
-            <span>Total Master Files</span>
-            <FileCheck className="w-4 h-4 text-[#2563EB]" />
-          </div>
-          <div className="font-mono text-xl font-bold text-[#0F172A]">
-            {reusableDocuments.length} Documents
-          </div>
-          <div className="text-[11px] text-[#16A34A] font-medium">Ready to reference</div>
-        </Card>
+            {/* Card 1: Total Master Files */}
+            <Card className="p-4 relative overflow-hidden border-blue-100 dark:border-blue-900/30 bg-gradient-to-br from-white to-blue-50/20 dark:from-slate-900 dark:to-blue-950/10 shadow-xs hover:border-blue-200 transition-all">
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="text-xs font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
+                    Total Master Files
+                  </span>
+                  <div className="font-display text-2xl font-bold text-[#0F172A] dark:text-slate-100 mt-1">
+                    {reusableDocuments.length}
+                  </div>
+                </div>
+                <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 border border-blue-200/50 dark:border-blue-800/40">
+                  <FileCheck className="w-5 h-5" />
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                <span>Ready for Tender Proposals</span>
+              </div>
+            </Card>
 
-        <Card className="p-4 space-y-1">
-          <div className="flex items-center justify-between text-xs text-[#64748B]">
-            <span>Company Credentials</span>
-            <Building2 className="w-4 h-4 text-[#059669]" />
-          </div>
-          <div className="font-mono text-xl font-bold text-[#0F172A]">
-            {reusableDocuments.filter((d) => d.category === 'Company Statutory' || d.category === 'Certifications & ISO').length} Files
-          </div>
-          <div className="text-[11px] text-[#64748B]">Licenses &amp; Accreditations</div>
-        </Card>
+            {/* Card 2: Company Credentials */}
+            <Card className="p-4 relative overflow-hidden border-emerald-100 dark:border-emerald-900/30 bg-gradient-to-br from-white to-emerald-50/20 dark:from-slate-900 dark:to-emerald-950/10 shadow-xs hover:border-emerald-200 transition-all">
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="text-xs font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
+                    Company Credentials
+                  </span>
+                  <div className="font-display text-2xl font-bold text-[#0F172A] dark:text-slate-100 mt-1">
+                    {reusableDocuments.filter((d) => d.category === 'Company Statutory' || d.category === 'Certifications & ISO').length}
+                  </div>
+                </div>
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-200/50 dark:border-emerald-800/40">
+                  <Building2 className="w-5 h-5" />
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-[#64748B] dark:text-slate-400">
+                <span>Trade Licenses &amp; ISO Standards</span>
+              </div>
+            </Card>
 
-        <Card className="p-4 space-y-1">
-          <div className="flex items-center justify-between text-xs text-[#64748B]">
-            <span>Financial &amp; Legal</span>
-            <Scale className="w-4 h-4 text-[#D97706]" />
-          </div>
-          <div className="font-mono text-xl font-bold text-[#0F172A]">
-            {reusableDocuments.filter((d) => d.category === 'Financial & Tax' || d.category === 'Legal & Governance').length} Files
-          </div>
-          <div className="text-[11px] text-[#64748B]">Audits, Solvency &amp; JV</div>
-        </Card>
+            {/* Card 3: Financial & Legal */}
+            <Card className="p-4 relative overflow-hidden border-amber-100 dark:border-amber-900/30 bg-gradient-to-br from-white to-amber-50/20 dark:from-slate-900 dark:to-amber-950/10 shadow-xs hover:border-amber-200 transition-all">
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="text-xs font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
+                    Financial &amp; Legal
+                  </span>
+                  <div className="font-display text-2xl font-bold text-[#0F172A] dark:text-slate-100 mt-1">
+                    {reusableDocuments.filter((d) => d.category === 'Financial & Tax' || d.category === 'Legal & Governance').length}
+                  </div>
+                </div>
+                <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200/50 dark:border-amber-800/40">
+                  <Scale className="w-5 h-5" />
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-[#64748B] dark:text-slate-400">
+                <span>Audited Statements, Solvency &amp; POA</span>
+              </div>
+            </Card>
 
-        <Card className="p-4 space-y-1">
-          <div className="flex items-center justify-between text-xs text-[#64748B]">
-            <span>Your Access Scope</span>
-            <Shield className="w-4 h-4 text-[#7C3AED]" />
-          </div>
-          <div className="font-semibold text-sm text-[#0F172A] truncate">
-            {currentUser.name}
-          </div>
-          <div className="text-[11px] font-mono text-[#7C3AED] font-bold">
-            Role: {currentUser.role.replace('_', ' ')}
-          </div>
-        </Card>
-      </div>
-
-      {/* Filter & Search Bar */}
-      <div className="bg-white p-3.5 rounded-xl border border-[#E2E8F0] shadow-sm space-y-3">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-3">
-          <div className="relative w-full md:w-96">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] w-4 h-4" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search master documents, certifications, licenses..."
-              className="w-full pl-9 pr-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-            />
+            {/* Card 4: Current Identity Clearance */}
+            <Card className="p-4 relative overflow-hidden border-purple-100 dark:border-purple-900/30 bg-gradient-to-br from-white to-purple-50/20 dark:from-slate-900 dark:to-purple-950/10 shadow-xs hover:border-purple-200 transition-all">
+              <div className="flex items-start justify-between">
+                <div className="min-w-0 flex-1 pr-2">
+                  <span className="text-xs font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
+                    Your Clearance
+                  </span>
+                  <div className="font-bold text-sm text-[#0F172A] dark:text-slate-100 mt-1 truncate">
+                    {currentUser.name}
+                  </div>
+                </div>
+                <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 border border-purple-200/50 dark:border-purple-800/40">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/50">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                  <span>{currentUser.role.replace(/_/g, ' ')}</span>
+                </span>
+              </div>
+            </Card>
           </div>
 
-          <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
-            {/* Entity / Partner Filter */}
-            <div className="flex items-center gap-1.5 bg-[#F8FAFC] border border-[#E2E8F0] px-2.5 py-1 rounded-lg text-xs">
-              <Building2 className="w-3.5 h-3.5 text-[#64748B]" />
-              <span className="text-[#64748B] font-medium">Entity:</span>
-              <select
-                value={selectedCompany}
-                onChange={(e) => setSelectedCompany(e.target.value)}
-                className="bg-transparent text-xs font-semibold text-[#0F172A] border-none focus:outline-none cursor-pointer"
-              >
-                <option value="ALL">All Entities</option>
-                <option value="LEAD">🏛️ Lead Bidder (PrimeTech)</option>
-                <option value="JV">⭐ JV Partners</option>
-              </select>
+          {/* Unified Command & Filter Toolbar */}
+          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-[#E2E8F0] dark:border-slate-800 shadow-xs space-y-3.5">
+            <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+              {/* Search Box */}
+              <div className="relative flex-1 max-w-xl">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8] w-4 h-4" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search by file name, category, SHA-256, or entity..."
+                  className="w-full pl-10 pr-9 py-2 bg-[#F8FAFC] dark:bg-slate-800/70 border border-[#E2E8F0] dark:border-slate-700/80 rounded-xl text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 rounded"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+
+              {/* Entity & Access Level Dropdowns */}
+              <div className="flex items-center gap-2.5 flex-wrap">
+                {/* Owning Entity Selector */}
+                <div className="flex items-center gap-1.5 bg-[#F8FAFC] dark:bg-slate-800/70 border border-[#E2E8F0] dark:border-slate-700/80 px-3 py-1.5 rounded-xl text-xs shadow-2xs">
+                  <Building2 className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">Entity:</span>
+                  <select
+                    value={selectedCompany}
+                    onChange={(e) => setSelectedCompany(e.target.value)}
+                    className="bg-transparent text-xs font-bold text-[#0F172A] dark:text-slate-200 border-none focus:outline-none cursor-pointer pr-1"
+                  >
+                    <option value="ALL">All Entities</option>
+                    <option value="LEAD">Lead Bidder (PrimeTech)</option>
+                    <option value="JV">JV Consortium Partners</option>
+                  </select>
+                </div>
+
+                {/* Access Level Selector */}
+                <div className="flex items-center gap-1.5 bg-[#F8FAFC] dark:bg-slate-800/70 border border-[#E2E8F0] dark:border-slate-700/80 px-3 py-1.5 rounded-xl text-xs shadow-2xs">
+                  <Shield className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">Access:</span>
+                  <select
+                    value={selectedAccess}
+                    onChange={(e) => setSelectedAccess(e.target.value)}
+                    className="bg-transparent text-xs font-bold text-[#0F172A] dark:text-slate-200 border-none focus:outline-none cursor-pointer pr-1"
+                  >
+                    <option value="ALL">All Access Levels</option>
+                    <option value="ALL_TEAM">All Team Members</option>
+                    <option value="MANAGEMENT_ONLY">Management Only</option>
+                    <option value="RESTRICTED_FINANCE">Finance &amp; Legal Only</option>
+                    <option value="EXECUTIVE_ONLY">Executive Board Only</option>
+                  </select>
+                </div>
+
+                {hasActiveFilters && (
+                  <button
+                    type="button"
+                    onClick={handleResetFilters}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    <span>Reset</span>
+                  </button>
+                )}
+              </div>
             </div>
 
-            {/* Access Level Filter Dropdown */}
-            <div className="flex items-center gap-1.5 bg-[#F8FAFC] border border-[#E2E8F0] px-2.5 py-1 rounded-lg text-xs">
-              <Shield className="w-3.5 h-3.5 text-[#64748B]" />
-              <span className="text-[#64748B] font-medium">Access:</span>
-              <select
-                value={selectedAccess}
-                onChange={(e) => setSelectedAccess(e.target.value)}
-                className="bg-transparent text-xs font-semibold text-[#0F172A] border-none focus:outline-none cursor-pointer"
-              >
-                <option value="ALL">All Access Levels</option>
-                <option value="ALL_TEAM">All Team Members</option>
-                <option value="MANAGEMENT_ONLY">Management Only</option>
-                <option value="RESTRICTED_FINANCE">Finance &amp; Legal Only</option>
-                <option value="EXECUTIVE_ONLY">Executive Board Only</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Category & Entity Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pt-2 border-t border-[#F1F5F9]">
-          <Filter className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
-          <span className="text-xs text-[#64748B] font-medium mr-1">Category:</span>
-          <button
-            type="button"
-            onClick={() => setSelectedCategory('ALL')}
-            className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
-              selectedCategory === 'ALL'
-                ? 'bg-[#0F172A] text-white font-semibold'
-                : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A]'
-            }`}
-          >
-            All Categories ({reusableDocuments.length})
-          </button>
-          {categories.map((cat) => {
-            const count = reusableDocuments.filter((d) => d.category === cat).length;
-            return (
+            {/* Category Filter Pills Row */}
+            <div className="flex items-center gap-2 overflow-x-auto pt-2.5 border-t border-[#F1F5F9] dark:border-slate-800 scrollbar-none">
               <button
-                key={cat}
                 type="button"
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
-                  selectedCategory === cat
-                    ? 'bg-[#0F172A] text-white font-semibold'
-                    : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A]'
+                onClick={() => setSelectedCategory('ALL')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap inline-flex items-center gap-1.5 cursor-pointer ${
+                  selectedCategory === 'ALL'
+                    ? 'bg-[#0F172A] dark:bg-blue-600 text-white shadow-xs'
+                    : 'bg-[#F1F5F9] dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
-                {cat} ({count})
+                <span>All Categories</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                  selectedCategory === 'ALL' ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                }`}>
+                  {reusableDocuments.length}
+                </span>
               </button>
-            );
-          })}
-        </div>
-      </div>
 
-      {/* Master Documents Table */}
-      <Card
-        title="Reusable Master Files Dossier"
-        subtitle={`Showing ${filteredDocs.length} master credential(s) available for cross-tender referencing`}
-      >
-        <div className="overflow-x-auto -mx-5 -my-5">
-          <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
-                <th className="py-3 px-4">Master Document</th>
-                <th className="py-3 px-4">Owning Entity</th>
-                <th className="py-3 px-4">Category</th>
-                <th className="py-3 px-4">Access Permission Scope</th>
-                <th className="py-3 px-4">Validity / Expiry</th>
-                <th className="py-3 px-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#F1F5F9]">
-              {filteredDocs.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="py-8 text-center text-xs text-[#94A3B8]">
-                    No reusable documents match your filter. Click "Upload Reusable Master File" to add documents.
-                  </td>
-                </tr>
-              ) : (
-                filteredDocs.map((doc) => {
-                  const hasAccess = hasDocumentAccess(doc.accessLevel);
-                  const Icon = CATEGORY_ICONS[doc.category] || FileText;
-                  const accessBadge = ACCESS_CONFIG[doc.accessLevel];
+              {categories.map((cat) => {
+                const count = reusableDocuments.filter((d) => d.category === cat).length;
+                const isSelected = selectedCategory === cat;
+                const cfg = CATEGORY_CONFIG[cat];
+                const IconComponent = cfg?.icon || FileText;
 
-                  return (
-                    <tr key={doc.id} className="hover:bg-[#F8FAFC] transition-colors">
-                      <td className="py-3.5 px-4 max-w-sm">
-                        <div className="flex items-start gap-2.5">
-                          <div className="p-2 rounded-lg bg-[#EFF6FF] text-[#2563EB] shrink-0 mt-0.5">
-                            <Icon className="w-4 h-4" />
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all whitespace-nowrap inline-flex items-center gap-1.5 cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#0F172A] dark:bg-blue-600 text-white font-bold shadow-xs'
+                        : 'bg-[#F1F5F9] dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    }`}
+                  >
+                    <IconComponent className={`w-3.5 h-3.5 ${isSelected ? 'text-white' : cfg?.color || 'text-slate-500'}`} />
+                    <span>{cat}</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                      isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Master Documents Table */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-[#E2E8F0] dark:border-slate-800 shadow-xs overflow-hidden">
+            <div className="p-4 sm:px-6 flex items-center justify-between border-b border-[#F1F5F9] dark:border-slate-800">
+              <div>
+                <h3 className="text-sm font-bold text-[#0F172A] dark:text-slate-100">
+                  Reusable Master Files Dossier
+                </h3>
+                <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">
+                  Showing <span className="font-semibold text-blue-600 dark:text-blue-400">{filteredDocs.length}</span> of {reusableDocuments.length} master credential(s) available for cross-tender referencing
+                </p>
+              </div>
+
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  Clear Filters
+                </button>
+              )}
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-[#F8FAFC] dark:bg-slate-800/60 border-b border-[#E2E8F0] dark:border-slate-800 text-[11px] font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">
+                    <th className="py-3 px-4 min-w-[280px]">Master Document &amp; Integrity</th>
+                    <th className="py-3 px-4 whitespace-nowrap">Owning Entity</th>
+                    <th className="py-3 px-4 whitespace-nowrap">Category</th>
+                    <th className="py-3 px-4 whitespace-nowrap">Clearance Scope</th>
+                    <th className="py-3 px-4 whitespace-nowrap">Validity / Expiry</th>
+                    <th className="py-3 px-4 text-right whitespace-nowrap">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#F1F5F9] dark:divide-slate-800/80">
+                  {filteredDocs.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="py-12 text-center">
+                        <div className="flex flex-col items-center justify-center gap-2.5">
+                          <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+                            <Search className="w-6 h-6" />
                           </div>
-                          <div className="min-w-0">
+                          <p className="text-sm font-semibold text-[#0F172A] dark:text-slate-200">
+                            No matching master documents found
+                          </p>
+                          <p className="text-xs text-[#64748B] dark:text-slate-400 max-w-sm">
+                            Try adjusting your search terms, changing the category, or clearing the active filters.
+                          </p>
+                          {hasActiveFilters && (
                             <button
                               type="button"
-                              onClick={() => setPreviewDoc(doc)}
-                              className="font-semibold text-[#0F172A] block leading-snug hover:text-[#2563EB] hover:underline text-left cursor-pointer"
-                              title="Click to preview document in browser"
+                              onClick={handleResetFilters}
+                              className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-xs font-semibold hover:bg-blue-100 transition-colors cursor-pointer"
                             >
-                              {doc.name}
+                              <RotateCcw className="w-3.5 h-3.5" />
+                              <span>Reset All Filters</span>
                             </button>
-                            {doc.description && (
-                              <p className="text-[11px] text-[#64748B] mt-0.5 leading-relaxed line-clamp-1">
-                                {doc.description}
-                              </p>
-                            )}
-                            <span className="font-mono text-[10px] text-[#94A3B8] block mt-0.5">
-                              SHA-256: {doc.sha256.substring(0, 16)}...
-                            </span>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td className="py-3.5 px-4 whitespace-nowrap">
-                        {doc.isJvPartner || doc.companyRole === 'JV_PARTNER' ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs">
-                            ⭐ JV: {doc.companyName || 'JV Partner'}
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
-                            🏛️ {doc.companyName || 'PrimeTech Ltd'}
-                          </span>
-                        )}
-                      </td>
-
-                      <td className="py-3.5 px-4">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-[#F1F5F9] text-[#475569]">
-                          {doc.category}
-                        </span>
-                      </td>
-
-                      <td className="py-3.5 px-4">
-                        {/* Interactive Access Level Controller */}
-                        <div className="flex items-center gap-1.5">
-                          <select
-                            value={doc.accessLevel}
-                            disabled={currentUser.role === 'TENDER_ANALYST'}
-                            onChange={(e) =>
-                              updateDocumentAccess(
-                                doc.id,
-                                e.target.value as DocumentAccessLevel
-                              )
-                            }
-                            className={`text-[10px] font-bold px-2 py-1 rounded border cursor-pointer focus:outline-none ${accessBadge.bg} ${accessBadge.text} ${accessBadge.border}`}
-                            title={accessBadge.desc}
-                          >
-                            <option value="ALL_TEAM">🌐 All Team Members</option>
-                            <option value="MANAGEMENT_ONLY">🛡️ Management Only</option>
-                            <option value="RESTRICTED_FINANCE">🔒 Finance &amp; Legal Only</option>
-                            <option value="EXECUTIVE_ONLY">👑 Executive Board Only</option>
-                          </select>
-                        </div>
-                      </td>
-
-                      <td className="py-3.5 px-4">
-                        {doc.expiryDate ? (
-                          <div className="flex items-center gap-1.5 font-mono text-[11px] text-[#0F172A]">
-                            <Calendar className="w-3.5 h-3.5 text-[#64748B]" />
-                            <span>Valid until {doc.expiryDate}</span>
-                          </div>
-                        ) : (
-                          <span className="text-[#94A3B8] text-[11px] italic">Perpetual</span>
-                        )}
-                      </td>
-
-                      <td className="py-3.5 px-4 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          {/* In-Browser Preview Button */}
-                          <button
-                            type="button"
-                            onClick={() => setPreviewDoc(doc)}
-                            className="p-1.5 text-[#0F172A] bg-white border border-[#CBD5E1] hover:bg-[#0F172A] hover:text-white rounded-lg transition-colors shadow-2xs cursor-pointer"
-                            title="Preview master file in browser (PDF, DOCX, XLSX, Images)"
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                          </button>
-
-                          {/* Reference into Tender Button */}
-                          <button
-                            type="button"
-                            onClick={() => setDocToLink(doc)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#2563EB] bg-[#EFF6FF] hover:bg-[#DBEAFE] border border-[#BFDBFE] rounded-lg transition-colors"
-                            title="Reference this document into a tender proposal"
-                          >
-                            <LinkIcon className="w-3 h-3" />
-                            <span>Use in Tender</span>
-                          </button>
-
-                          {/* Share Document Link */}
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setActiveDocForShare({
-                                tenderId: 'Master Library',
-                                doc: {
-                                  id: doc.id,
-                                  name: doc.name,
-                                  folder: doc.category,
-                                  revision: doc.revision,
-                                  uploadedAt: doc.uploadedAt,
-                                  size: doc.size,
-                                  sha256: doc.sha256,
-                                  accessLevel: doc.accessLevel,
-                                },
-                              })
-                            }
-                            className="p-1.5 text-[#2563EB] bg-[#EFF6FF] hover:bg-[#DBEAFE] border border-[#BFDBFE] rounded-lg transition-colors shadow-2xs"
-                            title="Generate shareable link for this master document"
-                          >
-                            <Share2 className="w-3.5 h-3.5" />
-                          </button>
-
-                          {/* Secure Download Button */}
-                          {hasAccess ? (
-                            <button
-                              type="button"
-                              onClick={() => alert(`Simulating secure download for ${doc.name}`)}
-                              className="p-1.5 text-[#0F172A] bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg transition-colors shadow-2xs"
-                              title="Download Master Document"
-                            >
-                              <Download className="w-3.5 h-3.5 text-[#64748B]" />
-                            </button>
-                          ) : (
-                            <span
-                              className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] rounded-lg cursor-not-allowed"
-                              title="You do not have clearance to download this file"
-                            >
-                              <Lock className="w-3 h-3" />
-                              <span>Restricted</span>
-                            </span>
                           )}
                         </div>
                       </td>
                     </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </Card>
+                  ) : (
+                    filteredDocs.map((doc) => {
+                      const hasAccess = hasDocumentAccess(doc.accessLevel);
+                      const catConfig = CATEGORY_CONFIG[doc.category] || {
+                        icon: FileText,
+                        color: 'text-blue-600 dark:text-blue-400',
+                        bg: 'bg-blue-50 dark:bg-blue-950/40',
+                        border: 'border-blue-200 dark:border-blue-800/40',
+                      };
+                      const Icon = catConfig.icon;
+                      const accessBadge = ACCESS_CONFIG[doc.accessLevel] || ACCESS_CONFIG.ALL_TEAM;
+                      const isJv = doc.isJvPartner || doc.companyRole === 'JV_PARTNER';
+
+                      return (
+                        <tr key={doc.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors group">
+                          {/* Master Document Column */}
+                          <td className="py-3.5 px-4 max-w-sm">
+                            <div className="flex items-start gap-3">
+                              <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 border ${catConfig.bg} ${catConfig.color} ${catConfig.border} shadow-2xs`}>
+                                <Icon className="w-4 h-4" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <button
+                                  type="button"
+                                  onClick={() => setPreviewDoc(doc)}
+                                  className="font-semibold text-xs text-[#0F172A] dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 hover:underline text-left cursor-pointer leading-snug block truncate"
+                                  title="Click to preview file in browser"
+                                >
+                                  {doc.name}
+                                </button>
+                                {doc.description && (
+                                  <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5 leading-relaxed line-clamp-1" title={doc.description}>
+                                    {doc.description}
+                                  </p>
+                                )}
+                                <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono font-medium">
+                                    {doc.size || '2.8 MB'}
+                                  </span>
+                                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono font-medium">
+                                    {doc.revision || 'v1.0'}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopyHash(doc.id, doc.sha256)}
+                                    className="inline-flex items-center gap-1 font-mono text-[10px] text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                    title={`SHA-256: ${doc.sha256}\nClick to copy full checksum`}
+                                  >
+                                    {copiedHashId === doc.id ? (
+                                      <Check className="w-3 h-3 text-emerald-600" />
+                                    ) : (
+                                      <Copy className="w-3 h-3" />
+                                    )}
+                                    <span>{doc.sha256.substring(0, 10)}...</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Owning Entity Column */}
+                          <td className="py-3.5 px-4 whitespace-nowrap">
+                            {isJv ? (
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200 dark:border-purple-800/40 shadow-2xs">
+                                <Users className="w-3 h-3 text-purple-600 dark:text-purple-400" />
+                                <span>{doc.companyName || 'JV Partner'}</span>
+                                <span className="text-[9px] font-semibold opacity-75">(JV)</span>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800/40 shadow-2xs">
+                                <Building2 className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                                <span>{doc.companyName || 'PrimeTech Ltd'}</span>
+                                <span className="text-[9px] font-semibold opacity-75">(Lead)</span>
+                              </span>
+                            )}
+                          </td>
+
+                          {/* Category Column */}
+                          <td className="py-3.5 px-4 whitespace-nowrap">
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                              {doc.category}
+                            </span>
+                          </td>
+
+                          {/* Access Scope Column */}
+                          <td className="py-3.5 px-4 whitespace-nowrap">
+                            <div className="flex items-center gap-1.5">
+                              <select
+                                value={doc.accessLevel}
+                                disabled={currentUser.role === 'TENDER_ANALYST'}
+                                onChange={(e) =>
+                                  updateDocumentAccess(
+                                    doc.id,
+                                    e.target.value as DocumentAccessLevel
+                                  )
+                                }
+                                className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border cursor-pointer focus:outline-none transition-all shadow-2xs ${accessBadge.bg} ${accessBadge.text} ${accessBadge.border}`}
+                                title={accessBadge.desc}
+                              >
+                                <option value="ALL_TEAM">All Team Members</option>
+                                <option value="MANAGEMENT_ONLY">Management Only</option>
+                                <option value="RESTRICTED_FINANCE">Finance &amp; Legal Only</option>
+                                <option value="EXECUTIVE_ONLY">Executive Board Only</option>
+                              </select>
+                            </div>
+                          </td>
+
+                          {/* Validity / Expiry Column */}
+                          <td className="py-3.5 px-4 whitespace-nowrap">
+                            {renderValidityBadge(doc.expiryDate)}
+                          </td>
+
+                          {/* Actions Column */}
+                          <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                            <div className="flex items-center justify-end gap-1.5">
+                              {/* Preview Button */}
+                              <button
+                                type="button"
+                                onClick={() => setPreviewDoc(doc)}
+                                className="p-1.5 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-2xs cursor-pointer"
+                                title="Preview document in browser (PDF, Word, Excel, Images)"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                              </button>
+
+                              {/* Reference into Tender Button */}
+                              <button
+                                type="button"
+                                onClick={() => setDocToLink(doc)}
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800/50 rounded-lg transition-all shadow-2xs cursor-pointer"
+                                title="Reference this credential into an active tender"
+                              >
+                                <LinkIcon className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                                <span>Use in Tender</span>
+                              </button>
+
+                              {/* Share Button */}
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setActiveDocForShare({
+                                    tenderId: 'Master Library',
+                                    doc: {
+                                      id: doc.id,
+                                      name: doc.name,
+                                      folder: doc.category,
+                                      revision: doc.revision,
+                                      uploadedAt: doc.uploadedAt,
+                                      size: doc.size,
+                                      sha256: doc.sha256,
+                                      accessLevel: doc.accessLevel,
+                                    },
+                                  })
+                                }
+                                className="p-1.5 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-2xs cursor-pointer"
+                                title="Generate secure shareable link"
+                              >
+                                <Share2 className="w-3.5 h-3.5" />
+                              </button>
+
+                              {/* Secure Download Button */}
+                              {hasAccess ? (
+                                <button
+                                  type="button"
+                                  onClick={() => alert(`Simulating secure download for ${doc.name}`)}
+                                  className="p-1.5 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-2xs cursor-pointer"
+                                  title="Download original file"
+                                >
+                                  <Download className="w-3.5 h-3.5" />
+                                </button>
+                              ) : (
+                                <span
+                                  className="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40 rounded-lg cursor-not-allowed"
+                                  title={`Access Restricted: Requires clearance level ${accessBadge.label}`}
+                                >
+                                  <Lock className="w-3 h-3" />
+                                  <span>Restricted</span>
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Modal: Upload Reusable Document */}
       {isAddModalOpen && (
@@ -865,8 +1114,6 @@ export const MasterDocumentVaultPage: React.FC = () => {
             )}
           </div>
         </div>
-      )}
-        </>
       )}
 
       {/* Universal Document Preview Modal (Clean View) */}

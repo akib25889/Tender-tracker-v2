@@ -100,7 +100,6 @@ export const ReportsPage: React.FC = () => {
     { stage: 'Screening', key: 'SCREENING', color: '#38BDF8' },
     { stage: 'Under Analysis', key: 'UNDER_ANALYSIS', color: '#818CF8' },
     { stage: 'Preparation', key: 'PREPARATION', color: '#F59E0B' },
-    { stage: 'Internal Review', key: 'INTERNAL_REVIEW', color: '#EC4899' },
     { stage: 'Submitted', key: 'SUBMITTED', color: '#2563EB' },
     { stage: 'Awarded', key: 'AWARDED', color: '#10B981' },
     { stage: 'Lost', key: 'LOST', color: '#EF4444' },
@@ -143,9 +142,9 @@ export const ReportsPage: React.FC = () => {
   }, 0);
   const evRealizationRate = totalValue > 0 ? Math.round((riskAdjustedTotalValue / totalValue) * 100) : 0;
 
-  // Capital at Immediate Risk (≤7 days remaining or active review)
+  // Capital at Immediate Risk (≤7 days remaining)
   const capitalAtRiskTenders = tenders.filter(
-    (t) => (t.stage === 'PREPARATION' || t.stage === 'INTERNAL_REVIEW') && ((t.daysRemaining ?? 99) <= 7)
+    (t) => t.stage === 'PREPARATION' && ((t.daysRemaining ?? 99) <= 7)
   );
   const capitalAtRisk = capitalAtRiskTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
 
@@ -326,7 +325,7 @@ export const ReportsPage: React.FC = () => {
                   Active in Preparation
                 </span>
                 <span className="font-display text-2xl font-bold text-[#0F172A] mt-1 block">
-                  {tenders.filter((t) => t.stage === 'PREPARATION' || t.stage === 'INTERNAL_REVIEW').length}
+                  {tenders.filter((t) => t.stage === 'PREPARATION').length}
                 </span>
                 <span className="text-[11px] text-[#D97706]">Immediate drafting focus</span>
               </div>

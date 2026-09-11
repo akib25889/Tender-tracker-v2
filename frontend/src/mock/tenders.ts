@@ -682,7 +682,7 @@ export const MOCK_TENDERS: Tender[] = [
     category: 'Healthcare Systems',
     estimatedValue: 8600000,
     tenderType: 'Expression of Interest (EOI)',
-    stage: 'INTERNAL_REVIEW',
+    stage: 'PREPARATION',
     decision: 'GO',
     priority: 'HIGH',
     submissionDeadline: '2026-09-08T18:00:00Z',

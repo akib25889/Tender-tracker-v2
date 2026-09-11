@@ -207,8 +207,7 @@ export const DashboardPage: React.FC = () => {
     { stage: 'SCREENING', label: '2. Screening' },
     { stage: 'UNDER_ANALYSIS', label: '3. Analysis' },
     { stage: 'PREPARATION', label: '4. Preparation' },
-    { stage: 'INTERNAL_REVIEW', label: '5. Review' },
-    { stage: 'SUBMITTED', label: '6. Submitted' },
+    { stage: 'SUBMITTED', label: '5. Submitted' },
   ];
 
   return (
@@ -263,7 +262,7 @@ export const DashboardPage: React.FC = () => {
               </span>
             </div>
             <span className="text-[11px] text-[#16A34A] font-medium mt-0.5 block">
-              {tenders.filter((t) => t.stage === 'PREPARATION' || t.stage === 'INTERNAL_REVIEW').length} in active drafting
+              {tenders.filter((t) => t.stage === 'PREPARATION').length} in active drafting
             </span>
           </div>
           <div className="w-10 h-10 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">

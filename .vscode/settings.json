@@ -1,0 +1,16 @@
+{
+  "typescript.tsserver.maxTsServerMemory": 1024,
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/backend/venv/**": true,
+    "**/storage/**": true,
+    "**/__pycache__/**": true,
+    "**/.git/**": true
+  },
+  "search.exclude": {
+    "**/node_modules/**": true,
+    "**/backend/venv/**": true,
+    "**/storage/**": true,
+    "**/__pycache__/**": true
+  }
+}

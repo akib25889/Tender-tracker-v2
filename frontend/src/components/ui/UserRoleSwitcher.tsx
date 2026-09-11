@@ -66,8 +66,12 @@ export const UserRoleSwitcher: React.FC = () => {
         className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] hover:bg-[#F8FAFC] transition-colors shadow-xs"
         title="Switch user profile and role"
       >
-        <div className="w-6 h-6 rounded-full bg-[#0F172A] text-white flex items-center justify-center text-[10px] font-bold shrink-0">
-          {currentUser.avatar}
+        <div className="w-6 h-6 rounded-full bg-[#0F172A] text-white flex items-center justify-center text-[10px] font-bold shrink-0 overflow-hidden">
+          {currentUser.profilePic ? (
+            <img src={currentUser.profilePic} alt={currentUser.name} className="w-full h-full object-cover" />
+          ) : (
+            currentUser.avatar
+          )}
         </div>
 
         <div className="hidden lg:flex flex-col text-left">
@@ -115,11 +119,15 @@ export const UserRoleSwitcher: React.FC = () => {
                 >
                   <div className="flex items-center gap-2.5">
                     <div
-                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 ${
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 overflow-hidden ${
                         isSelected ? 'bg-[#2563EB]' : 'bg-[#0F172A]'
                       }`}
                     >
-                      {member.avatar}
+                      {member.profilePic ? (
+                        <img src={member.profilePic} alt={member.name} className="w-full h-full object-cover" />
+                      ) : (
+                        member.avatar
+                      )}
                     </div>
                     <div>
                       <div className="font-semibold text-xs leading-snug">

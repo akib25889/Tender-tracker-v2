@@ -5,7 +5,6 @@ import {
   CheckSquare,
   Kanban,
   FolderLock,
-  FileCheck2,
   Send,
   Award,
   ChevronRight,
@@ -142,7 +141,6 @@ export const TenderDetailPage: React.FC = () => {
     { label: 'Task Board', path: `/tenders/${tender.id}/tasks`, icon: Kanban },
     { label: 'Document Vault', path: `/tenders/${tender.id}/documents`, icon: FolderLock, hasAlert: (tender.missingDocumentsCount || 0) > 0 },
     { label: 'JV Partners', path: `/tenders/${tender.id}/partners`, icon: Users },
-    { label: 'Review & Sign-Off', path: `/tenders/${tender.id}/review`, icon: FileCheck2 },
     { label: 'Submission Ledger', path: `/tenders/${tender.id}/submission`, icon: Send },
     { label: 'Outcome & Debrief', path: `/tenders/${tender.id}/result`, icon: Award },
   ];
@@ -154,8 +152,7 @@ export const TenderDetailPage: React.FC = () => {
     { stage: 'SCREENING', label: '02. Screening', sub: 'Go / No-Go Gate' },
     { stage: 'UNDER_ANALYSIS', label: '03. Under Analysis', sub: 'TOR & Scope Audit' },
     { stage: 'PREPARATION', label: '04. Preparation', sub: 'Financials & BoQ' },
-    { stage: 'INTERNAL_REVIEW', label: '05. Sign-Off', sub: 'Executive Approval' },
-    { stage: 'SUBMITTED', label: '06. Submitted', sub: 'Receipt & Guarantee' },
+    { stage: 'SUBMITTED', label: '05. Submitted', sub: 'Receipt & Guarantee' },
   ];
 
   const stageKeys = stages.map((s) => s.stage);
@@ -441,8 +438,8 @@ export const TenderDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* 6-Stage Gate Visual Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
+          {/* 5-Stage Gate Visual Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
             {stages.map((st, idx) => {
               const isPast = currentStageIndex > idx;
               const isCurrent = currentStageIndex === idx;
@@ -1270,7 +1267,9 @@ export const TenderDetailPage: React.FC = () => {
           </div>
         </div>
       ) : (
-        <Outlet />
+        <div className="pt-6 sm:pt-8">
+          <Outlet />
+        </div>
       )}
 
       {/* AI Chat & Knowledge Link Modal */}

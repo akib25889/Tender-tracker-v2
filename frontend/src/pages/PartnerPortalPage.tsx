@@ -567,12 +567,12 @@ export const PartnerPortalPage: React.FC = () => {
 
             <div className="flex items-center gap-1">
               <Link
-                to="/tenders/TDR-2026-EU-089/partners"
+                to="/dashboard"
                 className="px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#475569] text-xs font-medium flex items-center gap-1.5 transition-colors"
                 title="Return to Internal Command Center"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Internal View</span>
+                <span className="hidden md:inline">Internal Command Center</span>
               </Link>
             </div>
           </div>

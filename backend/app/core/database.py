@@ -391,6 +391,12 @@ def run_migrations():
                             "ALTER TABLE users ADD COLUMN active_tender_roles JSON DEFAULT NULL"
                         )
                     )
+                if "profile_pic" not in u_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE users ADD COLUMN profile_pic TEXT DEFAULT NULL"
+                        )
+                    )
 
                 conn.commit()
             elif engine.dialect.name == "mysql":
@@ -466,6 +472,7 @@ def run_migrations():
                             ("certifications", "JSON DEFAULT NULL"),
                             ("education", "JSON DEFAULT NULL"),
                             ("active_tender_roles", "JSON DEFAULT NULL"),
+                            ("profile_pic", "LONGTEXT DEFAULT NULL"),
                         ],
                     ),
                 ]:

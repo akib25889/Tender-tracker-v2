@@ -28,6 +28,17 @@ from app.services.storage import ensure_tender_directories
 
 INITIAL_USERS = [
     {
+        "id": "USR-SYS-01",
+        "name": "System Administrator",
+        "email": "admin@tendertracker.org",
+        "password": "Admin@1234!",
+        "role": "SUPER_ADMIN",
+        "title": "System Administrator",
+        "department": "IT & Systems",
+        "max_capacity": 99,
+        "avatar": "SA",
+    },
+    {
         "id": "USR-01",
         "name": "Sarah Jenkins",
         "email": "sarah.jenkins@tendertracker.org",
@@ -313,6 +324,24 @@ def seed_database(db: Session):
                 )
             )
         db.commit()
+    else:
+        # Always ensure the SUPER_ADMIN account exists (upsert for existing DBs)
+        admin_seed = next(u for u in INITIAL_USERS if u["role"] == "SUPER_ADMIN")
+        if not db.query(User).filter(User.id == admin_seed["id"]).first():
+            db.add(
+                User(
+                    id=admin_seed["id"],
+                    name=admin_seed["name"],
+                    email=admin_seed["email"],
+                    hashed_password=get_password_hash(admin_seed["password"]),
+                    role=admin_seed["role"],
+                    title=admin_seed["title"],
+                    department=admin_seed["department"],
+                    max_capacity=admin_seed["max_capacity"],
+                    avatar=admin_seed["avatar"],
+                )
+            )
+            db.commit()
 
     # 2. Seed Reusable Master Documents if empty
     if db.query(ReusableDocument).count() == 0:

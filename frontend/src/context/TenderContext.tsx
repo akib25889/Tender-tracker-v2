@@ -21,6 +21,7 @@ import {
   CompanyProjectCredential,
   CompanyProfile,
   PastProjectAssignment,
+  TenderFolder,
 } from '../types/tender';
 import { MOCK_TENDERS } from '../mock/tenders';
 import { TEAM_PROFILES } from '../mock/users';
@@ -57,6 +58,7 @@ interface TenderContextType {
     }
   ) => void;
   addFolder: (tenderId: string, folder: { name: string; label: string }) => void;
+  updateFolder: (tenderId: string, folderName: string, newLabel: string) => void;
   deleteFolder: (tenderId: string, folderName: string) => void;
   moveDocumentFolder: (tenderId: string, docId: string, targetFolder: string) => void;
   requestDocumentReupload: (
@@ -200,6 +202,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         const sanitized = parsed.map((t) => {
           if (t.referenceNo && (t.referenceNo === `REF/${t.id}` || t.referenceNo === t.id)) {
             return { ...t, referenceNo: '' };
+          }
+          if ((t.stage as string) === 'INTERNAL_REVIEW') {
+            return { ...t, stage: 'PREPARATION' as TenderStage };
           }
           return t;
         });
@@ -566,6 +571,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
               title: u.title,
               email: u.email,
               avatar: u.avatar || u.name.slice(0, 2).toUpperCase(),
+              profilePic: u.profile_pic || u.profilePic,
               department: u.department,
               maxCapacity: u.max_capacity,
             }))
@@ -1514,6 +1520,43 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
+  const updateFolder = (tenderId: string, folderName: string, newLabel: string) => {
+    fetch(`http://127.0.0.1:8000/api/documents/tender/${tenderId}/folders/${encodeURIComponent(folderName)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ label: newLabel }),
+    }).catch(() => {});
+
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+
+        const currentCustom = t.customFolders || [];
+        const isCustom = currentCustom.some((f) => f.name === folderName);
+
+        let updatedCustom: TenderFolder[];
+        if (isCustom) {
+          updatedCustom = currentCustom.map((f) =>
+            f.name === folderName ? { ...f, label: newLabel } : f
+          );
+        } else {
+          updatedCustom = [...currentCustom, { name: folderName, label: newLabel }];
+        }
+
+        const currentLabels = t.folderLabels || {};
+
+        return {
+          ...t,
+          customFolders: updatedCustom,
+          folderLabels: {
+            ...currentLabels,
+            [folderName]: newLabel,
+          },
+        };
+      })
+    );
+  };
+
   const deleteFolder = (tenderId: string, folderName: string) => {
     fetch(`http://127.0.0.1:8000/api/documents/tender/${tenderId}/folders/${encodeURIComponent(folderName)}`, {
       method: 'DELETE',
@@ -2194,6 +2237,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (updates.proposedDesignation !== undefined) payload.proposed_designation = updates.proposedDesignation;
     if (updates.pastAssignments !== undefined) payload.past_assignments = updates.pastAssignments;
     if (updates.activeTenderRoles !== undefined) payload.active_tender_roles = updates.activeTenderRoles;
+    if (updates.profilePic !== undefined) payload.profile_pic = updates.profilePic;
 
     fetch(`http://127.0.0.1:8000/api/users/${userId}`, {
       method: 'PUT',
@@ -2404,6 +2448,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         moveTask,
         addDocument,
         addFolder,
+        updateFolder,
         deleteFolder,
         moveDocumentFolder,
         requestDocumentReupload,

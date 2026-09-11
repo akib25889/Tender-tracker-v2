@@ -129,7 +129,7 @@ export type UserRole =
 
 export const isSuperAdminRole = (role?: string): boolean => {
   if (!role) return false;
-  return role === 'SUPER_ADMIN' || role === 'BUSINESS_HEAD';
+  return role === 'SUPER_ADMIN';
 };
 
 export interface PastProjectAssignment {
@@ -159,6 +159,7 @@ export interface UserProfile {
   title: string;
   email: string;
   avatar: string;
+  profilePic?: string;
   department?: string;
   maxCapacity?: number;
   phone?: string;
@@ -428,6 +429,7 @@ export interface Tender {
   comments?: TenderComment[];
   customFolders?: TenderFolder[];
   deletedFolders?: string[];
+  folderLabels?: Record<string, string>;
   archivedFromStage?: TenderStage;
   archivedAt?: string;
   importantClauses?: ImportantClause[];

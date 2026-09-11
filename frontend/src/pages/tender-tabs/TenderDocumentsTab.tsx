@@ -22,10 +22,6 @@ import {
   Clock,
   Send,
   Eye,
-  Sparkles,
-  ExternalLink,
-  Edit3,
-  Copy,
 } from 'lucide-react';
 import { DocumentPreviewModal } from '../../components/modals/DocumentPreviewModal';
 
@@ -66,6 +62,7 @@ export const TenderDocumentsTab: React.FC = () => {
     setActiveTenderIdForModal,
     setUploadFolderTarget,
     addFolder,
+    updateFolder,
     deleteFolder,
     moveDocumentFolder,
     reusableDocuments,
@@ -78,55 +75,16 @@ export const TenderDocumentsTab: React.FC = () => {
     requestNewDocumentUpload,
     resolveDocumentReupload,
     companyProfiles,
-    updateTenderAiChatLink,
   } = useTenders();
 
   const tender = tenders.find((t) => t.id === id) || tenders[0];
-
-  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
-  const [aiLinkInput, setAiLinkInput] = useState('');
-  const [isSavingAiLink, setIsSavingAiLink] = useState(false);
-  const [copiedAiLink, setCopiedAiLink] = useState(false);
-
-  const handleOpenAiModal = () => {
-    setAiLinkInput(tender?.aiChatShareLink || '');
-    setIsAiModalOpen(true);
-  };
-
-  const handleSaveAiChatLink = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    setIsSavingAiLink(true);
-    try {
-      await updateTenderAiChatLink(tender.id, aiLinkInput.trim());
-      setIsAiModalOpen(false);
-    } finally {
-      setIsSavingAiLink(false);
-    }
-  };
-
-  const handleClearAiChatLink = async () => {
-    setIsSavingAiLink(true);
-    try {
-      await updateTenderAiChatLink(tender.id, '');
-      setAiLinkInput('');
-      setIsAiModalOpen(false);
-    } finally {
-      setIsSavingAiLink(false);
-    }
-  };
-
-  const handleCopyAiLink = () => {
-    if (tender?.aiChatShareLink) {
-      navigator.clipboard.writeText(tender.aiChatShareLink);
-      setCopiedAiLink(true);
-      setTimeout(() => setCopiedAiLink(false), 2000);
-    }
-  };
 
   const [activeFolderFilter, setActiveFolderFilter] = useState<string>('ALL');
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
   const [newFolderLabel, setNewFolderLabel] = useState('');
   const [newFolderName, setNewFolderName] = useState('');
+  const [folderToEdit, setFolderToEdit] = useState<{ name: string; label: string } | null>(null);
+  const [editFolderLabel, setEditFolderLabel] = useState('');
   const [folderToDelete, setFolderToDelete] = useState<{
     name: string;
     label: string;
@@ -207,15 +165,15 @@ export const TenderDocumentsTab: React.FC = () => {
   const jvPrioritizedFolders = [
     {
       name: '02A_jv_partner_credentials',
-      label: `⭐ JV Partner Credentials (${jvPartnerName})`,
+      label: `JV Partner Credentials (${jvPartnerName})`,
     },
     {
       name: '02B_lead_statutory_documents',
-      label: `🏛️ Lead Bidder Statutory Credentials (${leadCompanyName})`,
+      label: `Lead Bidder Statutory Credentials (${leadCompanyName})`,
     },
     {
       name: '02C_jv_agreement_and_poa',
-      label: '📜 JV Consortium Deed & Power of Attorney',
+      label: 'JV Consortium Deed & Power of Attorney',
     },
     {
       name: '01_original_tender_documents',
@@ -241,8 +199,19 @@ export const TenderDocumentsTab: React.FC = () => {
 
   if (!tender) return null;
 
-  const baseFolders = isJvTender ? jvPrioritizedFolders : standardFolders;
-  const folders = [...baseFolders, ...(tender.customFolders || [])].filter(
+  const rawBaseFolders = isJvTender ? jvPrioritizedFolders : standardFolders;
+  const baseFolders = rawBaseFolders.map((f) => ({
+    ...f,
+    label: tender.folderLabels?.[f.name] || f.label,
+  }));
+  const customFolders = (tender.customFolders || []).map((f) => ({
+    ...f,
+    label: tender.folderLabels?.[f.name] || f.label,
+  }));
+
+  const uniqueFoldersMap = new Map<string, { name: string; label: string }>();
+  [...baseFolders, ...customFolders].forEach((f) => uniqueFoldersMap.set(f.name, f));
+  const folders = Array.from(uniqueFoldersMap.values()).filter(
     (f) => !(tender.deletedFolders || []).includes(f.name)
   );
 
@@ -344,16 +313,13 @@ export const TenderDocumentsTab: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 pt-1">
       {/* Top Header Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
         <div>
           <h2 className="font-display text-lg font-bold text-[#0F172A]">
             Tender Document Vault
           </h2>
-          <p className="text-xs text-[#64748B]">
-            Organize RFP notices, statutory credentials, and technical/financial proposals into dedicated folders
-          </p>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
@@ -446,88 +412,6 @@ export const TenderDocumentsTab: React.FC = () => {
         </div>
       )}
 
-      {/* AI KNOWLEDGE SESSION BANNER / INTEGRATION CARD */}
-      {tender.aiChatShareLink ? (
-        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-violet-50 via-purple-50 to-indigo-50 border border-violet-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-violet-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="text-sm font-bold text-[#0F172A]">
-                  AI Tender Assistant &amp; Indexed Document Session
-                </h3>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-violet-100 text-violet-800 border border-violet-200">
-                  Ready to Query
-                </span>
-              </div>
-              <p className="text-xs text-[#475569] leading-relaxed max-w-2xl">
-                This tender&apos;s RFP specs, BOQs, and requirements are pre-uploaded in your external AI session. Team members can query specifications without re-uploading large PDF batches.
-              </p>
-              <div className="pt-0.5 flex items-center gap-2 text-[11px] font-mono text-violet-900 truncate max-w-md">
-                <span className="text-[#64748B] font-sans font-medium">Link:</span>
-                <span className="truncate">{tender.aiChatShareLink}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2.5 shrink-0 self-start md:self-center">
-            <button
-              type="button"
-              onClick={handleCopyAiLink}
-              className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-violet-200 hover:bg-violet-100/60 text-violet-700 text-xs font-semibold rounded-xl transition-colors shadow-2xs"
-              title="Copy AI chat link to clipboard"
-            >
-              {copiedAiLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copiedAiLink ? 'Link Copied' : 'Copy Link'}</span>
-            </button>
-            <button
-              type="button"
-              onClick={handleOpenAiModal}
-              className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-violet-200 hover:bg-violet-100/60 text-violet-700 text-xs font-semibold rounded-xl transition-colors shadow-2xs"
-              title="Edit or update AI chat link"
-            >
-              <Edit3 className="w-3.5 h-3.5" />
-              <span>Change Link</span>
-            </button>
-            <a
-              href={tender.aiChatShareLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Open AI Chat</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          </div>
-        </div>
-      ) : (
-        <div className="p-4 rounded-2xl bg-[#F8FAFC] border border-dashed border-violet-300 hover:border-violet-400 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-[#0F172A]">
-                Connect Pre-Indexed AI Chat Session (ChatGPT / Claude / NotebookLM / Gemini)
-              </h4>
-              <p className="text-[11px] text-[#64748B] leading-relaxed">
-                Save an external AI conversation link where tender files are pre-loaded so you and your team don&apos;t have to upload all documents again.
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={handleOpenAiModal}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-violet-50 hover:bg-violet-100 text-violet-800 border border-violet-200 text-xs font-semibold rounded-lg transition-colors shadow-2xs shrink-0 self-start sm:self-center"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-violet-600" />
-            <span>+ Link AI Chat Session</span>
-          </button>
-        </div>
-      )}
 
       {/* Folder Hierarchy Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -549,10 +433,10 @@ export const TenderDocumentsTab: React.FC = () => {
                   setActiveFolderFilter((prev) => (prev === f.name ? 'ALL' : f.name))
                 }
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
+                <div className="flex items-start justify-between gap-2 overflow-hidden">
+                  <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
                     <div
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                      className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors shrink-0 ${
                         isSelected
                           ? 'bg-[#2563EB] text-white'
                           : 'bg-[#EFF6FF] text-[#2563EB] group-hover:bg-[#2563EB] group-hover:text-white'
@@ -560,23 +444,26 @@ export const TenderDocumentsTab: React.FC = () => {
                     >
                       <Folder className="w-5 h-5" />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-[#0F172A] leading-tight truncate">
+                    <div className="min-w-0 flex-1 overflow-hidden">
+                      <h4 className="text-xs font-bold text-[#0F172A] leading-tight truncate" title={f.label}>
                         {f.label}
                       </h4>
-                      <span className="text-[10px] text-[#64748B] font-mono block mt-0.5 truncate">
-                        /{f.name}/
-                      </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1 shrink-0">
-                    {isSelected && (
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
-                        <Check className="w-3 h-3" />
-                        <span>Active</span>
-                      </span>
-                    )}
+                  {isSelected && (
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] shrink-0">
+                      <Check className="w-3 h-3" />
+                      <span>Active</span>
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between text-[11px] text-[#64748B] pt-3 mt-3 border-t border-[#F1F5F9]">
+                  <span className="font-semibold">
+                    {folderFiles.length} file{folderFiles.length === 1 ? '' : 's'} inside
+                  </span>
+                  <div className="flex items-center gap-1.5 flex-wrap justify-end">
                     <button
                       type="button"
                       onClick={(e) => {
@@ -588,11 +475,37 @@ export const TenderDocumentsTab: React.FC = () => {
                           tender.documents
                         );
                       }}
-                      className="p-1 rounded text-[#64748B] hover:text-[#2563EB] hover:bg-[#EFF6FF] transition-colors"
-                      title={`Download folder "${f.label}" as ZIP`}
+                      className="inline-flex items-center gap-1 text-[#2563EB] hover:underline font-semibold cursor-pointer"
+                      title={`Download ${f.label} as ZIP archive`}
                     >
-                      <Download className="w-3.5 h-3.5" />
+                      <Download className="w-3 h-3" />
+                      <span>ZIP</span>
                     </button>
+                    <span className="text-[#CBD5E1]">•</span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenUpload(f.name);
+                      }}
+                      className="text-[#2563EB] hover:underline font-semibold cursor-pointer"
+                    >
+                      + Upload
+                    </button>
+                    <span className="text-[#CBD5E1]">•</span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFolderToEdit({ name: f.name, label: f.label });
+                        setEditFolderLabel(f.label);
+                      }}
+                      className="text-slate-600 dark:text-slate-400 hover:text-[#2563EB] hover:underline font-semibold cursor-pointer"
+                      title={`Edit folder name`}
+                    >
+                      Edit
+                    </button>
+                    <span className="text-[#CBD5E1]">•</span>
                     <button
                       type="button"
                       onClick={(e) => {
@@ -603,46 +516,10 @@ export const TenderDocumentsTab: React.FC = () => {
                           fileCount: folderFiles.length,
                         });
                       }}
-                      className="p-1 rounded text-[#94A3B8] hover:text-[#DC2626] hover:bg-[#FEF2F2] transition-colors"
-                      title={`Delete folder "${f.label}"`}
+                      className="text-slate-500 dark:text-slate-400 hover:text-[#DC2626] hover:underline font-semibold cursor-pointer"
+                      title={`Delete folder`}
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between text-[11px] text-[#64748B] pt-3 mt-3 border-t border-[#F1F5F9]">
-                  <span className="font-semibold">
-                    {folderFiles.length} file{folderFiles.length === 1 ? '' : 's'} inside
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        downloadFolderAsZip(
-                          tender.id,
-                          f.name,
-                          f.label,
-                          tender.documents
-                        );
-                      }}
-                      className="inline-flex items-center gap-1 text-[#2563EB] hover:underline font-semibold"
-                      title={`Download ${f.label} as ZIP archive`}
-                    >
-                      <Download className="w-3 h-3" />
-                      <span>Download ZIP</span>
-                    </button>
-                    <span className="text-[#CBD5E1]">•</span>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenUpload(f.name);
-                      }}
-                      className="text-[#2563EB] hover:underline font-semibold"
-                    >
-                      + Upload
+                      Delete
                     </button>
                   </div>
                 </div>
@@ -1183,8 +1060,90 @@ export const TenderDocumentsTab: React.FC = () => {
         </div>
       )}
 
+      {/* Modal: Edit Folder */}
+      {folderToEdit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-[#E2E8F0] dark:border-slate-800 p-6 max-w-md w-full shadow-2xl space-y-4 animate-scaleIn">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9] dark:border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-200 dark:border-blue-900/40">
+                  <Folder className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-sm font-bold text-[#0F172A] dark:text-slate-100">
+                    Edit Folder Details
+                  </h3>
+                  <p className="text-xs text-[#64748B] dark:text-slate-400">
+                    Rename display title for this vault folder
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setFolderToEdit(null)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!folderToEdit || !editFolderLabel.trim()) return;
+                updateFolder(tender.id, folderToEdit.name, editFolderLabel.trim());
+                setFolderToEdit(null);
+              }}
+              className="space-y-3.5 text-xs"
+            >
+              <div>
+                <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                  Folder Display Label *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editFolderLabel}
+                  onChange={(e) => setEditFolderLabel(e.target.value)}
+                  placeholder="e.g. JV Partner Credentials"
+                  className="w-full px-3.5 py-2 bg-white dark:bg-slate-800 border border-[#CBD5E1] dark:border-slate-700 rounded-xl text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-500 dark:text-slate-400 mb-1">
+                  Internal Vault Path Slug (Read-only)
+                </label>
+                <div className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/60 font-mono text-[11px] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60">
+                  /{folderToEdit.name}/
+                </div>
+                <p className="text-[10px] text-slate-400 mt-1">
+                  The directory name on the disk vault is preserved to ensure hash and document link integrity.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9] dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setFolderToEdit(null)}
+                  className="px-3.5 py-1.5 rounded-xl border border-[#E2E8F0] dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold transition-colors shadow-xs"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Modal: Confirm Delete Folder */}
-      {/* Modal: Delete Folder Confirmation */}
       {folderToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
           <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-md w-full shadow-2xl space-y-4">
@@ -1642,114 +1601,6 @@ export const TenderDocumentsTab: React.FC = () => {
           }
         }}
       />
-
-      {/* AI Knowledge Session Link Modal */}
-      {isAiModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-2xl max-w-lg w-full p-6 space-y-5 animate-scaleIn">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center text-violet-700">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-[#0F172A]">AI Knowledge &amp; Chat Session</h3>
-                  <p className="text-xs text-[#64748B]">Tender: <span className="font-semibold text-[#0F172A]">{tender.id}</span></p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsAiModalOpen(false)}
-                className="text-[#94A3B8] hover:text-[#0F172A] text-lg font-bold p-1 rounded-md"
-              >
-                ✕
-              </button>
-            </div>
-
-            <p className="text-xs text-[#475569] leading-relaxed">
-              Link an external AI chat or notebook (e.g. <strong>ChatGPT Shared Chat</strong>, <strong>Google NotebookLM</strong>, <strong>Claude Project</strong>, or <strong>Gemini</strong>) where this tender&apos;s documents are already uploaded. Anyone on the bid team can launch it without re-uploading documents.
-            </p>
-
-            <form onSubmit={handleSaveAiChatLink} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-[#0F172A] mb-1.5">
-                  AI Chat / Notebook Share URL
-                </label>
-                <input
-                  type="url"
-                  value={aiLinkInput}
-                  onChange={(e) => setAiLinkInput(e.target.value)}
-                  placeholder="https://chatgpt.com/share/... or https://notebooklm.google.com/notebook/..."
-                  className="w-full px-3.5 py-2.5 text-xs text-[#0F172A] bg-white border border-[#CBD5E1] rounded-xl focus:outline-hidden focus:ring-2 focus:ring-violet-500 focus:border-violet-500 placeholder:text-[#94A3B8]"
-                  autoFocus
-                />
-                <div className="flex items-center gap-2 mt-2 text-[11px] text-[#64748B]">
-                  <span className="font-semibold">Compatible:</span>
-                  <span>ChatGPT Shares</span> • <span>NotebookLM</span> • <span>Claude Projects</span> • <span>Gemini</span>
-                </div>
-              </div>
-
-              {tender.aiChatShareLink && (
-                <div className="flex items-center justify-between p-3 rounded-xl bg-violet-50/80 border border-violet-100 text-xs">
-                  <div className="truncate max-w-[260px] text-violet-900 font-mono text-[11px]">
-                    {tender.aiChatShareLink}
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={handleCopyAiLink}
-                      className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-violet-200 hover:bg-violet-100/50 rounded-md text-[11px] font-semibold text-violet-700 transition-colors"
-                    >
-                      {copiedAiLink ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                      <span>{copiedAiLink ? 'Copied' : 'Copy'}</span>
-                    </button>
-                    <a
-                      href={tender.aiChatShareLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 px-2 py-1 bg-violet-600 hover:bg-violet-700 text-white rounded-md text-[11px] font-semibold transition-colors"
-                    >
-                      <span>Open</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex items-center justify-between pt-3 border-t border-[#F1F5F9]">
-                {tender.aiChatShareLink ? (
-                  <button
-                    type="button"
-                    onClick={handleClearAiChatLink}
-                    disabled={isSavingAiLink}
-                    className="text-xs font-semibold text-red-600 hover:text-red-700 hover:underline transition-colors"
-                  >
-                    Remove Link
-                  </button>
-                ) : <div />}
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsAiModalOpen(false)}
-                    className="px-4 py-2 text-xs font-semibold text-[#475569] hover:bg-[#F1F5F9] rounded-xl transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSavingAiLink}
-                    className="px-4 py-2 text-xs font-semibold text-white bg-violet-600 hover:bg-violet-700 disabled:opacity-50 rounded-xl transition-colors shadow-2xs inline-flex items-center gap-1.5"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>{isSavingAiLink ? 'Saving...' : 'Save AI Link'}</span>
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

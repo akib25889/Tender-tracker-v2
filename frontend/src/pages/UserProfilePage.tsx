@@ -28,6 +28,8 @@ import {
   ChevronUp,
   Printer,
   FileSpreadsheet,
+  Camera,
+  Upload,
 } from 'lucide-react';
 import {
   exportPersonnelDossierAsPDF,
@@ -90,6 +92,7 @@ export const UserProfilePage: React.FC = () => {
   // Edit Profile Form State
   const [editForm, setEditForm] = useState({
     name: targetUser.name || '',
+    profilePic: targetUser.profilePic || '',
     title: targetUser.title || '',
     department: targetUser.department || 'Bid Operations & Strategy',
     phone: targetUser.phone || '',
@@ -98,6 +101,39 @@ export const UserProfilePage: React.FC = () => {
     proposedDesignation: targetUser.proposedDesignation || '',
     maxCapacity: targetUser.maxCapacity || 5,
   });
+
+  useEffect(() => {
+    setEditForm({
+      name: targetUser.name || '',
+      profilePic: targetUser.profilePic || '',
+      title: targetUser.title || '',
+      department: targetUser.department || 'Bid Operations & Strategy',
+      phone: targetUser.phone || '',
+      location: targetUser.location || 'Dhaka, Bangladesh',
+      employmentType: (targetUser.employmentType || 'PERMANENT') as EmploymentType,
+      proposedDesignation: targetUser.proposedDesignation || '',
+      maxCapacity: targetUser.maxCapacity || 5,
+    });
+  }, [targetUser]);
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Photo size exceeds 5MB. Please choose a smaller image file.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (uploadEvent) => {
+      const result = uploadEvent.target?.result as string;
+      if (result) {
+        setEditForm((prev) => ({ ...prev, profilePic: result }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Add Assignment Form State
   const [assignmentForm, setAssignmentForm] = useState({
@@ -154,8 +190,20 @@ export const UserProfilePage: React.FC = () => {
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanName = editForm.name.trim();
+    const initials =
+      cleanName
+        .split(' ')
+        .filter(Boolean)
+        .map((n) => n[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase() || targetUser.avatar || 'TM';
+
     await updateUserProfile(targetUser.id, {
-      name: editForm.name.trim(),
+      name: cleanName,
+      avatar: initials,
+      profilePic: editForm.profilePic.trim(),
       title: editForm.title.trim(),
       department: editForm.department.trim(),
       phone: editForm.phone.trim(),
@@ -300,6 +348,7 @@ export const UserProfilePage: React.FC = () => {
             onClick={() => {
               setEditForm({
                 name: targetUser.name || '',
+                profilePic: targetUser.profilePic || '',
                 title: targetUser.title || '',
                 department: targetUser.department || 'Bid Operations & Strategy',
                 phone: targetUser.phone || '',
@@ -310,9 +359,10 @@ export const UserProfilePage: React.FC = () => {
               });
               setIsEditModalOpen(true);
             }}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm cursor-pointer"
           >
-            <span>Edit Profile Details</span>
+            <Camera className="w-3.5 h-3.5 text-blue-400" />
+            <span>Edit Profile Info</span>
           </button>
         </div>
       </div>
@@ -335,11 +385,17 @@ export const UserProfilePage: React.FC = () => {
               }`}
             >
               <div
-                className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                  isSelected ? 'bg-white/20 text-white' : 'bg-[#0F172A] text-white'
+                className={`w-5 h-5 rounded-full overflow-hidden shrink-0 flex items-center justify-center text-[10px] font-bold ${
+                  isSelected ? 'ring-1 ring-white/50' : ''
                 }`}
               >
-                {member.avatar}
+                {member.profilePic ? (
+                  <img src={member.profilePic} alt={member.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className={`w-full h-full flex items-center justify-center ${isSelected ? 'bg-white/20 text-white' : 'bg-[#0F172A] text-white'}`}>
+                    {member.avatar}
+                  </div>
+                )}
               </div>
               <span>{member.name}</span>
             </button>
@@ -352,8 +408,42 @@ export const UserProfilePage: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
           {/* Identity & Core Badges */}
           <div className="flex items-start gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#0F172A] to-[#334155] text-white flex items-center justify-center text-xl font-display font-bold shadow-md shrink-0 ring-4 ring-[#F1F5F9]">
-              {targetUser.avatar}
+            <div className="relative group shrink-0">
+              <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-md ring-4 ring-[#F1F5F9] bg-[#0F172A] flex items-center justify-center">
+                {targetUser.profilePic ? (
+                  <img
+                    src={targetUser.profilePic}
+                    alt={targetUser.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-tr from-[#0F172A] to-[#334155] text-white flex items-center justify-center text-xl font-display font-bold">
+                    {targetUser.avatar || targetUser.name.slice(0, 2).toUpperCase()}
+                  </div>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setEditForm({
+                    name: targetUser.name || '',
+                    profilePic: targetUser.profilePic || '',
+                    title: targetUser.title || '',
+                    department: targetUser.department || 'Bid Operations & Strategy',
+                    phone: targetUser.phone || '',
+                    location: targetUser.location || 'Dhaka, Bangladesh',
+                    employmentType: (targetUser.employmentType || 'PERMANENT') as EmploymentType,
+                    proposedDesignation: targetUser.proposedDesignation || '',
+                    maxCapacity: targetUser.maxCapacity || 5,
+                  });
+                  setIsEditModalOpen(true);
+                }}
+                className="absolute inset-0 bg-black/50 rounded-2xl flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-[10px] font-medium"
+                title="Change profile picture"
+              >
+                <Camera className="w-4 h-4 mb-0.5" />
+                <span>Edit Photo</span>
+              </button>
             </div>
 
             <div className="space-y-1.5">
@@ -825,6 +915,65 @@ export const UserProfilePage: React.FC = () => {
             </div>
 
             <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">
+              {/* Profile Picture Upload & Preview */}
+              <div className="p-3.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="font-semibold text-[#0F172A] block text-xs">
+                    Profile Picture
+                  </label>
+                  {editForm.profilePic && (
+                    <button
+                      type="button"
+                      onClick={() => setEditForm((prev) => ({ ...prev, profilePic: '' }))}
+                      className="text-[11px] text-[#DC2626] hover:underline font-medium cursor-pointer"
+                    >
+                      Reset to Initials
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#0F172A] ring-2 ring-[#E2E8F0] shadow-sm shrink-0 flex items-center justify-center">
+                    {editForm.profilePic ? (
+                      <img
+                        src={editForm.profilePic}
+                        alt="Avatar Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-tr from-[#0F172A] to-[#334155] text-white flex items-center justify-center text-lg font-display font-bold">
+                        {editForm.name.slice(0, 2).toUpperCase() || 'TM'}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <label className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F1F5F9] rounded-lg font-semibold text-xs text-[#0F172A] cursor-pointer shadow-2xs transition-colors">
+                        <Upload className="w-3.5 h-3.5 text-[#2563EB]" />
+                        <span>Upload Photo</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handlePhotoUpload}
+                          className="hidden"
+                        />
+                      </label>
+                      <span className="text-[11px] text-[#64748B]">PNG, JPG or WebP (max 5MB)</span>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="url"
+                        placeholder="Or paste direct image URL (https://...)"
+                        value={editForm.profilePic}
+                        onChange={(e) => setEditForm({ ...editForm, profilePic: e.target.value })}
+                        className="w-full px-2.5 py-1.5 text-xs bg-white border border-[#CBD5E1] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="font-semibold text-[#0F172A] block mb-1">
@@ -858,19 +1007,40 @@ export const UserProfilePage: React.FC = () => {
                   <label className="font-semibold text-[#0F172A] block mb-1">
                     Internal Department Alignment
                   </label>
-                  <select
-                    value={editForm.department}
-                    onChange={(e) =>
-                      setEditForm({ ...editForm, department: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-[#CBD5E1] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-                  >
-                    <option value="Bid Operations & Strategy">Bid Operations &amp; Strategy</option>
-                    <option value="Technical Solutions Architecture">Technical Solutions Architecture</option>
-                    <option value="Commercial & Legal Risk Management">Commercial &amp; Legal Risk Management</option>
-                    <option value="Commercial Finance">Commercial Finance</option>
-                    <option value="Quality Assurance & Auditing">Quality Assurance &amp; Auditing</option>
-                  </select>
+                  <div className="space-y-1.5">
+                    <input
+                      type="text"
+                      required
+                      value={editForm.department}
+                      placeholder="e.g. Bid Operations & Strategy"
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, department: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-[#CBD5E1] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    />
+                    <div className="flex flex-wrap gap-1">
+                      {[
+                        'Bid Operations & Strategy',
+                        'Technical Solutions Architecture',
+                        'Commercial & Legal Risk Management',
+                        'Commercial Finance',
+                        'Quality Assurance & Auditing',
+                      ].map((dept) => (
+                        <button
+                          key={dept}
+                          type="button"
+                          onClick={() => setEditForm({ ...editForm, department: dept })}
+                          className={`text-[10px] px-1.5 py-0.5 rounded border transition-colors cursor-pointer ${
+                            editForm.department === dept
+                              ? 'bg-[#EFF6FF] border-[#2563EB] text-[#2563EB] font-bold'
+                              : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:bg-[#F1F5F9]'
+                          }`}
+                        >
+                          {dept.split(' ')[0]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
                 <div>

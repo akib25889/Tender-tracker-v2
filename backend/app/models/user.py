@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, JSON
+from sqlalchemy import Column, String, Integer, JSON, Text
 from app.core.database import Base
 
 
@@ -13,7 +13,8 @@ class User(Base):
     title = Column(String(100), nullable=False, default="Procurement Specialist")
     department = Column(String(100), nullable=True, default="Bid Operations")
     max_capacity = Column(Integer, nullable=False, default=5)
-    avatar = Column(String(10), nullable=False, default="TM")
+    avatar = Column(String(255), nullable=False, default="TM")
+    profile_pic = Column(Text, nullable=True)
 
     # Personal Profile & CV Dossier Fields
     phone = Column(String(50), nullable=True)

@@ -193,7 +193,7 @@ export const TenderListPage: React.FC = () => {
         <div className="flex items-center gap-2 overflow-x-auto pt-2 border-t border-[#E2E8F0]">
           <Filter className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
           <span className="text-xs text-[#64748B] font-medium whitespace-nowrap">Stage:</span>
-          {['ALL', 'DISCOVERED', 'SCREENING', 'UNDER_ANALYSIS', 'PREPARATION', 'INTERNAL_REVIEW', 'SUBMITTED', 'ARCHIVED'].map(
+          {['ALL', 'DISCOVERED', 'SCREENING', 'UNDER_ANALYSIS', 'PREPARATION', 'SUBMITTED', 'ARCHIVED'].map(
             (stage) => (
               <button
                 key={stage}
@@ -260,10 +260,10 @@ export const TenderListPage: React.FC = () => {
               Move to Preparation
             </button>
             <button
-              onClick={() => handleBatchAdvanceStage('INTERNAL_REVIEW')}
+              onClick={() => handleBatchAdvanceStage('SUBMITTED')}
               className="px-3 py-1 bg-[#1E293B] hover:bg-[#334155] rounded text-white font-medium"
             >
-              Move to Review
+              Move to Submitted
             </button>
             <button
               onClick={() => setIsBulkDeleting(true)}

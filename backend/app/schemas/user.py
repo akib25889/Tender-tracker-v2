@@ -22,6 +22,7 @@ class UserBase(BaseModel):
     department: Optional[str] = "Bid Operations"
     max_capacity: int = 5
     avatar: str = "TM"
+    profile_pic: Optional[str] = None
     phone: Optional[str] = None
     location: Optional[str] = "Dhaka, Bangladesh"
     employment_type: str = "PERMANENT"
@@ -43,6 +44,7 @@ class UserProfileUpdate(BaseModel):
     department: Optional[str] = None
     max_capacity: Optional[int] = None
     avatar: Optional[str] = None
+    profile_pic: Optional[str] = None
     phone: Optional[str] = None
     location: Optional[str] = None
     employment_type: Optional[str] = None

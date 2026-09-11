@@ -50,7 +50,7 @@ export const TenderRequirementsTab: React.FC = () => {
                 {blockers.length} Mandatory Compliance Blocker(s) Identified
               </span>
               <span>
-                Statutory audit prevents Stage 5 review sign-off until all evidence files are stamped.
+                Statutory audit prevents submission progression until all evidence files are stamped.
               </span>
             </div>
           </div>

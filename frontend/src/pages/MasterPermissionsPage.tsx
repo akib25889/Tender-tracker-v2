@@ -405,9 +405,32 @@ export const MasterPermissionsPage: React.FC = () => {
     return matchesDecision && matchesSearch;
   });
 
+  // --- SUPER_ADMIN GATE ---
+  if (!isSuperAdmin) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-6 text-center px-4">
+        <div className="w-20 h-20 rounded-2xl bg-[#FEF2F2] flex items-center justify-center shadow-sm">
+          <Lock className="w-10 h-10 text-[#DC2626]" />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold text-[#0F172A] mb-2">System Admin Access Only</h2>
+          <p className="text-sm text-[#64748B] max-w-sm">
+            The Access &amp; Permissions console is restricted to the <span className="font-semibold text-[#DC2626]">System Administrator</span> account.<br />
+            Please contact your System Admin to manage permissions.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 px-4 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#64748B]">
+          <Shield className="w-3.5 h-3.5 text-[#2563EB]" />
+          <span>Logged in as: <span className="font-semibold text-[#0F172A]">{currentUser.name}</span> ({currentUser.role.replace(/_/g, ' ')})</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Top Banner Header */}
+
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
