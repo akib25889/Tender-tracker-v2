@@ -45,6 +45,7 @@ import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { TenderCommentsSection } from '../components/ui/TenderCommentsSection';
 import { TenderSummaryDocument } from '../components/ui/TenderSummaryDocument';
 import { TenderStage } from '../types/tender';
+import { NotFoundPage } from './status/NotFoundPage';
 
 export const TenderDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -66,24 +67,11 @@ export const TenderDetailPage: React.FC = () => {
   const [isSavingAiLink, setIsSavingAiLink] = useState(false);
   const [copiedAiLink, setCopiedAiLink] = useState(false);
 
-  // Find the tender or fallback to the first tender
-  const tender = tenders.find((t) => t.id === id) || tenders[0];
+  // Find the tender by route param ID
+  const tender = tenders.find((t) => t.id === id);
 
   if (!tender) {
-    return (
-      <div className="p-12 text-center bg-white rounded-xl border border-[#E2E8F0] space-y-4">
-        <h2 className="text-xl font-bold text-[#0F172A]">Tender Not Found</h2>
-        <p className="text-xs text-[#64748B]">
-          The tender with ID "{id}" could not be located in the current pipeline.
-        </p>
-        <button
-          onClick={() => navigate('/tenders')}
-          className="px-4 py-2 bg-[#0F172A] text-white text-xs font-semibold rounded-lg hover:bg-slate-800 transition-colors"
-        >
-          Return to Tender Pipeline
-        </button>
-      </div>
-    );
+    return <NotFoundPage resource="Tender Proposal" resourceId={id} />;
   }
 
   const handleDeleteTender = () => {

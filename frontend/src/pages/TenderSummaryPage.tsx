@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Pencil, ExternalLink, Printer } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { TenderSummaryDocument } from '../components/ui/TenderSummaryDocument';
+import { NotFoundPage } from './status/NotFoundPage';
 
 export const TenderSummaryPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -10,14 +11,7 @@ export const TenderSummaryPage: React.FC = () => {
   const tender = tenders.find((t) => t.id === id);
 
   if (!tender) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full gap-4 text-[#64748B]">
-        <p className="text-sm">Tender not found.</p>
-        <Link to="/registry" className="text-xs text-[#2563EB] hover:underline">
-          &larr; Back to Registry
-        </Link>
-      </div>
-    );
+    return <NotFoundPage resource="Tender Summary Record" resourceId={id} />;
   }
 
   return (

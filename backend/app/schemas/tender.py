@@ -18,9 +18,6 @@ class RequirementOut(BaseModel):
         from_attributes = True
 
 
-
-
-
 class DecisionMatrixIn(BaseModel):
     technical_score: Optional[float] = None
     financial_score: Optional[float] = None

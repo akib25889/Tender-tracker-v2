@@ -28,6 +28,9 @@ import { PartnerPortalPage } from './pages/PartnerPortalPage';
 import { CompanyProfilesPage } from './pages/CompanyProfilesPage';
 import { UserProfilePage } from './pages/UserProfilePage';
 import { ClientVisitsPage } from './pages/ClientVisitsPage';
+import { NotFoundPage } from './pages/status/NotFoundPage';
+import { AccessDeniedPage } from './pages/status/AccessDeniedPage';
+import { RootErrorBoundary } from './components/common/RootErrorBoundary';
 
 export const router = createBrowserRouter([
   {
@@ -56,6 +59,7 @@ export const router = createBrowserRouter([
   },
   {
     element: <AppLayout />,
+    errorElement: <RootErrorBoundary />,
     children: [
       {
         path: '/dashboard',
@@ -204,9 +208,21 @@ export const router = createBrowserRouter([
         element: <Navigate to="/clients/visits" replace />,
       },
       {
+        path: '403',
+        element: <AccessDeniedPage />,
+      },
+      {
+        path: '404',
+        element: <NotFoundPage />,
+      },
+      {
         path: '*',
-        element: <Navigate to="/dashboard" replace />,
+        element: <NotFoundPage />,
       },
     ],
+  },
+  {
+    path: '*',
+    element: <NotFoundPage />,
   },
 ]);

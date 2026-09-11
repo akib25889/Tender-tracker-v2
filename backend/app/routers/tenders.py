@@ -307,6 +307,3 @@ def restore_tender(tender_id: str, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(tender)
     return tender
-
-
-
