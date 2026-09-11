@@ -22,17 +22,14 @@ import {
   Shield,
   GraduationCap,
   Award,
-  FileText,
   UserCheck,
   ChevronDown,
   ChevronUp,
-  Printer,
   FileSpreadsheet,
   Camera,
   Upload,
 } from 'lucide-react';
 import {
-  exportPersonnelDossierAsPDF,
   exportPersonnelDossierAsExcel,
 } from '../utils/exportUtils';
 
@@ -66,7 +63,6 @@ export const UserProfilePage: React.FC = () => {
   const [copiedDesignation, setCopiedDesignation] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddAssignmentModalOpen, setIsAddAssignmentModalOpen] = useState(false);
-  const [copiedDossier, setCopiedDossier] = useState(false);
 
   // Edit Profile Form State
   const [editForm, setEditForm] = useState({
@@ -230,33 +226,6 @@ export const UserProfilePage: React.FC = () => {
     setIsAddAssignmentModalOpen(false);
   };
 
-  const handleExportCV = () => {
-    const lines = [
-      `# KEY PERSONNEL DOSSIER & CV SUMMARY`,
-      `**Name:** ${targetUser.name}`,
-      `**Proposed Tender Designation:** ${targetUser.proposedDesignation || targetUser.title}`,
-      `**Official Title:** ${targetUser.title}`,
-      `**Department:** ${targetUser.department || 'Bid Operations'}`,
-      `**Employment Relationship:** ${targetUser.employmentType || 'PERMANENT'}`,
-      `**Contact:** ${targetUser.email} | ${targetUser.phone || 'N/A'} | ${targetUser.location || 'N/A'}`,
-      ``,
-      `## Professional Certifications`,
-      ...(targetUser.certifications || []).map((c) => `- ${c}`),
-      ``,
-      `## Academic Credentials`,
-      ...(targetUser.education || []).map((e) => `- ${e.degree} — ${e.institution} (${e.year || 'N/A'})`),
-      ``,
-      `## Project Track Record & Past Assignments`,
-      ...(targetUser.pastAssignments || []).map(
-        (a) =>
-          `### ${a.projectName}\n- **Client:** ${a.client}\n- **Role:** ${a.role}\n- **Duration:** ${a.duration} (${a.deploymentMonths || 'N/A'} months)\n- **Deliverables:** ${a.keyDeliverables.join(', ')}\n- **Technologies:** ${a.technologiesUsed.join(', ')}\n- **Responsibilities:** ${a.coreResponsibilities}\n`
-      ),
-    ];
-    navigator.clipboard.writeText(lines.join('\n'));
-    setCopiedDossier(true);
-    setTimeout(() => setCopiedDossier(false), 2500);
-  };
-
   return (
     <div className="space-y-6 animate-fadeIn pb-12">
       {/* Top Header */}
@@ -278,44 +247,6 @@ export const UserProfilePage: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2 shrink-0 flex-wrap">
-          <button
-            type="button"
-            onClick={() => exportPersonnelDossierAsPDF(targetUser)}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-xs cursor-pointer"
-            title="Generate printable Form Tech-1 CV PDF dossier"
-          >
-            <Printer className="w-3.5 h-3.5 text-[#DC2626]" />
-            <span>Export PDF</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => exportPersonnelDossierAsExcel(targetUser)}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-xs cursor-pointer"
-            title="Export full project ledger and credentials as Excel spreadsheet (.csv)"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A34A]" />
-            <span>Export Excel</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleExportCV}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition-colors shadow-xs cursor-pointer"
-            title="Copy formatted CV markdown for tender annexures"
-          >
-            {copiedDossier ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-[#16A34A]" />
-                <span className="text-[#16A34A]">Copied!</span>
-              </>
-            ) : (
-              <>
-                <FileText className="w-3.5 h-3.5 text-[#64748B]" />
-                <span>Copy Markdown</span>
-              </>
-            )}
-          </button>
 
           <button
             type="button"
