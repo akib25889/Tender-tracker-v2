@@ -13,7 +13,6 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.tender import Tender
 from app.models.requirement import TenderRequirement
-from app.models.review import TenderReviewTier
 from app.models.permission import ResourceShare
 
 router = APIRouter(prefix="/alerts", tags=["Operational Alerts"])
@@ -76,39 +75,7 @@ def get_alerts(db: Session = Depends(get_db)):
                 }
             )
 
-    # ── 3. Pending Tier 3/4 Executive Sign-Offs ───────────────────────────────
-    exec_tiers = (
-        db.query(TenderReviewTier)
-        .filter(
-            TenderReviewTier.tier_number.in_([3, 4]),
-            TenderReviewTier.sign_off_status.in_(["PENDING", "ACTION_REQUIRED"]),
-        )
-        .all()
-    )
-    for tier in exec_tiers:
-        tender = db.query(Tender).filter(Tender.id == tier.tender_id).first()
-        if tender and tender.stage not in ("ARCHIVED", "SUBMITTED"):
-            label = (
-                "Legal Solvency" if tier.tier_number == 3 else "Executive Gatekeeper"
-            )
-            alerts.append(
-                {
-                    "id": f"ALERT-TIER-{tier.id}",
-                    "category": "APPROVAL",
-                    "severity": "INFO",
-                    "title": f"Tier {tier.tier_number} {label} Sign-Off Pending",
-                    "description": (
-                        f"Tier {tier.tier_number} ({label}) awaiting sign-off on {tender.id}. "
-                        f"Required by: {tier.role_required}."
-                    ),
-                    "tender_id": tender.id,
-                    "tender_title": tender.title,
-                    "hours_remaining": None,
-                    "read": False,
-                }
-            )
-
-    # ── 4. Expired Resource Share Links (not yet revoked) ────────────────────
+    # ── 3. Expired Resource Share Links (not yet revoked) ────────────────────
     expired_shares = (
         db.query(ResourceShare)
         .filter(

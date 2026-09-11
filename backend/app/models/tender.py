@@ -87,9 +87,6 @@ class Tender(Base):
     requirements = relationship(
         "TenderRequirement", back_populates="tender", cascade="all, delete-orphan"
     )
-    reviews = relationship(
-        "TenderReviewTier", back_populates="tender", cascade="all, delete-orphan"
-    )
     comments = relationship(
         "TenderComment", back_populates="tender", cascade="all, delete-orphan"
     )

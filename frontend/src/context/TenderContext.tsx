@@ -1836,51 +1836,11 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const signOffReviewTier = (
-    tenderId: string,
-    tierNumber: number,
-    comments: string
+    _tenderId: string,
+    _tierNumber: number,
+    _comments: string
   ) => {
-    fetch(`http://127.0.0.1:8000/api/tenders/${tenderId}/reviews/${tierNumber}/sign-off`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        signer_name: currentUser.name,
-        comments: comments || 'Signed off and verified.',
-        status: 'APPROVED',
-      }),
-    }).catch(() => {});
-
-    setTenders((prev) =>
-      prev.map((t) => {
-        if (t.id !== tenderId) return t;
-        const updatedReviews = t.reviews.map((r) => {
-          if (r.tierNumber === tierNumber) {
-            return {
-              ...r,
-              status: 'APPROVED' as const,
-              date: new Date().toLocaleDateString('en-GB', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-              }),
-              comments: comments || 'Signed off and verified.',
-            };
-          }
-          if (r.tierNumber === tierNumber + 1 && r.status === 'WAITING') {
-            return { ...r, status: 'ACTION_REQUIRED' as const };
-          }
-          return r;
-        });
-
-        const allApproved = updatedReviews.every((r) => r.status === 'APPROVED');
-        return {
-          ...t,
-          reviews: updatedReviews,
-          stage: allApproved ? ('SUBMITTED' as const) : t.stage,
-          readinessScore: allApproved ? 100 : t.readinessScore,
-        };
-      })
-    );
+    // Deprecated: Review & sign-off step removed
   };
 
   const toggleRequirementStatus = (

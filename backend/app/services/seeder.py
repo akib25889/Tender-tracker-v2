@@ -9,7 +9,6 @@ from app.models.document import TenderDocument, ReusableDocument
 from app.models.company_credential import CompanyProjectCredential
 from app.models.company_profile import CompanyProfile
 from app.models.requirement import TenderRequirement
-from app.models.review import TenderReviewTier
 from app.models.comment import TenderComment
 from app.models.organization import Organization
 from app.models.permission import (
@@ -560,48 +559,6 @@ def seed_database(db: Session):
                                     access_level=doc.get("accessLevel", "ALL_TEAM"),
                                 )
                             )
-
-                        # Reviews
-                        revs = t_data.get("reviews", [])
-                        if revs:
-                            for rev in revs:
-                                db.add(
-                                    TenderReviewTier(
-                                        tender_id=t_id,
-                                        tier_number=rev.get("tierNumber", 1),
-                                        tier_name=rev.get("name", "Review Tier"),
-                                        role_required="EXECUTIVE_MANAGER",
-                                        sign_off_status=rev.get("status", "PENDING"),
-                                        signed_off_by=rev.get("reviewer"),
-                                        signed_off_at=rev.get("date"),
-                                        comments=rev.get("comments"),
-                                    )
-                                )
-                        else:
-                            tiers = [
-                                (1, "Technical Architecture", "EXECUTIVE_MANAGER"),
-                                (2, "Financial Feasibility", "SENIOR_MANAGER"),
-                                (3, "Legal & Governance", "TENDER_ANALYST"),
-                                (4, "Executive Sign-Off", "BUSINESS_HEAD"),
-                            ]
-                            for num, name, role in tiers:
-                                db.add(
-                                    TenderReviewTier(
-                                        tender_id=t_id,
-                                        tier_number=num,
-                                        tier_name=name,
-                                        role_required=role,
-                                        sign_off_status=(
-                                            "APPROVED"
-                                            if t_data.get("stage") == "SUBMITTED"
-                                            else (
-                                                "ACTION_REQUIRED"
-                                                if num == 1
-                                                else "WAITING"
-                                            )
-                                        ),
-                                    )
-                                )
                 db.commit()
         except Exception as e:
             print(f"Error seeding mock tenders: {e}")

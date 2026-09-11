@@ -18,25 +18,7 @@ class RequirementOut(BaseModel):
         from_attributes = True
 
 
-class ReviewTierOut(BaseModel):
-    id: int
-    tender_id: str
-    tier_number: int
-    tier_name: str
-    role_required: str
-    sign_off_status: str
-    signed_off_by: Optional[str] = None
-    signed_off_at: Optional[str] = None
-    comments: Optional[str] = None
 
-    class Config:
-        from_attributes = True
-
-
-class SignOffRequest(BaseModel):
-    signer_name: str = "Sarah Jenkins"
-    comments: Optional[str] = "Signed off and verified."
-    status: str = "APPROVED"
 
 
 class DecisionMatrixIn(BaseModel):
@@ -212,7 +194,6 @@ class TenderOut(TenderBase):
     folders: List[FolderOut] = []
     customFolders: List[FolderOut] = []
     requirements: List[RequirementOut] = []
-    reviews: List[ReviewTierOut] = []
     comments: List[CommentOut] = []
     decision_matrix: Optional[DecisionMatrixOut] = None
 
