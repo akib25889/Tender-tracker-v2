@@ -2,8 +2,8 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.18.0
-**Stack:** FastAPI (Python 3.13+), MySQL 8.4 LTS, React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
+**Current Version:** 2.19.0
+**Stack:** FastAPI (Python 3.13+), SQLite (Zero-Config Dev) / MySQL 8.4 LTS (Prod), React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
 ---
@@ -16,9 +16,35 @@
 | **M1** | **Repository & Agent Tooling** | **Completed** | Git repository initialized, linked to GitHub, `.gitignore` & directory scaffolding, Ponytail & Graphify integration. |
 | **M2** | **Backend Core & Database Schema** | **Completed** | FastAPI application structure, SQLAlchemy models, SQLite & MySQL 8.4 dual-mode, JWT/bcrypt authentication, local disk storage vault (HDD / SSD), and REST APIs. |
 | **M3** | **Storage Vault & Document Security** | **Completed** | Local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation, safe folder relocation. |
-| **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 26-screen routing. |
+| **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 28-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 34 tests), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+
+### [2026-09-12] — Version 2.19.0: Status Pages (404, 403, 500), Review & Sign-Off Deprecation, UI Polish & SQLite Mode
+- **Category:** Routing & Fault Tolerance, Lifecycle Simplification, Dark Mode Harmonization, Database Operations
+- **Summary:**
+  - **Comprehensive Status Pages & Global Error Handling:**
+    - `NotFoundPage.tsx` (`/not-found` & `*` catch-all): Branded 404 page with quick navigation back to Dashboard or Pipeline and search guidance.
+    - `AccessDeniedPage.tsx` (`/forbidden`): Enterprise 403 security warning for RBAC ceiling and permission violations with contact admin prompts.
+    - `RootErrorBoundary.tsx`: React global 500 crash boundary catching unhandled runtime errors, displaying expandable stack traces in development, and providing 1-click application state resets.
+    - Integrated with `router.tsx` to handle uncaught client routes and boundary crashes gracefully.
+  - **Review & Sign-Off Step Deprecation:**
+    - Per operational simplification requirements, completely removed the redundant "Review & Sign-Off" stage and tab from both frontend proposal workspaces and backend database models.
+    - Cleaned up obsolete database schema columns and sign-off verification references, streamlining the core lifecycle.
+  - **User Profile & Key Personnel Dossier Refinement:**
+    - Removed extraneous "Team Member" horizontal carousel tabs from `/profile`.
+    - Removed redundant "Permanent Core Employee" pill badge and duplicate "Export PDF", "Export Excel", and "Copy Markdown" buttons from the profile header.
+    - Removed "Tender-Specific Identity & Proposed Bid Role" card to eliminate layout clutter.
+  - **Dark Mode Gradient Harmonization (WCAG AA):**
+    - Harmonized hardcoded light gradients (`bg-gradient-to-r from-[#F0FDF4] via-[#EFF6FF] to-[#FAF5FF]`) with deep navy responsive stops (`dark:from-[#131d2e] dark:via-[#162238] dark:to-[#131d2e]`), eliminating washed-out white-on-white text issues.
+    - Applied consistent dark mode classes across `UserProfilePage.tsx`, `FinancialScenariosEditor.tsx`, `TenderRegistryPage.tsx`, and `NewTenderModal.tsx`.
+  - **Sidebar Menu Deduplication:**
+    - Removed duplicate "Client Visitors" entry from the *Tools & Addons* submenu in `Sidebar.tsx`, preserving it exclusively as a primary top-level navigation item.
+  - **SQLite Zero-Configuration Dev Mode:**
+    - Configured default active database engine to embedded SQLite (`DATABASE_URL=sqlite:///./tender_tracker.db`), ensuring zero-config local development and testing without requiring external MySQL servers.
+    - Verified all 26 tables, auto-migrations, and seeders load cleanly under SQLite.
+  - **Knowledge Graph Synchronization:**
+    - Updated `tools/graphify/knowledge_graph.json` and `tools/graphify/knowledge_graph.md` (54 nodes, 32 edges).
 
 ### [2026-09-08] — Version 2.18.0: Fine-Grained Master Access Control & 4-Layer Permissions Governance
 - **Category:** Access Control, Role-Based Access Control (RBAC), Partner Permission Ceilings, Authorization Diagnostic Simulator, Audit Trails

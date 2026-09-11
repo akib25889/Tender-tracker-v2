@@ -1,13 +1,14 @@
-# TenderTracker Command Center (v2.18.0)
+# TenderTracker Command Center (v2.19.0)
 
 [![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF?logo=vite)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.1-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
+[![SQLite](https://img.shields.io/badge/SQLite-Zero--Config-003B57?logo=sqlite)](https://www.sqlite.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.4_LTS-4479A1?logo=mysql)](https://www.mysql.com/)
 
-**TenderTracker Command Center** is an enterprise-grade procurement lifecycle management system designed for public and multilateral tenders (e-GP, UNDP, World Bank, ADB, JICA). It guides bid teams across the **6-gate tender lifecycle**, implements the **10-Second Attention Rule** for triage, and provides complete cryptographic document assurance.
+**TenderTracker Command Center** is an enterprise-grade procurement lifecycle management system designed for public and multilateral tenders (e-GP, UNDP, World Bank, ADB, JICA). It guides bid teams across the **tender lifecycle**, implements the **10-Second Attention Rule** for triage, and provides complete cryptographic document assurance.
 
 ---
 
@@ -21,7 +22,7 @@ npm run dev
 # → http://localhost:5173/ (Opens Login Page directly)
 ```
 
-### Backend (FastAPI)
+### Backend (FastAPI — SQLite Zero-Config Local Dev / MySQL Ready)
 ```bash
 cd backend
 python -m venv venv
@@ -35,22 +36,21 @@ uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```bash
 python run_all_tests.py
 ```
-Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Knowledge graph sync.
+Executes: DB health → Pytest suite → TypeScript type-check → Knowledge graph sync.
 
 ---
 
-## 🏛️ 6-Gate Tender Lifecycle
+## 🏛️ Tender Lifecycle Stages
 
 1. **Stage 1 — Bid Discovery**: Scanner intake and portal integration with confidence scoring.
 2. **Stage 2 — Screening**: Entity jurisdiction check, debarment screening, and mandatory criteria.
 3. **Stage 3 — Analysis & Go/No-Go**: Scope breakdown, SLA viability, geometric radar evaluation (35% Tech, 30% Fin, 20% Team, 15% SLA), and predicted win probability (`pWin`).
 4. **Stage 4 — Preparation**: Task board, statutory document vault population, and clause compliance checklist.
-5. **Stage 5 — Review & Approval**: 4-tier sequential gatekeeper sign-off (Technical, Financial, Legal, Executive).
-6. **Stage 6 — Submission & Outcome**: Portal proof verification, SHA-256 cryptographic locking, and win/loss debrief ledger.
+5. **Stage 5 — Submission & Outcome**: Portal proof verification, SHA-256 cryptographic locking, and win/loss debrief ledger.
 
 ---
 
-## 🖥️ Screen & Route Directory (28 Modules)
+## 🖥️ Screen & Route Directory (30 Modules)
 
 | Screen ID | Screen Name | Route | Module |
 | :--- | :--- | :--- | :--- |
@@ -71,7 +71,6 @@ Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Kn
 | `screen:company_profiles` | Corporate Entities & Company Profiles | `/tools/company-profiles` | `tools` |
 | `screen:client_visits` | Client Visitor & Scheduled Meetings Hub | `/clients/visits` | `crm` |
 | `screen:master_permissions` | Master Access & Permissions Control Center | `/permissions` | `security` |
-| `screen:tender_review` | Review & Sign-Off Workflow | `/tenders/{id}/review` | `review` |
 | `screen:tender_submission` | Submission Ledger | `/tenders/{id}/submission` | `submission` |
 | `screen:tender_result` | Outcome & Debrief Ledger | `/tenders/{id}/result` | `result` |
 | `screen:my_tasks` | My Operational Deliverables | `/tasks/my-tasks` | `tasks` |
@@ -85,6 +84,9 @@ Executes: DB health → Pytest suite (29 tests) → TypeScript type-check → Kn
 | `screen:shared_portal` | Tokenized Shared Document Portal | `/shared/:token` | `documents` |
 | `screen:partner_portal` | Joint Venture Partner Collaboration Portal | `/partner/portal` | `collaboration` |
 | `screen:settings` | Settings & System Configuration | `/settings` | `settings` |
+| `screen:not_found` | 404 Route Not Found Page | `*` or `/not-found` | `system` |
+| `screen:access_denied` | 403 Forbidden Security Warning | `/forbidden` | `security` |
+| `screen:error_boundary` | 500 Global Application Crash Boundary | Global Error Boundary | `system` |
 
 ---
 
