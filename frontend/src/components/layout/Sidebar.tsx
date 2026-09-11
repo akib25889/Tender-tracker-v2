@@ -125,12 +125,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       badge: undefined,
     },
     {
-      label: 'Client Visitors',
-      path: '/clients/visits',
-      icon: UserCheck,
-      badge: undefined,
-    },
-    {
       label: 'Access & Permissions',
       path: '/tools/permissions',
       icon: KeyRound,
