@@ -957,9 +957,9 @@ export const NewTenderModal: React.FC = () => {
               </div>
 
               {/* AI Chat & Document Knowledge Share Link */}
-              <div className="p-3.5 bg-violet-50/70 rounded-xl border border-violet-200 space-y-1.5">
-                <label className="block text-xs font-bold text-violet-950 flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-violet-600" />
+              <div className="p-3.5 bg-violet-50/70 dark:bg-violet-950/25 rounded-xl border border-violet-200 dark:border-violet-800/40 space-y-1.5 transition-colors">
+                <label className="block text-xs font-bold text-violet-950 dark:text-violet-200 flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0" />
                   <span>AI Chat &amp; Document Knowledge Link (ChatGPT / Claude / NotebookLM / Gemini)</span>
                 </label>
                 <input
@@ -967,9 +967,9 @@ export const NewTenderModal: React.FC = () => {
                   placeholder="e.g. https://chatgpt.com/share/67a213ff... or https://notebooklm.google.com/notebook/..."
                   value={aiChatShareLink}
                   onChange={(e) => setAiChatShareLink(e.target.value)}
-                  className="w-full px-3 py-2 bg-white border border-violet-200 rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-hidden focus:ring-1 focus:ring-violet-500 focus:border-violet-500 font-mono"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900/90 border border-violet-200 dark:border-violet-800/60 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-hidden focus:ring-1 focus:ring-violet-500 focus:border-violet-500 font-mono transition-colors"
                 />
-                <p className="text-[11px] text-[#64748B]">
+                <p className="text-[11px] text-[#64748B] dark:text-slate-400">
                   Optional: Link an external AI conversation or notebook where documents have been pre-loaded to avoid uploading files again.
                 </p>
               </div>

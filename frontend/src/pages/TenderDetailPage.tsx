@@ -182,22 +182,22 @@ export const TenderDetailPage: React.FC = () => {
         <div className="flex items-center gap-2">
           {/* AI Chat Session Quick Launch / Link Button */}
           {tender.aiChatShareLink ? (
-            <div className="inline-flex items-center rounded-lg shadow-2xs border border-violet-200 bg-violet-50 overflow-hidden">
+            <div className="inline-flex items-center rounded-lg shadow-2xs border border-violet-200 dark:border-violet-800/60 bg-violet-50 dark:bg-violet-950/40 overflow-hidden">
               <a
                 href={tender.aiChatShareLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 hover:bg-violet-100 text-xs font-semibold text-violet-800 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 hover:bg-violet-100 dark:hover:bg-violet-900/50 text-xs font-semibold text-violet-800 dark:text-violet-200 transition-colors"
                 title="Open active AI Chat session in new tab"
               >
-                <Sparkles className="w-3.5 h-3.5 text-violet-600 animate-pulse" />
+                <Sparkles className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400 animate-pulse" />
                 <span>Open AI Chat</span>
-                <ExternalLink className="w-3 h-3 text-violet-500" />
+                <ExternalLink className="w-3 h-3 text-violet-500 dark:text-violet-400" />
               </a>
               <button
                 type="button"
                 onClick={handleOpenAiModal}
-                className="px-2 py-1.5 hover:bg-violet-100 text-violet-700 border-l border-violet-200 transition-colors"
+                className="px-2 py-1.5 hover:bg-violet-100 dark:hover:bg-violet-900/50 text-violet-700 dark:text-violet-300 border-l border-violet-200 dark:border-violet-800/60 transition-colors"
                 title="Edit AI Chat Link"
               >
                 <Edit3 className="w-3 h-3" />
@@ -207,10 +207,10 @@ export const TenderDetailPage: React.FC = () => {
             <button
               type="button"
               onClick={handleOpenAiModal}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-dashed border-violet-300 hover:border-violet-500 hover:bg-violet-50 text-xs font-semibold text-violet-700 rounded-lg transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-900 border border-dashed border-violet-300 dark:border-violet-700 hover:border-violet-500 dark:hover:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-950/30 text-xs font-semibold text-violet-700 dark:text-violet-300 rounded-lg transition-colors shadow-2xs"
               title="Attach shared AI chat session so team won't re-upload files"
             >
-              <Sparkles className="w-3.5 h-3.5 text-violet-500" />
+              <Sparkles className="w-3.5 h-3.5 text-violet-500 dark:text-violet-400" />
               <span>+ Link AI Chat</span>
             </button>
           )}
@@ -1268,35 +1268,35 @@ export const TenderDetailPage: React.FC = () => {
       {/* AI Chat & Knowledge Link Modal */}
       {isAiChatModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-2xl max-w-lg w-full p-6 space-y-5 animate-scaleIn">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-[#E2E8F0] dark:border-slate-800 shadow-2xl max-w-lg w-full p-6 space-y-5 animate-scaleIn">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center text-violet-700">
+                <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-950/60 flex items-center justify-center text-violet-700 dark:text-violet-300">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#0F172A]">AI Chat &amp; Knowledge Link</h3>
-                  <p className="text-xs text-[#64748B]">
-                    Tender: <span className="font-semibold text-[#0F172A]">{tender.id}</span>
+                  <h3 className="text-base font-bold text-[#0F172A] dark:text-slate-100">AI Chat &amp; Knowledge Link</h3>
+                  <p className="text-xs text-[#64748B] dark:text-slate-400">
+                    Tender: <span className="font-semibold text-[#0F172A] dark:text-slate-200">{tender.id}</span>
                   </p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsAiChatModalOpen(false)}
-                className="text-[#94A3B8] hover:text-[#0F172A] text-lg font-bold p-1 rounded-md"
+                className="text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-slate-200 text-lg font-bold p-1 rounded-md"
               >
                 ✕
               </button>
             </div>
 
-            <p className="text-xs text-[#475569] leading-relaxed">
+            <p className="text-xs text-[#475569] dark:text-slate-300 leading-relaxed">
               Link an active AI conversation or notebook (e.g. <strong>ChatGPT Shared Chat</strong>, <strong>Google NotebookLM</strong>, <strong>Claude Project</strong>, or <strong>Gemini</strong>) where this tender&apos;s RFP, TOR, and BOQ files have already been indexed. Team members can consult it directly without re-uploading documents.
             </p>
 
             <form onSubmit={handleSaveAiChatLink} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-[#0F172A] mb-1.5">
+                <label className="block text-xs font-bold text-[#0F172A] dark:text-slate-200 mb-1.5">
                   AI Chat / Notebook Share URL
                 </label>
                 <input
@@ -1304,25 +1304,25 @@ export const TenderDetailPage: React.FC = () => {
                   value={aiLinkInput}
                   onChange={(e) => setAiLinkInput(e.target.value)}
                   placeholder="https://chatgpt.com/share/... or https://notebooklm.google.com/notebook/..."
-                  className="w-full px-3.5 py-2.5 text-xs text-[#0F172A] bg-white border border-[#CBD5E1] rounded-xl focus:outline-hidden focus:ring-2 focus:ring-violet-500 focus:border-violet-500 placeholder:text-[#94A3B8]"
+                  className="w-full px-3.5 py-2.5 text-xs text-[#0F172A] dark:text-slate-100 bg-white dark:bg-slate-950 border border-[#CBD5E1] dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-violet-500 focus:border-violet-500 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 font-mono transition-colors"
                   autoFocus
                 />
-                <div className="flex items-center gap-2 mt-2 text-[11px] text-[#64748B]">
+                <div className="flex items-center gap-2 mt-2 text-[11px] text-[#64748B] dark:text-slate-400">
                   <span className="font-semibold">Compatible:</span>
                   <span>ChatGPT Shares</span> • <span>NotebookLM</span> • <span>Claude Projects</span> • <span>Gemini</span>
                 </div>
               </div>
 
               {tender.aiChatShareLink && (
-                <div className="flex items-center justify-between p-3 rounded-xl bg-violet-50/80 border border-violet-100 text-xs">
-                  <div className="truncate max-w-[260px] text-violet-900 font-mono text-[11px]">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-violet-50/80 dark:bg-violet-950/40 border border-violet-100 dark:border-violet-800/50 text-xs">
+                  <div className="truncate max-w-[260px] text-violet-900 dark:text-violet-200 font-mono text-[11px]">
                     {tender.aiChatShareLink}
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       type="button"
                       onClick={handleCopyAiLink}
-                      className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-violet-200 hover:bg-violet-100/50 rounded-md text-[11px] font-semibold text-violet-700 transition-colors"
+                      className="inline-flex items-center gap-1 px-2 py-1 bg-white dark:bg-slate-800 border border-violet-200 dark:border-violet-700 hover:bg-violet-100/50 dark:hover:bg-slate-700 rounded-md text-[11px] font-semibold text-violet-700 dark:text-violet-300 transition-colors"
                     >
                       {copiedAiLink ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
                       <span>{copiedAiLink ? 'Copied' : 'Copy'}</span>
@@ -1340,7 +1340,7 @@ export const TenderDetailPage: React.FC = () => {
                 </div>
               )}
 
-              <div className="flex items-center justify-between pt-3 border-t border-[#F1F5F9]">
+              <div className="flex items-center justify-between pt-3 border-t border-[#F1F5F9] dark:border-slate-800">
                 {tender.aiChatShareLink ? (
                   <button
                     type="button"
@@ -1356,7 +1356,7 @@ export const TenderDetailPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setIsAiChatModalOpen(false)}
-                    className="px-4 py-2 text-xs font-semibold text-[#475569] hover:bg-[#F1F5F9] rounded-xl transition-colors"
+                    className="px-4 py-2 text-xs font-semibold text-[#475569] dark:text-slate-300 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 rounded-xl transition-colors"
                   >
                     Cancel
                   </button>
