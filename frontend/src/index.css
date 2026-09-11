@@ -156,6 +156,9 @@ html, body {
 }
 
 /* Subtle slate backgrounds (tables, column headers, cards) */
+.dark [class*="bg-[#F8FAFC]"],
+.dark [class*="bg-\\[#F8FAFC\\]"],
+.dark .bg-\[\#F8FAFC\],
 .dark [class*="bg-[#F1F5F9]"],
 .dark [class*="bg-\\[#F1F5F9\\]"],
 .dark .bg-\[\#F1F5F9\],

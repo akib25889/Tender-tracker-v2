@@ -1392,21 +1392,30 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
-  const addTask = (tenderId: string, taskData: Omit<TenderTask, 'id'>) => {
-    fetch(`http://127.0.0.1:8000/api/tasks/tender/${tenderId}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: taskData.title,
-        assignee: taskData.assignee,
-        due_date: taskData.deadline,
-        status: taskData.status,
-        priority: taskData.priority,
-      }),
-    }).catch(() => {});
+  const addTask = async (tenderId: string, taskData: Omit<TenderTask, 'id'>) => {
+    let generatedId = `TSK-${Math.floor(100 + Math.random() * 900)}`;
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/tasks/tender/${tenderId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: taskData.title,
+          assignee: taskData.assignee,
+          due_date: taskData.deadline,
+          status: taskData.status,
+          priority: taskData.priority,
+        }),
+      });
+      if (res.ok) {
+        const created = await res.json();
+        if (created?.id) generatedId = created.id;
+      }
+    } catch {
+      // Fallback to local generated ID if backend is unreachable
+    }
 
     const newTask: TenderTask = {
-      id: `TSK-${Math.floor(100 + Math.random() * 900)}`,
+      id: generatedId,
       ...taskData,
     };
     setTenders((prev) =>

@@ -691,8 +691,8 @@ export const TenderDetailPage: React.FC = () => {
                     </div>
 
                     {/* Procurement Stage Lineage & Modality */}
-                    <div className="p-3.5 rounded-xl bg-blue-50/50 border border-blue-200 sm:col-span-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#1E40AF] block mb-1">
+                    <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] sm:col-span-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
                         Procurement Stage Lineage &amp; Modality
                       </span>
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -728,6 +728,11 @@ export const TenderDetailPage: React.FC = () => {
                               <span>Open Linked RFP ({tender.spawnedRfpId})</span>
                               <ArrowRight className="w-3 h-3" />
                             </Link>
+                          )}
+                          {!tender.parentEoiId && !tender.spawnedRfpId && (
+                            <span className="text-[10px] font-mono text-[#2563EB] bg-[#EFF6FF] px-1.5 py-0.5 rounded font-bold border border-[#BFDBFE]">
+                              Modality
+                            </span>
                           )}
                         </div>
                       </div>

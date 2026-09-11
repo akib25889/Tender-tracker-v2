@@ -132,3 +132,4 @@ export const RootErrorBoundary: React.FC = () => {
     </div>
   );
 };
+
