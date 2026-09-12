@@ -604,11 +604,10 @@ export const MasterDocumentVaultPage: React.FC = () => {
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="bg-[#F8FAFC] dark:bg-slate-800/60 border-b border-[#E2E8F0] dark:border-slate-800 text-[11px] font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">
-                    <th className="py-3 px-3.5 min-w-[220px] max-w-[300px]">Master Document &amp; Integrity</th>
-                    <th className="py-3 px-3 whitespace-nowrap">Owning Entity</th>
-                    <th className="py-3 px-3 whitespace-nowrap">Category</th>
-                    <th className="py-3 px-3 whitespace-nowrap">Clearance Scope</th>
-                    <th className="py-3 px-3 whitespace-nowrap">Validity / Expiry</th>
+                    <th className="py-3 px-3.5 min-w-[240px] max-w-[320px]">Master Document &amp; Integrity</th>
+                    <th className="py-3 px-3.5 whitespace-nowrap">Owning Entity</th>
+                    <th className="py-3 px-3.5 whitespace-nowrap">Clearance Scope</th>
+                    <th className="py-3 px-3.5 whitespace-nowrap">Validity / Expiry</th>
                     <th className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-[#F8FAFC] dark:bg-slate-800 shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[210px] min-w-[210px]">
                       Actions
                     </th>
@@ -617,7 +616,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 <tbody className="divide-y divide-[#F1F5F9] dark:divide-slate-800/80">
                   {filteredDocs.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-12 text-center">
+                      <td colSpan={5} className="py-12 text-center">
                         <div className="flex flex-col items-center justify-center gap-2.5">
                           <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
                             <Search className="w-6 h-6" />
@@ -718,15 +717,8 @@ export const MasterDocumentVaultPage: React.FC = () => {
                             )}
                           </td>
 
-                          {/* Category Column */}
-                          <td className="py-3 px-3 whitespace-nowrap">
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                              {doc.category}
-                            </span>
-                          </td>
-
                           {/* Access Scope Column */}
-                          <td className="py-3 px-3 whitespace-nowrap">
+                          <td className="py-3.5 px-3.5 whitespace-nowrap">
                             <div className="flex items-center gap-1.5">
                               <select
                                 value={doc.accessLevel}
