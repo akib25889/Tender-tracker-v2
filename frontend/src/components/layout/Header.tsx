@@ -2,7 +2,7 @@ import { API_BASE_URL } from '../../utils/apiConfig';
 import React, { useEffect, useState } from 'react';
 import { Search, Plus, Bell, PanelLeftClose, PanelLeftOpen, Sun, Moon } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { UserRoleSwitcher } from '../ui/UserRoleSwitcher';
+import { UserMenu } from './UserMenu';
 import { useTenders } from '../../context/TenderContext';
 import { useTheme } from '../../hooks/useTheme';
 
@@ -113,9 +113,9 @@ export const Header: React.FC<HeaderProps> = ({
           )}
         </Link>
 
-        {/* User Identity & RBAC Switcher */}
-        <div className="pl-2 border-l border-[#E2E8F0]">
-          <UserRoleSwitcher />
+        {/* User Identity & Account Menu */}
+        <div className="pl-2 border-l border-[#E2E8F0] dark:border-slate-700">
+          <UserMenu />
         </div>
       </div>
     </header>

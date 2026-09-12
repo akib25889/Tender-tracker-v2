@@ -1,7 +1,7 @@
 import { API_BASE_URL } from '../utils/apiConfig';
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ShieldCheck, Lock, User, ArrowRight, Building2, KeyRound, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Lock, User, ArrowRight, Building2, KeyRound, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { UserProfile } from '../types/tender';
 
@@ -12,109 +12,87 @@ interface LoginPageProps {
 export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { teamMembers, setCurrentUser } = useTenders();
+  const { setCurrentUser } = useTenders();
 
   const isJvInitial = initialMode === 'PARTNER' || location.pathname === '/jv' || location.pathname === '/login/jv';
   const [authMode, setAuthMode] = useState<'INTERNAL' | 'PARTNER'>(isJvInitial ? 'PARTNER' : 'INTERNAL');
 
   // Internal Form State
-  const [email, setEmail] = useState('sarah.jenkins@tendertracker.io');
-  const [password, setPassword] = useState('Password123!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   // Partner Form State
-  const [partnerToken, setPartnerToken] = useState('SHR-TOKEN-WB-7712');
-  const [partnerEmail, setPartnerEmail] = useState('jv.lead@apexengineering.com');
+  const [partnerToken, setPartnerToken] = useState('');
+  const [partnerEmail, setPartnerEmail] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
 
     if (authMode === 'INTERNAL') {
-      setIsLoading(true);
       const cleanEmail = email.trim().toLowerCase();
       const cleanPass = password.trim();
 
-      let authenticatedUser: UserProfile | null = null;
+      if (!cleanEmail || !cleanPass) {
+        setErrorMessage('Please enter both your corporate email and password.');
+        return;
+      }
 
-      // 1. Attempt API authentication against backend
+      setIsLoading(true);
+
       try {
         const res = await fetch(`${API_BASE_URL}/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: cleanEmail, password: cleanPass }),
         });
+
         if (res.ok) {
           const data = await res.json();
           if (data.access_token) {
             localStorage.setItem('tendertracker_token', data.access_token);
           }
           if (data.user) {
-            const matched = teamMembers.find((m) => m.email.toLowerCase() === cleanEmail);
-            authenticatedUser = matched || {
+            const authenticatedUser: UserProfile = {
               id: data.user.id,
               name: data.user.name,
               role: data.user.role,
-              title: data.user.title,
+              title: data.user.title || '',
               email: data.user.email,
-              avatar: data.user.avatar || 'TM',
-              department: data.user.department,
-              maxCapacity: data.user.max_capacity,
+              avatar: data.user.avatar || (data.user.name ? data.user.name.slice(0, 2).toUpperCase() : 'U'),
+              department: data.user.department || '',
+              maxCapacity: data.user.max_capacity || 10,
             };
+            setCurrentUser(authenticatedUser);
+            setIsLoading(false);
+            const redirectPath = (location.state as any)?.from?.pathname || '/dashboard';
+            navigate(redirectPath, { replace: true });
+            return;
           }
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          setErrorMessage(errData.detail || 'Authentication failed: Invalid corporate email or password.');
         }
       } catch {
-        // Backend offline or unreachable, fall back to local credentials
+        setErrorMessage('Unable to connect to TenderTracker authentication server. Please verify your connection.');
       }
-
-      // 2. Client-side fallback check against teamMembers and local credentials registry
-      if (!authenticatedUser) {
-        let storedCreds: Record<string, string> = {};
-        try {
-          storedCreds = JSON.parse(localStorage.getItem('tendertracker_user_credentials') || '{}');
-        } catch {}
-
-        const matchedMember = teamMembers.find((m) => {
-          const mEmail = m.email.toLowerCase();
-          return (
-            mEmail === cleanEmail ||
-            mEmail.replace('.io', '.org') === cleanEmail ||
-            mEmail.replace('.org', '.io') === cleanEmail
-          );
-        });
-
-        if (matchedMember) {
-          const expectedPassword =
-            storedCreds[cleanEmail] ||
-            storedCreds[matchedMember.email.toLowerCase()] ||
-            'Password123!';
-          if (cleanPass === expectedPassword || cleanPass === 'Password123!') {
-            authenticatedUser = matchedMember;
-          }
-        }
-      }
-
       setIsLoading(false);
-
-      if (authenticatedUser) {
-        setCurrentUser(authenticatedUser);
-        navigate('/dashboard');
-      } else {
-        setErrorMessage(
-          'Authentication failed: Invalid corporate email or password. Please verify the credentials provided by your Super Admin.'
-        );
-      }
     } else {
-      // Direct access to the full JV Partner Portal Dashboard
-      navigate('/partner/portal');
+      // JV Partner Portal validation
+      const cleanToken = partnerToken.trim();
+      const cleanPartnerEmail = partnerEmail.trim();
+
+      if (!cleanToken || !cleanPartnerEmail) {
+        setErrorMessage('Please enter both your partner representative email and access key token.');
+        return;
+      }
+
+      navigate(`/shared/${encodeURIComponent(cleanToken)}`);
     }
   };
-
-  const demoPartnerTokens = [
-    { name: 'Apex Engineering JV', code: 'ORG-APEX-01', token: 'SHR-TOKEN-WB-7712', desc: 'Sovereign Cloud & ERP Subcontractor' },
-    { name: 'Global Infra Consortium', code: 'ORG-GLOBAL-02', token: 'SHR-TOKEN-ADB-SCADA', desc: 'Smart Grid SCADA Consortium' },
-  ];
 
   return (
     <div className="min-h-screen bg-[#0F172A] flex flex-col justify-center items-center p-4">
@@ -215,12 +193,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
                   <input
                     type="email"
                     required
+                    autoComplete="username"
+                    placeholder="name@company.com"
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
                       if (errorMessage) setErrorMessage('');
                     }}
-                    className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                    className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                   />
                 </div>
               </div>
@@ -232,56 +212,25 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
                 <div className="relative">
                   <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
                   <input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
+                    autoComplete="current-password"
+                    placeholder="••••••••••••"
                     value={password}
                     onChange={(e) => {
                       setPassword(e.target.value);
                       if (errorMessage) setErrorMessage('');
                     }}
-                    className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                    className="w-full pl-9 pr-10 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                   />
-                </div>
-              </div>
-
-              {/* Quick Role Switcher from Registered Team Members */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="block font-semibold text-[#64748B]">
-                    Select User Profile (Active Directory):
-                  </label>
-                  <span className="text-[10px] text-[#94A3B8]">Click to populate</span>
-                </div>
-                <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
-                  {teamMembers.map((r) => {
-                    const isCurrentSelected = email.toLowerCase() === r.email.toLowerCase();
-                    return (
-                      <button
-                        key={r.id || r.email}
-                        type="button"
-                        onClick={() => {
-                          setEmail(r.email);
-                          setPassword('Password123!');
-                          setErrorMessage('');
-                        }}
-                        className={`w-full p-2 text-left rounded-lg border transition-colors flex items-center justify-between cursor-pointer ${
-                          isCurrentSelected
-                            ? 'bg-[#EFF6FF] border-[#2563EB] text-[#2563EB]'
-                            : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:bg-[#F1F5F9]'
-                        }`}
-                      >
-                        <div className="min-w-0 pr-2">
-                          <div className={`text-xs truncate ${isCurrentSelected ? 'font-bold text-[#1D4ED8]' : 'font-semibold text-[#0F172A]'}`}>
-                            {r.name}
-                          </div>
-                          <div className="text-[10px] text-[#64748B] truncate font-mono">{r.email}</div>
-                        </div>
-                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white border border-[#E2E8F0] shrink-0 font-medium">
-                          {r.role.replace('_', ' ')}
-                        </span>
-                      </button>
-                    );
-                  })}
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#475569] transition-colors cursor-pointer"
+                    title={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
             </>
@@ -293,7 +242,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
                   <span>Secure JV &amp; Consortium Gateway</span>
                 </div>
                 <p className="text-[11px] leading-relaxed">
-                  Enter your cryptographic authorization token or select an assigned partner organization below to access authorized proposal files and ceilings.
+                  Enter your cryptographic authorization token and authorized email to access shared proposal files and submission ceilings.
                 </p>
               </div>
 
@@ -309,7 +258,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
                     value={partnerEmail}
                     onChange={(e) => setPartnerEmail(e.target.value)}
                     placeholder="partner.delegate@org.com"
-                    className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#10B981]"
+                    className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#10B981]"
                   />
                 </div>
               </div>
@@ -326,37 +275,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
                     value={partnerToken}
                     onChange={(e) => setPartnerToken(e.target.value)}
                     placeholder="e.g. SHR-TOKEN-..."
-                    className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-mono focus:outline-none focus:ring-2 focus:ring-[#10B981]"
+                    className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-mono placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#10B981]"
                   />
-                </div>
-              </div>
-
-              {/* Demo Partner Selectors */}
-              <div>
-                <label className="block font-semibold text-[#64748B] mb-1.5">
-                  Verified Partner Organizations:
-                </label>
-                <div className="space-y-1.5">
-                  {demoPartnerTokens.map((p) => (
-                    <button
-                      key={p.code}
-                      type="button"
-                      onClick={() => setPartnerToken(p.token)}
-                      className={`w-full p-2 text-left rounded-lg border transition-colors flex items-center justify-between cursor-pointer ${
-                        partnerToken === p.token
-                          ? 'bg-[#ECFDF5] border-[#10B981] text-[#065F46] font-bold'
-                          : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:bg-[#F1F5F9]'
-                      }`}
-                    >
-                      <div>
-                        <div className="font-semibold text-xs text-[#0F172A]">{p.name}</div>
-                        <div className="text-[10px] text-[#64748B]">{p.desc}</div>
-                      </div>
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white border border-[#E2E8F0]">
-                        {p.code}
-                      </span>
-                    </button>
-                  ))}
                 </div>
               </div>
             </>
@@ -387,3 +307,4 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
     </div>
   );
 };
+

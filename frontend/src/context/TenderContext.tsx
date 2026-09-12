@@ -24,10 +24,6 @@ import {
   PastProjectAssignment,
   TenderFolder,
 } from '../types/tender';
-import { MOCK_TENDERS } from '../mock/tenders';
-import { TEAM_PROFILES } from '../mock/users';
-import { INITIAL_REUSABLE_DOCUMENTS } from '../mock/reusableDocuments';
-import { INITIAL_ORGANIZATIONS } from '../mock/organizations';
 
 export type CurrencyMode = 'USD' | 'BDT';
 
@@ -98,6 +94,7 @@ interface TenderContextType {
   currentUser: UserProfile;
   setCurrentUser: React.Dispatch<React.SetStateAction<UserProfile>>;
   teamMembers: UserProfile[];
+  logout: () => void;
   addTeamMember: (member: {
     name: string;
     role: UserRole;
@@ -200,45 +197,19 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (saved) {
       try {
         const parsed: Tender[] = JSON.parse(saved);
-        const sanitized = parsed.map((t) => {
-          if (t.referenceNo && (t.referenceNo === `REF/${t.id}` || t.referenceNo === t.id)) {
-            return { ...t, referenceNo: '' };
-          }
-          if ((t.stage as string) === 'INTERNAL_REVIEW') {
-            return { ...t, stage: 'PREPARATION' as TenderStage };
-          }
-          return t;
-        });
-        const acriIndex = sanitized.findIndex((t) => t.id === 'TDR-PRC0190428');
-        const acriMock = MOCK_TENDERS.find((t) => t.id === 'TDR-PRC0190428');
-        if (acriMock) {
-          if (acriIndex >= 0) {
-            sanitized[acriIndex] = acriMock;
-          } else {
-            sanitized.unshift(acriMock);
-          }
+        if (Array.isArray(parsed)) {
+          return parsed.filter(
+            (t) =>
+              !t.id.startsWith('MOCK-') &&
+              t.id !== 'TDR-PRC0190428' &&
+              t.id !== 'TDR-2026-EU-089'
+          );
         }
-        const seenIds = new Set<string>();
-        const uniqueTenders: Tender[] = [];
-        for (const item of sanitized) {
-          if (!seenIds.has(item.id)) {
-            seenIds.add(item.id);
-            uniqueTenders.push(item);
-          }
-        }
-        // Merge in any newly seeded mock tenders that do not exist in cache yet
-        for (const mockItem of MOCK_TENDERS) {
-          if (!seenIds.has(mockItem.id)) {
-            seenIds.add(mockItem.id);
-            uniqueTenders.push(mockItem);
-          }
-        }
-        return uniqueTenders;
       } catch (e) {
         console.error('Failed to parse cached tenders:', e);
       }
     }
-    return MOCK_TENDERS;
+    return [];
   });
 
   const [currency, setCurrencyState] = useState<CurrencyMode>(() => {
@@ -312,7 +283,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       const res = await fetch(`${API_BASE_URL}/tenders`);
       if (res.ok) {
         const dbTenders = await res.json();
-        if (Array.isArray(dbTenders) && dbTenders.length > 0) {
+        if (Array.isArray(dbTenders)) {
+          if (dbTenders.length === 0) {
+            setTenders([]);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+            return;
+          }
           setTenders((prev) => {
             const map = new Map(prev.map((t) => [t.id, t]));
             for (const dbt of dbTenders) {
@@ -551,8 +527,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       const res = await fetch(`${API_BASE_URL}/organizations`);
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setOrganizations(data);
+          localStorage.setItem('tendertracker_organizations_v1', JSON.stringify(data));
         }
       }
     } catch {}
@@ -563,20 +540,20 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       const res = await fetch(`${API_BASE_URL}/auth/team`);
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          setTeamMembers(
-            data.map((u: any) => ({
-              id: u.id,
-              name: u.name,
-              role: u.role,
-              title: u.title,
-              email: u.email,
-              avatar: u.avatar || u.name.slice(0, 2).toUpperCase(),
-              profilePic: u.profile_pic || u.profilePic,
-              department: u.department,
-              maxCapacity: u.max_capacity,
-            }))
-          );
+        if (Array.isArray(data)) {
+          const members = data.map((u: any) => ({
+            id: u.id,
+            name: u.name,
+            role: u.role,
+            title: u.title,
+            email: u.email,
+            avatar: u.avatar || u.name.slice(0, 2).toUpperCase(),
+            profilePic: u.profile_pic || u.profilePic,
+            department: u.department,
+            maxCapacity: u.max_capacity,
+          }));
+          setTeamMembers(members);
+          localStorage.setItem('tendertracker_team_profiles', JSON.stringify(members));
         }
       }
     } catch {}
@@ -587,21 +564,21 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       const res = await fetch(`${API_BASE_URL}/documents/reusable`);
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          setReusableDocuments(
-            data.map((d: any) => ({
-              id: d.id,
-              name: d.name,
-              category: d.category,
-              uploadedAt: d.uploaded_at,
-              expiryDate: d.expiry_date,
-              size: d.size,
-              revision: d.revision,
-              accessLevel: d.access_level,
-              sha256: d.sha256,
-              description: d.description,
-            }))
-          );
+        if (Array.isArray(data)) {
+          const docs = data.map((d: any) => ({
+            id: d.id,
+            name: d.name,
+            category: d.category,
+            uploadedAt: d.uploaded_at,
+            expiryDate: d.expiry_date,
+            size: d.size,
+            revision: d.revision,
+            accessLevel: d.access_level,
+            sha256: d.sha256,
+            description: d.description,
+          }));
+          setReusableDocuments(docs);
+          localStorage.setItem('tendertracker_reusable_docs', JSON.stringify(docs));
         }
       }
     } catch {}
@@ -931,7 +908,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error('Failed to parse organizations from localStorage', e);
       }
     }
-    return INITIAL_ORGANIZATIONS;
+    return [];
   });
 
   useEffect(() => {
@@ -1916,43 +1893,80 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.map((p: UserProfile) => {
-            const seed = TEAM_PROFILES.find((s) => s.id === p.id);
-            if (!seed) return p;
-            return {
-              ...seed,
-              ...p,
-              pastAssignments:
-                p.pastAssignments && p.pastAssignments.length >= (seed.pastAssignments || []).length
-                  ? p.pastAssignments
-                  : seed.pastAssignments,
-              certifications: p.certifications && p.certifications.length > 0 ? p.certifications : seed.certifications,
-              education: p.education && p.education.length > 0 ? p.education : seed.education,
-              activeTenderRoles: p.activeTenderRoles || seed.activeTenderRoles,
-              phone: p.phone || seed.phone,
-              location: p.location || seed.location,
-              employmentType: p.employmentType || seed.employmentType,
-              proposedDesignation: p.proposedDesignation || seed.proposedDesignation,
-            };
-          });
+          return parsed;
         }
       } catch (e) {
         console.error('Failed to parse team profiles:', e);
       }
     }
-    return TEAM_PROFILES;
+    return [];
   });
 
   const [currentUser, setCurrentUserState] = useState<UserProfile>(() => {
+    const token = localStorage.getItem('tendertracker_token');
     const saved = localStorage.getItem('tendertracker_auth_user');
-    if (saved) {
+    if (token && saved) {
       try {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.id) return parsed;
       } catch (e) {}
     }
-    return teamMembers[0] || TEAM_PROFILES[0];
+    return {
+      id: '',
+      name: '',
+      email: '',
+      role: 'SUPER_ADMIN',
+      title: '',
+      department: '',
+      maxCapacity: 10,
+      avatar: '',
+    };
   });
+
+  // Verify JWT session against backend /api/auth/me on mount
+  useEffect(() => {
+    const token = localStorage.getItem('tendertracker_token');
+    if (token) {
+      fetch(`${API_BASE_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            localStorage.removeItem('tendertracker_token');
+            localStorage.removeItem('tendertracker_auth_user');
+          }
+        })
+        .then((user) => {
+          if (user) {
+            setCurrentUserState(user);
+            localStorage.setItem('tendertracker_auth_user', JSON.stringify(user));
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
+
+  const logout = () => {
+    const token = localStorage.getItem('tendertracker_token');
+    if (token) {
+      fetch(`${API_BASE_URL}/auth/logout`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => {});
+    }
+    localStorage.removeItem('tendertracker_token');
+    localStorage.removeItem('tendertracker_auth_user');
+    setCurrentUserState({
+      id: '',
+      name: '',
+      email: '',
+      role: 'TENDER_ANALYST',
+      title: '',
+      avatar: '',
+    });
+  };
 
   const setCurrentUser: React.Dispatch<React.SetStateAction<UserProfile>> = (value) => {
     setCurrentUserState((prev) => {
@@ -1980,7 +1994,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error('Error loading reusable docs:', e);
       }
     }
-    return INITIAL_REUSABLE_DOCUMENTS;
+    return [];
   });
 
   useEffect(() => {
@@ -2430,6 +2444,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         currentUser,
         setCurrentUser,
         teamMembers,
+        logout,
         addTeamMember,
         updateUserProfile,
         addPastAssignment,
