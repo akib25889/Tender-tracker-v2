@@ -44,9 +44,7 @@ icacls.exe $KeyFile /grant:r "$($env:USERNAME):(R)" > $null 2>&1
 # 4. Trigger remote deployment on Azure VM
 Write-Host "[2/3] Connecting to Azure VM ($ServerIP) via SSH..." -ForegroundColor Yellow
 
-$remoteCommand = 'cd /var/www/tender-tracker && git pull origin main && cd frontend && npm run build && sudo systemctl restart tendertracker && sudo systemctl reload nginx && echo "--> Health Check:" && curl -s http://127.0.0.1:8000/api/health && echo ""'
-
-ssh -i $KeyFile -o StrictHostKeyChecking=no -o ConnectTimeout=15 azureuser@$ServerIP $remoteCommand
+ssh -i $KeyFile -o StrictHostKeyChecking=no -o ConnectTimeout=15 azureuser@$ServerIP "/home/azureuser/update.sh"
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "[3/3] Deployment complete!" -ForegroundColor Green
