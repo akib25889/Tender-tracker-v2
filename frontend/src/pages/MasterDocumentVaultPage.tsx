@@ -608,7 +608,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                     <th className="py-3 px-3.5 whitespace-nowrap">Owning Entity</th>
                     <th className="py-3 px-3.5 whitespace-nowrap">Clearance Scope</th>
                     <th className="py-3 px-3.5 whitespace-nowrap">Validity / Expiry</th>
-                    <th className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-[#F8FAFC] dark:bg-slate-800 shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[210px] min-w-[210px]">
+                    <th className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-[#F8FAFC] dark:bg-slate-800 shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[230px] min-w-[230px]">
                       Actions
                     </th>
                   </tr>
@@ -745,31 +745,20 @@ export const MasterDocumentVaultPage: React.FC = () => {
                             {renderValidityBadge(doc.expiryDate)}
                           </td>
 
-                          {/* Actions Column - Sticky Right with Shadow and Perfectly Aligned Buttons */}
-                          <td className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50/90 dark:group-hover:bg-slate-800/90 transition-colors shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[210px] min-w-[210px]">
+                          {/* Actions Column - Clean Redesigned Unified Action Bar */}
+                          <td className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50/90 dark:group-hover:bg-slate-800/90 transition-colors shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[230px] min-w-[230px]">
                             <div className="flex items-center justify-end gap-1.5">
-                              {/* Preview Button */}
+                              {/* 1. Preview Document */}
                               <button
                                 type="button"
                                 onClick={() => setPreviewDoc(doc)}
-                                className="p-1.5 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-2xs cursor-pointer shrink-0"
-                                title="Preview document in browser (PDF, Word, Excel, Images)"
+                                className="p-1.5 text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 bg-slate-50 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 rounded-lg transition-colors cursor-pointer shrink-0"
+                                title="Preview document in browser"
                               >
                                 <Eye className="w-3.5 h-3.5" />
                               </button>
 
-                              {/* Reference into Tender Button */}
-                              <button
-                                type="button"
-                                onClick={() => setDocToLink(doc)}
-                                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800/50 rounded-lg transition-all shadow-2xs cursor-pointer shrink-0"
-                                title="Reference this credential into an active tender"
-                              >
-                                <LinkIcon className="w-3 h-3 text-blue-600 dark:text-blue-400" />
-                                <span>Use in Tender</span>
-                              </button>
-
-                              {/* Share Button */}
+                              {/* 2. Generate Share Link */}
                               <button
                                 type="button"
                                 onClick={() =>
@@ -787,31 +776,41 @@ export const MasterDocumentVaultPage: React.FC = () => {
                                     },
                                   })
                                 }
-                                className="p-1.5 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-2xs cursor-pointer shrink-0"
+                                className="p-1.5 text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 bg-slate-50 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 rounded-lg transition-colors cursor-pointer shrink-0"
                                 title="Generate secure shareable link"
                               >
                                 <Share2 className="w-3.5 h-3.5" />
                               </button>
 
-                              {/* Secure Download Button */}
+                              {/* 3. Download or Lock Indicator (Exact same 28px button footprint!) */}
                               {hasAccess ? (
                                 <button
                                   type="button"
                                   onClick={() => alert(`Simulating secure download for ${doc.name}`)}
-                                  className="p-1.5 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-2xs cursor-pointer shrink-0"
+                                  className="p-1.5 text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 bg-slate-50 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 rounded-lg transition-colors cursor-pointer shrink-0"
                                   title="Download original file"
                                 >
                                   <Download className="w-3.5 h-3.5" />
                                 </button>
                               ) : (
-                                <span
-                                  className="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40 rounded-lg cursor-not-allowed shrink-0"
-                                  title={`Access Restricted: Requires clearance level ${accessBadge.label}`}
+                                <div
+                                  className="p-1.5 text-rose-500 dark:text-rose-400 bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200/80 dark:border-rose-900/40 rounded-lg cursor-not-allowed shrink-0"
+                                  title={`Restricted: Requires ${accessBadge.label} clearance`}
                                 >
-                                  <Lock className="w-3 h-3" />
-                                  <span>Restricted</span>
-                                </span>
+                                  <Lock className="w-3.5 h-3.5" />
+                                </div>
                               )}
+
+                              {/* 4. Primary Action: Reference into Active Tender */}
+                              <button
+                                type="button"
+                                onClick={() => setDocToLink(doc)}
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 active:scale-98 rounded-lg transition-all shadow-xs cursor-pointer shrink-0"
+                                title="Reference this credential into an active tender"
+                              >
+                                <LinkIcon className="w-3 h-3" />
+                                <span>Use in Tender</span>
+                              </button>
                             </div>
                           </td>
                         </tr>
