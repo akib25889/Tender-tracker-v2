@@ -435,17 +435,26 @@ def seed_database(db: Session):
     # 5. Seed Official Procuring Organizations & Administrative Hierarchy
     if db.query(Organization).count() == 0:
         try:
-            from scripts.import_ministry_directory import import_ministry_hierarchy
-
-            import_ministry_hierarchy(db=db)
-        except ImportError:
-            try:
-                from backend.scripts.import_ministry_directory import (
-                    import_ministry_hierarchy,
-                )
-
-                import_ministry_hierarchy(db=db)
-            except Exception as e:
-                print(f"Note: Could not seed ministry hierarchy: {e}")
+            seed_file = Path(__file__).resolve().parent / "organizations_seed.json"
+            if seed_file.exists():
+                with open(seed_file, "r", encoding="utf-8") as f:
+                    org_records = json.load(f)
+                for r in org_records:
+                    db.add(
+                        Organization(
+                            id=r["id"],
+                            name=r["name"],
+                            short_name=r.get("short_name"),
+                            type=r.get("type", "GOVERNMENT"),
+                            parent_id=r.get("parent_id"),
+                            country=r.get("country", "Bangladesh"),
+                            website=r.get("website"),
+                            priority=r.get("priority", "MEDIUM"),
+                            aliases_json=r.get("aliases_json"),
+                            description=r.get("description"),
+                        )
+                    )
+                db.commit()
+                print(f"Seeded {len(org_records)} official procuring organizations.")
         except Exception as e:
-            print(f"Note: Could not seed ministry hierarchy: {e}")
+            print(f"Note: Could not seed organizations from seed JSON: {e}")

@@ -2,7 +2,6 @@ import json
 import os
 import sys
 from pathlib import Path
-import openpyxl
 
 # Add backend to path
 backend_dir = Path(__file__).resolve().parent.parent
@@ -749,6 +748,8 @@ def generate_organization_records():
             "description": "Apex sovereign entity representing all procuring ministries, divisions, and directorates of Bangladesh.",
         }
     )
+
+    import openpyxl
 
     wb = openpyxl.load_workbook(EXCEL_PATH)
     s_min = wb["Ministries"]
