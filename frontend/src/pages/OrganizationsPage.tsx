@@ -47,15 +47,27 @@ export const OrganizationsPage: React.FC = () => {
   const [activeView, setActiveView] = useState<'TABLE' | 'TREE'>('TREE');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({
-    'ORG-BD-01': true,
-    'ORG-BD-02': true,
-    'ORG-BD-04': true,
-    'ORG-BD-06': true,
-    'ORG-BD-10': true,
-    'ORG-UN-01': true,
-    'ORG-UN-02': true,
-    'ORG-MDB-01': true,
+    'ORG-BD-GOV': true,
+    'ORG-BD-PMO': true,
+    'ORG-BD-MORTH': true,
+    'ORG-BD-LGRD': true,
+    'ORG-BD-MPEMR': true,
+    'ORG-BD-MOWR': true,
+    'ORG-BD-MOEDU': true,
+    'ORG-BD-MOA': true,
   });
+
+  const handleExpandAll = () => {
+    const allExpanded: Record<string, boolean> = {};
+    organizations.forEach((o) => {
+      allExpanded[o.id] = true;
+    });
+    setExpandedNodes(allExpanded);
+  };
+
+  const handleCollapseAll = () => {
+    setExpandedNodes({ 'ORG-BD-GOV': true });
+  };
 
   // Modal Form State
   const [name, setName] = useState('');
@@ -200,10 +212,30 @@ export const OrganizationsPage: React.FC = () => {
     return <Building2 className="w-3.5 h-3.5 text-[#059669]" />;
   };
 
+  const parseDescriptionDetails = (desc?: string) => {
+    let location = '';
+    let noticeUrl = '';
+    let tenderUrl = '';
+    if (!desc) return { location, noticeUrl, tenderUrl };
+
+    const parts = desc.split('|').map((p) => p.trim());
+    for (const part of parts) {
+      if (part.startsWith('Location:')) {
+        location = part.replace('Location:', '').trim();
+      } else if (part.startsWith('Notice Portal:')) {
+        noticeUrl = part.replace('Notice Portal:', '').trim();
+      } else if (part.startsWith('Tender Portal:')) {
+        tenderUrl = part.replace('Tender Portal:', '').trim();
+      }
+    }
+    return { location, noticeUrl, tenderUrl };
+  };
+
   const renderTreeNode = (node: (typeof orgStats)[0], depth = 0) => {
     const children = orgTreeRoots.parentMap[node.id] || [];
     const hasChildren = children.length > 0;
     const isExpanded = !!expandedNodes[node.id];
+    const { location, noticeUrl, tenderUrl } = parseDescriptionDetails(node.description);
 
     return (
       <div key={node.id} className="space-y-1">
@@ -248,8 +280,14 @@ export const OrganizationsPage: React.FC = () => {
                     {node.type.replace(/_/g, ' ')}
                   </span>
                 </div>
-                <div className="text-[11px] text-[#64748B] flex items-center gap-2 mt-0.5">
+                <div className="text-[11px] text-[#64748B] flex flex-wrap items-center gap-2 mt-0.5">
                   <span>{node.country}</span>
+                  {location && (
+                    <>
+                      <span>•</span>
+                      <span className="text-[#475569]">{location}</span>
+                    </>
+                  )}
                   {node.website && (
                     <>
                       <span>•</span>
@@ -257,9 +295,35 @@ export const OrganizationsPage: React.FC = () => {
                         href={node.website}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[#2563EB] hover:underline flex items-center gap-0.5"
+                        className="text-[#2563EB] hover:underline flex items-center gap-0.5 font-medium"
                       >
                         Portal <ExternalLink className="w-2.5 h-2.5" />
+                      </a>
+                    </>
+                  )}
+                  {tenderUrl && (
+                    <>
+                      <span>•</span>
+                      <a
+                        href={tenderUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#059669] hover:underline flex items-center gap-0.5 font-semibold text-[10px] bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200"
+                      >
+                        Tenders <ExternalLink className="w-2.5 h-2.5" />
+                      </a>
+                    </>
+                  )}
+                  {noticeUrl && (
+                    <>
+                      <span>•</span>
+                      <a
+                        href={noticeUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#D97706] hover:underline flex items-center gap-0.5 font-semibold text-[10px] bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200"
+                      >
+                        Notices <ExternalLink className="w-2.5 h-2.5" />
                       </a>
                     </>
                   )}
@@ -414,6 +478,24 @@ export const OrganizationsPage: React.FC = () => {
         subtitle="Manage unlimited parent-child hierarchies, tracking priorities, and official procurement portals"
         headerAction={
           <div className="flex items-center gap-2">
+            {activeView === 'TREE' && (
+              <div className="flex items-center gap-1 mr-1">
+                <button
+                  type="button"
+                  onClick={handleExpandAll}
+                  className="px-2.5 py-1 text-[11px] font-medium rounded border border-[#CBD5E1] bg-white text-[#475569] hover:bg-[#F8FAFC] transition-colors"
+                >
+                  Expand All
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCollapseAll}
+                  className="px-2.5 py-1 text-[11px] font-medium rounded border border-[#CBD5E1] bg-white text-[#475569] hover:bg-[#F8FAFC] transition-colors"
+                >
+                  Collapse All
+                </button>
+              </div>
+            )}
             <div className="flex items-center p-1 bg-[#F1F5F9] rounded-lg border border-[#E2E8F0]">
               <button
                 type="button"
@@ -510,6 +592,7 @@ export const OrganizationsPage: React.FC = () => {
                 <tbody className="divide-y divide-[#F1F5F9]">
                   {filteredOrgs.map((org) => {
                     const parent = organizations.find((o) => o.id === org.parentId);
+                    const { location, noticeUrl, tenderUrl } = parseDescriptionDetails(org.description);
                     return (
                       <tr key={org.id} className="hover:bg-[#F8FAFC] transition-colors">
                         <td className="py-3 px-4 font-semibold text-[#0F172A]">
@@ -524,16 +607,43 @@ export const OrganizationsPage: React.FC = () => {
                                   </span>
                                 )}
                               </div>
-                              {org.website && (
-                                <a
-                                  href={org.website}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="text-[10px] text-[#2563EB] hover:underline flex items-center gap-1 mt-0.5"
-                                >
-                                  {org.website.replace('https://', '')}
-                                </a>
-                              )}
+                              <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                                {org.website && (
+                                  <a
+                                    href={org.website}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-[10px] text-[#2563EB] hover:underline flex items-center gap-0.5"
+                                  >
+                                    Portal <ExternalLink className="w-2 h-2" />
+                                  </a>
+                                )}
+                                {tenderUrl && (
+                                  <a
+                                    href={tenderUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-[10px] font-semibold text-[#059669] hover:underline flex items-center gap-0.5 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-200"
+                                  >
+                                    Tenders <ExternalLink className="w-2 h-2" />
+                                  </a>
+                                )}
+                                {noticeUrl && (
+                                  <a
+                                    href={noticeUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-[10px] font-semibold text-[#D97706] hover:underline flex items-center gap-0.5 bg-amber-50 px-1 py-0.2 rounded border border-amber-200"
+                                  >
+                                    Notices <ExternalLink className="w-2 h-2" />
+                                  </a>
+                                )}
+                                {location && (
+                                  <span className="text-[10px] text-[#64748B]">
+                                    ({location})
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </td>

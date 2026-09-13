@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api"
 
     # Database: SQLite by default for zero-config local dev, PostgreSQL / MySQL ready
-    DATABASE_URL: str = "sqlite:///./tender_tracker.db"
+    DATABASE_URL: str = f"sqlite:///{ (BACKEND_DIR / 'tender_tracker.db').as_posix() }"
 
     # Local SSD storage directory
     STORAGE_ROOT: Path = ROOT_DIR / "storage"
@@ -27,6 +27,13 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "tendertracker-command-center-secret-key-2026-v2"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
+
+    @field_validator("DATABASE_URL", mode="after")
+    @classmethod
+    def normalize_database_url(cls, v: str) -> str:
+        if v.startswith("sqlite:///./") or v == "sqlite:///tender_tracker.db":
+            return f"sqlite:///{(BACKEND_DIR / 'tender_tracker.db').as_posix()}"
+        return v
 
     # CORS
     CORS_ORIGINS: Union[list[str], str] = [

@@ -431,3 +431,21 @@ def seed_database(db: Session):
             )
         )
         db.commit()
+
+    # 5. Seed Official Procuring Organizations & Administrative Hierarchy
+    if db.query(Organization).count() == 0:
+        try:
+            from scripts.import_ministry_directory import import_ministry_hierarchy
+
+            import_ministry_hierarchy(db=db)
+        except ImportError:
+            try:
+                from backend.scripts.import_ministry_directory import (
+                    import_ministry_hierarchy,
+                )
+
+                import_ministry_hierarchy(db=db)
+            except Exception as e:
+                print(f"Note: Could not seed ministry hierarchy: {e}")
+        except Exception as e:
+            print(f"Note: Could not seed ministry hierarchy: {e}")

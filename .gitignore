@@ -72,4 +72,7 @@ backend/backups/
 
 # Local reference files
 Project_Start_Point.md
+project design/ministry/
+project design/*.pdf
+ministry/
 
