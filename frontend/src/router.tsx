@@ -59,7 +59,6 @@ export const router = createBrowserRouter([
     element: <PartnerPortalPage />,
   },
   {
-    element: <AppLayout />,
     element: (
       <ProtectedRoute>
         <AppLayout />
