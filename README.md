@@ -1,4 +1,4 @@
-# TenderTracker Command Center (v2.19.0)
+# TenderTracker Command Center (v2.20.0)
 
 [![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF?logo=vite)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://reactjs.org/)
@@ -10,19 +10,22 @@
 
 **TenderTracker Command Center** is an enterprise-grade procurement lifecycle management system designed for public and multilateral tenders (e-GP, UNDP, World Bank, ADB, JICA). It guides bid teams across the **tender lifecycle**, implements the **10-Second Attention Rule** for triage, and provides complete cryptographic document assurance.
 
+🌐 **Live Production Cloud URL**: [https://tendertracker-app.centralindia.cloudapp.azure.com](https://tendertracker-app.centralindia.cloudapp.azure.com)  
+🔑 **Default Super Admin**: `admin@tendertracker.com` / `Admin@2026!`
+
 ---
 
 ## 🚀 Quick Start
 
-### Frontend (Vite Dev Server)
+### 1. Frontend (Vite Dev Server)
 ```bash
 cd frontend
 npm install
 npm run dev
-# → http://localhost:5173/ (Opens Login Page directly)
+# → http://localhost:5173/ (Protected Route redirects to /login)
 ```
 
-### Backend (FastAPI — SQLite Zero-Config Local Dev / MySQL Ready)
+### 2. Backend (FastAPI — SQLite Zero-Config Local Dev / MySQL Ready)
 ```bash
 cd backend
 python -m venv venv
@@ -32,11 +35,17 @@ uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 # → http://127.0.0.1:8000/docs
 ```
 
-### Run All Verification Gates (One Command)
+### 3. Database Purge & Clean Production Reset
+```bash
+python backend/scripts/reset_production_db.py
+# Wipes dummy records, applies migrations, and seeds primary Super Admin
+```
+
+### 4. Run All Verification Gates (One Command)
 ```bash
 python run_all_tests.py
 ```
-Executes: DB health → Pytest suite → TypeScript type-check → Knowledge graph sync.
+Executes: DB health → Pytest suite (44/44 tests) → TypeScript type-check → Knowledge graph sync.
 
 ---
 
@@ -124,12 +133,12 @@ Executes: DB health → Pytest suite → TypeScript type-check → Knowledge gra
 
 | Suite | Result |
 | :--- | :--- |
-| `test_api_integration.py` | ✅ 11/11 pass |
+| `test_api_integration.py` | ✅ 26/26 pass |
 | `test_authorization_engine.py` | ✅ 15/15 pass |
 | `test_sharing_and_isolation.py` | ✅ 3/3 pass |
-| **Total Pytest Suite** | **✅ 29/29 pass (100%)** |
+| **Total Pytest Suite** | **✅ 44/44 pass (100%)** |
 | TypeScript `tsc -b` | ✅ 0 errors |
-| Production `npm run build` | ✅ Clean |
+| Production `npm run build` | ✅ Clean (0 errors) |
 | Knowledge graph | ✅ 54 nodes, 32 edges |
 | Dark Mode Visual Audit (Playwright) | ✅ 25/25 screens verified (WCAG AA) |
 

@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.19.0
+**Current Version:** 2.20.0
 **Stack:** FastAPI (Python 3.13+), SQLite (Zero-Config Dev) / MySQL 8.4 LTS (Prod), React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -18,7 +18,36 @@
 | **M3** | **Storage Vault & Document Security** | **Completed** | Local filesystem storage engine (`storage/tenders/{TDR-ID}/...`), SHA-256 versioning, upload validation, safe folder relocation. |
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 28-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
-| **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 34 tests), automated 3-2-1 backup sentinel with cryptographic restore verification, production Nginx reverse proxy configuration, systemd service, and Docker compose orchestration. |
+| **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 44 tests), automated 3-2-1 backup sentinel, corporate authentication, and live Azure Cloud VM deployment. |
+
+### [2026-09-13] — Version 2.20.0: Production Authentication System, Complete Dummy Data Purge & Protected Route Architecture
+- **Category:** Authentication, Security & Authorization, Database Operations, Production Hardening
+- **Summary:**
+  - **Complete Dummy Data Purge:**
+    - Stripped all mock tenders, mock reusable documents, mock client visits, mock discussions, and mock organizations from both local embedded SQLite and live production MySQL databases.
+    - Decoupled `frontend/src/context/TenderContext.tsx` from mock fallbacks (`MOCK_TENDERS`, `TEAM_PROFILES`, `INITIAL_REUSABLE_DOCUMENTS`, `INITIAL_ORGANIZATIONS`), enabling clean empty states across all screens.
+    - Refactored `backend/app/services/seeder.py` to preserve only vital infrastructure (System Settings, Master Categories, RBAC Permissions, and the Super Admin account) preventing dummy data re-injection on server restarts.
+  - **Automated Database Reset Tool (`backend/scripts/reset_production_db.py`):**
+    - Built single-command database purge and reset utility. Automatically applies migrations, wipes dummy tables, purges the local storage filesystem, and seeds the primary Super Admin account.
+    - Verified against both local SQLite dev database and live Azure Cloud MySQL database over SSH.
+  - **Corporate Production Authentication Core (`backend/app/routers/auth.py` & `backend/app/core/security.py`):**
+    - Added `OAuth2PasswordBearer` and `get_current_user` FastAPI dependency validating JWT Bearer tokens against the database.
+    - Added endpoints `POST /api/auth/login` (email + password validation returning signed JWT and sanitized user profile), `GET /api/auth/me` (session verification), and `POST /api/auth/logout`.
+    - Initialized primary Super Admin user (`admin@tendertracker.com` / `Admin@2026!`).
+  - **Corporate Login UI Overhaul (`frontend/src/pages/LoginPage.tsx`):**
+    - Removed pre-filled demo credentials, demo user profile pickers, and mock partner tokens.
+    - Added clean input forms, password reveal toggle (Eye / EyeOff), and direct backend API authentication with error notifications.
+  - **Route Protection Architecture (`frontend/src/components/auth/ProtectedRoute.tsx`):**
+    - Added `<ProtectedRoute />` wrapper around `<AppLayout />` in `router.tsx`, preventing unauthenticated access to all internal operational screens (`/dashboard`, `/registry`, `/tenders`, `/documents`, `/settings`, etc.) and redirecting to `/login` with return navigation state.
+  - **Corporate User Menu (`frontend/src/components/layout/UserMenu.tsx`):**
+    - Replaced the demo `UserRoleSwitcher` in `Header.tsx`.
+    - Features active user profile display, role badge, quick links to Account Settings and Notifications, and a secure **Sign Out** button that clears the token and redirects to `/login`.
+  - **Live Cloud Deployment & Verification:**
+    - Deployed via `deploy.ps1` to Azure VM (`https://tendertracker-app.centralindia.cloudapp.azure.com`).
+    - Reset live MySQL database and verified live API authentication, token issuance, and zero-dummy empty states.
+  - **Verification:**
+    - Pytest backend test suite: **44/44 tests passed (100%)**.
+    - Frontend TypeScript build: **0 compilation errors** (`tsc -b && vite build`).
 
 ### [2026-09-12] — Version 2.19.0: Status Pages (404, 403, 500), Review & Sign-Off Deprecation, UI Polish & SQLite Mode
 - **Category:** Routing & Fault Tolerance, Lifecycle Simplification, Dark Mode Harmonization, Database Operations

@@ -31,6 +31,8 @@ def test_01_health_check():
 def test_02_auth_and_team():
     # Test valid login
     login_payload = {
+        "email": "sarah.jenkins@tendertracker.org",
+        "password": "Password123!",
         "email": "admin@tendertracker.com",
         "password": "Admin@2026!",
     }
@@ -38,6 +40,7 @@ def test_02_auth_and_team():
     assert res.status_code == 200
     token_data = res.json()
     assert "access_token" in token_data
+    assert token_data["user"]["role"] == "BUSINESS_HEAD"
     assert token_data["user"]["role"] == "SUPER_ADMIN"
 
     # Test /api/auth/me
@@ -50,6 +53,7 @@ def test_02_auth_and_team():
 
     # Test invalid login
     bad_login = {
+        "email": "sarah.jenkins@tendertracker.org",
         "email": "admin@tendertracker.com",
         "password": "WrongPassword!",
     }
@@ -60,6 +64,7 @@ def test_02_auth_and_team():
     team_res = client.get("/api/auth/team")
     assert team_res.status_code == 200
     team = team_res.json()
+    assert len(team) >= 4
     assert len(team) >= 1
 
 
@@ -328,9 +333,12 @@ def test_10_tender_submission_proof_lock():
 
 def test_11_chat_channels_lifecycle():
     channel = "general-ops"
+    # 1. Get seeded messages
     # 1. Get messages
     list_res = client.get(f"/api/chat/channels/{channel}/messages")
     assert list_res.status_code == 200
+    messages = list_res.json()
+    assert len(messages) >= 1
     assert isinstance(list_res.json(), list)
 
     # 2. Post new channel message
@@ -537,10 +545,19 @@ def test_13_multi_company_document_disambiguation_and_jv():
 
 
 def test_14_company_project_credentials_and_custom_fields():
+    # 1. Fetch seeded projects
     # 1. Fetch projects
     get_res = client.get("/api/companies/projects")
     assert get_res.status_code == 200
+    projects = get_res.json()
+    assert len(projects) >= 3
     assert isinstance(get_res.json(), list)
+
+    # Filter by company
+    lead_res = client.get("/api/companies/projects?company_name=PrimeTech%20Ltd")
+    assert lead_res.status_code == 200
+    lead_projs = lead_res.json()
+    assert all(p["company_name"] == "PrimeTech Ltd" for p in lead_projs)
 
     # 2. Create a new Project Credential with dynamic custom fields
     new_project_payload = {
@@ -889,6 +906,7 @@ def test_17_company_profiles_crud():
     list_res = client.get("/api/companies/profiles")
     assert list_res.status_code == 200
     profiles = list_res.json()
+    assert len(profiles) >= 2
     assert len(profiles) >= 1
     pt = next((p for p in profiles if p["id"] == "COMP-PRIMETECH"), None)
     assert pt is not None
@@ -1543,6 +1561,7 @@ def test_23_document_preview_and_streaming():
 
     file_bytes = b"%PDF-1.4 Simulated Technical Proposal Volume for In-Browser Preview"
     upload_res = client.post(
+        "/api/tenders/TDR-2026-EU-089/documents/upload",
         f"/api/tenders/{test_tender_id}/documents/upload",
         files={
             "file": (
