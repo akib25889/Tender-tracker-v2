@@ -6,6 +6,8 @@ import { UserMenu } from './UserMenu';
 import { useTenders } from '../../context/TenderContext';
 import { useTheme } from '../../hooks/useTheme';
 
+import { HeaderClock } from './HeaderClock';
+
 interface HeaderProps {
   sidebarCollapsed: boolean;
   onToggleSidebar?: () => void;
@@ -34,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header
-      className={`fixed top-0 right-0 h-14 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] z-40 flex items-center justify-between px-4 sm:px-6 transition-all duration-300 ${
+      className={`fixed top-0 right-0 h-14 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-[#E2E8F0] dark:border-slate-800 z-40 flex items-center justify-between px-4 sm:px-6 transition-all duration-300 ${
         sidebarCollapsed ? 'left-20' : 'left-64'
       }`}
     >
@@ -70,7 +72,10 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Right Controls */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Multi-Timezone Header Clock */}
+        <HeaderClock />
+
         <Link
           to="/registry"
           className="flex items-center gap-1 px-3 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"

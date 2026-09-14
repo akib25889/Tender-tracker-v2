@@ -45,18 +45,18 @@ def create_comprehensive_dummy_tender():
                 "Deployment of 180 ANPR & PTZ optical surveillance cameras across 192 km",
                 "Installation of 24 Dedicated Fastag Electronic Toll Collection (ETC) lanes with automatic vehicle weight classifiers",
                 "Central Traffic Management Center (TMC) software with real-time AI incident detection and emergency dispatch",
-                "36-month comprehensive 24/7 SLA, warranty, and field engineer maintenance"
+                "36-month comprehensive 24/7 SLA, warranty, and field engineer maintenance",
             ],
             "key_qualifications": [
                 "Minimum 10 years corporate existence in turnkey ITS or smart infrastructure",
                 "Successful completion of at least 2 highway tolling or traffic management projects valued at $3M+ each within past 5 years",
                 "Average annual systems integration turnover of at least $6M over last 3 fiscal years",
-                "Active ISO 9001, ISO 27001, and CMMI Level 3 corporate quality certifications"
+                "Active ISO 9001, ISO 27001, and CMMI Level 3 corporate quality certifications",
             ],
             "commercial_terms": (
                 "Quality and Cost Based Selection (QCBS) 80:20 technical/financial weightage. "
                 "Liquidated damages capped at 10% of contract price. Mobilization advance 10% against bank guarantee."
-            )
+            ),
         }
 
         # 2. Key contract clauses
@@ -74,7 +74,7 @@ def create_comprehensive_dummy_tender():
                     "Bank Guarantee equal to 10% of the Contract Price within 28 days of Letter of Acceptance, "
                     "valid until 28 days beyond the Defects Liability Period."
                 ),
-                "implication": "Mandates establishing a $450,000 credit line / bank guarantee facility with a scheduled tier-1 commercial bank."
+                "implication": "Mandates establishing a $450,000 credit line / bank guarantee facility with a scheduled tier-1 commercial bank.",
             },
             {
                 "id": "CLS-02",
@@ -88,7 +88,7 @@ def create_comprehensive_dummy_tender():
                     "If the Contractor fails to achieve milestone handover by the Intended Completion Date, "
                     "liquidated damages shall be 0.1% per day of delayed work up to a maximum ceiling of 10% of the Contract Price."
                 ),
-                "implication": "Delivery timeline requires rigorous risk tracking and buffer allocation in the baseline master schedule."
+                "implication": "Delivery timeline requires rigorous risk tracking and buffer allocation in the baseline master schedule.",
             },
             {
                 "id": "CLS-03",
@@ -102,8 +102,8 @@ def create_comprehensive_dummy_tender():
                     "A 10% mobilization advance payment shall be made against submission of an irrevocable bank guarantee "
                     "of equal amount valid until full recovery through progressive interim billing."
                 ),
-                "implication": "Provides early cashflow funding of $450,000 (BDT 5.51 Crore) for initial sensor and server procurement."
-            }
+                "implication": "Provides early cashflow funding of $450,000 (BDT 5.51 Crore) for initial sensor and server procurement.",
+            },
         ]
 
         # 3. Post-award governance
@@ -113,11 +113,27 @@ def create_comprehensive_dummy_tender():
             "sla_penalty_hourly_usd": 250.0,
             "local_partner_share_percent": 30.0,
             "key_milestones": [
-                {"name": "Detailed Design Review", "target_month": 3, "status": "PENDING"},
-                {"name": "Factory Acceptance Testing (FAT)", "target_month": 6, "status": "PENDING"},
-                {"name": "Site Acceptance Testing (SAT)", "target_month": 18, "status": "PENDING"},
-                {"name": "Final Handover & Trial Operations", "target_month": 24, "status": "PENDING"}
-            ]
+                {
+                    "name": "Detailed Design Review",
+                    "target_month": 3,
+                    "status": "PENDING",
+                },
+                {
+                    "name": "Factory Acceptance Testing (FAT)",
+                    "target_month": 6,
+                    "status": "PENDING",
+                },
+                {
+                    "name": "Site Acceptance Testing (SAT)",
+                    "target_month": 18,
+                    "status": "PENDING",
+                },
+                {
+                    "name": "Final Handover & Trial Operations",
+                    "target_month": 24,
+                    "status": "PENDING",
+                },
+            ],
         }
 
         # 4. Financial Model & Cash Flow Breakdown
@@ -129,12 +145,37 @@ def create_comprehensive_dummy_tender():
             "gross_profit_usd": 900000.0,
             "tax_and_vat_deduction_percent": 7.5,
             "cash_flow_milestones": [
-                {"milestone": "Mobilization Advance", "percentage": 10, "amount_usd": 450000.0, "expected_month": 1},
-                {"milestone": "Equipment Delivery & Factory Inspection", "percentage": 40, "amount_usd": 1800000.0, "expected_month": 6},
-                {"milestone": "Installation & Field Testing", "percentage": 30, "amount_usd": 1350000.0, "expected_month": 18},
-                {"milestone": "Final Commissioning & Handover", "percentage": 15, "amount_usd": 675000.0, "expected_month": 24},
-                {"milestone": "Defects Liability Release", "percentage": 5, "amount_usd": 225000.0, "expected_month": 36}
-            ]
+                {
+                    "milestone": "Mobilization Advance",
+                    "percentage": 10,
+                    "amount_usd": 450000.0,
+                    "expected_month": 1,
+                },
+                {
+                    "milestone": "Equipment Delivery & Factory Inspection",
+                    "percentage": 40,
+                    "amount_usd": 1800000.0,
+                    "expected_month": 6,
+                },
+                {
+                    "milestone": "Installation & Field Testing",
+                    "percentage": 30,
+                    "amount_usd": 1350000.0,
+                    "expected_month": 18,
+                },
+                {
+                    "milestone": "Final Commissioning & Handover",
+                    "percentage": 15,
+                    "amount_usd": 675000.0,
+                    "expected_month": 24,
+                },
+                {
+                    "milestone": "Defects Liability Release",
+                    "percentage": 5,
+                    "amount_usd": 225000.0,
+                    "expected_month": 36,
+                },
+            ],
         }
 
         # Create Tender Record
@@ -189,7 +230,7 @@ def create_comprehensive_dummy_tender():
             tender_security_method="Unconditional Bank Guarantee from Scheduled Bank in Bangladesh (valid 180 days)",
             post_award_data=post_award_data,
             financial_model=financial_model,
-            ai_chat_share_link="https://tendertracker-app.centralindia.cloudapp.azure.com/chat/tenders/TDR-2026-RHD-001"
+            ai_chat_share_link="https://tendertracker-app.centralindia.cloudapp.azure.com/chat/tenders/TDR-2026-RHD-001",
         )
         db.add(tender)
         db.commit()
@@ -207,7 +248,7 @@ def create_comprehensive_dummy_tender():
             rationale=(
                 "High-priority national corridor project. Clear alignment with our intelligent transportation portfolio, "
                 "strong cashflow support via 10% mobilization advance, and our corporate credentials directly fulfill all qualifying criteria."
-            )
+            ),
         )
         db.add(matrix)
 
@@ -219,7 +260,7 @@ def create_comprehensive_dummy_tender():
                 title="Turnkey ITS & Toll Deployment Track Record",
                 category="Technical",
                 status="COMPLIANT",
-                owner="System Administrator"
+                owner="System Administrator",
             ),
             TenderRequirement(
                 id=f"{TENDER_ID}-REQ-02",
@@ -227,7 +268,7 @@ def create_comprehensive_dummy_tender():
                 title="Average Annual Systems Integration Turnover >= $6M",
                 category="Financial",
                 status="COMPLIANT",
-                owner="System Administrator"
+                owner="System Administrator",
             ),
             TenderRequirement(
                 id=f"{TENDER_ID}-REQ-03",
@@ -235,7 +276,7 @@ def create_comprehensive_dummy_tender():
                 title="ISO 9001 (Quality) & ISO 27001 (Security) Certifications",
                 category="Statutory",
                 status="COMPLIANT",
-                owner="System Administrator"
+                owner="System Administrator",
             ),
             TenderRequirement(
                 id=f"{TENDER_ID}-REQ-04",
@@ -243,8 +284,8 @@ def create_comprehensive_dummy_tender():
                 title="Nominated Project Director (PMP Certified, 15+ Yrs Exp)",
                 category="Personnel",
                 status="COMPLIANT",
-                owner="System Administrator"
-            )
+                owner="System Administrator",
+            ),
         ]
         for req in requirements:
             db.add(req)
@@ -258,7 +299,7 @@ def create_comprehensive_dummy_tender():
                 assignee="System Administrator",
                 due_date="2026-10-05",
                 status="DONE",
-                priority="HIGH"
+                priority="HIGH",
             ),
             TenderTask(
                 id=f"{TENDER_ID}-TSK-02",
@@ -267,7 +308,7 @@ def create_comprehensive_dummy_tender():
                 assignee="System Administrator",
                 due_date="2026-10-18",
                 status="IN_PROGRESS",
-                priority="CRITICAL"
+                priority="CRITICAL",
             ),
             TenderTask(
                 id=f"{TENDER_ID}-TSK-03",
@@ -276,7 +317,7 @@ def create_comprehensive_dummy_tender():
                 assignee="System Administrator",
                 due_date="2026-10-22",
                 status="TODO",
-                priority="CRITICAL"
+                priority="CRITICAL",
             ),
             TenderTask(
                 id=f"{TENDER_ID}-TSK-04",
@@ -285,8 +326,8 @@ def create_comprehensive_dummy_tender():
                 assignee="System Administrator",
                 due_date="2026-10-25",
                 status="TODO",
-                priority="CRITICAL"
-            )
+                priority="CRITICAL",
+            ),
         ]
         for task in tasks:
             db.add(task)
@@ -303,7 +344,7 @@ def create_comprehensive_dummy_tender():
                 content=(
                     "Pre-bid meeting completed with RHD project director. Clarified that optical fiber redundancy across both "
                     "northbound and southbound carriageways is required. Adding corresponding active switches to BoQ."
-                )
+                ),
             ),
             TenderComment(
                 id=f"{TENDER_ID}-CMT-02",
@@ -315,8 +356,8 @@ def create_comprehensive_dummy_tender():
                 content=(
                     "Bank guarantee facility confirmed with Sonali Bank Principal Office. Margin requirement is 10% cash collateral. "
                     "Draft BG wording reviewed and fully compliant with e-GP Form PW3-4."
-                )
-            )
+                ),
+            ),
         ]
         for cmt in comments:
             db.add(cmt)
@@ -325,8 +366,12 @@ def create_comprehensive_dummy_tender():
         print(f"Successfully created comprehensive sample tender: {TENDER_ID}")
         print(f"Title: {tender.title}")
         print(f"Organization: {tender.organization}")
-        print(f"Value: ${tender.estimated_value:,.2f} ({tender.estimated_value_bdt:,.2f} BDT)")
-        print(f"Stage: {tender.stage} | Decision: {tender.decision} | Priority: {tender.priority}")
+        print(
+            f"Value: ${tender.estimated_value:,.2f} ({tender.estimated_value_bdt:,.2f} BDT)"
+        )
+        print(
+            f"Stage: {tender.stage} | Decision: {tender.decision} | Priority: {tender.priority}"
+        )
         print("Requirements: 4 | Tasks: 4 | Comments: 2 | Clauses: 3")
         print("=" * 70)
 
