@@ -21,7 +21,9 @@ def sync_organizations():
             records = json.load(f)
 
         existing_ids = {o.id for o in db.query(Organization.id).all()}
-        print(f"Existing in DB: {len(existing_ids)}, Total in Seed JSON: {len(records)}")
+        print(
+            f"Existing in DB: {len(existing_ids)}, Total in Seed JSON: {len(records)}"
+        )
 
         added = 0
         updated = 0
@@ -44,7 +46,9 @@ def sync_organizations():
                 )
                 added += 1
             else:
-                existing_org = db.query(Organization).filter(Organization.id == r["id"]).first()
+                existing_org = (
+                    db.query(Organization).filter(Organization.id == r["id"]).first()
+                )
                 if existing_org:
                     existing_org.name = r["name"]
                     existing_org.short_name = r.get("short_name")
@@ -59,7 +63,9 @@ def sync_organizations():
 
         db.commit()
         total_now = db.query(Organization).count()
-        print(f"Sync complete: {added} inserted, {updated} updated. Total DB count: {total_now}")
+        print(
+            f"Sync complete: {added} inserted, {updated} updated. Total DB count: {total_now}"
+        )
     finally:
         db.close()
 

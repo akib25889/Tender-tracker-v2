@@ -23,8 +23,14 @@ NEW_EGP_ENTITIES = [
         "country": "Bangladesh",
         "website": "https://bppa.gov.bd",
         "priority": "CRITICAL",
-        "aliases": ["BPPA", "CPTU", "Public Procurement Authority", "Central Procurement Technical Unit", "Sher-e-Bangla Nagar"],
-        "description": "Location: Planning Commission Campus, Sher-e-Bangla Nagar, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Apex government procurement authority operating the national e-GP system."
+        "aliases": [
+            "BPPA",
+            "CPTU",
+            "Public Procurement Authority",
+            "Central Procurement Technical Unit",
+            "Sher-e-Bangla Nagar",
+        ],
+        "description": "Location: Planning Commission Campus, Sher-e-Bangla Nagar, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Apex government procurement authority operating the national e-GP system.",
     },
     {
         "id": "ORG-BD-IMED",
@@ -36,7 +42,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://imed.gov.bd",
         "priority": "HIGH",
         "aliases": ["IMED", "Implementation Monitoring Division", "Planning Ministry"],
-        "description": "Location: Sher-e-Bangla Nagar, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Sher-e-Bangla Nagar, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BIDS",
@@ -48,7 +54,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bids.org.bd",
         "priority": "MEDIUM",
         "aliases": ["BIDS", "Development Studies Institute", "Agargaon"],
-        "description": "Location: E-17 Agargaon, Sher-e-Bangla Nagar, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: E-17 Agargaon, Sher-e-Bangla Nagar, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-SID",
@@ -60,9 +66,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://sid.gov.bd",
         "priority": "HIGH",
         "aliases": ["SID", "Statistics Division"],
-        "description": "Location: Parishankhyan Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Parishankhyan Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- B. Housing, Urban Planning & Public Works (Parent: MoHPW) ---
     {
         "id": "ORG-BD-PWD",
@@ -74,7 +79,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://pwd.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["PWD", "Public Works", "Purta Bhaban", "Segunbagicha"],
-        "description": "Location: Purta Bhaban, Segunbagicha, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Premier government construction and public infrastructure procurement agency."
+        "description": "Location: Purta Bhaban, Segunbagicha, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Premier government construction and public infrastructure procurement agency.",
     },
     {
         "id": "ORG-BD-RAJUK",
@@ -86,7 +91,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://rajuk.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["RAJUK", "Capital Development Authority", "Motijheel"],
-        "description": "Location: RAJUK Bhaban, Motijheel, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Capital development and town planning authority for Dhaka metropolitan area."
+        "description": "Location: RAJUK Bhaban, Motijheel, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Capital development and town planning authority for Dhaka metropolitan area.",
     },
     {
         "id": "ORG-BD-CDA",
@@ -98,7 +103,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://cda.gov.bd",
         "priority": "HIGH",
         "aliases": ["CDA", "Chittagong Development Authority", "Kotwali"],
-        "description": "Location: CDA Building, Kotwali, Chattogram | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: CDA Building, Kotwali, Chattogram | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-KDA",
@@ -110,7 +115,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://kda.gov.bd",
         "priority": "HIGH",
         "aliases": ["KDA", "Khulna Development"],
-        "description": "Location: KDA Bhaban, Shibbari More, Khulna | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: KDA Bhaban, Shibbari More, Khulna | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-RDA-HPW",
@@ -122,7 +127,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://rda.rajshahi.gov.bd",
         "priority": "HIGH",
         "aliases": ["RDA", "Rajshahi Development Authority"],
-        "description": "Location: RDA Bhaban, Banaswar, Rajshahi | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: RDA Bhaban, Banaswar, Rajshahi | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-COXDA",
@@ -134,7 +139,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://coxda.gov.bd",
         "priority": "HIGH",
         "aliases": ["CoxDA", "Cox's Bazar Development"],
-        "description": "Location: Kolatoli, Cox's Bazar | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Kolatoli, Cox's Bazar | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-NHA",
@@ -146,7 +151,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://nha.gov.bd",
         "priority": "HIGH",
         "aliases": ["NHA", "Grihayan Kartripakkha", "Segunbagicha"],
-        "description": "Location: Grihayan Bhaban, Segunbagicha, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Grihayan Bhaban, Segunbagicha, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-UDD",
@@ -158,7 +163,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://udd.gov.bd",
         "priority": "MEDIUM",
         "aliases": ["UDD", "Urban Development", "Segunbagicha"],
-        "description": "Location: 82 Segunbagicha, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: 82 Segunbagicha, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-ARCHDEPT",
@@ -170,9 +175,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://architecture.gov.bd",
         "priority": "MEDIUM",
         "aliases": ["Architecture Dept", "Sthapatya Adhidoptor", "Segunbagicha"],
-        "description": "Location: Sthapatya Bhaban, Segunbagicha, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Sthapatya Bhaban, Segunbagicha, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- C. Ports & Maritime Logistics (Parent: Ministry of Shipping) ---
     {
         "id": "ORG-BD-CPA",
@@ -184,7 +188,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://cpa.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["CPA", "Chittagong Port", "Bandar Bhaban", "Chattogram"],
-        "description": "Location: Bandar Bhaban, Chattogram | Tender Portal: https://www.eprocure.gov.bd | Principal seaport handling over 90% of Bangladesh maritime container trade."
+        "description": "Location: Bandar Bhaban, Chattogram | Tender Portal: https://www.eprocure.gov.bd | Principal seaport handling over 90% of Bangladesh maritime container trade.",
     },
     {
         "id": "ORG-BD-MPA",
@@ -196,7 +200,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://mpa.gov.bd",
         "priority": "HIGH",
         "aliases": ["MPA", "Mongla Port", "Bagerhat"],
-        "description": "Location: Mongla, Bagerhat | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Mongla, Bagerhat | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-PPA",
@@ -208,7 +212,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://ppa.gov.bd",
         "priority": "HIGH",
         "aliases": ["PPA", "Payra Port", "Patuakhali"],
-        "description": "Location: Kalapara, Patuakhali | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Kalapara, Patuakhali | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BIWTA",
@@ -220,7 +224,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://biwta.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["BIWTA", "Inland Water Transport Authority", "Motijheel"],
-        "description": "Location: BIWTA Bhaban, 141-143 Motijheel C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: BIWTA Bhaban, 141-143 Motijheel C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BIWTC",
@@ -232,7 +236,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://biwtc.gov.bd",
         "priority": "HIGH",
         "aliases": ["BIWTC", "Inland Water Transport Corp", "Shahbag"],
-        "description": "Location: BIWTC Bhaban, 5 Dilkusha C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: BIWTC Bhaban, 5 Dilkusha C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BSC",
@@ -244,9 +248,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://bsc.gov.bd",
         "priority": "HIGH",
         "aliases": ["BSC", "Shipping Corporation", "Agrabad"],
-        "description": "Location: BSC Bhaban, Saltgola Road, Chattogram | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: BSC Bhaban, Saltgola Road, Chattogram | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- D. Electrical Power Utilities (Parent: Ministry of Power, Energy & Mineral Resources) ---
     {
         "id": "ORG-BD-PGCB",
@@ -258,7 +261,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://pgcb.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["PGCB", "Power Grid", "National Grid", "Aftabnagar"],
-        "description": "Location: PGCB Bhaban, Avenue 3, Jahurul Islam City, Aftabnagar, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Sole transmission utility managing the national electricity grid."
+        "description": "Location: PGCB Bhaban, Avenue 3, Jahurul Islam City, Aftabnagar, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Sole transmission utility managing the national electricity grid.",
     },
     {
         "id": "ORG-BD-DESCO",
@@ -270,7 +273,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://desco.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["DESCO", "Dhaka Electric Supply", "Nikunja", "Khilkhet"],
-        "description": "Location: 22/B Kabi Farooq Sarani, Nikunja-2, Khilkhet, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Major electricity distributor for northern Dhaka and Tongi."
+        "description": "Location: 22/B Kabi Farooq Sarani, Nikunja-2, Khilkhet, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Major electricity distributor for northern Dhaka and Tongi.",
     },
     {
         "id": "ORG-BD-DPDC",
@@ -281,8 +284,13 @@ NEW_EGP_ENTITIES = [
         "country": "Bangladesh",
         "website": "https://dpdc.gov.bd",
         "priority": "CRITICAL",
-        "aliases": ["DPDC", "Dhaka Power Distribution", "Bidyut Bhaban", "Abdul Gani Road"],
-        "description": "Location: Bidyut Bhaban, 1 Abdul Gani Road, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Major electricity distributor for southern and central Dhaka and Narayanganj."
+        "aliases": [
+            "DPDC",
+            "Dhaka Power Distribution",
+            "Bidyut Bhaban",
+            "Abdul Gani Road",
+        ],
+        "description": "Location: Bidyut Bhaban, 1 Abdul Gani Road, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Major electricity distributor for southern and central Dhaka and Narayanganj.",
     },
     {
         "id": "ORG-BD-BREB",
@@ -293,8 +301,14 @@ NEW_EGP_ENTITIES = [
         "country": "Bangladesh",
         "website": "https://reb.gov.bd",
         "priority": "CRITICAL",
-        "aliases": ["BREB", "REB", "Rural Electrification Board", "Palli Bidyut", "Khilkhet"],
-        "description": "Location: Bidyut Bhaban, Nikunja-2, Khilkhet, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Oversees 80+ Palli Bidyut Samities serving 30M+ rural consumers."
+        "aliases": [
+            "BREB",
+            "REB",
+            "Rural Electrification Board",
+            "Palli Bidyut",
+            "Khilkhet",
+        ],
+        "description": "Location: Bidyut Bhaban, Nikunja-2, Khilkhet, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Oversees 80+ Palli Bidyut Samities serving 30M+ rural consumers.",
     },
     {
         "id": "ORG-BD-SREDA",
@@ -306,7 +320,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://sreda.gov.bd",
         "priority": "HIGH",
         "aliases": ["SREDA", "Renewable Energy Authority", "IEB Bhaban"],
-        "description": "Location: IEB Bhaban, Ramna, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: IEB Bhaban, Ramna, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-APSCL",
@@ -318,7 +332,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://apscl.gov.bd",
         "priority": "HIGH",
         "aliases": ["APSCL", "Ashuganj Power", "Brahmanbaria"],
-        "description": "Location: Ashuganj, Brahmanbaria | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Ashuganj, Brahmanbaria | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-NWPGCL",
@@ -330,7 +344,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://nwpgcl.gov.bd",
         "priority": "HIGH",
         "aliases": ["NWPGCL", "North West Power", "Uttara"],
-        "description": "Location: UTC Building, Panthapath, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: UTC Building, Panthapath, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-CPGCBL",
@@ -342,7 +356,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://cpgcbl.gov.bd",
         "priority": "HIGH",
         "aliases": ["CPGCBL", "Coal Power", "Matarbari", "Dhanmondi"],
-        "description": "Location: Matarbari / Dhanmondi, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Matarbari / Dhanmondi, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-WZPDCL",
@@ -354,9 +368,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://wzpdcl.gov.bd",
         "priority": "HIGH",
         "aliases": ["WZPDCL", "West Zone Power", "Khulna"],
-        "description": "Location: Bidyut Bhaban, Boyra Main Road, Khulna | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Bidyut Bhaban, Boyra Main Road, Khulna | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- E. Gas, Oil & Energy Exploration (Parent: Petrobangla / MPEMR) ---
     {
         "id": "ORG-BD-BAPEX",
@@ -368,7 +381,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bapex.com.bd",
         "priority": "CRITICAL",
         "aliases": ["BAPEX", "Petroleum Exploration", "BAPEX Bhaban", "Kawranbazar"],
-        "description": "Location: BAPEX Bhaban, 4 Kawranbazar C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd | National upstream gas and oil exploration company."
+        "description": "Location: BAPEX Bhaban, 4 Kawranbazar C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd | National upstream gas and oil exploration company.",
     },
     {
         "id": "ORG-BD-TGTDCL",
@@ -380,7 +393,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://titasgas.org.bd",
         "priority": "CRITICAL",
         "aliases": ["TGTDCL", "Titas Gas", "Titas Bhaban", "Kawranbazar"],
-        "description": "Location: Titas Bhaban, 105 Kazi Nazrul Islam Avenue, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Largest natural gas distributor in Bangladesh."
+        "description": "Location: Titas Bhaban, 105 Kazi Nazrul Islam Avenue, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Largest natural gas distributor in Bangladesh.",
     },
     {
         "id": "ORG-BD-BGSL",
@@ -392,7 +405,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bgdcl.gov.bd",
         "priority": "HIGH",
         "aliases": ["BGDCL", "BGSL", "Bakhrabad Gas", "Cumilla"],
-        "description": "Location: Chapapur, Cumilla | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Chapapur, Cumilla | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-JGTDSL",
@@ -404,7 +417,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://jalalabadgas.org.bd",
         "priority": "HIGH",
         "aliases": ["JGTDSL", "Jalalabad Gas", "Sylhet"],
-        "description": "Location: Gas Bhaban, Mendibag, Sylhet | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Gas Bhaban, Mendibag, Sylhet | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-KGDCL",
@@ -416,7 +429,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://kgdcl.gov.bd",
         "priority": "HIGH",
         "aliases": ["KGDCL", "Karnaphuli Gas", "Chattogram"],
-        "description": "Location: 137/A CDA Avenue, Sholashahar, Chattogram | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: 137/A CDA Avenue, Sholashahar, Chattogram | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-SGCL",
@@ -428,7 +441,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://sgcl.org.bd",
         "priority": "MEDIUM",
         "aliases": ["SGCL", "Sundarban Gas", "Khulna"],
-        "description": "Location: 218 M.A. Bari Street, Sonadanga, Khulna | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: 218 M.A. Bari Street, Sonadanga, Khulna | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-PGCL",
@@ -440,7 +453,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://pgcl.org.bd",
         "priority": "MEDIUM",
         "aliases": ["PGCL", "Paschimanchal Gas", "Sirajganj"],
-        "description": "Location: Nalka, Sirajganj | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Nalka, Sirajganj | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-ERL",
@@ -452,7 +465,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://erl.com.bd",
         "priority": "HIGH",
         "aliases": ["ERL", "Eastern Refinery", "Chattogram", "North Patenga"],
-        "description": "Location: North Patenga, Chattogram | Tender Portal: https://www.eprocure.gov.bd | Sole crude oil refining company in Bangladesh."
+        "description": "Location: North Patenga, Chattogram | Tender Portal: https://www.eprocure.gov.bd | Sole crude oil refining company in Bangladesh.",
     },
     {
         "id": "ORG-BD-POCL",
@@ -464,7 +477,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://pocl.gov.bd",
         "priority": "HIGH",
         "aliases": ["POCL", "Padma Oil", "Strand Road", "Chattogram"],
-        "description": "Location: Padma Bhaban, Strand Road, Chattogram | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Padma Bhaban, Strand Road, Chattogram | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-MPCL",
@@ -476,7 +489,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://mpl.gov.bd",
         "priority": "HIGH",
         "aliases": ["MPL", "Meghna Petroleum", "Agrabad", "Chattogram"],
-        "description": "Location: 58 Agrabad C/A, Chattogram | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: 58 Agrabad C/A, Chattogram | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-JOCL",
@@ -488,7 +501,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://jamunaoil.gov.bd",
         "priority": "HIGH",
         "aliases": ["JOCL", "Jamuna Oil", "Agrabad", "Chattogram"],
-        "description": "Location: Jamuna Bhaban, Agrabad C/A, Chattogram | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Jamuna Bhaban, Agrabad C/A, Chattogram | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BCMCL",
@@ -500,7 +513,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bcmcl.org.bd",
         "priority": "HIGH",
         "aliases": ["BCMCL", "Barapukuria Coal", "Dinajpur"],
-        "description": "Location: Parbatipur, Dinajpur | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Parbatipur, Dinajpur | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-MGMCL",
@@ -512,9 +525,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://mgmcl.org.bd",
         "priority": "HIGH",
         "aliases": ["MGMCL", "Maddhapara Granite", "Dinajpur"],
-        "description": "Location: Maddhapara, Dinajpur | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Maddhapara, Dinajpur | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- F. Bridges & Roads Expansion (Parent: MoRTH) ---
     {
         "id": "ORG-BD-BBA",
@@ -525,8 +537,14 @@ NEW_EGP_ENTITIES = [
         "country": "Bangladesh",
         "website": "https://bba.gov.bd",
         "priority": "CRITICAL",
-        "aliases": ["BBA", "Bridge Authority", "Setu Bhaban", "Bridges Division", "Banani"],
-        "description": "Location: Setu Bhaban, New Airport Road, Banani, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Executing agency for major bridges including Padma Multipurpose Bridge and Karnaphuli Tunnel."
+        "aliases": [
+            "BBA",
+            "Bridge Authority",
+            "Setu Bhaban",
+            "Bridges Division",
+            "Banani",
+        ],
+        "description": "Location: Setu Bhaban, New Airport Road, Banani, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Executing agency for major bridges including Padma Multipurpose Bridge and Karnaphuli Tunnel.",
     },
     {
         "id": "ORG-BD-BRTA",
@@ -538,7 +556,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://brta.gov.bd",
         "priority": "HIGH",
         "aliases": ["BRTA", "Road Transport Authority", "Banani"],
-        "description": "Location: BRTA Bhaban, Banani, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: BRTA Bhaban, Banani, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BRTC",
@@ -550,7 +568,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://brtc.gov.bd",
         "priority": "HIGH",
         "aliases": ["BRTC", "Road Transport Corp", "Motijheel"],
-        "description": "Location: Paribahan Bhaban, 21 DIT Avenue, Motijheel, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Paribahan Bhaban, 21 DIT Avenue, Motijheel, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-DHAKABRT",
@@ -562,9 +580,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://dbrt.gov.bd",
         "priority": "HIGH",
         "aliases": ["Dhaka BRT", "BRT", "Gazipur BRT"],
-        "description": "Location: House 4, Road 21, Sector 4, Uttara, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: House 4, Road 21, Sector 4, Uttara, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- G. ICT, Telecom & Postal (Parent: MoPTIT) ---
     {
         "id": "ORG-BD-BCC",
@@ -576,7 +593,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bcc.gov.bd",
         "priority": "HIGH",
         "aliases": ["BCC", "Computer Council", "ICT Bhaban", "Agargaon"],
-        "description": "Location: ICT Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: ICT Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BTCL",
@@ -587,8 +604,13 @@ NEW_EGP_ENTITIES = [
         "country": "Bangladesh",
         "website": "https://btcl.gov.bd",
         "priority": "CRITICAL",
-        "aliases": ["BTCL", "Telecommunications Company", "Telejogayog Bhaban", "Eskaton"],
-        "description": "Location: Telejogayog Bhaban, 37/E Eskaton Garden, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "aliases": [
+            "BTCL",
+            "Telecommunications Company",
+            "Telejogayog Bhaban",
+            "Eskaton",
+        ],
+        "description": "Location: Telejogayog Bhaban, 37/E Eskaton Garden, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BSCPLC",
@@ -600,7 +622,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bscplc.com.bd",
         "priority": "HIGH",
         "aliases": ["BSCPLC", "BSCCL", "Submarine Cable", "Moghbazar"],
-        "description": "Location: Wireless Gate, Moghbazar, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Wireless Gate, Moghbazar, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-TELETALK",
@@ -612,7 +634,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://teletalk.com.bd",
         "priority": "HIGH",
         "aliases": ["Teletalk", "Teletalk Bhaban", "Gulshan"],
-        "description": "Location: Rajuk Commercial Complex, Gulshan-1, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Rajuk Commercial Complex, Gulshan-1, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-POSTOFFICE",
@@ -624,9 +646,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://bdpost.gov.bd",
         "priority": "HIGH",
         "aliases": ["Post Office", "Dak Adhidoptor", "Dak Bhaban", "Agargaon"],
-        "description": "Location: Dak Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Dak Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- H. Prime Minister's Office: Economic & Investment Authorities (Parent: ORG-BD-PMO) ---
     {
         "id": "ORG-BD-BEZA",
@@ -638,7 +659,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://beza.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["BEZA", "Economic Zones Authority", "Biniyog Bhaban", "Agargaon"],
-        "description": "Location: Biniyog Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Developer and operator of government economic zones and special economic corridors."
+        "description": "Location: Biniyog Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Developer and operator of government economic zones and special economic corridors.",
     },
     {
         "id": "ORG-BD-BEPZA",
@@ -650,7 +671,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bepza.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["BEPZA", "Export Processing Zones", "BEPZA Complex", "Dhanmondi"],
-        "description": "Location: BEPZA Complex, House 19/D, Road 6, Dhanmondi, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: BEPZA Complex, House 19/D, Road 6, Dhanmondi, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BIDA",
@@ -662,7 +683,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bida.gov.bd",
         "priority": "HIGH",
         "aliases": ["BIDA", "Investment Development Authority", "Biniyog Bhaban"],
-        "description": "Location: Biniyog Bhaban, E-6/B Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Biniyog Bhaban, E-6/B Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-PPPA",
@@ -674,7 +695,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://pppo.gov.bd",
         "priority": "HIGH",
         "aliases": ["PPPA", "PPP Authority", "Public Private Partnership", "Agargaon"],
-        "description": "Location: Plot E-13-B, Agargaon, Shere Bangla Nagar, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Plot E-13-B, Agargaon, Shere Bangla Nagar, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-NSDA",
@@ -686,9 +707,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://nsda.gov.bd",
         "priority": "MEDIUM",
         "aliases": ["NSDA", "Skills Development Authority", "Biniyog Bhaban"],
-        "description": "Location: Biniyog Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Biniyog Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- I. All 12 City Corporations & Regional WASAs (Parent: LGRD) ---
     {
         "id": "ORG-BD-DNCC",
@@ -700,7 +720,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://dncc.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["DNCC", "Dhaka North", "Nagar Bhaban", "Gulshan"],
-        "description": "Location: Nagar Bhaban, Plot 23-26, Road 46, Gulshan-2, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Nagar Bhaban, Plot 23-26, Road 46, Gulshan-2, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-DSCC",
@@ -712,7 +732,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://dscc.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["DSCC", "Dhaka South", "Nagar Bhaban", "Fulbaria"],
-        "description": "Location: Nagar Bhaban, Fulbaria, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Nagar Bhaban, Fulbaria, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-CCC",
@@ -724,7 +744,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://ccc.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["CCC", "Chittagong City Corporation", "Tigerpass"],
-        "description": "Location: Tigerpass, Chattogram | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Tigerpass, Chattogram | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-GCC",
@@ -736,7 +756,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://gcc.gov.bd",
         "priority": "HIGH",
         "aliases": ["GCC", "Gazipur City"],
-        "description": "Location: Gazipur City | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Gazipur City | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-NCC",
@@ -748,7 +768,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://ncc.gov.bd",
         "priority": "HIGH",
         "aliases": ["NCC", "Narayanganj City"],
-        "description": "Location: Nagar Bhaban, Narayanganj | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Nagar Bhaban, Narayanganj | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-RCC",
@@ -760,7 +780,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://rcc.gov.bd",
         "priority": "HIGH",
         "aliases": ["RCC", "Rajshahi City"],
-        "description": "Location: Nagar Bhaban, Rajshahi | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Nagar Bhaban, Rajshahi | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-KCC",
@@ -772,7 +792,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://kcc.gov.bd",
         "priority": "HIGH",
         "aliases": ["KCC", "Khulna City"],
-        "description": "Location: Nagar Bhaban, K.D. Ghosh Road, Khulna | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Nagar Bhaban, K.D. Ghosh Road, Khulna | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-SCC",
@@ -784,7 +804,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://scc.gov.bd",
         "priority": "HIGH",
         "aliases": ["SCC", "Sylhet City"],
-        "description": "Location: Topkhana, Sylhet | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Topkhana, Sylhet | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BCC-CITY",
@@ -796,7 +816,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bcc.gov.bd",
         "priority": "HIGH",
         "aliases": ["Barishal City Corporation", "Barisal CC"],
-        "description": "Location: Nagar Bhaban, Barishal | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Nagar Bhaban, Barishal | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-RPCC",
@@ -808,7 +828,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://rpcc.gov.bd",
         "priority": "HIGH",
         "aliases": ["RpCC", "Rangpur City Corporation"],
-        "description": "Location: City Bhaban, Rangpur | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: City Bhaban, Rangpur | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-MCC",
@@ -820,7 +840,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://mcc.gov.bd",
         "priority": "HIGH",
         "aliases": ["MCC", "Mymensingh City"],
-        "description": "Location: Shaheed Golandaz Sarak, Mymensingh | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Shaheed Golandaz Sarak, Mymensingh | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-CUCC",
@@ -832,7 +852,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://cucc.gov.bd",
         "priority": "HIGH",
         "aliases": ["CuCC", "Comilla City Corporation", "Cumilla"],
-        "description": "Location: Kandirpar, Cumilla | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Kandirpar, Cumilla | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-CWASA",
@@ -844,7 +864,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://cwasa.org.bd",
         "priority": "CRITICAL",
         "aliases": ["CWASA", "Chittagong WASA", "Dampara"],
-        "description": "Location: WASA Bhaban, Dampara, Chattogram | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: WASA Bhaban, Dampara, Chattogram | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-KWASA",
@@ -856,7 +876,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://kwasa.gov.bd",
         "priority": "HIGH",
         "aliases": ["KWASA", "Khulna WASA"],
-        "description": "Location: WASA Bhaban, Khulna | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: WASA Bhaban, Khulna | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-RWASA",
@@ -868,9 +888,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://rwasa.gov.bd",
         "priority": "HIGH",
         "aliases": ["RWASA", "Rajshahi WASA"],
-        "description": "Location: WASA Bhaban, Rajshahi | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: WASA Bhaban, Rajshahi | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- J. Health, Nursing & Medical Engineering (Parent: MoHFW) ---
     {
         "id": "ORG-BD-DGDA",
@@ -882,7 +901,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://dgda.gov.bd",
         "priority": "HIGH",
         "aliases": ["DGDA", "Drug Administration", "Mohakhali"],
-        "description": "Location: Aushad Bhaban, Mohakhali, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Aushad Bhaban, Mohakhali, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-DGNM",
@@ -894,7 +913,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://dgnm.gov.bd",
         "priority": "HIGH",
         "aliases": ["DGNM", "Nursing Directorate", "Mohakhali"],
-        "description": "Location: Mohakhali, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Mohakhali, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-HED",
@@ -906,7 +925,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://hed.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["HED", "Health Engineering", "Mukti Bhaban", "Motijheel"],
-        "description": "Location: Mukti Bhaban, 105-106 Motijheel C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Engineering and physical facility development wing of Ministry of Health."
+        "description": "Location: Mukti Bhaban, 105-106 Motijheel C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Engineering and physical facility development wing of Ministry of Health.",
     },
     {
         "id": "ORG-BD-EDCL",
@@ -918,9 +937,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://edcl.gov.bd",
         "priority": "HIGH",
         "aliases": ["EDCL", "Essential Drugs", "Tejgaon"],
-        "description": "Location: 395-397 Tejgaon I/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: 395-397 Tejgaon I/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- K. Law Enforcement & Civil Defence (Parent: MoHA) ---
     {
         "id": "ORG-BD-POLICE",
@@ -932,7 +950,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://police.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["Bangladesh Police", "Police HQ", "Phoenix Road", "Fulbaria"],
-        "description": "Location: Police Headquarters, 6 Phoenix Road, Fulbaria, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Police Headquarters, 6 Phoenix Road, Fulbaria, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BGB",
@@ -944,7 +962,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bgb.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["BGB", "Border Guard", "Pilkhana"],
-        "description": "Location: Pilkhana, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Pilkhana, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-COASTGUARD",
@@ -956,7 +974,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://coastguard.gov.bd",
         "priority": "HIGH",
         "aliases": ["Coast Guard", "BCG", "Agargaon"],
-        "description": "Location: Coast Guard HQ, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Coast Guard HQ, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-FSCD",
@@ -968,7 +986,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://fireservice.gov.bd",
         "priority": "HIGH",
         "aliases": ["FSCD", "Fire Service", "Kazi Alauddin Road"],
-        "description": "Location: Kazi Alauddin Road, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Kazi Alauddin Road, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-DNC",
@@ -980,7 +998,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://dnc.gov.bd",
         "priority": "HIGH",
         "aliases": ["DNC", "Narcotics Control", "Segunbagicha"],
-        "description": "Location: Segunbagicha, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Segunbagicha, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-PRISONS",
@@ -992,9 +1010,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://prison.gov.bd",
         "priority": "HIGH",
         "aliases": ["Prisons", "Kara Adhidoptor", "Chankharpul"],
-        "description": "Location: Chankharpul, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Chankharpul, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- L. Industries & Small Business Development (Parent: MoInd) ---
     {
         "id": "ORG-BD-BSCIC",
@@ -1006,7 +1023,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bscic.gov.bd",
         "priority": "HIGH",
         "aliases": ["BSCIC", "Small & Cottage Industries", "Motijheel"],
-        "description": "Location: BSCIC Bhaban, 137-141 Motijheel C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: BSCIC Bhaban, 137-141 Motijheel C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BSEC-IND",
@@ -1018,7 +1035,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bsec.gov.bd",
         "priority": "HIGH",
         "aliases": ["BSEC", "Steel & Engineering Corp", "Kawranbazar"],
-        "description": "Location: BSEC Bhaban, 102 Kazi Nazrul Islam Avenue, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: BSEC Bhaban, 102 Kazi Nazrul Islam Avenue, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BSFIC",
@@ -1030,7 +1047,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bsfic.gov.bd",
         "priority": "HIGH",
         "aliases": ["BSFIC", "Sugar & Food Industries", "Motijheel"],
-        "description": "Location: Chinishilpa Bhaban, 3 Dilkusha C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Chinishilpa Bhaban, 3 Dilkusha C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BSTI",
@@ -1042,7 +1059,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bsti.gov.bd",
         "priority": "HIGH",
         "aliases": ["BSTI", "Standards & Testing", "Tejgaon"],
-        "description": "Location: Maan Bhaban, 116/A Tejgaon I/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Maan Bhaban, 116/A Tejgaon I/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-SMEF",
@@ -1054,9 +1071,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://smef.gov.bd",
         "priority": "MEDIUM",
         "aliases": ["SMEF", "SME Foundation", "Agargaon"],
-        "description": "Location: Parjatan Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Parjatan Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- M. Commerce & Export Trading (Parent: MinCom) ---
     {
         "id": "ORG-BD-TCB",
@@ -1068,7 +1084,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://tcb.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["TCB", "Trading Corporation", "Kawranbazar"],
-        "description": "Location: TCB Bhaban, 1 Kawranbazar, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Major public procurement agency for essential commodities."
+        "description": "Location: TCB Bhaban, 1 Kawranbazar, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Major public procurement agency for essential commodities.",
     },
     {
         "id": "ORG-BD-EPB",
@@ -1080,7 +1096,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://epb.gov.bd",
         "priority": "HIGH",
         "aliases": ["EPB", "Export Promotion Bureau", "Kawranbazar"],
-        "description": "Location: 1 Kawranbazar, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: 1 Kawranbazar, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-DNCRP",
@@ -1092,7 +1108,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://dncrp.gov.bd",
         "priority": "HIGH",
         "aliases": ["DNCRP", "Consumer Rights", "Kawranbazar"],
-        "description": "Location: TCB Bhaban, Kawranbazar, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: TCB Bhaban, Kawranbazar, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-TEABOARD",
@@ -1104,7 +1120,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://teaboard.gov.bd",
         "priority": "MEDIUM",
         "aliases": ["Tea Board", "Cha Board", "Nasirabad", "Chattogram"],
-        "description": "Location: 171-172 Baizid Bostami Road, Nasirabad, Chattogram | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: 171-172 Baizid Bostami Road, Nasirabad, Chattogram | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-RJSC",
@@ -1116,9 +1132,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://roc.gov.bd",
         "priority": "HIGH",
         "aliases": ["RJSC", "Joint Stock Companies", "Kawranbazar"],
-        "description": "Location: TCB Bhaban, Kawranbazar, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: TCB Bhaban, Kawranbazar, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- N. Finance, Revenue & Banking (Parent: Ministry of Finance) ---
     {
         "id": "ORG-BD-NBR",
@@ -1130,7 +1145,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://nbr.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["NBR", "Revenue Board", "Rajaswa Bhaban", "Agargaon"],
-        "description": "Location: Rajaswa Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Apex tax, customs, and revenue authority of Bangladesh."
+        "description": "Location: Rajaswa Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Apex tax, customs, and revenue authority of Bangladesh.",
     },
     {
         "id": "ORG-BD-BANGLADESHBANK",
@@ -1142,7 +1157,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bb.org.bd",
         "priority": "CRITICAL",
         "aliases": ["Bangladesh Bank", "BB", "Central Bank", "Motijheel"],
-        "description": "Location: Motijheel C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Central bank and apex monetary regulatory authority."
+        "description": "Location: Motijheel C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Central bank and apex monetary regulatory authority.",
     },
     {
         "id": "ORG-BD-IDCOL",
@@ -1154,7 +1169,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://idcol.org",
         "priority": "HIGH",
         "aliases": ["IDCOL", "Infrastructure Development Company", "Agargaon"],
-        "description": "Location: UTC Building, Panthapath / Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: UTC Building, Panthapath / Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BSEC-FIN",
@@ -1166,7 +1181,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://sec.gov.bd",
         "priority": "HIGH",
         "aliases": ["BSEC", "Securities Commission", "Agargaon"],
-        "description": "Location: Securities Commission Bhaban, Plot E-6/C Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Securities Commission Bhaban, Plot E-6/C Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-IDRA",
@@ -1178,7 +1193,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://idra.org.bd",
         "priority": "HIGH",
         "aliases": ["IDRA", "Insurance Regulatory Authority", "Motijheel"],
-        "description": "Location: Sadharan Bima Tower, 37/A Dilkusha C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Sadharan Bima Tower, 37/A Dilkusha C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-SONALIBANK",
@@ -1190,7 +1205,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://sonalibank.com.bd",
         "priority": "HIGH",
         "aliases": ["Sonali Bank", "Sonali Bank Bhaban", "Motijheel"],
-        "description": "Location: 35-42, 44 Motijheel C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Largest commercial bank in Bangladesh."
+        "description": "Location: 35-42, 44 Motijheel C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Largest commercial bank in Bangladesh.",
     },
     {
         "id": "ORG-BD-JANATABANK",
@@ -1202,7 +1217,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://jb.com.bd",
         "priority": "HIGH",
         "aliases": ["Janata Bank", "Janata Bhaban", "Motijheel"],
-        "description": "Location: 110 Motijheel C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: 110 Motijheel C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-AGRANIBANK",
@@ -1214,7 +1229,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://agranibank.org",
         "priority": "HIGH",
         "aliases": ["Agrani Bank", "Agrani Bhaban", "Motijheel"],
-        "description": "Location: 9/D Dilkusha C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: 9/D Dilkusha C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-RUPALIBANK",
@@ -1226,7 +1241,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://rupalibank.com.bd",
         "priority": "HIGH",
         "aliases": ["Rupali Bank", "Rupali Bhaban", "Dilkusha"],
-        "description": "Location: 34 Dilkusha C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: 34 Dilkusha C/A, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-CGA",
@@ -1237,10 +1252,14 @@ NEW_EGP_ENTITIES = [
         "country": "Bangladesh",
         "website": "https://cga.gov.bd",
         "priority": "HIGH",
-        "aliases": ["CGA", "Controller General of Accounts", "Hisab Bhaban", "Segunbagicha"],
-        "description": "Location: Hisab Bhaban, Segunbagicha, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "aliases": [
+            "CGA",
+            "Controller General of Accounts",
+            "Hisab Bhaban",
+            "Segunbagicha",
+        ],
+        "description": "Location: Hisab Bhaban, Segunbagicha, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
-
     # --- O. Science & Nuclear Energy (Parent: MoST) ---
     {
         "id": "ORG-BD-BAEC",
@@ -1252,7 +1271,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://baec.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["BAEC", "Atomic Energy Commission", "Paramanu Bhaban", "Agargaon"],
-        "description": "Location: Paramanu Bhaban, E-12/A Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Paramanu Bhaban, E-12/A Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BAERA",
@@ -1264,7 +1283,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://baera.gov.bd",
         "priority": "HIGH",
         "aliases": ["BAERA", "Atomic Energy Regulatory", "Agargaon"],
-        "description": "Location: Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BCSIR",
@@ -1276,7 +1295,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bcsir.gov.bd",
         "priority": "HIGH",
         "aliases": ["BCSIR", "Science Laboratory", "Dhanmondi"],
-        "description": "Location: Dr. Qudrat-I-Khuda Road, Dhanmondi, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Dr. Qudrat-I-Khuda Road, Dhanmondi, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-NPCBL",
@@ -1288,9 +1307,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://npcbl.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["NPCBL", "Rooppur Nuclear", "Nuclear Power Plant"],
-        "description": "Location: Rooppur, Ishwardi, Pabna / Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Operator of the Rooppur Nuclear Power Plant."
+        "description": "Location: Rooppur, Ishwardi, Pabna / Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Operator of the Rooppur Nuclear Power Plant.",
     },
-
     # --- P. Sovereign Parliament & Apex Judiciary (Parent: ORG-BD-GOV) ---
     {
         "id": "ORG-BD-BPS",
@@ -1301,8 +1319,12 @@ NEW_EGP_ENTITIES = [
         "country": "Bangladesh",
         "website": "https://parliament.gov.bd",
         "priority": "HIGH",
-        "aliases": ["Parliament Secretariat", "Jatiya Sangsad Secretariat", "Sher-e-Bangla Nagar"],
-        "description": "Location: Jatiya Sangsad Bhaban, Sher-e-Bangla Nagar, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "aliases": [
+            "Parliament Secretariat",
+            "Jatiya Sangsad Secretariat",
+            "Sher-e-Bangla Nagar",
+        ],
+        "description": "Location: Jatiya Sangsad Bhaban, Sher-e-Bangla Nagar, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-SCB",
@@ -1314,9 +1336,8 @@ NEW_EGP_ENTITIES = [
         "website": "https://supremecourt.gov.bd",
         "priority": "CRITICAL",
         "aliases": ["Supreme Court", "Appellate Division", "High Court Division"],
-        "description": "Location: Supreme Court Building, Ramna, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Apex judicial organ of the People's Republic of Bangladesh."
+        "description": "Location: Supreme Court Building, Ramna, Dhaka | Tender Portal: https://www.eprocure.gov.bd | Apex judicial organ of the People's Republic of Bangladesh.",
     },
-
     # --- Q. Tourism, Airlines & Agriculture Research ---
     {
         "id": "ORG-BD-BIMAN",
@@ -1328,7 +1349,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://biman-airlines.com",
         "priority": "CRITICAL",
         "aliases": ["Biman", "Bangladesh Airlines", "Balaka Bhaban", "Kurmitola"],
-        "description": "Location: Balaka Bhaban, Kurmitola, Dhaka | Tender Portal: https://www.eprocure.gov.bd | National flag carrier airline."
+        "description": "Location: Balaka Bhaban, Kurmitola, Dhaka | Tender Portal: https://www.eprocure.gov.bd | National flag carrier airline.",
     },
     {
         "id": "ORG-BD-BTB",
@@ -1340,7 +1361,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://tourismboard.gov.bd",
         "priority": "HIGH",
         "aliases": ["BTB", "Tourism Board", "Parjatan Bhaban", "Agargaon"],
-        "description": "Location: Parjatan Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Parjatan Bhaban, Agargaon, Dhaka | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BARI",
@@ -1352,7 +1373,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bari.gov.bd",
         "priority": "HIGH",
         "aliases": ["BARI", "Agricultural Research Institute", "Joydebpur", "Gazipur"],
-        "description": "Location: Joydebpur, Gazipur | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Joydebpur, Gazipur | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BRRI",
@@ -1364,7 +1385,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://brri.gov.bd",
         "priority": "HIGH",
         "aliases": ["BRRI", "Rice Research Institute", "Gazipur"],
-        "description": "Location: Joydebpur, Gazipur | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Joydebpur, Gazipur | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-BMDA",
@@ -1376,7 +1397,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://bmda.gov.bd",
         "priority": "HIGH",
         "aliases": ["BMDA", "Barind Authority", "Rajshahi"],
-        "description": "Location: Barind Bhaban, Cantonment Road, Rajshahi | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Barind Bhaban, Cantonment Road, Rajshahi | Tender Portal: https://www.eprocure.gov.bd",
     },
     {
         "id": "ORG-BD-RRI",
@@ -1388,7 +1409,7 @@ NEW_EGP_ENTITIES = [
         "website": "https://rri.gov.bd",
         "priority": "MEDIUM",
         "aliases": ["RRI", "River Research", "Faridpur"],
-        "description": "Location: Harukandi, Faridpur | Tender Portal: https://www.eprocure.gov.bd"
+        "description": "Location: Harukandi, Faridpur | Tender Portal: https://www.eprocure.gov.bd",
     },
 ]
 
@@ -1432,7 +1453,9 @@ def merge_and_seed_new_entities():
             new_to_add.append(record)
             existing_ids.add(entity["id"])
 
-    print(f"Identified {len(new_to_add)} brand-new entities to add ({len(skipped)} already existed).")
+    print(
+        f"Identified {len(new_to_add)} brand-new entities to add ({len(skipped)} already existed)."
+    )
 
     # 3. Update seed JSON
     combined_records = existing_records + new_to_add
@@ -1448,7 +1471,9 @@ def merge_and_seed_new_entities():
 
         added_count = 0
         for r in new_to_add:
-            existing_db = db.query(Organization).filter(Organization.id == r["id"]).first()
+            existing_db = (
+                db.query(Organization).filter(Organization.id == r["id"]).first()
+            )
             if not existing_db:
                 db_org = Organization(
                     id=r["id"],
