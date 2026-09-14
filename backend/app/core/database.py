@@ -200,7 +200,7 @@ def run_migrations():
                 if "schedule_purchase_method" not in existing_cols:
                     conn.execute(
                         text(
-                            "ALTER TABLE tenders ADD COLUMN schedule_purchase_method VARCHAR(50) DEFAULT NULL"
+                            "ALTER TABLE tenders ADD COLUMN schedule_purchase_method VARCHAR(255) DEFAULT NULL"
                         )
                     )
                 if "tender_security_amount" not in existing_cols:
@@ -212,7 +212,7 @@ def run_migrations():
                 if "tender_security_method" not in existing_cols:
                     conn.execute(
                         text(
-                            "ALTER TABLE tenders ADD COLUMN tender_security_method VARCHAR(50) DEFAULT NULL"
+                            "ALTER TABLE tenders ADD COLUMN tender_security_method VARCHAR(255) DEFAULT NULL"
                         )
                     )
                 if "post_award_data" not in existing_cols:
@@ -433,9 +433,9 @@ def run_migrations():
                             ("product_handover_date", "VARCHAR(50) DEFAULT NULL"),
                             ("maintenance_period", "VARCHAR(100) DEFAULT NULL"),
                             ("schedule_purchase_deadline", "VARCHAR(50) DEFAULT NULL"),
-                            ("schedule_purchase_method", "VARCHAR(50) DEFAULT NULL"),
+                            ("schedule_purchase_method", "VARCHAR(255) DEFAULT NULL"),
                             ("tender_security_amount", "FLOAT DEFAULT NULL"),
-                            ("tender_security_method", "VARCHAR(50) DEFAULT NULL"),
+                            ("tender_security_method", "VARCHAR(255) DEFAULT NULL"),
                             ("post_award_data", "JSON DEFAULT NULL"),
                             ("financial_model", "JSON DEFAULT NULL"),
                             ("ai_chat_share_link", "TEXT DEFAULT NULL"),
