@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Clock, Globe, ChevronDown, Check } from 'lucide-react';
 
-export type TimezoneMode = 'dual' | 'local' | 'utc2' | 'utc';
+export type TimezoneMode = 'dual' | 'local' | 'us_east' | 'utc2' | 'utc';
 
 interface TimezoneOption {
   id: TimezoneMode;
@@ -14,6 +14,7 @@ interface TimezoneOption {
 const TZ_OPTIONS: TimezoneOption[] = [
   { id: 'dual', label: 'Dual Clocks (Dhaka | UTC+2)', shortLabel: 'Dual', badge: 'BST & UTC+2', offset: 6 },
   { id: 'local', label: 'Dhaka Local (BST)', shortLabel: 'Dhaka', badge: 'UTC+6', offset: 6 },
+  { id: 'us_east', label: 'New York / US Eastern (EDT)', shortLabel: 'New York', badge: 'UTC-4', offset: -4 },
   { id: 'utc2', label: 'UTC+2 (Eastern Europe / Egypt)', shortLabel: 'UTC+2', badge: 'UTC+2', offset: 2 },
   { id: 'utc', label: 'Universal Time Coordinated', shortLabel: 'UTC', badge: 'UTC+0', offset: 0 },
 ];
@@ -32,7 +33,7 @@ function formatTime(date: Date, offsetHours: number, withSeconds = false): strin
 export const HeaderClock: React.FC = () => {
   const [mode, setMode] = useState<TimezoneMode>(() => {
     const saved = localStorage.getItem('tender_clock_tz_mode') as TimezoneMode | null;
-    return saved && ['dual', 'local', 'utc2', 'utc'].includes(saved) ? saved : 'dual';
+    return saved && ['dual', 'local', 'us_east', 'utc2', 'utc'].includes(saved) ? saved : 'dual';
   });
   const [isOpen, setIsOpen] = useState(false);
   const [now, setNow] = useState<Date>(new Date());
@@ -67,6 +68,7 @@ export const HeaderClock: React.FC = () => {
   };
 
   const dhakaTime = formatTime(now, 6, mode === 'local');
+  const usEastTime = formatTime(now, -4, mode === 'us_east');
   const utc2Time = formatTime(now, 2, mode === 'utc2');
   const utcTime = formatTime(now, 0, mode === 'utc');
 
@@ -77,7 +79,7 @@ export const HeaderClock: React.FC = () => {
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-100/90 hover:bg-slate-200/80 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium transition-colors shadow-2xs cursor-pointer select-none"
-        title="Switch timezone view (Dhaka UTC+6, UTC+2, UTC)"
+        title="Switch timezone view (Dhaka UTC+6, US Eastern EDT, UTC+2, UTC)"
       >
         <Clock className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
 
@@ -101,6 +103,16 @@ export const HeaderClock: React.FC = () => {
             <span className="font-semibold text-slate-800 dark:text-slate-100">{dhakaTime}</span>
             <span className="text-[9px] px-1 py-0.2 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-sans font-bold">
               UTC+6
+            </span>
+          </div>
+        )}
+
+        {mode === 'us_east' && (
+          <div className="flex items-center gap-1 font-mono text-[11.5px] tracking-tight">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-sans font-medium">New York</span>
+            <span className="font-semibold text-slate-800 dark:text-slate-100">{usEastTime}</span>
+            <span className="text-[9px] px-1 py-0.2 rounded bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 font-sans font-bold">
+              EDT
             </span>
           </div>
         )}
@@ -149,6 +161,8 @@ export const HeaderClock: React.FC = () => {
                   ? `${formatTime(now, 6)} · ${formatTime(now, 2)}`
                   : opt.id === 'local'
                   ? formatTime(now, 6, true)
+                  : opt.id === 'us_east'
+                  ? formatTime(now, -4, true)
                   : opt.id === 'utc2'
                   ? formatTime(now, 2, true)
                   : formatTime(now, 0, true);
@@ -185,3 +199,4 @@ export const HeaderClock: React.FC = () => {
     </div>
   );
 };
+

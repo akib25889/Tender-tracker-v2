@@ -47,6 +47,32 @@ import { TenderSummaryDocument } from '../components/ui/TenderSummaryDocument';
 import { TenderStage } from '../types/tender';
 import { NotFoundPage } from './status/NotFoundPage';
 
+function formatTenderDeadlineTime(deadlineStr?: string): string {
+  if (!deadlineStr) return 'TBD';
+  const d = new Date(deadlineStr);
+  if (isNaN(d.getTime())) return deadlineStr;
+  const dateStr = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+  if (deadlineStr.includes('-04:00') || deadlineStr.includes('-0400')) {
+    return `${dateStr} (17:00 EDT / US Eastern)`;
+  }
+  if (deadlineStr.includes('-05:00') || deadlineStr.includes('-0500')) {
+    return `${dateStr} (17:00 EST / US Eastern)`;
+  }
+  if (deadlineStr.includes('-07:00') || deadlineStr.includes('-08:00')) {
+    return `${dateStr} (17:00 PDT / US Pacific)`;
+  }
+  if (deadlineStr.includes('+02:00')) {
+    return `${dateStr} (16:00 UTC+2)`;
+  }
+  if (deadlineStr.includes('T')) {
+    const timePart = deadlineStr.split('T')[1].slice(0, 5);
+    const tzLabel = deadlineStr.endsWith('Z') ? 'UTC' : 'BST';
+    return `${dateStr} (${timePart} ${tzLabel})`;
+  }
+  return dateStr;
+}
+
 export const TenderDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -301,7 +327,7 @@ export const TenderDetailPage: React.FC = () => {
               <span className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-[#94A3B8]" />
                 Cutoff: <span className="text-[#0F172A] font-medium ml-0.5">
-                  {new Date(tender.submissionDeadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} (14:00 BST)
+                  {formatTenderDeadlineTime(tender.submissionDeadline)}
                 </span>
               </span>
             </div>
@@ -867,7 +893,7 @@ export const TenderDetailPage: React.FC = () => {
                       </span>
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold font-mono text-[#92400E]">
-                          {new Date(tender.submissionDeadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} — 14:00 BST
+                          {formatTenderDeadlineTime(tender.submissionDeadline)}
                         </span>
                         <span className="text-[10px] font-bold font-mono bg-[#FDE68A] text-[#92400E] px-1.5 py-0.5 rounded">
                           T-{tender.daysRemaining} Days
