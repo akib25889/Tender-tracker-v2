@@ -46,105 +46,68 @@ const CLASSIFICATIONS: TenderClassification[] = [
   'UNCLEAR',
 ];
 
-const createDefaultFinancialModel = (estimatedVal: number = 0): TenderFinancialModel => ({
+const createDefaultFinancialModel = (_estimatedVal: number = 0): TenderFinancialModel => ({
   paymentScenario: 'MILESTONE_BASED',
-  workingCapitalRisk: 'MEDIUM',
+  workingCapitalRisk: 'LOW',
   advancePayment: {
     enabled: false,
-    percentage: 15,
-    amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.15) : 0,
-    bankGuaranteeRequired: true,
-    bankGuaranteeType: 'Unconditional First Demand Bank Guarantee',
+    percentage: 0,
+    amount: 0,
+    bankGuaranteeRequired: false,
+    bankGuaranteeType: '',
     recoveryType: 'PRO_RATA_INVOICE',
-    recoveryPercentagePerInvoice: 15,
+    recoveryPercentagePerInvoice: 0,
     recoveryStartMilestone: 1,
   },
-  milestones: [
-    {
-      milestoneNumber: 1,
-      name: 'Inception & SRS Signoff',
-      percentage: 20,
-      amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.2) : 0,
-      deliverable: 'Approved Inception Report & Architectural Blueprint',
-      approvalRequired: true,
-      clientReviewDays: 14,
-      paymentProcessingDays: 30,
-      paymentTrigger: 'UPON_SRS_APPROVAL',
-      invoiceRequirements: 'Inception Report, Acceptance Certificate, Tax Invoice',
-    },
-    {
-      milestoneNumber: 2,
-      name: 'Core Development & Pilot Deployment',
-      percentage: 50,
-      amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.5) : 0,
-      deliverable: 'Core Modules Deployed in Staging & UAT Signoff',
-      approvalRequired: true,
-      clientReviewDays: 21,
-      paymentProcessingDays: 30,
-      paymentTrigger: 'UPON_UAT_ACCEPTANCE',
-      invoiceRequirements: 'UAT Sign-off Protocol, Source Code Escrow',
-    },
-    {
-      milestoneNumber: 3,
-      name: 'Final Acceptance & Handover',
-      percentage: 30,
-      amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.3) : 0,
-      deliverable: 'Commissioning Certificate & Operations Handover',
-      approvalRequired: true,
-      clientReviewDays: 30,
-      paymentProcessingDays: 45,
-      paymentTrigger: 'UPON_FINAL_ACCEPTANCE',
-      invoiceRequirements: 'FAC Certificate & 10% Retention Deduction',
-    },
-  ],
+  milestones: [],
   subscriptionModel: {
     pricingModel: 'MULTI_YEAR_ESCALATION',
     billingFrequency: 'ANNUAL',
     annualBaseFee: 0,
-    durationYears: 3,
-    annualEscalationRate: 5,
-    userCount: 100,
-    feePerUserMonthly: 500,
+    durationYears: 0,
+    annualEscalationRate: 0,
+    userCount: 0,
+    feePerUserMonthly: 0,
     calculatedTcv: 0,
     calculatedAcv: 0,
     escalationTiers: [],
   },
   penaltiesAndDeductions: {
     liquidatedDamages: {
-      enabled: true,
-      rate: 0.5,
+      enabled: false,
+      rate: 0,
       frequency: 'PER_WEEK',
       calculationBasis: 'DELAYED_MILESTONE_VALUE',
-      maxCapPercentage: 10,
-      gracePeriodDays: 7,
+      maxCapPercentage: 0,
+      gracePeriodDays: 0,
     },
     retentionMoney: {
-      enabled: true,
-      percentage: 10,
+      enabled: false,
+      percentage: 0,
       releaseCondition: 'DLP_EXPIRY',
-      dlpMonths: 12,
-      interimReleasePercent: 50,
+      dlpMonths: 0,
+      interimReleasePercent: 0,
     },
-    slaDeductionRate: 1.0,
-    taxDeductionAtSourcePercent: 5.0,
-    vatDeductionAtSourcePercent: 7.5,
+    slaDeductionRate: 0,
+    taxDeductionAtSourcePercent: 0,
+    vatDeductionAtSourcePercent: 0,
   },
 });
 
 export const TenderRegistryPage: React.FC = () => {
   const { tenders, addTender, deleteTender, categories, addCategory } = useTenders();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const editIdFromUrl = searchParams.get('id') || searchParams.get('edit');
 
   const [selectedTenderId, setSelectedTenderId] = useState<string>(
-    editIdFromUrl || tenders[0]?.id || ''
+    editIdFromUrl || ''
   );
 
   useEffect(() => {
-    if (editIdFromUrl && tenders.some((t) => t.id === editIdFromUrl)) {
+    if (editIdFromUrl) {
       setSelectedTenderId(editIdFromUrl);
     }
-  }, [editIdFromUrl, tenders]);
+  }, [editIdFromUrl]);
 
   const [activeEditorTab, setActiveEditorTab] = useState<
     'BASIC' | 'SCOPE' | 'FINANCIAL' | 'ELIGIBILITY' | 'STAFFING' | 'RISKS' | 'CLAUSES'
@@ -152,88 +115,45 @@ export const TenderRegistryPage: React.FC = () => {
 
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Form State initialized from currently selected tender
-  const selectedTender =
-    tenders.find((t) => t.id === selectedTenderId) || tenders[0];
+  // Currently selected tender or null (blank entry mode)
+  const selectedTender = useMemo(() => {
+    if (!selectedTenderId) return null;
+    return tenders.find((t) => t.id === selectedTenderId) || null;
+  }, [selectedTenderId, tenders]);
 
-  const [importantClauses, setImportantClauses] = useState<ImportantClause[]>(
-    selectedTender?.importantClauses || []
-  );
-
-  const [financialModel, setFinancialModel] = useState<TenderFinancialModel>(
-    selectedTender?.financialModel || createDefaultFinancialModel(selectedTender?.estimatedValue)
+  const [importantClauses, setImportantClauses] = useState<ImportantClause[]>([]);
+  const [financialModel, setFinancialModel] = useState<TenderFinancialModel>(() =>
+    createDefaultFinancialModel(0)
   );
 
   const [classification, setClassification] = useState<TenderClassification>(
-    selectedTender?.summary?.classification || 'SOFTWARE / IT RELATED'
+    'SOFTWARE / IT RELATED'
   );
-  const [tenderTitle, setTenderTitle] = useState(selectedTender?.title || '');
-  const [projectName, setProjectName] = useState(
-    selectedTender?.summary?.projectName || ''
-  );
-  const [tenderId, setTenderId] = useState(selectedTender?.id || '');
-  const [referenceNo, setReferenceNo] = useState(
-    selectedTender?.referenceNo || ''
-  );
-  const [client, setClient] = useState(selectedTender?.organization || '');
-  const [country, setCountry] = useState(selectedTender?.country || '');
-  const [portal, setPortal] = useState(
-    selectedTender?.summary?.portal || 'e-GP / UNGM'
-  );
-  const [publishedDate, setPublishedDate] = useState(
-    selectedTender?.summary?.publishedDate || ''
-  );
-  const [lastDate, setLastDate] = useState(
-    selectedTender?.submissionDeadline
-      ? selectedTender.submissionDeadline.split('T')[0]
-      : ''
-  );
-  const [submissionTime, setSubmissionTime] = useState(
-    selectedTender?.summary?.submissionTime || ''
-  );
-  const [estimatedValue, setEstimatedValue] = useState<string | number>(
-    selectedTender?.estimatedValue && selectedTender.estimatedValue > 0
-      ? selectedTender.estimatedValue
-      : ''
-  );
-  const [tenderCurrency, setTenderCurrency] = useState<string>(
-    selectedTender?.currency || 'USD'
-  );
-  const [exchangeRateToBdt, setExchangeRateToBdt] = useState<string | number>(
-    selectedTender?.exchangeRateToBdt !== undefined
-      ? selectedTender.exchangeRateToBdt
-      : '122.00'
-  );
-  const [exchangeRateDate, setExchangeRateDate] = useState<string>(
-    selectedTender?.exchangeRateDate || ''
-  );
-  const [priority, setPriority] = useState<TenderPriority>(
-    selectedTender?.priority || 'HIGH'
-  );
-  const [category, setCategory] = useState(
-    selectedTender?.category || 'IT & Cloud Infrastructure'
-  );
+  const [tenderTitle, setTenderTitle] = useState('');
+  const [projectName, setProjectName] = useState('');
+  const [tenderId, setTenderId] = useState('');
+  const [referenceNo, setReferenceNo] = useState('');
+  const [client, setClient] = useState('');
+  const [country, setCountry] = useState('');
+  const [portal, setPortal] = useState('');
+  const [publishedDate, setPublishedDate] = useState('');
+  const [lastDate, setLastDate] = useState('');
+  const [submissionTime, setSubmissionTime] = useState('');
+  const [estimatedValue, setEstimatedValue] = useState<string | number>('');
+  const [tenderCurrency, setTenderCurrency] = useState<string>('USD');
+  const [exchangeRateToBdt, setExchangeRateToBdt] = useState<string | number>('');
+  const [exchangeRateDate, setExchangeRateDate] = useState<string>('');
+  const [priority, setPriority] = useState<TenderPriority>('MEDIUM');
+  const [category, setCategory] = useState('');
   const [isCustomCategory, setIsCustomCategory] = useState(false);
-  const [aiChatShareLink, setAiChatShareLink] = useState(
-    selectedTender?.aiChatShareLink || ''
-  );
+  const [aiChatShareLink, setAiChatShareLink] = useState('');
 
   // Procurement Governance & Sourcing Attributes (Req #21)
-  const [tenderType, setTenderType] = useState<string>(
-    selectedTender?.tenderType || selectedTender?.summary?.tenderType || STANDARD_TENDER_TYPES[0]
-  );
-  const [budgetType, setBudgetType] = useState<string>(
-    selectedTender?.budgetType || selectedTender?.summary?.budgetType || STANDARD_BUDGET_TYPES[0]
-  );
-  const [sourceOfFund, setSourceOfFund] = useState<string>(
-    selectedTender?.sourceOfFund || selectedTender?.summary?.sourceOfFund || STANDARD_SOURCE_OF_FUNDS[0]
-  );
-  const [procurementMethod, setProcurementMethod] = useState<string>(
-    selectedTender?.procurementMethod || selectedTender?.summary?.procurementMethod || STANDARD_PROCUREMENT_METHODS[0]
-  );
-  const [parentEoiId, setParentEoiId] = useState<string>(
-    selectedTender?.parentEoiId || ''
-  );
+  const [tenderType, setTenderType] = useState<string>('');
+  const [budgetType, setBudgetType] = useState<string>('');
+  const [sourceOfFund, setSourceOfFund] = useState<string>('');
+  const [procurementMethod, setProcurementMethod] = useState<string>('');
+  const [parentEoiId, setParentEoiId] = useState<string>('');
   const [isCustomTenderType, setIsCustomTenderType] = useState(false);
   const [isCustomBudgetType, setIsCustomBudgetType] = useState(false);
   const [isCustomSourceOfFund, setIsCustomSourceOfFund] = useState(false);
@@ -249,27 +169,13 @@ export const TenderRegistryPage: React.FC = () => {
   }, [tenders]);
 
   // Procuring Authority Officer & Helpline Details
-  const [procurementManagerName, setProcurementManagerName] = useState(
-    selectedTender?.procurementManagerName || selectedTender?.summary?.procurementManager?.name || ''
-  );
-  const [procurementManagerDesignation, setProcurementManagerDesignation] = useState(
-    selectedTender?.procurementManagerDesignation || selectedTender?.summary?.procurementManager?.designation || ''
-  );
-  const [procurementManagerEmail, setProcurementManagerEmail] = useState(
-    selectedTender?.procurementManagerEmail || selectedTender?.summary?.procurementManager?.email || ''
-  );
-  const [procurementManagerPhone, setProcurementManagerPhone] = useState(
-    selectedTender?.procurementManagerPhone || selectedTender?.summary?.procurementManager?.phone || ''
-  );
-  const [helplinePhone, setHelplinePhone] = useState(
-    selectedTender?.helplinePhone || selectedTender?.summary?.helpline?.phone || ''
-  );
-  const [helplineEmail, setHelplineEmail] = useState(
-    selectedTender?.helplineEmail || selectedTender?.summary?.helpline?.email || ''
-  );
-  const [helplineHours, setHelplineHours] = useState(
-    selectedTender?.helplineHours || selectedTender?.summary?.helpline?.hours || ''
-  );
+  const [procurementManagerName, setProcurementManagerName] = useState('');
+  const [procurementManagerDesignation, setProcurementManagerDesignation] = useState('');
+  const [procurementManagerEmail, setProcurementManagerEmail] = useState('');
+  const [procurementManagerPhone, setProcurementManagerPhone] = useState('');
+  const [helplinePhone, setHelplinePhone] = useState('');
+  const [helplineEmail, setHelplineEmail] = useState('');
+  const [helplineHours, setHelplineHours] = useState('');
 
   const handleCurrencyChange = (newCur: string) => {
     setTenderCurrency(newCur);
@@ -310,39 +216,17 @@ export const TenderRegistryPage: React.FC = () => {
   }, [categories, tenders]);
 
   // Scope & Commercial
-  const [mainIdea, setMainIdea] = useState(
-    selectedTender?.summary?.mainIdea ||
-      'Deployment of centralized enterprise software, cloud infrastructure, and technical support.'
-  );
-  const [tenderSecurity, setTenderSecurity] = useState(
-    selectedTender?.summary?.commercial?.tenderSecurity ||
-      'Bank Guarantee Required'
-  );
-  const [contractPeriod, setContractPeriod] = useState(
-    selectedTender?.summary?.commercial?.contractPeriod ||
-      '12 Months + 24 Months O&M'
-  );
-  const [tenderDocPrice, setTenderDocPrice] = useState(
-    selectedTender?.summary?.commercial?.tenderDocPrice || 'Free on Portal'
-  );
-  const [performanceSecurity, setPerformanceSecurity] = useState(
-    selectedTender?.summary?.commercial?.performanceSecurity ||
-      '10% of Contract Value'
-  );
+  const [mainIdea, setMainIdea] = useState('');
+  const [tenderSecurity, setTenderSecurity] = useState('');
+  const [contractPeriod, setContractPeriod] = useState('');
+  const [tenderDocPrice, setTenderDocPrice] = useState('');
+  const [performanceSecurity, setPerformanceSecurity] = useState('');
 
   // Commercial Schedule & Tender Security (EMD)
-  const [schedulePurchaseDeadline, setSchedulePurchaseDeadline] = useState(
-    selectedTender?.schedulePurchaseDeadline || selectedTender?.summary?.commercial?.schedulePurchaseDeadline || ''
-  );
-  const [schedulePurchaseMethod, setSchedulePurchaseMethod] = useState(
-    selectedTender?.schedulePurchaseMethod || selectedTender?.summary?.commercial?.schedulePurchaseMethod || 'ONLINE_EGP'
-  );
-  const [tenderSecurityAmount, setTenderSecurityAmount] = useState<string | number>(
-    selectedTender?.tenderSecurityAmount || selectedTender?.summary?.commercial?.tenderSecurityAmount || ''
-  );
-  const [tenderSecurityMethod, setTenderSecurityMethod] = useState(
-    selectedTender?.tenderSecurityMethod || selectedTender?.summary?.commercial?.tenderSecurityMethod || 'BANK_GUARANTEE'
-  );
+  const [schedulePurchaseDeadline, setSchedulePurchaseDeadline] = useState('');
+  const [schedulePurchaseMethod, setSchedulePurchaseMethod] = useState('');
+  const [tenderSecurityAmount, setTenderSecurityAmount] = useState<string | number>('');
+  const [tenderSecurityMethod, setTenderSecurityMethod] = useState('');
   const [securityPercent, setSecurityPercent] = useState<number>(2.5);
 
   // Reverse budget estimator: Security ÷ %
@@ -374,170 +258,126 @@ export const TenderRegistryPage: React.FC = () => {
   };
 
   // Dynamic Lists
-  const [technicalReqs, setTechnicalReqs] = useState<string[]>(
-    selectedTender?.summary?.technicalReqs || [
-      'Web-based zero-trust information system',
-      'High-availability database cluster replication',
-      'Automated integration API with audit logging',
-    ]
-  );
-  const [technologyMentioned, setTechnologyMentioned] = useState<string[]>(
-    selectedTender?.summary?.technologyMentioned || [
-      'React',
-      'Python / FastAPI',
-      'PostgreSQL',
-      'Docker',
-    ]
-  );
-  const [operationalReqs, setOperationalReqs] = useState<string[]>(
-    selectedTender?.summary?.operationalReqs || [
-      '24/7 on-call technical support with 2-hour MTTR',
-      'Tier-4 SLA: 99.95% system uptime guarantee',
-    ]
-  );
+  const [technicalReqs, setTechnicalReqs] = useState<string[]>([]);
+  const [technologyMentioned, setTechnologyMentioned] = useState<string[]>([]);
+  const [operationalReqs, setOperationalReqs] = useState<string[]>([]);
 
   // Eligibility & JV
-  const [generalExperience, setGeneralExperience] = useState(
-    selectedTender?.summary?.eligibility?.generalExperience ||
-      'Minimum 5 years of commercial software experience.'
-  );
-  const [similarExperience, setSimilarExperience] = useState(
-    selectedTender?.summary?.eligibility?.similarExperience ||
-      'At least 2 completed contracts of similar complexity.'
-  );
-  const [similarProjectValue, setSimilarProjectValue] = useState(
-    selectedTender?.summary?.eligibility?.similarProjectValue ||
-      'Single contract benchmark of similar value.'
-  );
-  const [avgTurnover, setAvgTurnover] = useState(
-    selectedTender?.summary?.eligibility?.avgTurnover ||
-      'Audited turnover average across last 3 years.'
-  );
-  const [financialResources, setFinancialResources] = useState(
-    selectedTender?.summary?.eligibility?.financialResources ||
-      'Liquid assets or bank credit line.'
-  );
-  const [certification, setCertification] = useState(
-    selectedTender?.summary?.eligibility?.certification ||
-      'ISO 9001, ISO 27001 mandatory.'
-  );
-  const [localPresence, setLocalPresence] = useState(
-    selectedTender?.summary?.eligibility?.localPresence ||
-      'Local branch or registered support center.'
-  );
+  const [generalExperience, setGeneralExperience] = useState('');
+  const [similarExperience, setSimilarExperience] = useState('');
+  const [similarProjectValue, setSimilarProjectValue] = useState('');
+  const [avgTurnover, setAvgTurnover] = useState('');
+  const [financialResources, setFinancialResources] = useState('');
+  const [certification, setCertification] = useState('');
+  const [localPresence, setLocalPresence] = useState('');
 
-  const [jvParticipation, setJvParticipation] = useState(
-    selectedTender?.summary?.jv?.participation || 'Allowed per tender terms'
-  );
-  const [leadMember, setLeadMember] = useState(
-    selectedTender?.summary?.jv?.leadMember || 'Must meet majority requirements'
-  );
-  const [memberRules, setMemberRules] = useState(
-    selectedTender?.summary?.jv?.memberRules ||
-      'Each partner must satisfy stated qualifications'
-  );
-  const [localPartner, setLocalPartner] = useState(
-    selectedTender?.summary?.jv?.localPartner ||
-      'Local partner required if foreign lead firm'
-  );
-  const [jvAgreement, setJvAgreement] = useState(
-    selectedTender?.summary?.jv?.jvAgreement ||
-      'Formally notarized joint venture deed'
-  );
+  // JV & Consortium
+  const [jvParticipation, setJvParticipation] = useState('');
+  const [leadMember, setLeadMember] = useState('');
+  const [memberRules, setMemberRules] = useState('');
+  const [localPartner, setLocalPartner] = useState('');
+  const [jvAgreement, setJvAgreement] = useState('');
 
   // Documents, Personnel, Hardware
-  const [documents, setDocuments] = useState<string[]>(
-    selectedTender?.summary?.submissionDocuments || [
-      'Valid Trade License & Incorporation Certificate',
-      'Tax Clearance Certificate',
-      'Audited Financial Statements (Last 3 Years)',
-      'Client Completion Certificates',
-    ]
-  );
-
-  const [personnel, setPersonnel] = useState<TenderPersonnelReq[]>(
-    selectedTender?.summary?.personnel || [
-      {
-        position: 'Project Manager / Team Lead',
-        qualification: 'B.Sc. in CSE + PMP',
-        experience: '10+ Years',
-        qty: '1',
-      },
-      {
-        position: 'Solutions Architect',
-        qualification: 'B.Sc. in IT',
-        experience: '8+ Years',
-        qty: '2',
-      },
-    ]
-  );
-
-  const [hardware, setHardware] = useState<TenderHardwareReq[]>(
-    selectedTender?.summary?.hardware || [
-      {
-        equipment: 'Application Servers (2U Rackmount)',
-        purpose: 'Production cluster hypervisors',
-      },
-      {
-        equipment: 'Storage Array (NVMe SAN)',
-        purpose: 'Database storage repository',
-      },
-    ]
-  );
+  const [documents, setDocuments] = useState<string[]>([]);
+  const [personnel, setPersonnel] = useState<TenderPersonnelReq[]>([]);
+  const [hardware, setHardware] = useState<TenderHardwareReq[]>([]);
 
   // Milestone Schedule Dates (Req #20)
-  const [clarificationDeadline, setClarificationDeadline] = useState(
-    selectedTender?.summary?.dates?.clarificationDeadline || ''
-  );
-  const [openingDate, setOpeningDate] = useState(
-    selectedTender?.openingDate || selectedTender?.summary?.dates?.openingDate || ''
-  );
-  const [contractSigningDate, setContractSigningDate] = useState(
-    selectedTender?.contractSigningDate || selectedTender?.summary?.dates?.contractSigningDate || ''
-  );
-  const [workStartDate, setWorkStartDate] = useState(
-    selectedTender?.workStartDate || selectedTender?.summary?.dates?.workStartDate || ''
-  );
-  const [contractStart, setContractStart] = useState(
-    selectedTender?.workStartDate || selectedTender?.summary?.dates?.contractStart || ''
-  );
-  const [possiblePeriod, setPossiblePeriod] = useState(
-    selectedTender?.possiblePeriod || selectedTender?.summary?.dates?.possiblePeriod || ''
-  );
-  const [productHandoverDate, setProductHandoverDate] = useState(
-    selectedTender?.productHandoverDate || selectedTender?.summary?.dates?.productHandoverDate || ''
-  );
-  const [maintenancePeriod, setMaintenancePeriod] = useState(
-    selectedTender?.maintenancePeriod || selectedTender?.summary?.dates?.maintenancePeriod || ''
-  );
+  const [clarificationDeadline, setClarificationDeadline] = useState('');
+  const [openingDate, setOpeningDate] = useState('');
+  const [contractSigningDate, setContractSigningDate] = useState('');
+  const [workStartDate, setWorkStartDate] = useState('');
+  const [contractStart, setContractStart] = useState('');
+  const [possiblePeriod, setPossiblePeriod] = useState('');
+  const [productHandoverDate, setProductHandoverDate] = useState('');
+  const [maintenancePeriod, setMaintenancePeriod] = useState('');
 
-  const [risks, setRisks] = useState<TenderRiskPoint[]>(
-    selectedTender?.summary?.risks || [
-      {
-        type: 'Tender Requirement',
-        text: 'Mandatory bank guarantee solvency confirmation.',
-      },
-      {
-        type: 'Analyst Observation',
-        text: 'Tight submission timeline requiring prompt document collation.',
-      },
-    ]
-  );
+  const [risks, setRisks] = useState<TenderRiskPoint[]>([]);
+  const [management, setManagement] = useState<string[]>([]);
+  const [notes, setNotes] = useState('');
 
-  const [management, setManagement] = useState<string[]>(
-    selectedTender?.summary?.managementHighlights || [
-      'Key opportunity in multilateral procurement domain.',
-      'High technical scoring alignment with past track record.',
-    ]
-  );
-  const [notes, setNotes] = useState(
-    selectedTender?.summary?.notes ||
-      'Pre-bid clarification meeting notes and internal briefing notes.'
-  );
-
-  // Sync form when selectedTender changes
+  // Sync form when selectedTender changes or reset if null
   useEffect(() => {
-    if (!selectedTender) return;
+    if (!selectedTender) {
+      setClassification('SOFTWARE / IT RELATED');
+      setTenderTitle('');
+      setProjectName('');
+      setTenderId('');
+      setReferenceNo('');
+      setClient('');
+      setCountry('');
+      setPortal('');
+      setPublishedDate('');
+      setLastDate('');
+      setSubmissionTime('');
+      setEstimatedValue('');
+      setTenderCurrency('USD');
+      setExchangeRateToBdt('');
+      setExchangeRateDate('');
+      setPriority('MEDIUM');
+      setCategory('');
+      setIsCustomCategory(false);
+      setAiChatShareLink('');
+      setTenderType('');
+      setBudgetType('');
+      setSourceOfFund('');
+      setProcurementMethod('');
+      setParentEoiId('');
+      setIsCustomTenderType(false);
+      setIsCustomBudgetType(false);
+      setIsCustomSourceOfFund(false);
+      setIsCustomProcurementMethod(false);
+      setProcurementManagerName('');
+      setProcurementManagerDesignation('');
+      setProcurementManagerEmail('');
+      setProcurementManagerPhone('');
+      setHelplinePhone('');
+      setHelplineEmail('');
+      setHelplineHours('');
+      setMainIdea('');
+      setTenderSecurity('');
+      setContractPeriod('');
+      setTenderDocPrice('');
+      setPerformanceSecurity('');
+      setSchedulePurchaseDeadline('');
+      setSchedulePurchaseMethod('');
+      setTenderSecurityAmount('');
+      setTenderSecurityMethod('');
+      setSecurityPercent(2.5);
+      setTechnicalReqs([]);
+      setTechnologyMentioned([]);
+      setOperationalReqs([]);
+      setGeneralExperience('');
+      setSimilarExperience('');
+      setSimilarProjectValue('');
+      setAvgTurnover('');
+      setFinancialResources('');
+      setCertification('');
+      setLocalPresence('');
+      setJvParticipation('');
+      setLeadMember('');
+      setMemberRules('');
+      setLocalPartner('');
+      setJvAgreement('');
+      setDocuments([]);
+      setPersonnel([]);
+      setHardware([]);
+      setClarificationDeadline('');
+      setOpeningDate('');
+      setContractSigningDate('');
+      setWorkStartDate('');
+      setContractStart('');
+      setPossiblePeriod('');
+      setProductHandoverDate('');
+      setMaintenancePeriod('');
+      setRisks([]);
+      setManagement([]);
+      setNotes('');
+      setImportantClauses([]);
+      setFinancialModel(createDefaultFinancialModel(0));
+      return;
+    }
     setClassification(
       selectedTender.summary?.classification || 'SOFTWARE / IT RELATED'
     );
@@ -628,119 +468,77 @@ export const TenderRegistryPage: React.FC = () => {
         ''
     );
 
-    setMainIdea(
-      selectedTender.summary?.mainIdea ||
-        'Deployment of centralized enterprise software, cloud infrastructure, and technical support.'
-    );
+    setMainIdea(selectedTender.summary?.mainIdea || '');
     setTenderSecurity(
-      selectedTender.summary?.commercial?.tenderSecurity ||
-        'Bank Guarantee Required'
+      selectedTender.summary?.commercial?.tenderSecurity || ''
     );
     setContractPeriod(
-      selectedTender.summary?.commercial?.contractPeriod ||
-        '12 Months + 24 Months O&M'
+      selectedTender.summary?.commercial?.contractPeriod || ''
     );
     setTenderDocPrice(
-      selectedTender.summary?.commercial?.tenderDocPrice || 'Free on Portal'
+      selectedTender.summary?.commercial?.tenderDocPrice || ''
     );
     setPerformanceSecurity(
-      selectedTender.summary?.commercial?.performanceSecurity ||
-        '10% of Contract Value'
+      selectedTender.summary?.commercial?.performanceSecurity || ''
     );
 
-    setTechnicalReqs(
-      selectedTender.summary?.technicalReqs || [
-        'Web-based zero-trust information system',
-        'Database cluster replication',
-      ]
-    );
-    setTechnologyMentioned(
-      selectedTender.summary?.technologyMentioned || ['React', 'Python']
-    );
-    setOperationalReqs(
-      selectedTender.summary?.operationalReqs || [
-        '24/7 on-call technical support',
-      ]
-    );
+    setTechnicalReqs(selectedTender.summary?.technicalReqs || []);
+    setTechnologyMentioned(selectedTender.summary?.technologyMentioned || []);
+    setOperationalReqs(selectedTender.summary?.operationalReqs || []);
 
     setGeneralExperience(
-      selectedTender.summary?.eligibility?.generalExperience ||
-        'Minimum 5 years commercial experience.'
+      selectedTender.summary?.eligibility?.generalExperience || ''
     );
     setSimilarExperience(
-      selectedTender.summary?.eligibility?.similarExperience ||
-        'At least 2 completed contracts of similar complexity.'
+      selectedTender.summary?.eligibility?.similarExperience || ''
     );
     setSimilarProjectValue(
-      selectedTender.summary?.eligibility?.similarProjectValue ||
-        'Single contract benchmark.'
+      selectedTender.summary?.eligibility?.similarProjectValue || ''
     );
     setAvgTurnover(
-      selectedTender.summary?.eligibility?.avgTurnover ||
-        'Audited turnover average.'
+      selectedTender.summary?.eligibility?.avgTurnover || ''
     );
     setFinancialResources(
-      selectedTender.summary?.eligibility?.financialResources ||
-        'Liquid assets or bank credit line.'
+      selectedTender.summary?.eligibility?.financialResources || ''
     );
     setCertification(
-      selectedTender.summary?.eligibility?.certification ||
-        'ISO 9001, ISO 27001 mandatory.'
+      selectedTender.summary?.eligibility?.certification || ''
     );
     setLocalPresence(
-      selectedTender.summary?.eligibility?.localPresence ||
-        'Local support branch.'
+      selectedTender.summary?.eligibility?.localPresence || ''
     );
 
     setJvParticipation(
-      selectedTender.summary?.jv?.participation || 'Allowed per terms'
+      selectedTender.summary?.jv?.participation || ''
     );
     setLeadMember(
-      selectedTender.summary?.jv?.leadMember || 'Must meet majority'
+      selectedTender.summary?.jv?.leadMember || ''
     );
     setMemberRules(
-      selectedTender.summary?.jv?.memberRules || 'Shared qualifications'
+      selectedTender.summary?.jv?.memberRules || ''
     );
     setLocalPartner(
-      selectedTender.summary?.jv?.localPartner || 'Local partner mandate'
+      selectedTender.summary?.jv?.localPartner || ''
     );
     setJvAgreement(
-      selectedTender.summary?.jv?.jvAgreement || 'Notarized legal deed'
+      selectedTender.summary?.jv?.jvAgreement || ''
     );
 
-    setDocuments(
-      selectedTender.summary?.submissionDocuments || [
-        'Valid Trade License',
-        'Tax Clearance Certificate',
-      ]
-    );
-    setPersonnel(
-      selectedTender.summary?.personnel || [
-        {
-          position: 'Project Lead',
-          qualification: 'B.Sc. in CSE',
-          experience: '8+ Years',
-          qty: '1',
-        },
-      ]
-    );
-    setHardware(
-      selectedTender.summary?.hardware || [
-        { equipment: 'Application Servers', purpose: 'Production cluster' },
-      ]
-    );
+    setDocuments(selectedTender.summary?.submissionDocuments || []);
+    setPersonnel(selectedTender.summary?.personnel || []);
+    setHardware(selectedTender.summary?.hardware || []);
 
     setSchedulePurchaseDeadline(
       selectedTender.schedulePurchaseDeadline || selectedTender.summary?.commercial?.schedulePurchaseDeadline || ''
     );
     setSchedulePurchaseMethod(
-      selectedTender.schedulePurchaseMethod || selectedTender.summary?.commercial?.schedulePurchaseMethod || 'ONLINE_EGP'
+      selectedTender.schedulePurchaseMethod || selectedTender.summary?.commercial?.schedulePurchaseMethod || ''
     );
     setTenderSecurityAmount(
       selectedTender.tenderSecurityAmount || selectedTender.summary?.commercial?.tenderSecurityAmount || ''
     );
     setTenderSecurityMethod(
-      selectedTender.tenderSecurityMethod || selectedTender.summary?.commercial?.tenderSecurityMethod || 'BANK_GUARANTEE'
+      selectedTender.tenderSecurityMethod || selectedTender.summary?.commercial?.tenderSecurityMethod || ''
     );
 
     setClarificationDeadline(
@@ -768,19 +566,8 @@ export const TenderRegistryPage: React.FC = () => {
       selectedTender.maintenancePeriod || selectedTender.summary?.dates?.maintenancePeriod || ''
     );
 
-    setRisks(
-      selectedTender.summary?.risks || [
-        {
-          type: 'Tender Requirement',
-          text: 'Mandatory bank guarantee solvency confirmation.',
-        },
-      ]
-    );
-    setManagement(
-      selectedTender.summary?.managementHighlights || [
-        'Strategic tender opportunity.',
-      ]
-    );
+    setRisks(selectedTender.summary?.risks || []);
+    setManagement(selectedTender.summary?.managementHighlights || []);
     setNotes(selectedTender.summary?.notes || '');
     setImportantClauses(selectedTender.importantClauses || []);
     setFinancialModel(
@@ -790,46 +577,8 @@ export const TenderRegistryPage: React.FC = () => {
   }, [selectedTenderId]);
 
   const handleCreateNewBlank = () => {
-    const newId = `TDR-2026-REG-${Math.floor(100 + Math.random() * 900)}`;
-    addTender({
-      id: newId,
-      referenceNo: '',
-      title: 'New Tender Entry',
-      organization: '',
-      country: '',
-      category: 'IT & Cloud Infrastructure',
-      estimatedValue: 0,
-      currency: 'USD',
-      exchangeRateToBdt: 122.0,
-      exchangeRateDate: new Date().toISOString().split('T')[0],
-      estimatedValueBdt: 0,
-      stage: 'DISCOVERED',
-      priority: 'HIGH',
-      submissionDeadline: '',
-      tenderType: STANDARD_TENDER_TYPES[0],
-      budgetType: STANDARD_BUDGET_TYPES[0],
-      sourceOfFund: STANDARD_SOURCE_OF_FUNDS[0],
-      procurementMethod: STANDARD_PROCUREMENT_METHODS[0],
-      summary: {
-        classification: 'SOFTWARE / IT RELATED',
-        projectName: '',
-        portal: 'e-GP Portal',
-        publishedDate: '',
-        submissionTime: '',
-        mainIdea: '',
-        tenderType: STANDARD_TENDER_TYPES[0],
-        budgetType: STANDARD_BUDGET_TYPES[0],
-        sourceOfFund: STANDARD_SOURCE_OF_FUNDS[0],
-        procurementMethod: STANDARD_PROCUREMENT_METHODS[0],
-        dates: {
-          clarificationDeadline: '',
-          openingDate: '',
-          contractStart: '',
-          submissionDeadline: '',
-        },
-      },
-    });
-    setSelectedTenderId(newId);
+    setSelectedTenderId('');
+    setSearchParams({});
   };
 
   const handleSaveEntry = (e: React.FormEvent) => {
@@ -849,8 +598,12 @@ export const TenderRegistryPage: React.FC = () => {
       addCategory({ name: category.trim() });
     }
 
+    const finalId = tenderId && tenderId.trim()
+      ? tenderId.trim()
+      : `TDR-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+
     addTender({
-      id: tenderId,
+      id: finalId,
       referenceNo,
       title: tenderTitle,
       organization: client,
@@ -965,6 +718,9 @@ export const TenderRegistryPage: React.FC = () => {
       aiChatShareLink: aiChatShareLink.trim() || undefined,
     });
 
+    setTenderId(finalId);
+    setSelectedTenderId(finalId);
+    setSearchParams({ id: finalId });
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 2500);
   };
@@ -973,10 +729,8 @@ export const TenderRegistryPage: React.FC = () => {
     if (!selectedTender) return;
     if (window.confirm(`Are you sure you want to permanently delete tender "${selectedTender.title}" (${selectedTender.id})?`)) {
       deleteTender(selectedTender.id);
-      const remaining = tenders.filter((t) => t.id !== selectedTender.id);
-      if (remaining.length > 0) {
-        setSelectedTenderId(remaining[0].id);
-      }
+      setSelectedTenderId('');
+      setSearchParams({});
     }
   };
 
@@ -1001,13 +755,36 @@ export const TenderRegistryPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {saveSuccess && (
             <div className="flex items-center gap-1 px-3 py-1.5 bg-[#F0FDF4] border border-[#BBF7D0] text-[#15803D] text-xs font-semibold rounded-lg shadow-sm">
               <Check className="w-3.5 h-3.5" />
               <span>Entry Saved Successfully!</span>
             </div>
           )}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-[#64748B] font-medium hidden sm:inline">Active Record:</span>
+            <select
+              value={selectedTenderId || ''}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSelectedTenderId(val);
+                if (val) {
+                  setSearchParams({ id: val });
+                } else {
+                  setSearchParams({});
+                }
+              }}
+              className="px-2.5 py-1.5 bg-white border border-[#CBD5E1] text-[#0F172A] rounded-lg text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#2563EB] max-w-[220px] truncate"
+            >
+              <option value="">+ New Blank Tender Entry</option>
+              {tenders.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.id} {t.title ? `— ${t.title}` : ''}
+                </option>
+              ))}
+            </select>
+          </div>
           {selectedTender && (
             <ExportDropdown tender={selectedTender} label="Export Entry" />
           )}
@@ -1032,29 +809,35 @@ export const TenderRegistryPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <Link
-              to={`/registry/summary/${selectedTender?.id}`}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#475569] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors shadow-2xs"
-            >
-              <FileText className="w-3.5 h-3.5" />
-              <span>View Summary</span>
-            </Link>
-            <button
-              type="button"
-              onClick={handleDeleteCurrent}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#FECACA] text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
-              title="Delete this tender"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              <span>Delete</span>
-            </button>
-            <Link
-              to={`/tenders/${selectedTender?.id}`}
-              className="flex items-center gap-1 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors"
-            >
-              <span>Workspace</span>
-              <ExternalLink className="w-3 h-3" />
-            </Link>
+            {selectedTender && (
+              <Link
+                to={`/registry/summary/${selectedTender.id}`}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#475569] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors shadow-2xs"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>View Summary</span>
+              </Link>
+            )}
+            {selectedTender && (
+              <button
+                type="button"
+                onClick={handleDeleteCurrent}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#FECACA] text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
+                title="Delete this tender"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete</span>
+              </button>
+            )}
+            {selectedTender && (
+              <Link
+                to={`/tenders/${selectedTender.id}`}
+                className="flex items-center gap-1 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors"
+              >
+                <span>Workspace</span>
+                <ExternalLink className="w-3 h-3" />
+              </Link>
+            )}
             <button
               type="button"
               onClick={handleSaveEntry}
@@ -1318,7 +1101,7 @@ export const TenderRegistryPage: React.FC = () => {
                       </div>
                     ) : (
                       <select
-                        value={availableCategories.includes(category) ? category : '__CUSTOM__'}
+                        value={availableCategories.includes(category) ? category : (category ? category : '')}
                         onChange={(e) => {
                           if (e.target.value === '__CUSTOM__') {
                             setIsCustomCategory(true);
@@ -1329,6 +1112,7 @@ export const TenderRegistryPage: React.FC = () => {
                         }}
                         className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                       >
+                        <option value="">-- Select Category --</option>
                         {availableCategories.map((cat) => (
                           <option key={cat} value={cat}>
                             {cat}
@@ -1558,6 +1342,7 @@ export const TenderRegistryPage: React.FC = () => {
                           }}
                           className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         >
+                          <option value="">-- Select Tender Type --</option>
                           {STANDARD_TENDER_TYPES.map((t) => (
                             <option key={t} value={t}>
                               {t}
@@ -1662,6 +1447,7 @@ export const TenderRegistryPage: React.FC = () => {
                           }}
                           className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         >
+                          <option value="">-- Select Budget Type --</option>
                           {STANDARD_BUDGET_TYPES.map((b) => (
                             <option key={b} value={b}>
                               {b}
@@ -1715,6 +1501,7 @@ export const TenderRegistryPage: React.FC = () => {
                           }}
                           className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         >
+                          <option value="">-- Select Source of Fund --</option>
                           {STANDARD_SOURCE_OF_FUNDS.map((s) => (
                             <option key={s} value={s}>
                               {s}
@@ -1768,6 +1555,7 @@ export const TenderRegistryPage: React.FC = () => {
                           }}
                           className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         >
+                          <option value="">-- Select Procurement Method --</option>
                           {STANDARD_PROCUREMENT_METHODS.map((m) => (
                             <option key={m} value={m}>
                               {m}
@@ -1994,6 +1782,7 @@ export const TenderRegistryPage: React.FC = () => {
                         onChange={(e) => setSchedulePurchaseMethod(e.target.value)}
                         className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
                       >
+                        <option value="">-- Select Payment Method --</option>
                         <option value="ONLINE_EGP">Online e-GP Payment Gateway</option>
                         <option value="PAY_ORDER">Pay Order / Demand Draft</option>
                         <option value="BANK_DEPOSIT">Direct Bank Deposit / Transfer</option>
@@ -2042,6 +1831,7 @@ export const TenderRegistryPage: React.FC = () => {
                         onChange={(e) => setTenderSecurityMethod(e.target.value)}
                         className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
                       >
+                        <option value="">-- Select Security Method --</option>
                         <option value="BANK_GUARANTEE">Bank Guarantee (BG)</option>
                         <option value="PAY_ORDER">Pay Order (PO) / Demand Draft</option>
                         <option value="ONLINE_PORTAL">Online Portal Security Deposit</option>
