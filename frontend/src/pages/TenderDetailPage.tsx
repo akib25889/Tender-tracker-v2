@@ -278,7 +278,11 @@ export const TenderDetailPage: React.FC = () => {
                 daysRemaining={tender.daysRemaining}
                 hoursRemaining={tender.hoursRemaining}
               />
-              <LiveCountdownBadge deadlineStr={tender.submissionDeadline} />
+              <LiveCountdownBadge
+                deadlineStr={tender.submissionDeadline}
+                daysRemaining={tender.daysRemaining}
+                hoursRemaining={tender.hoursRemaining}
+              />
               {tender.parentEoiId && (
                 <Link
                   to={`/tenders/${tender.parentEoiId}`}
