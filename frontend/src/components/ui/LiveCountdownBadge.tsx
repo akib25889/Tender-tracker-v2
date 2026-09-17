@@ -31,7 +31,7 @@ function calculateTimeLeft(
     if (hoursRemaining !== undefined && hoursRemaining > 0) {
       return `${hoursRemaining}h remaining`;
     }
-    return '';
+    return 'No Deadline';
   }
 
   const diff = targetMs - now;
@@ -75,16 +75,38 @@ export const LiveCountdownBadge: React.FC<LiveCountdownBadgeProps> = ({
 
   if (!timeLeft) return null;
 
+  if (timeLeft === 'No Deadline') {
+    return (
+      <span
+        className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap shrink-0 text-[#94A3B8] bg-[#F8FAFC] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 ${className}`}
+      >
+        No Deadline
+      </span>
+    );
+  }
+
+  const isExpired = timeLeft === 'Deadline Expired';
+
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-bold whitespace-nowrap shrink-0 bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800 shadow-2xs ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-bold whitespace-nowrap shrink-0 ${
+        isExpired
+          ? 'bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300 border border-red-200 dark:border-red-800'
+          : 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+      } shadow-2xs ${className}`}
       title="Live countdown to submission cutoff in Bangladesh Standard Time (BST / UTC+6)"
     >
-      <Clock className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 animate-pulse shrink-0" />
+      <Clock
+        className={`w-3.5 h-3.5 ${
+          isExpired ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400 animate-pulse'
+        } shrink-0`}
+      />
       <span>{timeLeft}</span>
-      <span className="text-[10px] font-sans font-semibold text-blue-600/80 dark:text-blue-400/80 uppercase tracking-wider ml-0.5">
-        BD Time
-      </span>
+      {!isExpired && (
+        <span className="text-[10px] font-sans font-semibold text-blue-600/80 dark:text-blue-400/80 uppercase tracking-wider ml-0.5">
+          BD Time
+        </span>
+      )}
     </span>
   );
 };

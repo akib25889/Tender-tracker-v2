@@ -39,7 +39,6 @@ import {
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
-import { UrgencyBadge } from '../components/ui/UrgencyBadge';
 import { ReadinessBar } from '../components/ui/ReadinessBar';
 import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { LiveCountdownBadge } from '../components/ui/LiveCountdownBadge';
@@ -274,11 +273,6 @@ export const TenderDetailPage: React.FC = () => {
               </span>
               <StatusBadge stage={tender.stage} />
               <StatusBadge decision={tender.decision} />
-              <UrgencyBadge
-                daysRemaining={tender.daysRemaining}
-                hoursRemaining={tender.hoursRemaining}
-                deadlineStr={tender.submissionDeadline}
-              />
               <LiveCountdownBadge
                 deadlineStr={tender.submissionDeadline}
                 daysRemaining={tender.daysRemaining}
