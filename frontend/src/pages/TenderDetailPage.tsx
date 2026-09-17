@@ -277,6 +277,7 @@ export const TenderDetailPage: React.FC = () => {
               <UrgencyBadge
                 daysRemaining={tender.daysRemaining}
                 hoursRemaining={tender.hoursRemaining}
+                deadlineStr={tender.submissionDeadline}
               />
               <LiveCountdownBadge
                 deadlineStr={tender.submissionDeadline}

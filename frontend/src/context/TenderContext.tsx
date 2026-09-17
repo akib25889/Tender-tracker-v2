@@ -447,18 +447,34 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                 priority: dbt.priority || (existing ? existing.priority : 'MEDIUM'),
                 submissionDeadline:
                   dbt.submission_deadline || (existing ? existing.submissionDeadline : ''),
-                daysRemaining:
-                  dbt.days_remaining !== undefined
+                daysRemaining: (() => {
+                  if (dbt.submission_deadline) {
+                    const d = new Date(dbt.submission_deadline);
+                    if (!isNaN(d.getTime())) {
+                      const diff = d.getTime() - Date.now();
+                      return diff > 0 ? Math.floor(diff / (1000 * 60 * 60 * 24)) : 0;
+                    }
+                  }
+                  return dbt.days_remaining !== undefined
                     ? dbt.days_remaining
                     : existing
                     ? existing.daysRemaining
-                    : 0,
-                hoursRemaining:
-                  dbt.hours_remaining !== undefined
+                    : 0;
+                })(),
+                hoursRemaining: (() => {
+                  if (dbt.submission_deadline) {
+                    const d = new Date(dbt.submission_deadline);
+                    if (!isNaN(d.getTime())) {
+                      const diff = d.getTime() - Date.now();
+                      return diff > 0 ? Math.floor(diff / (1000 * 60 * 60)) : 0;
+                    }
+                  }
+                  return dbt.hours_remaining !== undefined
                     ? dbt.hours_remaining
                     : existing
                     ? existing.hoursRemaining
-                    : 0,
+                    : 0;
+                })(),
                 readinessScore:
                   dbt.readiness_score !== undefined
                     ? dbt.readiness_score

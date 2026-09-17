@@ -1,17 +1,36 @@
 import React from 'react';
 
 interface UrgencyBadgeProps {
-  daysRemaining: number;
+  daysRemaining?: number;
   hoursRemaining?: number;
+  deadlineStr?: string;
   className?: string;
 }
 
 export const UrgencyBadge: React.FC<UrgencyBadgeProps> = ({
   daysRemaining,
   hoursRemaining,
+  deadlineStr,
   className = '',
 }) => {
-  if (daysRemaining <= 0 && (!hoursRemaining || hoursRemaining <= 0)) {
+  let effectiveDays = daysRemaining ?? 0;
+  let effectiveHours = hoursRemaining;
+
+  if (deadlineStr) {
+    const d = new Date(deadlineStr);
+    if (!isNaN(d.getTime())) {
+      const diff = d.getTime() - Date.now();
+      if (diff > 0) {
+        effectiveDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+        effectiveHours = Math.floor(diff / (1000 * 60 * 60));
+      } else {
+        effectiveDays = 0;
+        effectiveHours = 0;
+      }
+    }
+  }
+
+  if (effectiveDays <= 0 && (!effectiveHours || effectiveHours <= 0)) {
     return (
       <span
         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap shrink-0 text-[#94A3B8] bg-[#F8FAFC] border border-[#E2E8F0] ${className}`}
@@ -21,12 +40,12 @@ export const UrgencyBadge: React.FC<UrgencyBadgeProps> = ({
     );
   }
 
-  const isCritical = daysRemaining <= 2;
-  const isUrgent = daysRemaining > 2 && daysRemaining <= 5;
+  const isCritical = effectiveDays <= 2;
+  const isUrgent = effectiveDays > 2 && effectiveDays <= 5;
 
-  let text = `${daysRemaining}d left`;
-  if (hoursRemaining !== undefined && hoursRemaining < 48) {
-    text = `${hoursRemaining}h left`;
+  let text = `${effectiveDays}d left`;
+  if (effectiveHours !== undefined && effectiveHours < 48) {
+    text = `${effectiveHours}h left`;
   }
 
   if (isCritical) {
