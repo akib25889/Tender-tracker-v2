@@ -45,88 +45,51 @@ const CLASSIFICATIONS: TenderClassification[] = [
   'UNCLEAR',
 ];
 
-const createDefaultFinancialModel = (estimatedVal: number = 0): TenderFinancialModel => ({
+const createDefaultFinancialModel = (_estimatedVal: number = 0): TenderFinancialModel => ({
   paymentScenario: 'MILESTONE_BASED',
-  workingCapitalRisk: 'MEDIUM',
+  workingCapitalRisk: 'LOW',
   advancePayment: {
     enabled: false,
-    percentage: 15,
-    amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.15) : 0,
-    bankGuaranteeRequired: true,
-    bankGuaranteeType: 'Unconditional First Demand Bank Guarantee',
+    percentage: 0,
+    amount: 0,
+    bankGuaranteeRequired: false,
+    bankGuaranteeType: '',
     recoveryType: 'PRO_RATA_INVOICE',
-    recoveryPercentagePerInvoice: 15,
+    recoveryPercentagePerInvoice: 0,
     recoveryStartMilestone: 1,
   },
-  milestones: [
-    {
-      milestoneNumber: 1,
-      name: 'Inception & SRS Signoff',
-      percentage: 20,
-      amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.2) : 0,
-      deliverable: 'Approved Inception Report & Architectural Blueprint',
-      approvalRequired: true,
-      clientReviewDays: 14,
-      paymentProcessingDays: 30,
-      paymentTrigger: 'UPON_SRS_APPROVAL',
-      invoiceRequirements: 'Inception Report, Acceptance Certificate, Tax Invoice',
-    },
-    {
-      milestoneNumber: 2,
-      name: 'Core Development & Pilot Deployment',
-      percentage: 50,
-      amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.5) : 0,
-      deliverable: 'Core Modules Deployed in Staging & UAT Signoff',
-      approvalRequired: true,
-      clientReviewDays: 21,
-      paymentProcessingDays: 30,
-      paymentTrigger: 'UPON_UAT_ACCEPTANCE',
-      invoiceRequirements: 'UAT Sign-off Protocol, Source Code Escrow',
-    },
-    {
-      milestoneNumber: 3,
-      name: 'Final Acceptance & Handover',
-      percentage: 30,
-      amount: estimatedVal > 0 ? Math.round(estimatedVal * 0.3) : 0,
-      deliverable: 'Commissioning Certificate & Operations Handover',
-      approvalRequired: true,
-      clientReviewDays: 30,
-      paymentProcessingDays: 45,
-      paymentTrigger: 'UPON_FINAL_ACCEPTANCE',
-      invoiceRequirements: 'FAC Certificate & 10% Retention Deduction',
-    },
-  ],
+  milestones: [],
   subscriptionModel: {
     pricingModel: 'MULTI_YEAR_ESCALATION',
     billingFrequency: 'ANNUAL',
     annualBaseFee: 0,
-    durationYears: 3,
-    annualEscalationRate: 5,
-    userCount: 100,
-    feePerUserMonthly: 500,
+    durationYears: 0,
+    annualEscalationRate: 0,
+    userCount: 0,
+    feePerUserMonthly: 0,
     calculatedTcv: 0,
     calculatedAcv: 0,
     escalationTiers: [],
   },
   penaltiesAndDeductions: {
     liquidatedDamages: {
-      enabled: true,
-      rate: 0.5,
+      enabled: false,
+      rate: 0,
       frequency: 'PER_WEEK',
       calculationBasis: 'DELAYED_MILESTONE_VALUE',
-      maxCapPercentage: 10,
-      gracePeriodDays: 7,
+      maxCapPercentage: 0,
+      gracePeriodDays: 0,
     },
     retentionMoney: {
-      enabled: true,
-      percentage: 10,
+      enabled: false,
+      percentage: 0,
       releaseCondition: 'DLP_EXPIRY',
-      dlpMonths: 12,
-      interimReleasePercent: 50,
+      dlpMonths: 0,
+      interimReleasePercent: 0,
     },
-    slaDeductionRate: 1.0,
-    taxDeductionAtSourcePercent: 5.0,
-    vatDeductionAtSourcePercent: 7.5,
+    slaDeductionRate: 0,
+    taxDeductionAtSourcePercent: 0,
+    vatDeductionAtSourcePercent: 0,
   },
 });
 
@@ -146,7 +109,7 @@ export const NewTenderModal: React.FC = () => {
 
   const [importantClauses, setImportantClauses] = useState<ImportantClause[]>([]);
   const [financialModel, setFinancialModel] = useState<TenderFinancialModel>(() =>
-    createDefaultFinancialModel(2500000)
+    createDefaultFinancialModel(0)
   );
 
   // Classification
@@ -158,33 +121,27 @@ export const NewTenderModal: React.FC = () => {
   const [projectName, setProjectName] = useState('');
   const [tenderId, setTenderId] = useState('');
   const [referenceNo, setReferenceNo] = useState('');
-  const [client, setClient] = useState('UNDP (United Nations Development Programme)');
-  const [country, setCountry] = useState('Bangladesh / Regional');
-  const [portal, setPortal] = useState('e-GP / UNGM');
-  const [publishedDate, setPublishedDate] = useState(
-    new Date().toISOString().split('T')[0]
-  );
-  const [lastDate, setLastDate] = useState(
-    new Date(Date.now() + 21 * 86400000).toISOString().split('T')[0]
-  );
-  const [submissionTime, setSubmissionTime] = useState('14:00 BST');
-  const [estimatedValue, setEstimatedValue] = useState('2500000');
+  const [client, setClient] = useState('');
+  const [country, setCountry] = useState('');
+  const [portal, setPortal] = useState('');
+  const [publishedDate, setPublishedDate] = useState('');
+  const [lastDate, setLastDate] = useState('');
+  const [submissionTime, setSubmissionTime] = useState('');
+  const [estimatedValue, setEstimatedValue] = useState('');
   const [tenderCurrency, setTenderCurrency] = useState('USD');
-  const [exchangeRateToBdt, setExchangeRateToBdt] = useState('122.00');
-  const [exchangeRateDate, setExchangeRateDate] = useState(
-    new Date().toISOString().split('T')[0]
-  );
-  const [priority, setPriority] = useState<TenderPriority>('HIGH');
-  const [category, setCategory] = useState('IT & Cloud Infrastructure');
+  const [exchangeRateToBdt, setExchangeRateToBdt] = useState('');
+  const [exchangeRateDate, setExchangeRateDate] = useState('');
+  const [priority, setPriority] = useState<TenderPriority>('MEDIUM');
+  const [category, setCategory] = useState('');
   const [isCustomCategory, setIsCustomCategory] = useState(false);
 
   const [aiChatShareLink, setAiChatShareLink] = useState('');
 
   // Procurement Governance & Sourcing Attributes (Req #21)
-  const [tenderType, setTenderType] = useState<string>('International Competitive Bidding (ICB)');
-  const [budgetType, setBudgetType] = useState<string>('Development Budget (ADP / Capex)');
-  const [sourceOfFund, setSourceOfFund] = useState<string>('Government of Bangladesh (GoB)');
-  const [procurementMethod, setProcurementMethod] = useState<string>('Quality & Cost Based Selection (QCBS)');
+  const [tenderType, setTenderType] = useState<string>('');
+  const [budgetType, setBudgetType] = useState<string>('');
+  const [sourceOfFund, setSourceOfFund] = useState<string>('');
+  const [procurementMethod, setProcurementMethod] = useState<string>('');
   const [parentEoiId, setParentEoiId] = useState<string>('');
   const [isCustomTenderType, setIsCustomTenderType] = useState(false);
   const [isCustomBudgetType, setIsCustomBudgetType] = useState(false);
@@ -248,21 +205,17 @@ export const NewTenderModal: React.FC = () => {
   }, [categories, tenders]);
 
   // Scope & Commercial
-  const [mainIdea, setMainIdea] = useState(
-    'Deployment of a centralized sovereign cloud management system, automated database replication, and technical user acceptance training.'
-  );
-  const [tenderSecurity, setTenderSecurity] = useState('2.0% Bank Guarantee / BDT 5,000,000');
-  const [contractPeriod, setContractPeriod] = useState('12 Months + 24 Months O&M');
-  const [tenderDocPrice, setTenderDocPrice] = useState('BDT 5,000 / Non-refundable');
-  const [performanceSecurity, setPerformanceSecurity] = useState('10% of Total Contract Value');
+  const [mainIdea, setMainIdea] = useState('');
+  const [tenderSecurity, setTenderSecurity] = useState('');
+  const [contractPeriod, setContractPeriod] = useState('');
+  const [tenderDocPrice, setTenderDocPrice] = useState('');
+  const [performanceSecurity, setPerformanceSecurity] = useState('');
 
   // Commercial Schedule & Security Deposit Terms (Req #20 & Calculator)
-  const [schedulePurchaseDeadline, setSchedulePurchaseDeadline] = useState(
-    new Date(Date.now() + 20 * 86400000).toISOString().split('T')[0]
-  );
-  const [schedulePurchaseMethod, setSchedulePurchaseMethod] = useState('ONLINE_EGP');
-  const [tenderSecurityAmount, setTenderSecurityAmount] = useState<string | number>('50000');
-  const [tenderSecurityMethod, setTenderSecurityMethod] = useState('BANK_GUARANTEE');
+  const [schedulePurchaseDeadline, setSchedulePurchaseDeadline] = useState('');
+  const [schedulePurchaseMethod, setSchedulePurchaseMethod] = useState('');
+  const [tenderSecurityAmount, setTenderSecurityAmount] = useState<string | number>('');
+  const [tenderSecurityMethod, setTenderSecurityMethod] = useState('');
   const [securityPercent, setSecurityPercent] = useState<number>(2.5);
 
   // Reverse budget estimator: Security ÷ %
@@ -294,161 +247,137 @@ export const NewTenderModal: React.FC = () => {
   };
 
   // Dynamic lists
-  const [technicalReqs, setTechnicalReqs] = useState<string[]>([
-    'Web-based zero-trust information management system',
-    'PostgreSQL / Oracle active-active geo-replication',
-    'Automated RESTful integration API with audit logging',
-  ]);
-  const [technologyMentioned, setTechnologyMentioned] = useState<string[]>([
-    'React',
-    'FastAPI / Python',
-    'PostgreSQL',
-    'Docker / Kubernetes',
-    'Linux Ubuntu 24.04 LTS',
-  ]);
-  const [operationalReqs, setOperationalReqs] = useState<string[]>([
-    '24/7 on-call technical operations and incident resolution',
-    'Tier-4 SLA: 99.95% system uptime guarantee',
-    'Quarterly security audits and vulnerability patch management',
-  ]);
+  const [technicalReqs, setTechnicalReqs] = useState<string[]>([]);
+  const [technologyMentioned, setTechnologyMentioned] = useState<string[]>([]);
+  const [operationalReqs, setOperationalReqs] = useState<string[]>([]);
 
   // Eligibility & Qualification
-  const [generalExperience, setGeneralExperience] = useState(
-    'Minimum 5 years of commercial software and infrastructure operations experience.'
-  );
-  const [similarExperience, setSimilarExperience] = useState(
-    'Successfully completed at least 2 enterprise cloud / database migration contracts.'
-  );
-  const [similarProjectValue, setSimilarProjectValue] = useState(
-    'Single contract of at least USD 1.5M or BDT 15 Crore in the last 3 fiscal years.'
-  );
-  const [avgTurnover, setAvgTurnover] = useState(
-    'Minimum average annual turnover of USD 3M or BDT 30 Crore over the last 3 years.'
-  );
-  const [financialResources, setFinancialResources] = useState(
-    'Available liquid assets or credit line of at least BDT 2 Crore from a scheduled bank.'
-  );
-  const [certification, setCertification] = useState(
-    'ISO 9001:2015 and ISO 27001:2022 certified mandatory.'
-  );
-  const [localPresence, setLocalPresence] = useState(
-    'Must have an operational registered branch or local support center in Dhaka.'
-  );
+  const [generalExperience, setGeneralExperience] = useState('');
+  const [similarExperience, setSimilarExperience] = useState('');
+  const [similarProjectValue, setSimilarProjectValue] = useState('');
+  const [avgTurnover, setAvgTurnover] = useState('');
+  const [financialResources, setFinancialResources] = useState('');
+  const [certification, setCertification] = useState('');
+  const [localPresence, setLocalPresence] = useState('');
 
   // JV & Consortium
-  const [jvParticipation, setJvParticipation] = useState(
-    'Allowed (Maximum 3 partners including lead member)'
-  );
-  const [leadMember, setLeadMember] = useState(
-    'Must meet at least 50% of financial turnover and lead all technical presentations.'
-  );
-  const [memberRules, setMemberRules] = useState(
-    'Each member must contribute at least 25% of turnover requirements.'
-  );
-  const [localPartner, setLocalPartner] = useState(
-    'Local partner required if foreign lead firm bids.'
-  );
-  const [jvAgreement, setJvAgreement] = useState(
-    'Joint venture deed notarized and stamped according to sovereign legal code.'
-  );
+  const [jvParticipation, setJvParticipation] = useState('');
+  const [leadMember, setLeadMember] = useState('');
+  const [memberRules, setMemberRules] = useState('');
+  const [localPartner, setLocalPartner] = useState('');
+  const [jvAgreement, setJvAgreement] = useState('');
 
   // Submission Documents
-  const [documents, setDocuments] = useState<string[]>([
-    'Valid Trade License & Certificate of Incorporation',
-    'Updated e-TIN Certificate & Latest Year Tax Return Clearance',
-    'Audited Balance Sheets & Profit/Loss Statements (Last 3 Years)',
-    'Client Completion Certificates for Similar Nature Contracts',
-    'Manufacturer Authorization Form (MAF) for hardware appliances',
-    'Litigation History Declaration & Non-Disbarment Affidavit',
-  ]);
+  const [documents, setDocuments] = useState<string[]>([]);
 
   // Personnel Table
-  const [personnel, setPersonnel] = useState<TenderPersonnelReq[]>([
-    {
-      position: 'Project Manager / Team Lead',
-      qualification: 'B.Sc. in CSE / IT + PMP / Prince2',
-      experience: '10+ Years in enterprise ICT project rollout',
-      qty: '1',
-    },
-    {
-      position: 'Lead Solutions Architect',
-      qualification: 'B.Sc. in Computer Engineering + AWS/Azure Pro',
-      experience: '8+ Years in cloud architecture & microservices',
-      qty: '2',
-    },
-    {
-      position: 'Senior Database Administrator',
-      qualification: 'B.Sc. in IT + OCP / PostgreSQL Certified',
-      experience: '6+ Years in high-volume relational DBMS',
-      qty: '2',
-    },
-  ]);
+  const [personnel, setPersonnel] = useState<TenderPersonnelReq[]>([]);
 
   // Hardware Table
-  const [hardware, setHardware] = useState<TenderHardwareReq[]>([
-    {
-      equipment: 'Rackmount Application Servers (2U, 64-Core, 256GB RAM)',
-      purpose: 'Primary production hypervisors for microservices cluster',
-    },
-    {
-      equipment: 'High-Availability SAN NVMe Storage Array (100TB Usable)',
-      purpose: 'Central database storage pool with hardware RAID-10',
-    },
-    {
-      equipment: 'Enterprise Next-Gen Firewalls (Active-Passive)',
-      purpose: 'Zero-trust perimeter security, IDS/IPS, and SSL offloading',
-    },
-  ]);
+  const [hardware, setHardware] = useState<TenderHardwareReq[]>([]);
 
   // Important Dates & Full Lifecycle Procurement Milestones (Req #20)
-  const [clarificationDeadline, setClarificationDeadline] = useState(
-    new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]
-  );
-  const [openingDate, setOpeningDate] = useState(
-    new Date(Date.now() + 21 * 86400000).toISOString().split('T')[0]
-  );
-  const [contractSigningDate, setContractSigningDate] = useState(
-    new Date(Date.now() + 45 * 86400000).toISOString().split('T')[0]
-  );
-  const [workStartDate, setWorkStartDate] = useState(
-    new Date(Date.now() + 60 * 86400000).toISOString().split('T')[0]
-  );
-  const [contractStart, setContractStart] = useState(
-    new Date(Date.now() + 60 * 86400000).toISOString().split('T')[0]
-  );
-  const [possiblePeriod, setPossiblePeriod] = useState('12 Months Execution');
-  const [productHandoverDate, setProductHandoverDate] = useState(
-    new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0]
-  );
-  const [maintenancePeriod, setMaintenancePeriod] = useState(
-    '24 Months SLA Support & Maintenance'
-  );
+  const [clarificationDeadline, setClarificationDeadline] = useState('');
+  const [openingDate, setOpeningDate] = useState('');
+  const [contractSigningDate, setContractSigningDate] = useState('');
+  const [workStartDate, setWorkStartDate] = useState('');
+  const [contractStart, setContractStart] = useState('');
+  const [possiblePeriod, setPossiblePeriod] = useState('');
+  const [productHandoverDate, setProductHandoverDate] = useState('');
+  const [maintenancePeriod, setMaintenancePeriod] = useState('');
 
   // Key Risks / Points
-  const [risks, setRisks] = useState<TenderRiskPoint[]>([
-    {
-      type: 'Tender Requirement',
-      text: 'Mandatory on-site residency requirement for senior architecture team during UAT.',
-    },
-    {
-      type: 'Analyst Observation',
-      text: 'Tight 14-day turnaround for bank guarantee issuance; finance coordination required immediately.',
-    },
-    {
-      type: 'Tender Requirement',
-      text: 'Liquidated damages of 0.5% per week of delay up to a cap of 10%.',
-    },
-  ]);
+  const [risks, setRisks] = useState<TenderRiskPoint[]>([]);
 
   // Management & Notes
-  const [management, setManagement] = useState<string[]>([
-    'Strategic entry opportunity into multilateral regional health informatics pipeline.',
-    'Expected commercial gross margin estimated between 28% and 34%.',
-    'Opportunity to reuse existing proprietary microservice orchestration modules.',
-  ]);
-  const [notes, setNotes] = useState(
-    'Initial pre-bid meeting scheduled virtually. Client procurement officer noted that past performance credentials with UN agencies will be heavily weighted during technical scoring.'
-  );
+  const [management, setManagement] = useState<string[]>([]);
+  const [notes, setNotes] = useState('');
+
+  const resetForm = () => {
+    setActiveTab('BASIC');
+    setImportantClauses([]);
+    setFinancialModel(createDefaultFinancialModel(0));
+    setClassification('SOFTWARE / IT RELATED');
+    setTenderTitle('');
+    setProjectName('');
+    setTenderId('');
+    setReferenceNo('');
+    setClient('');
+    setCountry('');
+    setPortal('');
+    setPublishedDate('');
+    setLastDate('');
+    setSubmissionTime('');
+    setEstimatedValue('');
+    setTenderCurrency('USD');
+    setExchangeRateToBdt('');
+    setExchangeRateDate('');
+    setPriority('MEDIUM');
+    setCategory('');
+    setIsCustomCategory(false);
+    setAiChatShareLink('');
+    setTenderType('');
+    setBudgetType('');
+    setSourceOfFund('');
+    setProcurementMethod('');
+    setParentEoiId('');
+    setIsCustomTenderType(false);
+    setIsCustomBudgetType(false);
+    setIsCustomSourceOfFund(false);
+    setIsCustomProcurementMethod(false);
+    setProcurementManagerName('');
+    setProcurementManagerDesignation('');
+    setProcurementManagerEmail('');
+    setProcurementManagerPhone('');
+    setHelplinePhone('');
+    setHelplineEmail('');
+    setHelplineHours('');
+    setMainIdea('');
+    setTenderSecurity('');
+    setContractPeriod('');
+    setTenderDocPrice('');
+    setPerformanceSecurity('');
+    setSchedulePurchaseDeadline('');
+    setSchedulePurchaseMethod('');
+    setTenderSecurityAmount('');
+    setTenderSecurityMethod('');
+    setSecurityPercent(2.5);
+    setTechnicalReqs([]);
+    setTechnologyMentioned([]);
+    setOperationalReqs([]);
+    setGeneralExperience('');
+    setSimilarExperience('');
+    setSimilarProjectValue('');
+    setAvgTurnover('');
+    setFinancialResources('');
+    setCertification('');
+    setLocalPresence('');
+    setJvParticipation('');
+    setLeadMember('');
+    setMemberRules('');
+    setLocalPartner('');
+    setJvAgreement('');
+    setDocuments([]);
+    setPersonnel([]);
+    setHardware([]);
+    setClarificationDeadline('');
+    setOpeningDate('');
+    setContractSigningDate('');
+    setWorkStartDate('');
+    setContractStart('');
+    setPossiblePeriod('');
+    setProductHandoverDate('');
+    setMaintenancePeriod('');
+    setRisks([]);
+    setManagement([]);
+    setNotes('');
+  };
+
+  React.useEffect(() => {
+    if (isNewTenderModalOpen) {
+      resetForm();
+    }
+  }, [isNewTenderModalOpen]);
 
   if (!isNewTenderModalOpen) return null;
 
@@ -547,7 +476,10 @@ export const NewTenderModal: React.FC = () => {
       parentEoiId: parentEoiId || undefined,
       priority,
       stage: 'DISCOVERED',
-      submissionDeadline: new Date(lastDate).toISOString(),
+      submissionDeadline:
+        lastDate && !isNaN(new Date(lastDate).getTime())
+          ? new Date(lastDate).toISOString()
+          : '',
       // Full Lifecycle Procurement Milestones (Req #20)
       openingDate: openingDate || undefined,
       contractSigningDate: contractSigningDate || undefined,
@@ -639,6 +571,7 @@ export const NewTenderModal: React.FC = () => {
       importantClauses,
     });
 
+    resetForm();
     setIsNewTenderModalOpen(false);
   };
 
@@ -929,7 +862,7 @@ export const NewTenderModal: React.FC = () => {
                     </div>
                   ) : (
                     <select
-                      value={availableCategories.includes(category) ? category : '__CUSTOM__'}
+                      value={availableCategories.includes(category) ? category : category ? '__CUSTOM__' : ''}
                       onChange={(e) => {
                         if (e.target.value === '__CUSTOM__') {
                           setIsCustomCategory(true);
@@ -940,6 +873,7 @@ export const NewTenderModal: React.FC = () => {
                       }}
                       className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                     >
+                      <option value="">-- Select Scope of Work Category --</option>
                       {availableCategories.map((cat) => (
                         <option key={cat} value={cat}>
                           {cat}
@@ -1119,6 +1053,7 @@ export const NewTenderModal: React.FC = () => {
                         }}
                         className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                       >
+                        <option value="">-- Select Tender Type --</option>
                         {STANDARD_TENDER_TYPES.map((t) => (
                           <option key={t} value={t}>
                             {t}
@@ -1223,6 +1158,7 @@ export const NewTenderModal: React.FC = () => {
                         }}
                         className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                       >
+                        <option value="">-- Select Budget Type --</option>
                         {STANDARD_BUDGET_TYPES.map((b) => (
                           <option key={b} value={b}>
                             {b}
@@ -1276,6 +1212,7 @@ export const NewTenderModal: React.FC = () => {
                         }}
                         className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                       >
+                        <option value="">-- Select Source of Fund --</option>
                         {STANDARD_SOURCE_OF_FUNDS.map((s) => (
                           <option key={s} value={s}>
                             {s}
@@ -1329,6 +1266,7 @@ export const NewTenderModal: React.FC = () => {
                         }}
                         className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                       >
+                        <option value="">-- Select Procurement Method --</option>
                         {STANDARD_PROCUREMENT_METHODS.map((m) => (
                           <option key={m} value={m}>
                             {m}
@@ -1604,6 +1542,7 @@ export const NewTenderModal: React.FC = () => {
                       onChange={(e) => setSchedulePurchaseMethod(e.target.value)}
                       className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
                     >
+                      <option value="">-- Select Payment Method --</option>
                       <option value="ONLINE_EGP">Online e-GP Payment Gateway</option>
                       <option value="PAY_ORDER">Pay Order / Demand Draft</option>
                       <option value="BANK_DEPOSIT">Direct Bank Deposit / Transfer</option>
@@ -1652,6 +1591,7 @@ export const NewTenderModal: React.FC = () => {
                       onChange={(e) => setTenderSecurityMethod(e.target.value)}
                       className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
                     >
+                      <option value="">-- Select Security Instrument --</option>
                       <option value="BANK_GUARANTEE">Bank Guarantee (BG)</option>
                       <option value="PAY_ORDER">Pay Order (PO) / Demand Draft</option>
                       <option value="ONLINE_PORTAL">Online Portal Security Deposit</option>
