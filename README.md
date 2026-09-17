@@ -1,4 +1,5 @@
 # TenderTracker Command Center (v2.20.0)
+# TenderTracker Command Center (v2.21.0)
 
 [![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF?logo=vite)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://reactjs.org/)
@@ -101,6 +102,7 @@ Executes: DB health → Pytest suite (44/44 tests) → TypeScript type-check →
 
 ## ⚡ Architecture & Optimization Engines
 
+- **Multi-Timezone Header Clock & Internationalization:** Real-time clock widget in the top navigation bar supporting Dual Clocks, UTC, UTC+2, EDT, and Local timezones. Dynamically parses ISO 8601 offset strings (e.g. `-04:00`) across all Tender deadlines to render localized timezones accurately.
 - **Master Access & Permissions Control Center (`/permissions`)**: Enterprise 5-tab permissions governance console:
   - *Live Diagnostic Simulator:* Multi-select permission tester with "Select All", "Reset (*)", badge counters, and multi-action authorization evaluation.
   - *JV & Partner Ceilings:* Maximum boundary ceiling matrix ($Actual = Ceiling \cap Granted$) with batch "Allow All Permissions" and "Deny All" controls.

@@ -3,6 +3,7 @@
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
 **Current Version:** 2.20.0
+**Current Version:** 2.21.0
 **Stack:** FastAPI (Python 3.13+), SQLite (Zero-Config Dev) / MySQL 8.4 LTS (Prod), React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -19,6 +20,22 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 28-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 44 tests), automated 3-2-1 backup sentinel, corporate authentication, and live Azure Cloud VM deployment. |
+
+### [2026-09-17] — Version 2.21.0: Multi-Timezone Header Clock, Global Procurement Seeds & Database Schema Expansion
+- **Category:** Internationalization (i18n), UI Polish, Database Operations, Seed Data Generation
+- **Summary:**
+  - **Multi-Timezone Header Clock (`HeaderClock.tsx`):**
+    - Built a robust, timezone-aware dynamic clock in the main top navigation bar.
+    - Features seamless toggling between local user time (e.g., BST/UTC+6), Universal Coordinated Time (UTC), UTC+2, and US Eastern Time (EDT), plus a Dual Clock display mode.
+  - **Dynamic Timezone Parsing for Deadlines:**
+    - Upgraded `TenderDetailPage.tsx` and UI utilities to parse true ISO 8601 offset strings (e.g., `-04:00` for EDT) to render accurate submission and milestone deadlines with localized timezone labels (e.g., replacing hardcoded BST/UTC+6 text).
+  - **Database Schema Expansion:**
+    - Safely migrated `tender_security_method` and `schedule_purchase_method` columns from 50 to 255 character limits in both SQLAlchemy models (`tender.py`) and native MySQL / SQLite tables to handle verbose international bank instrument descriptions without truncation errors.
+  - **Global Procurement Sample Seeds (`TDR-2026-RHD-001` & `TDR-2026-UNPD-USA-002`):**
+    - Developed `create_sample_tender.py` (Local Bangladesh / RHD) and `create_international_sample_tender.py` (International / UNPD USA) to populate the database with comprehensive, high-fidelity sample tenders.
+    - Verified data insertion across SQLite dev and MySQL live Azure environments.
+  - **Documentation & Graphify Sync:**
+    - Updated repository README, walkthroughs, and executed `graphify.py` to maintain up-to-date dependency and knowledge graphs.
 
 ### [2026-09-13] — Version 2.20.0: Production Authentication System, Complete Dummy Data Purge & Protected Route Architecture
 - **Category:** Authentication, Security & Authorization, Database Operations, Production Hardening

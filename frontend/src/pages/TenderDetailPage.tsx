@@ -42,6 +42,7 @@ import { StatusBadge } from '../components/ui/StatusBadge';
 import { UrgencyBadge } from '../components/ui/UrgencyBadge';
 import { ReadinessBar } from '../components/ui/ReadinessBar';
 import { ExportDropdown } from '../components/ui/ExportDropdown';
+import { LiveCountdownBadge } from '../components/ui/LiveCountdownBadge';
 import { TenderCommentsSection } from '../components/ui/TenderCommentsSection';
 import { TenderSummaryDocument } from '../components/ui/TenderSummaryDocument';
 import { TenderStage } from '../types/tender';
@@ -277,6 +278,7 @@ export const TenderDetailPage: React.FC = () => {
                 daysRemaining={tender.daysRemaining}
                 hoursRemaining={tender.hoursRemaining}
               />
+              <LiveCountdownBadge deadlineStr={tender.submissionDeadline} />
               {tender.parentEoiId && (
                 <Link
                   to={`/tenders/${tender.parentEoiId}`}

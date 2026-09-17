@@ -371,8 +371,12 @@ def create_international_dummy_tender():
         print(f"Organization: {tender.organization} ({tender.country})")
         print(f"Timezone: US Eastern Time (EDT, UTC-4)")
         print(f"Deadline: {tender.submission_deadline}")
-        print(f"Value: ${tender.estimated_value:,.2f} ({tender.estimated_value_bdt:,.2f} BDT)")
-        print(f"Stage: {tender.stage} | Decision: {tender.decision} | Priority: {tender.priority}")
+        print(
+            f"Value: ${tender.estimated_value:,.2f} ({tender.estimated_value_bdt:,.2f} BDT)"
+        )
+        print(
+            f"Stage: {tender.stage} | Decision: {tender.decision} | Priority: {tender.priority}"
+        )
         print("=" * 70)
 
     except Exception as e:
