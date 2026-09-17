@@ -2,8 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.20.0
-**Current Version:** 2.21.0
+**Current Version:** 2.22.0
 **Stack:** FastAPI (Python 3.13+), SQLite (Zero-Config Dev) / MySQL 8.4 LTS (Prod), React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -20,6 +19,32 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 28-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 44 tests), automated 3-2-1 backup sentinel, corporate authentication, and live Azure Cloud VM deployment. |
+
+### [2026-09-17] — Version 2.22.0: Clean Blank Opportunity & Tender Registry Console, Important Clauses UI Modernization & Countdown Alignment
+- **Category:** UI / UX Modernization, Form Handling, Timezone Sentinel, Bug Fixes, Live Cloud Deployment
+- **Summary:**
+  - **Clean Blank Opportunity Intake (`NewTenderModal.tsx` & `TenderRegistryPage.tsx`):**
+    - Removed all hardcoded mock default values, sample text, and fallback strings (such as UNDP mock data and pre-filled $2.5M values).
+    - Opening the `+ New Opportunity` modal or accessing `/registry` now starts with a 100% clean, blank data-entry workspace.
+    - Added `-- Select ... --` placeholder options to all dropdown menus (Category, Tender Type, Budget Type, Source of Fund, Procurement Method, Schedule Payment Method, Security Method).
+    - Integrated an **Active Record** dropdown selector in the Tender Registry header allowing users to toggle between existing tenders or start a clean blank new entry at any time.
+    - Prevented broken links for unsaved entries by conditionally hiding the "View Summary", "Delete", and "Workspace" actions until saved.
+    - Automatic dynamic ID generation (`TDR-YYYY-XXXX`) and route query parameter synchronization upon saving.
+  - **Modernization of Important Clauses Manager (`ImportantClausesManager.tsx`):**
+    - Redesigned the component from an isolated dark slate box to a cohesive, modern, high-contrast light theme with full dark-mode responsiveness.
+    - Updated header banner with soft blue icon container, clean typography, badge counters, and crisp action buttons.
+    - Upgraded Quick Industry RFP Presets with light interactive chips, subtle hover states, and clear plus icons.
+    - Re-styled search and category/criticality dropdown filters to clean white surfaces with `#CBD5E1` borders.
+    - Re-styled the empty state dashed container with a soft blue circular icon and prominent call-to-action button.
+    - Polished clause cards with clear criticality badges, citation pills, quoted excerpt blocks, and compliance alert containers.
+    - Redesigned the Add/Edit Clause modal for full light and dark theme compatibility.
+  - **Countdown Timer & Deadline Accuracy Synchronization:**
+    - Resolved discrepancy between static deadline labels and active countdown timers in `TenderDetailPage.tsx` by replacing hardcoded countdown values with dynamic, timezone-aware calculation synchronized with Bangladesh Time (BST/UTC+6) and international tender timezones.
+    - Fixed duplicate plus icon on the `New Tender Entry` header button.
+    - Added fallback badges to footer status and priority indicators so new records never display empty `Status: • Priority:` text.
+  - **Live Production Deployment:**
+    - Built and verified with `tsc -b && vite build` (zero TypeScript errors).
+    - Deployed to Azure VM (`https://tendertracker-app.centralindia.cloudapp.azure.com`).
 
 ### [2026-09-17] — Version 2.21.0: Multi-Timezone Header Clock, Global Procurement Seeds & Database Schema Expansion
 - **Category:** Internationalization (i18n), UI Polish, Database Operations, Seed Data Generation

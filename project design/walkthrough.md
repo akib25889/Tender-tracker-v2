@@ -1,4 +1,4 @@
-# Walkthrough — TenderTracker Command Center (v2.20.0)
+# Walkthrough — TenderTracker Command Center (v2.22.0)
 
 The Tender Command Center is an enterprise-grade procurement lifecycle management system built with **FastAPI**, **MySQL 8.4 LTS** / **SQLite**, and **React 18+ (Vite, TypeScript, Tailwind CSS)**, adhering strictly to **Ponytail** generation-time optimization and **Graphify** knowledge graph retrieval.
 
@@ -94,6 +94,13 @@ The Tender Command Center is an enterprise-grade procurement lifecycle managemen
 ### E. Comprehensive CSS-Only Dark Mode Theme (WCAG AA Compliant)
 - Structured surface elevation tokens (`--bg-canvas: #0B0F17`, `--bg-surface: #131B28`, `--bg-surface-raised: #1A2436`).
 - High-contrast typography tokens meeting WCAG AA standards.
+
+### F. Clean Blank Entry, Registry Console & Clauses UI Modernization (v2.22.0)
+- **100% Clean Blank Intake:** New Opportunity modal and Tender Registry console open with zero pre-filled mock text, zero default budgets, and clean `-- Select ... --` placeholders across all procurement dropdowns.
+- **Active Record Switcher:** Integrated tender selector in the Tender Registry header allowing seamless switching between existing records and a clean blank entry form.
+- **Important Clauses Manager UI Redesign:** Replaced legacy dark slate blocks with a cohesive, high-contrast, light-themed card layout, light interactive preset chips, clean search/filter inputs, and styled empty states with full dark-mode responsiveness.
+- **Countdown & Timezone Synchronization:** Aligned dynamic submission countdowns to true ISO 8601 offset strings and local Bangladesh Time (BST/UTC+6) with localized labels.
+- **Production Cloud Verification:** Built with Vite/TypeScript (0 errors) and deployed live to Azure VM.
 
 ---
 
