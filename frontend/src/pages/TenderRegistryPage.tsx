@@ -24,6 +24,7 @@ import {
 import { useTenders } from '../context/TenderContext';
 import {
   TenderClassification,
+  TenderStage,
   TenderPriority,
   TenderPersonnelReq,
   TenderHardwareReq,
@@ -38,6 +39,18 @@ import {
 import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { ImportantClausesManager } from '../components/tender/ImportantClausesManager';
 import { FinancialScenariosEditor } from '../components/tender/FinancialScenariosEditor';
+
+const STAGE_OPTIONS: { value: TenderStage; label: string }[] = [
+  { value: 'DISCOVERED', label: '1. Bid Discovery (DISCOVERED)' },
+  { value: 'SCREENING', label: '2. Screening (SCREENING)' },
+  { value: 'UNDER_ANALYSIS', label: '3. Under Analysis & Go/No-Go' },
+  { value: 'PREPARATION', label: '4. Preparation & Authoring' },
+  { value: 'SUBMITTED', label: '5. Submitted to Authority' },
+  { value: 'AWARDED', label: '6. Won / Awarded' },
+  { value: 'LOST', label: 'Closed: Lost' },
+  { value: 'DECLINED', label: 'Closed: Declined / No-Go' },
+  { value: 'ARCHIVED', label: 'Archived' },
+];
 
 const CLASSIFICATIONS: TenderClassification[] = [
   'SOFTWARE / IT RELATED',
@@ -144,6 +157,7 @@ export const TenderRegistryPage: React.FC = () => {
   const [exchangeRateToBdt, setExchangeRateToBdt] = useState<string | number>('');
   const [exchangeRateDate, setExchangeRateDate] = useState<string>('');
   const [priority, setPriority] = useState<TenderPriority>('MEDIUM');
+  const [stage, setStage] = useState<TenderStage>('DISCOVERED');
   const [category, setCategory] = useState('');
   const [isCustomCategory, setIsCustomCategory] = useState(false);
   const [aiChatShareLink, setAiChatShareLink] = useState('');
@@ -316,6 +330,7 @@ export const TenderRegistryPage: React.FC = () => {
       setExchangeRateToBdt('');
       setExchangeRateDate('');
       setPriority('MEDIUM');
+      setStage('DISCOVERED');
       setCategory('');
       setIsCustomCategory(false);
       setAiChatShareLink('');
@@ -410,6 +425,7 @@ export const TenderRegistryPage: React.FC = () => {
     );
     setExchangeRateDate(selectedTender.exchangeRateDate || selectedTender.summary?.publishedDate || '');
     setPriority(selectedTender.priority);
+    setStage(selectedTender.stage || 'DISCOVERED');
     setCategory(selectedTender.category);
     setIsCustomCategory(false);
     setAiChatShareLink(selectedTender.aiChatShareLink || '');
@@ -610,6 +626,7 @@ export const TenderRegistryPage: React.FC = () => {
       country,
       category,
       priority,
+      stage: stage || selectedTender?.stage || 'DISCOVERED',
       estimatedValue: parsedEstVal,
       currency: tenderCurrency,
       exchangeRateToBdt: tenderCurrency === 'BDT' ? 1.0 : (Number(exchangeRateToBdt) || 122.0),
@@ -1700,24 +1717,43 @@ export const TenderRegistryPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
-                    Operational Priority
-                  </label>
-                  <select
-                    value={priority}
-                    onChange={(e) =>
-                      setPriority(e.target.value as TenderPriority)
-                    }
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
-                  >
-                    <option value="CRITICAL">
-                      CRITICAL (Window &lt; 48h / Urgent Gate)
-                    </option>
-                    <option value="HIGH">HIGH Priority</option>
-                    <option value="MEDIUM">MEDIUM Priority</option>
-                    <option value="LOW">LOW Priority</option>
-                  </select>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                      Lifecycle Stage / Status
+                    </label>
+                    <select
+                      value={stage}
+                      onChange={(e) => setStage(e.target.value as TenderStage)}
+                      className="w-full px-3 py-2 bg-[#F8FAFC] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100 text-xs font-semibold focus:ring-1 focus:ring-[#2563EB]"
+                    >
+                      {STAGE_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                      Operational Priority
+                    </label>
+                    <select
+                      value={priority}
+                      onChange={(e) =>
+                        setPriority(e.target.value as TenderPriority)
+                      }
+                      className="w-full px-3 py-2 bg-[#F8FAFC] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100 text-xs font-semibold focus:ring-1 focus:ring-[#2563EB]"
+                    >
+                      <option value="CRITICAL">
+                        CRITICAL (Window &lt; 48h / Urgent Gate)
+                      </option>
+                      <option value="HIGH">HIGH Priority</option>
+                      <option value="MEDIUM">MEDIUM Priority</option>
+                      <option value="LOW">LOW Priority</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             )}
@@ -2495,23 +2531,45 @@ export const TenderRegistryPage: React.FC = () => {
             )}
 
             {/* Bottom Save & Action Row */}
-            <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between bg-white shrink-0">
-              <div className="flex items-center gap-2 text-xs text-[#64748B]">
+            <div className="pt-4 border-t border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
+              <div className="flex items-center gap-2 text-xs text-[#64748B] dark:text-slate-400">
                 <span>Status:</span>
-                <span className="font-semibold px-2 py-0.5 rounded bg-slate-100 text-[#0F172A]">
-                  {selectedTender?.stage || 'DRAFT / NEW'}
+                <span className={`font-bold px-2.5 py-1 rounded-md text-xs border transition-colors ${
+                  stage === 'AWARDED'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                    : stage === 'LOST' || stage === 'DECLINED'
+                    ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800'
+                    : stage === 'SUBMITTED'
+                    ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800'
+                    : stage === 'PREPARATION'
+                    ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+                    : stage === 'UNDER_ANALYSIS'
+                    ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
+                    : stage === 'SCREENING'
+                    ? 'bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-800'
+                    : 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+                }`}>
+                  {stage || selectedTender?.stage || 'DISCOVERED'}
                 </span>
                 <span>•</span>
                 <span>Priority:</span>
-                <span className="font-semibold px-2 py-0.5 rounded bg-blue-50 text-[#2563EB]">
-                  {priority || selectedTender?.priority || 'MEDIUM'}
+                <span className={`font-bold px-2.5 py-1 rounded-md text-xs border transition-colors ${
+                  priority === 'CRITICAL'
+                    ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800'
+                    : priority === 'HIGH'
+                    ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+                    : priority === 'LOW'
+                    ? 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                    : 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+                }`}>
+                  {priority || 'MEDIUM'}
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
                 <button
                   type="submit"
-                  className="flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white rounded-lg font-semibold hover:bg-[#1E293B] shadow-sm transition-colors text-xs cursor-pointer"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] hover:bg-[#1E293B] dark:bg-blue-600 dark:hover:bg-blue-500 text-white rounded-lg font-semibold shadow-sm transition-colors text-xs cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Save All Changes</span>

@@ -163,7 +163,11 @@ html, body {
 .dark [class*="bg-\\[#F1F5F9\\]"],
 .dark .bg-\[\#F1F5F9\],
 .dark [class*="bg-[#F0F4F8]"],
-.dark [class*="bg-[#E8F0FB]"] {
+.dark [class*="bg-[#E8F0FB]"],
+.dark .bg-slate-50,
+.dark .bg-slate-100,
+.dark [class*="bg-slate-50"],
+.dark [class*="bg-slate-100"] {
   background-color: var(--bg-subtle) !important;
 }
 
