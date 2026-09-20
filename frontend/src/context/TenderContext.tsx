@@ -1,5 +1,6 @@
 import { API_BASE_URL } from '../utils/apiConfig';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { ToastNotification, ToastData } from '../components/ui/ToastNotification';
 import {
   Tender,
   TenderStage,
@@ -181,6 +182,7 @@ interface TenderContextType {
   setActiveTierForSignOff: (tier: number | null) => void;
   isCommandPaletteOpen: boolean;
   setIsCommandPaletteOpen: (open: boolean) => void;
+  showSuccessNotification: (message: string, title?: string) => void;
 }
 
 const TenderContext = createContext<TenderContextType | undefined>(undefined);
@@ -249,6 +251,17 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   const [activeTenderIdForModal, setActiveTenderIdForModal] = useState<string | null>(null);
   const [activeTierForSignOff, setActiveTierForSignOff] = useState<number | null>(null);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  // Toast Notifications State
+  const [toastQueue, setToastQueue] = useState<ToastData[]>([]);
+
+  const showSuccessNotification = useCallback((message: string, title: string = 'Saved Successfully!') => {
+    const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    setToastQueue((prev) => [...prev, { id, title, message, type: 'success' }]);
+  }, []);
+
+  const dismissNotification = useCallback((id: string) => {
+    setToastQueue((prev) => prev.filter((t) => t.id !== id));
+  }, []);
 
   // Category Management State
   const [categories, setCategories] = useState<TenderCategory[]>(() => {
@@ -2530,9 +2543,11 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         setActiveTierForSignOff,
         isCommandPaletteOpen,
         setIsCommandPaletteOpen,
+        showSuccessNotification,
       }}
     >
       {children}
+      <ToastNotification toasts={toastQueue} onDismiss={dismissNotification} />
     </TenderContext.Provider>
   );
 };

@@ -107,6 +107,7 @@ export const NewTenderModal: React.FC = () => {
     tenders,
     categories,
     addCategory,
+    showSuccessNotification,
   } = useTenders();
 
   const [activeTab, setActiveTab] = useState<
@@ -612,6 +613,10 @@ export const NewTenderModal: React.FC = () => {
 
     resetForm();
     setIsNewTenderModalOpen(false);
+    showSuccessNotification(
+      `Opportunity "${finalTitle}" (${newTenderId}) created successfully.`,
+      'Opportunity Created'
+    );
   };
 
   return (

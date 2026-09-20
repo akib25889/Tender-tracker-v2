@@ -115,7 +115,8 @@ const createDefaultFinancialModel = (_estimatedVal: number = 0): TenderFinancial
 });
 
 export const TenderRegistryPage: React.FC = () => {
-  const { tenders, addTender, deleteTender, categories, addCategory } = useTenders();
+  const { tenders, addTender, deleteTender, categories, addCategory, showSuccessNotification } =
+    useTenders();
   const [searchParams, setSearchParams] = useSearchParams();
   const editIdFromUrl = searchParams.get('id') || searchParams.get('edit');
 
@@ -810,6 +811,10 @@ export const TenderRegistryPage: React.FC = () => {
     setSearchParams({ id: finalId });
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 2500);
+    showSuccessNotification(
+      `Tender "${tenderTitle || finalId}" (${finalId}) has been saved to registry.`,
+      'Tender Saved Successfully'
+    );
   };
 
   const handleDeleteCurrent = () => {

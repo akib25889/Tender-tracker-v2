@@ -60,6 +60,7 @@ export const TenderDetailPage: React.FC = () => {
     restoreTender,
     deleteTender,
     updateTenderAiChatLink,
+    showSuccessNotification,
   } = useTenders();
 
   const [copiedRef, setCopiedRef] = useState(false);
@@ -106,6 +107,7 @@ export const TenderDetailPage: React.FC = () => {
     try {
       await updateTenderAiChatLink(tender.id, aiLinkInput.trim());
       setIsAiChatModalOpen(false);
+      showSuccessNotification('AI Chat knowledge link saved successfully.', 'Link Saved');
     } finally {
       setIsSavingAiLink(false);
     }
@@ -117,6 +119,7 @@ export const TenderDetailPage: React.FC = () => {
       await updateTenderAiChatLink(tender.id, '');
       setAiLinkInput('');
       setIsAiChatModalOpen(false);
+      showSuccessNotification('AI Chat knowledge link removed.', 'Link Cleared');
     } finally {
       setIsSavingAiLink(false);
     }
