@@ -1,5 +1,6 @@
 import { API_BASE_URL } from '../utils/apiConfig';
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
 import {
@@ -9,7 +10,7 @@ import {
   DiagnosticResult,
   AuthorizationAuditLog,
 } from '../types/permission';
-import { isSuperAdminRole } from '../types/tender';
+import { isSuperAdminRole, UserRole } from '../types/tender';
 import {
   Shield,
   ShieldCheck,
@@ -30,6 +31,13 @@ import {
   FileText,
   CheckSquare,
   Square,
+  Users,
+  ExternalLink,
+  X,
+  EyeOff,
+  Copy,
+  KeyRound,
+  Check,
 } from 'lucide-react';
 
 const STANDARD_PERMISSIONS = [
@@ -53,11 +61,30 @@ const STANDARD_PERMISSIONS = [
 ];
 
 export const MasterPermissionsPage: React.FC = () => {
-  const { tenders, teamMembers, currentUser } = useTenders();
+  const { tenders, teamMembers, currentUser, addTeamMember, showSuccessNotification } = useTenders();
   const isSuperAdmin = isSuperAdminRole(currentUser.role);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<'simulator' | 'partners' | 'roles' | 'blocks' | 'audit'>('simulator');
+  const [activeTab, setActiveTab] = useState<'simulator' | 'partners' | 'roles' | 'accounts' | 'blocks' | 'audit'>('simulator');
+
+  // New Account Modal State
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [newUserName, setNewUserName] = useState('');
+  const [newUserEmail, setNewUserEmail] = useState('');
+  const [newUserRole, setNewUserRole] = useState<UserRole>('TENDER_ANALYST');
+  const [newUserTitle, setNewUserTitle] = useState('');
+  const [newUserDept, setNewUserDept] = useState('Bid Operations');
+  const [newUserCapacity, setNewUserCapacity] = useState(5);
+  const [newUserPassword, setNewUserPassword] = useState('Password123!');
+  const [showPassword, setShowPassword] = useState(false);
+  const [createdCredentials, setCreatedCredentials] = useState<{
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+    title: string;
+  } | null>(null);
+  const [hasCopied, setHasCopied] = useState(false);
 
   // --- State: Partners ---
   const [partners, setPartners] = useState<PartnerOrganization[]>([
@@ -406,6 +433,52 @@ export const MasterPermissionsPage: React.FC = () => {
     return matchesDecision && matchesSearch;
   });
 
+  const generateRandomPassword = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%&*';
+    let res = '';
+    for (let i = 0; i < 10; i++) {
+      res += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setNewUserPassword(res);
+  };
+
+  const handleCreateAccountSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isSuperAdmin || !newUserName.trim()) return;
+
+    const finalEmail = newUserEmail.trim() || `${newUserName.toLowerCase().replace(/\s+/g, '.')}@tendertracker.io`;
+    const finalPassword = newUserPassword.trim() || 'Password123!';
+
+    addTeamMember({
+      name: newUserName.trim(),
+      email: finalEmail,
+      role: newUserRole,
+      title: newUserTitle.trim() || newUserRole.replace('_', ' '),
+      dept: newUserDept,
+      maxCapacity: Number(newUserCapacity) || 5,
+      password: finalPassword,
+    });
+
+    setCreatedCredentials({
+      name: newUserName.trim(),
+      email: finalEmail,
+      password: finalPassword,
+      role: newUserRole,
+      title: newUserTitle.trim() || newUserRole.replace('_', ' '),
+    });
+
+    showSuccessNotification(
+      `Account created for ${newUserName.trim()} with role ${newUserRole.replace(/_/g, ' ')}.`,
+      'Account Provisioned'
+    );
+
+    setNewUserName('');
+    setNewUserEmail('');
+    setNewUserTitle('');
+    setNewUserPassword('Password123!');
+    setIsAddUserModalOpen(false);
+  };
+
   // --- SUPER_ADMIN GATE ---
   if (!isSuperAdmin) {
     return (
@@ -525,6 +598,19 @@ export const MasterPermissionsPage: React.FC = () => {
         >
           <ShieldCheck className="w-4 h-4" />
           <span>Role Baselines &amp; Overrides</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('accounts')}
+          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap ${
+            activeTab === 'accounts'
+              ? 'border-[#2563EB] text-[#2563EB] bg-white rounded-t-lg'
+              : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+          }`}
+        >
+          <Users className="w-4 h-4" />
+          <span>User Accounts &amp; Roles ({teamMembers.length})</span>
         </button>
 
         <button
@@ -959,6 +1045,113 @@ export const MasterPermissionsPage: React.FC = () => {
       )}
 
       {/* ========================================================================= */}
+      {/* TAB: USER ACCOUNTS & ASSIGNED ROLES                                       */}
+      {/* ========================================================================= */}
+      {activeTab === 'accounts' && (
+        <Card
+          title="User Accounts &amp; Access Roles Directory"
+          subtitle="Provision new enterprise accounts, assign security roles, and manage capacity allocations."
+          headerAction={
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                disabled={!isSuperAdmin}
+                onClick={() => setIsAddUserModalOpen(true)}
+                className="px-3 py-1.5 text-xs font-semibold bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                title={isSuperAdmin ? "Provision a new user account" : "Account creation restricted to Super Admin"}
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Create New Account</span>
+              </button>
+              <Link
+                to="/team"
+                className="px-2.5 py-1.5 text-xs font-semibold bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#334155] rounded-lg transition-colors flex items-center gap-1"
+                title="View Team Allocation & Workload Matrix"
+              >
+                <span>Workload Matrix</span>
+                <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
+          }
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+                  <th className="py-2.5 px-3">User</th>
+                  <th className="py-2.5 px-3">Corporate Email</th>
+                  <th className="py-2.5 px-3">Access Role</th>
+                  <th className="py-2.5 px-3">Department</th>
+                  <th className="py-2.5 px-3">Max Capacity</th>
+                  <th className="py-2.5 px-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#F1F5F9]">
+                {teamMembers.map((member) => {
+                  const roleBadgeColors: Record<string, string> = {
+                    SUPER_ADMIN: 'bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]',
+                    BUSINESS_HEAD: 'bg-[#F3E8FF] text-[#7E22CE] border-[#D8B4FE]',
+                    EXECUTIVE_MANAGER: 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]',
+                    SENIOR_MANAGER: 'bg-[#FFFBEB] text-[#B45309] border-[#FDE68A]',
+                    TENDER_ANALYST: 'bg-[#F0FDF4] text-[#15803D] border-[#BBF7D0]',
+                  };
+                  const badgeStyle = roleBadgeColors[member.role] || 'bg-slate-100 text-slate-700 border-slate-200';
+
+                  return (
+                    <tr key={member.id} className="hover:bg-[#F8FAFC] transition-colors">
+                      <td className="py-3 px-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden ring-1 ring-[#CBD5E1]">
+                            {member.profilePic ? (
+                              <img src={member.profilePic} alt={member.name} className="w-full h-full object-cover" />
+                            ) : (
+                              member.avatar || member.name.slice(0, 2).toUpperCase()
+                            )}
+                          </div>
+                          <div>
+                            <span className="font-semibold text-[#0F172A] block leading-tight">
+                              {member.name}
+                            </span>
+                            <span className="text-[10px] text-[#64748B] block">
+                              {member.title || member.role.replace(/_/g, ' ')}
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-3 font-mono text-[11px] text-[#475569]">
+                        {member.email}
+                      </td>
+                      <td className="py-3 px-3">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${badgeStyle}`}>
+                          {member.role.replace(/_/g, ' ')}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3 text-[#475569]">
+                        {member.department || 'Bid Operations'}
+                      </td>
+                      <td className="py-3 px-3 font-mono text-[#0F172A]">
+                        {member.maxCapacity || 5} concurrent bids
+                      </td>
+                      <td className="py-3 px-3 text-right">
+                        <Link
+                          to={`/profile/${member.id}`}
+                          className="px-2 py-1 bg-[#EFF6FF] hover:bg-[#DBEAFE] text-[#2563EB] rounded text-[11px] font-medium transition-colors inline-flex items-center gap-1"
+                          title="View Personnel Dossier & CV"
+                        >
+                          <span>Dossier</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
+
+      {/* ========================================================================= */}
       {/* TAB 4: SECURITY BLOCKERS (LAYER 1)                                        */}
       {/* ========================================================================= */}
       {activeTab === 'blocks' && (
@@ -1111,6 +1304,259 @@ export const MasterPermissionsPage: React.FC = () => {
             </table>
           </div>
         </Card>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MODAL: CREATE TEAM MEMBER PROFILE & ASSIGN ROLE                           */}
+      {/* ========================================================================= */}
+      {isAddUserModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9]">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
+                  <Users className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-display text-sm font-bold text-[#0F172A]">
+                    Provision New User Account
+                  </h3>
+                  <p className="text-[11px] text-[#64748B]">Create account and assign access role</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAddUserModalOpen(false)}
+                className="text-[#94A3B8] hover:text-[#0F172A] p-1 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateAccountSubmit} className="space-y-3.5 text-xs">
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">Full Name *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Rachel Adams"
+                  value={newUserName}
+                  onChange={(e) => setNewUserName(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">Corporate Email</label>
+                <input
+                  type="email"
+                  placeholder="rachel.adams@company.com"
+                  value={newUserEmail}
+                  onChange={(e) => setNewUserEmail(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Access Role *</label>
+                  <select
+                    value={newUserRole}
+                    onChange={(e) => setNewUserRole(e.target.value as UserRole)}
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  >
+                    <option value="SUPER_ADMIN">Super Admin (System Authority)</option>
+                    <option value="BUSINESS_HEAD">Business Head (Executive Lead)</option>
+                    <option value="EXECUTIVE_MANAGER">Executive Manager (Technical Authority)</option>
+                    <option value="SENIOR_MANAGER">Senior Manager (Commercial &amp; Contracts)</option>
+                    <option value="TENDER_ANALYST">Tender Analyst (Operations)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Job Designation</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Solutions Lead"
+                    value={newUserTitle}
+                    onChange={(e) => setNewUserTitle(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block font-semibold text-[#0F172A]">Initial Login Password *</label>
+                  <button
+                    type="button"
+                    onClick={generateRandomPassword}
+                    className="text-[10px] text-[#2563EB] hover:underline font-semibold cursor-pointer"
+                  >
+                    Generate Strong Password
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={newUserPassword}
+                    onChange={(e) => setNewUserPassword(e.target.value)}
+                    placeholder="e.g. Password123!"
+                    className="w-full pl-3 pr-9 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-mono focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A] cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Department</label>
+                  <input
+                    type="text"
+                    placeholder="Bid Operations"
+                    value={newUserDept}
+                    onChange={(e) => setNewUserDept(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-[#0F172A] mb-1">Max Concurrent Tenders</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="15"
+                    value={newUserCapacity}
+                    onChange={(e) => setNewUserCapacity(Number(e.target.value))}
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-[#F1F5F9] flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsAddUserModalOpen(false)}
+                  className="px-3 py-1.5 text-xs text-[#64748B] hover:text-[#0F172A] cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
+                >
+                  Create &amp; Provision Account
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MODAL: CREDENTIALS DISPATCH MODAL                                         */}
+      {/* ========================================================================= */}
+      {createdCredentials && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full border border-[#E2E8F0] overflow-hidden">
+            <div className="p-5 bg-[#0F172A] text-white flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white shadow-sm">
+                  <KeyRound className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-sm">Account Provisioned Successfully</h3>
+                  <p className="text-[11px] text-[#94A3B8]">Credentials generated for designated user</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCreatedCredentials(null)}
+                className="text-[#94A3B8] hover:text-white cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4 text-xs">
+              <div className="p-3 bg-[#ECFDF5] border border-[#A7F3D0] rounded-lg text-[#065F46] space-y-1">
+                <div className="flex items-center gap-1.5 font-bold">
+                  <CheckCircle2 className="w-4 h-4 text-[#059669]" />
+                  <span>Ready for Delegated Login</span>
+                </div>
+                <p className="text-[11px] text-[#065F46] leading-relaxed">
+                  Share these credentials with the designated person so they can sign in to the TenderTracker Command Center.
+                </p>
+              </div>
+
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg p-3 space-y-2">
+                <div className="flex justify-between items-center py-1 border-b border-[#E2E8F0]">
+                  <span className="text-[#64748B]">Designated Name:</span>
+                  <span className="font-bold text-[#0F172A]">{createdCredentials.name}</span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-[#E2E8F0]">
+                  <span className="text-[#64748B]">Assigned Role:</span>
+                  <span className="font-mono font-semibold px-2 py-0.5 rounded bg-white text-[#2563EB] border border-[#BFDBFE] text-[10px]">
+                    {createdCredentials.role.replace('_', ' ')}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-[#E2E8F0]">
+                  <span className="text-[#64748B]">Login Email:</span>
+                  <span className="font-mono font-bold text-[#0F172A]">{createdCredentials.email}</span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-[#E2E8F0]">
+                  <span className="text-[#64748B]">Initial Password:</span>
+                  <span className="font-mono font-bold text-[#DC2626] bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FECACA]">
+                    {createdCredentials.password}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-[#64748B]">Login Portal:</span>
+                  <span className="font-mono text-[11px] text-[#2563EB]">https://tendertracker-app.centralindia.cloudapp.azure.com</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const text = `TenderTracker Command Center Access:\nName: ${createdCredentials.name}\nRole: ${createdCredentials.role.replace('_', ' ')}\nEmail: ${createdCredentials.email}\nPassword: ${createdCredentials.password}\nPortal URL: https://tendertracker-app.centralindia.cloudapp.azure.com`;
+                    navigator.clipboard.writeText(text);
+                    setHasCopied(true);
+                    setTimeout(() => setHasCopied(false), 2500);
+                  }}
+                  className="flex-1 py-2 px-3 bg-white border border-[#CBD5E1] hover:bg-[#F1F5F9] rounded-lg font-semibold text-[#0F172A] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  {hasCopied ? (
+                    <>
+                      <Check className="w-4 h-4 text-[#059669]" />
+                      <span className="text-[#059669]">Copied Credentials!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4 text-[#64748B]" />
+                      <span>Copy Credentials</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCreatedCredentials(null)}
+                  className="py-2 px-4 bg-[#0F172A] hover:bg-[#1E293B] text-white font-semibold rounded-lg transition-colors cursor-pointer"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

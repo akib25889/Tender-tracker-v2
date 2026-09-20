@@ -22,6 +22,7 @@ import {
   Wrench,
   Award,
   UserCheck,
+  Users,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 
@@ -39,7 +40,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
   const isToolsRoute =
     location.pathname.startsWith('/tools') ||
     location.pathname.startsWith('/permissions') ||
-    location.pathname.startsWith('/profile');
+    location.pathname.startsWith('/profile') ||
+    location.pathname === '/team';
   const [isToolsOpen, setIsToolsOpen] = useState<boolean>(() => isToolsRoute);
 
   useEffect(() => {
@@ -128,6 +130,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       label: 'Access & Permissions',
       path: '/tools/permissions',
       icon: KeyRound,
+      badge: undefined,
+    },
+    {
+      label: 'Team & Capacity',
+      path: '/team',
+      icon: Users,
       badge: undefined,
     },
     {
