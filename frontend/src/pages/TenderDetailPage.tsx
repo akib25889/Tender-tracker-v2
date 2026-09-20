@@ -602,13 +602,31 @@ export const TenderDetailPage: React.FC = () => {
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold text-[#0F172A] flex items-center gap-1.5">
                           <CheckCircle2 className="w-3.5 h-3.5 text-[#059669]" />
-                          {tender.procurementMethod || tender.summary?.procurementMethod || 'Quality & Cost Based Selection (QCBS)'}
+                          {tender.procurementMethod || tender.summary?.procurementMethod || 'Open Tendering Method (OTM)'}
                         </span>
                         <span className="text-[10px] font-mono text-[#059669] bg-[#ECFDF5] px-1.5 py-0.5 rounded font-bold border border-[#A7F3D0]">
                           Method
                         </span>
                       </div>
                     </div>
+
+                    {/* Evaluation Method */}
+                    {(tender.evaluationMethod || tender.summary?.evaluationMethod) && (
+                      <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                          Evaluation Method
+                        </span>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold text-[#0F172A] flex items-center gap-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#2563EB]" />
+                            {tender.evaluationMethod || tender.summary?.evaluationMethod}
+                          </span>
+                          <span className="text-[10px] font-mono text-[#2563EB] bg-[#EFF6FF] px-1.5 py-0.5 rounded font-bold border border-[#BFDBFE]">
+                            Evaluation
+                          </span>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Budget Type */}
                     <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">

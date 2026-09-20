@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy import Column, String, Float, Integer, Text, DateTime, ForeignKey, JSON
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, synonym
 from app.core.database import Base
 
 
@@ -41,6 +41,8 @@ class Tender(Base):
     budget_type = Column(String(100), nullable=True)
     source_of_fund = Column(String(150), nullable=True)
     procurement_method = Column(String(100), nullable=True)
+    evaluation_method = Column(String(100), nullable=True)
+    evaluationMethod = synonym("evaluation_method")
     # 2-Stage Procurement Lineage (EOI -> RFP) & Shortlisting
     parent_eoi_id = Column(String(50), nullable=True, index=True)
     spawned_rfp_id = Column(String(50), nullable=True)

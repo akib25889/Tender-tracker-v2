@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional, List, Any, Dict
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 from app.schemas.task import TaskOut
 from app.schemas.document import DocumentOut, FolderOut
 from app.schemas.comment import CommentOut
@@ -98,6 +98,19 @@ class TenderBase(BaseModel):
     budget_type: Optional[str] = None
     source_of_fund: Optional[str] = None
     procurement_method: Optional[str] = None
+    evaluation_method: Optional[str] = None
+    evaluationMethod: Optional[str] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def sync_evaluation_method(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if data.get("evaluationMethod") and not data.get("evaluation_method"):
+                data["evaluation_method"] = data["evaluationMethod"]
+            elif data.get("evaluation_method") and not data.get("evaluationMethod"):
+                data["evaluationMethod"] = data["evaluation_method"]
+        return data
+
     # 2-Stage Procurement Lineage (EOI -> RFP) & Shortlisting
     parent_eoi_id: Optional[str] = None
     spawned_rfp_id: Optional[str] = None
@@ -158,6 +171,19 @@ class TenderUpdate(BaseModel):
     budget_type: Optional[str] = None
     source_of_fund: Optional[str] = None
     procurement_method: Optional[str] = None
+    evaluation_method: Optional[str] = None
+    evaluationMethod: Optional[str] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def sync_update_evaluation_method(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if data.get("evaluationMethod") and not data.get("evaluation_method"):
+                data["evaluation_method"] = data["evaluationMethod"]
+            elif data.get("evaluation_method") and not data.get("evaluationMethod"):
+                data["evaluationMethod"] = data["evaluation_method"]
+        return data
+
     parent_eoi_id: Optional[str] = None
     spawned_rfp_id: Optional[str] = None
     eoi_shortlist_status: Optional[str] = None

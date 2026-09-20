@@ -123,6 +123,7 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
         budget_type=tender_in.budget_type,
         source_of_fund=tender_in.source_of_fund,
         procurement_method=tender_in.procurement_method,
+        evaluation_method=tender_in.evaluation_method or tender_in.evaluationMethod,
         parent_eoi_id=tender_in.parent_eoi_id,
         spawned_rfp_id=tender_in.spawned_rfp_id,
         eoi_shortlist_status=tender_in.eoi_shortlist_status,
@@ -159,7 +160,8 @@ def update_tender(tender_id: str, updates: TenderUpdate, db: Session = Depends(g
 
     update_data = updates.model_dump(exclude_unset=True)
     for field, value in update_data.items():
-        setattr(tender, field, value)
+        if hasattr(tender, field):
+            setattr(tender, field, value)
 
     # Auto-calculate estimated_value_bdt if estimated_value, currency, or rate is updated
     if (

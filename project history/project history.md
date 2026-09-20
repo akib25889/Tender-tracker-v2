@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.22.0
+**Current Version:** 2.23.0
 **Stack:** FastAPI (Python 3.13+), SQLite (Zero-Config Dev) / MySQL 8.4 LTS (Prod), React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -19,6 +19,28 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 28-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 44 tests), automated 3-2-1 backup sentinel, corporate authentication, and live Azure Cloud VM deployment. |
+
+### [2026-09-20] — Version 2.23.0: Distinct Evaluation Method Segregation, Schema & UI Modernization, and Live Cloud Deployment
+- **Category:** Database Schema Migration, UI / UX Architecture, Statutory Procurement Governance, Live Cloud Deployment
+- **Summary:**
+  - **Segregated Evaluation Method from Procurement Method:**
+    - Separated statutory submission procedures (OTM, SSOE, SSTE, TSTM, DPM) from proposal evaluation methodologies (LCS, QCBS, QBS, FBS) to comply with public procurement guidelines.
+    - Updated `STANDARD_PROCUREMENT_METHODS` to contain only submission procedures.
+    - Introduced `STANDARD_EVALUATION_METHODS` for evaluation criteria: Least Cost Selection (LCS), Quality & Cost Based Selection (QCBS), Quality Based Selection (QBS), and Fixed Budget Selection (FBS).
+  - **Database Schema & Backend Migration:**
+    - Added optional `evaluation_method VARCHAR(100)` column to `tenders` table with zero-downtime auto-migration in `database.py`.
+    - Extended SQLAlchemy `Tender` model with `evaluation_method` and synonym `evaluationMethod`.
+    - Added bidirectional Pydantic validators to `TenderBase` and `TenderUpdate` ensuring seamless camelCase and snake_case API payload compatibility.
+    - Updated FastAPI `tenders.py` router create and update endpoints.
+    - Extended integration test suite `test_24_tender_procurement_governance_attributes` to verify CRUD lifecycle.
+  - **Frontend UI & Dark Mode Integration:**
+    - Added new `Evaluation Method` dropdown component alongside `Procurement Method` in the **Procurement Governance & Sourcing Framework** section of both `TenderRegistryPage.tsx` and `NewTenderModal.tsx`.
+    - Integrated standard option presets, preset restoration, and interactive custom text input overrides.
+    - Applied WCAG AA compliant dark mode classes (`dark:bg-slate-900`, `dark:border-slate-700`, `dark:text-slate-100`, hover states, and focus rings) across all inputs and container cards.
+    - Integrated `Evaluation Method` display in `TenderDetailPage.tsx` and formal printable `TenderSummaryDocument.tsx`.
+  - **Live Production Deployment:**
+    - Full test suite passed (44/44 tests, 100% pass rate).
+    - Executed live production build and deployment to Azure Cloud VM.
 
 ### [2026-09-17] — Version 2.22.0: Clean Blank Opportunity & Tender Registry Console, Important Clauses UI Modernization & Countdown Alignment
 - **Category:** UI / UX Modernization, Form Handling, Timezone Sentinel, Bug Fixes, Live Cloud Deployment

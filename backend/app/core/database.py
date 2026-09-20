@@ -136,6 +136,12 @@ def run_migrations():
                             "ALTER TABLE tenders ADD COLUMN procurement_method VARCHAR(100) DEFAULT NULL"
                         )
                     )
+                if "evaluation_method" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN evaluation_method VARCHAR(100) DEFAULT NULL"
+                        )
+                    )
                 if "parent_eoi_id" not in existing_cols:
                     conn.execute(
                         text(
@@ -423,6 +429,7 @@ def run_migrations():
                             ("budget_type", "VARCHAR(100) DEFAULT NULL"),
                             ("source_of_fund", "VARCHAR(150) DEFAULT NULL"),
                             ("procurement_method", "VARCHAR(100) DEFAULT NULL"),
+                            ("evaluation_method", "VARCHAR(100) DEFAULT NULL"),
                             ("parent_eoi_id", "VARCHAR(50) DEFAULT NULL"),
                             ("spawned_rfp_id", "VARCHAR(50) DEFAULT NULL"),
                             ("eoi_shortlist_status", "VARCHAR(50) DEFAULT NULL"),

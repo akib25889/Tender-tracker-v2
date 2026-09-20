@@ -237,14 +237,17 @@ export const STANDARD_SOURCE_OF_FUNDS = [
 
 export const STANDARD_PROCUREMENT_METHODS = [
   'Open Tendering Method (OTM)',
-  'Quality & Cost Based Selection (QCBS)',
-  'Quality Based Selection (QBS)',
-  'Least Cost Selection (LCS)',
-  'Fixed Budget Selection (FBS)',
   'Single Stage One Envelope (SSOE)',
   'Single Stage Two Envelope (SSTE)',
   'Two Stage Tendering Method (TSTM)',
   'Direct Procurement Method (DPM)',
+] as const;
+
+export const STANDARD_EVALUATION_METHODS = [
+  'Least Cost Selection (LCS)',
+  'Quality & Cost Based Selection (QCBS)',
+  'Quality Based Selection (QBS)',
+  'Fixed Budget Selection (FBS)',
 ] as const;
 
 export interface TenderPersonnelReq {
@@ -338,6 +341,7 @@ export interface TenderExtendedSummary {
   budgetType?: string;
   sourceOfFund?: string;
   procurementMethod?: string;
+  evaluationMethod?: string;
   postAward?: PostAwardData;
   financialModel?: TenderFinancialModel;
   aiChatShareLink?: string;
@@ -383,6 +387,7 @@ export interface Tender {
   budgetType?: string;
   sourceOfFund?: string;
   procurementMethod?: string;
+  evaluationMethod?: string;
   // 2-Stage Procurement Lineage (EOI -> RFP) & Shortlisting
   parentEoiId?: string;
   spawnedRfpId?: string;

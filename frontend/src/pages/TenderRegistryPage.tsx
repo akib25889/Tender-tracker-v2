@@ -35,6 +35,7 @@ import {
   STANDARD_BUDGET_TYPES,
   STANDARD_SOURCE_OF_FUNDS,
   STANDARD_PROCUREMENT_METHODS,
+  STANDARD_EVALUATION_METHODS,
 } from '../types/tender';
 import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { ImportantClausesManager } from '../components/tender/ImportantClausesManager';
@@ -167,11 +168,13 @@ export const TenderRegistryPage: React.FC = () => {
   const [budgetType, setBudgetType] = useState<string>('');
   const [sourceOfFund, setSourceOfFund] = useState<string>('');
   const [procurementMethod, setProcurementMethod] = useState<string>('');
+  const [evaluationMethod, setEvaluationMethod] = useState<string>('');
   const [parentEoiId, setParentEoiId] = useState<string>('');
   const [isCustomTenderType, setIsCustomTenderType] = useState(false);
   const [isCustomBudgetType, setIsCustomBudgetType] = useState(false);
   const [isCustomSourceOfFund, setIsCustomSourceOfFund] = useState(false);
   const [isCustomProcurementMethod, setIsCustomProcurementMethod] = useState(false);
+  const [isCustomEvaluationMethod, setIsCustomEvaluationMethod] = useState(false);
 
   const eligibleParentEois = useMemo(() => {
     return (tenders || []).filter(
@@ -338,11 +341,13 @@ export const TenderRegistryPage: React.FC = () => {
       setBudgetType('');
       setSourceOfFund('');
       setProcurementMethod('');
+      setEvaluationMethod('');
       setParentEoiId('');
       setIsCustomTenderType(false);
       setIsCustomBudgetType(false);
       setIsCustomSourceOfFund(false);
       setIsCustomProcurementMethod(false);
+      setIsCustomEvaluationMethod(false);
       setProcurementManagerName('');
       setProcurementManagerDesignation('');
       setProcurementManagerEmail('');
@@ -442,11 +447,15 @@ export const TenderRegistryPage: React.FC = () => {
     setProcurementMethod(
       selectedTender.procurementMethod || selectedTender.summary?.procurementMethod || STANDARD_PROCUREMENT_METHODS[0]
     );
+    setEvaluationMethod(
+      selectedTender.evaluationMethod || selectedTender.summary?.evaluationMethod || ''
+    );
     setParentEoiId(selectedTender.parentEoiId || '');
     setIsCustomTenderType(false);
     setIsCustomBudgetType(false);
     setIsCustomSourceOfFund(false);
     setIsCustomProcurementMethod(false);
+    setIsCustomEvaluationMethod(false);
 
     setProcurementManagerName(
       selectedTender.procurementManagerName ||
@@ -644,6 +653,7 @@ export const TenderRegistryPage: React.FC = () => {
       budgetType,
       sourceOfFund,
       procurementMethod,
+      evaluationMethod,
       parentEoiId: parentEoiId || undefined,
       openingDate: openingDate || '',
       contractSigningDate: contractSigningDate || '',
@@ -667,6 +677,7 @@ export const TenderRegistryPage: React.FC = () => {
         budgetType,
         sourceOfFund,
         procurementMethod,
+        evaluationMethod,
         procurementManager: {
           name: procurementManagerName,
           designation: procurementManagerDesignation,
@@ -1307,15 +1318,15 @@ export const TenderRegistryPage: React.FC = () => {
                 </div>
 
                 {/* Procurement Governance & Sourcing Attributes (Req #21) */}
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
-                  <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2">
+                <div className="p-4 bg-[#F8FAFC] dark:bg-slate-800/40 rounded-xl border border-[#E2E8F0] dark:border-slate-700/60 space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-slate-700/60 pb-2">
                     <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-[#2563EB]" />
-                      <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                      <ShieldCheck className="w-4 h-4 text-[#2563EB] dark:text-blue-400" />
+                      <span className="text-xs font-bold text-[#0F172A] dark:text-slate-100 uppercase tracking-wider">
                         Procurement Governance &amp; Sourcing Framework
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono font-bold text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                    <span className="text-[10px] font-mono font-bold text-[#2563EB] dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800/60">
                       Statutory Governance
                     </span>
                   </div>
@@ -1324,7 +1335,7 @@ export const TenderRegistryPage: React.FC = () => {
                     {/* Tender Type */}
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-[11px] font-semibold text-[#0F172A]">
+                        <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
                           Tender Type *
                         </label>
                         <button
@@ -1333,7 +1344,7 @@ export const TenderRegistryPage: React.FC = () => {
                             setIsCustomTenderType(!isCustomTenderType);
                             if (isCustomTenderType && !tenderType) setTenderType(STANDARD_TENDER_TYPES[0]);
                           }}
-                          className="text-[10px] font-semibold text-[#2563EB] hover:underline"
+                          className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
                         >
                           {isCustomTenderType ? '← Select Preset' : '+ Custom Type'}
                         </button>
@@ -1344,7 +1355,7 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. Turnkey EPC, Framework Call-off..."
                           value={tenderType}
                           onChange={(e) => setTenderType(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white border border-[#2563EB] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         />
                       ) : (
                         <select
@@ -1357,7 +1368,7 @@ export const TenderRegistryPage: React.FC = () => {
                               setTenderType(e.target.value);
                             }
                           }}
-                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         >
                           <option value="">-- Select Tender Type --</option>
                           {STANDARD_TENDER_TYPES.map((t) => (
@@ -1429,7 +1440,7 @@ export const TenderRegistryPage: React.FC = () => {
                     {/* Budget Type */}
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-[11px] font-semibold text-[#0F172A]">
+                        <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
                           Budget Type *
                         </label>
                         <button
@@ -1438,7 +1449,7 @@ export const TenderRegistryPage: React.FC = () => {
                             setIsCustomBudgetType(!isCustomBudgetType);
                             if (isCustomBudgetType && !budgetType) setBudgetType(STANDARD_BUDGET_TYPES[0]);
                           }}
-                          className="text-[10px] font-semibold text-[#2563EB] hover:underline"
+                          className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
                         >
                           {isCustomBudgetType ? '← Select Preset' : '+ Custom Budget'}
                         </button>
@@ -1449,7 +1460,7 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. Special Trust Fund, Sovereign Loan..."
                           value={budgetType}
                           onChange={(e) => setBudgetType(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white border border-[#2563EB] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         />
                       ) : (
                         <select
@@ -1462,7 +1473,7 @@ export const TenderRegistryPage: React.FC = () => {
                               setBudgetType(e.target.value);
                             }
                           }}
-                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         >
                           <option value="">-- Select Budget Type --</option>
                           {STANDARD_BUDGET_TYPES.map((b) => (
@@ -1473,7 +1484,7 @@ export const TenderRegistryPage: React.FC = () => {
                           {!STANDARD_BUDGET_TYPES.includes(budgetType as any) && budgetType && (
                             <option value={budgetType}>{budgetType}</option>
                           )}
-                          <option value="__CUSTOM__" className="font-bold text-[#2563EB]">
+                          <option value="__CUSTOM__" className="font-bold text-[#2563EB] dark:text-blue-400">
                             + Add Custom Budget Type...
                           </option>
                         </select>
@@ -1483,7 +1494,7 @@ export const TenderRegistryPage: React.FC = () => {
                     {/* Source of Fund */}
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-[11px] font-semibold text-[#0F172A]">
+                        <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
                           Source of Fund (Financier) *
                         </label>
                         <button
@@ -1492,7 +1503,7 @@ export const TenderRegistryPage: React.FC = () => {
                             setIsCustomSourceOfFund(!isCustomSourceOfFund);
                             if (isCustomSourceOfFund && !sourceOfFund) setSourceOfFund(STANDARD_SOURCE_OF_FUNDS[0]);
                           }}
-                          className="text-[10px] font-semibold text-[#2563EB] hover:underline"
+                          className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
                         >
                           {isCustomSourceOfFund ? '← Select Preset' : '+ Custom Source'}
                         </button>
@@ -1503,7 +1514,7 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. Islamic Development Bank (IsDB)..."
                           value={sourceOfFund}
                           onChange={(e) => setSourceOfFund(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white border border-[#2563EB] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         />
                       ) : (
                         <select
@@ -1516,7 +1527,7 @@ export const TenderRegistryPage: React.FC = () => {
                               setSourceOfFund(e.target.value);
                             }
                           }}
-                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         >
                           <option value="">-- Select Source of Fund --</option>
                           {STANDARD_SOURCE_OF_FUNDS.map((s) => (
@@ -1527,7 +1538,7 @@ export const TenderRegistryPage: React.FC = () => {
                           {!STANDARD_SOURCE_OF_FUNDS.includes(sourceOfFund as any) && sourceOfFund && (
                             <option value={sourceOfFund}>{sourceOfFund}</option>
                           )}
-                          <option value="__CUSTOM__" className="font-bold text-[#2563EB]">
+                          <option value="__CUSTOM__" className="font-bold text-[#2563EB] dark:text-blue-400">
                             + Add Custom Source of Fund...
                           </option>
                         </select>
@@ -1537,7 +1548,7 @@ export const TenderRegistryPage: React.FC = () => {
                     {/* Procurement Method */}
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-[11px] font-semibold text-[#0F172A]">
+                        <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
                           Procurement Method *
                         </label>
                         <button
@@ -1546,7 +1557,7 @@ export const TenderRegistryPage: React.FC = () => {
                             setIsCustomProcurementMethod(!isCustomProcurementMethod);
                             if (isCustomProcurementMethod && !procurementMethod) setProcurementMethod(STANDARD_PROCUREMENT_METHODS[0]);
                           }}
-                          className="text-[10px] font-semibold text-[#2563EB] hover:underline"
+                          className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
                         >
                           {isCustomProcurementMethod ? '← Select Preset' : '+ Custom Method'}
                         </button>
@@ -1557,7 +1568,7 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. Two-Envelope with Reverse Auction..."
                           value={procurementMethod}
                           onChange={(e) => setProcurementMethod(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white border border-[#2563EB] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         />
                       ) : (
                         <select
@@ -1570,7 +1581,7 @@ export const TenderRegistryPage: React.FC = () => {
                               setProcurementMethod(e.target.value);
                             }
                           }}
-                          className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         >
                           <option value="">-- Select Procurement Method --</option>
                           {STANDARD_PROCUREMENT_METHODS.map((m) => (
@@ -1581,7 +1592,61 @@ export const TenderRegistryPage: React.FC = () => {
                           {!STANDARD_PROCUREMENT_METHODS.includes(procurementMethod as any) && procurementMethod && (
                             <option value={procurementMethod}>{procurementMethod}</option>
                           )}
-                          <option value="__CUSTOM__" className="font-bold text-[#2563EB]">
+                          <option value="__CUSTOM__" className="font-bold text-[#2563EB] dark:text-blue-400">
+                            + Add Custom Method...
+                          </option>
+                        </select>
+                      )}
+                    </div>
+
+                    {/* Evaluation Method */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
+                          Evaluation Method
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsCustomEvaluationMethod(!isCustomEvaluationMethod);
+                            if (isCustomEvaluationMethod && !evaluationMethod) setEvaluationMethod(STANDARD_EVALUATION_METHODS[0]);
+                          }}
+                          className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
+                        >
+                          {isCustomEvaluationMethod ? '← Select Preset' : '+ Custom Method'}
+                        </button>
+                      </div>
+                      {isCustomEvaluationMethod ? (
+                        <input
+                          type="text"
+                          placeholder="e.g. Quality & Cost Based Selection (QCBS)..."
+                          value={evaluationMethod}
+                          onChange={(e) => setEvaluationMethod(e.target.value)}
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        />
+                      ) : (
+                        <select
+                          value={evaluationMethod}
+                          onChange={(e) => {
+                            if (e.target.value === '__CUSTOM__') {
+                              setIsCustomEvaluationMethod(true);
+                              setEvaluationMethod('');
+                            } else {
+                              setEvaluationMethod(e.target.value);
+                            }
+                          }}
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        >
+                          <option value="">-- Select Evaluation Method --</option>
+                          {STANDARD_EVALUATION_METHODS.map((m) => (
+                            <option key={m} value={m}>
+                              {m}
+                            </option>
+                          ))}
+                          {!STANDARD_EVALUATION_METHODS.includes(evaluationMethod as any) && evaluationMethod && (
+                            <option value={evaluationMethod}>{evaluationMethod}</option>
+                          )}
+                          <option value="__CUSTOM__" className="font-bold text-[#2563EB] dark:text-blue-400">
                             + Add Custom Method...
                           </option>
                         </select>

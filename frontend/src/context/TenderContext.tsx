@@ -518,6 +518,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                 budgetType: dbt.budget_type || existing?.budgetType,
                 sourceOfFund: dbt.source_of_fund || existing?.sourceOfFund,
                 procurementMethod: dbt.procurement_method || existing?.procurementMethod,
+                evaluationMethod: dbt.evaluationMethod || dbt.evaluation_method || existing?.evaluationMethod,
                 parentEoiId: dbt.parent_eoi_id || existing?.parentEoiId,
                 spawnedRfpId: dbt.spawned_rfp_id || existing?.spawnedRfpId,
                 eoiShortlistStatus: dbt.eoi_shortlist_status || existing?.eoiShortlistStatus,
@@ -1113,6 +1114,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       budgetType: tenderData.budgetType,
       sourceOfFund: tenderData.sourceOfFund,
       procurementMethod: tenderData.procurementMethod,
+      evaluationMethod: tenderData.evaluationMethod,
       parentEoiId: tenderData.parentEoiId,
       spawnedRfpId: tenderData.spawnedRfpId,
       eoiShortlistStatus: tenderData.eoiShortlistStatus,
@@ -1150,6 +1152,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         budget_type: newTender.budgetType,
         source_of_fund: newTender.sourceOfFund,
         procurement_method: newTender.procurementMethod,
+        evaluation_method: newTender.evaluationMethod,
+        evaluationMethod: newTender.evaluationMethod,
         parent_eoi_id: newTender.parentEoiId,
         spawned_rfp_id: newTender.spawnedRfpId,
         eoi_shortlist_status: newTender.eoiShortlistStatus,
@@ -1218,6 +1222,10 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     if (updates.budgetType !== undefined) payload.budget_type = updates.budgetType;
     if (updates.sourceOfFund !== undefined) payload.source_of_fund = updates.sourceOfFund;
     if (updates.procurementMethod !== undefined) payload.procurement_method = updates.procurementMethod;
+    if (updates.evaluationMethod !== undefined) {
+      payload.evaluation_method = updates.evaluationMethod;
+      payload.evaluationMethod = updates.evaluationMethod;
+    }
     if (updates.parentEoiId !== undefined) payload.parent_eoi_id = updates.parentEoiId;
     if (updates.spawnedRfpId !== undefined) payload.spawned_rfp_id = updates.spawnedRfpId;
     if (updates.eoiShortlistStatus !== undefined) payload.eoi_shortlist_status = updates.eoiShortlistStatus;

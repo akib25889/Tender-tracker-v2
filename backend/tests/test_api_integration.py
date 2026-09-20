@@ -1623,7 +1623,8 @@ def test_24_tender_procurement_governance_attributes():
         "tender_type": "International Competitive Bidding (ICB)",
         "budget_type": "Development Budget (ADP / Capex)",
         "source_of_fund": "World Bank (IDA / IBRD)",
-        "procurement_method": "Quality & Cost Based Selection (QCBS)",
+        "procurement_method": "Single Stage Two Envelope (SSTE)",
+        "evaluation_method": "Quality & Cost Based Selection (QCBS)",
     }
 
     # 1. Create tender with procurement governance fields
@@ -1634,7 +1635,9 @@ def test_24_tender_procurement_governance_attributes():
     assert created["tender_type"] == "International Competitive Bidding (ICB)"
     assert created["budget_type"] == "Development Budget (ADP / Capex)"
     assert created["source_of_fund"] == "World Bank (IDA / IBRD)"
-    assert created["procurement_method"] == "Quality & Cost Based Selection (QCBS)"
+    assert created["procurement_method"] == "Single Stage Two Envelope (SSTE)"
+    assert created["evaluation_method"] == "Quality & Cost Based Selection (QCBS)"
+    assert created["evaluationMethod"] == "Quality & Cost Based Selection (QCBS)"
 
     # 2. Retrieve tender via GET
     get_res = client.get(f"/api/tenders/{test_id}")
@@ -1643,14 +1646,17 @@ def test_24_tender_procurement_governance_attributes():
     assert retrieved["tender_type"] == "International Competitive Bidding (ICB)"
     assert retrieved["budget_type"] == "Development Budget (ADP / Capex)"
     assert retrieved["source_of_fund"] == "World Bank (IDA / IBRD)"
-    assert retrieved["procurement_method"] == "Quality & Cost Based Selection (QCBS)"
+    assert retrieved["procurement_method"] == "Single Stage Two Envelope (SSTE)"
+    assert retrieved["evaluation_method"] == "Quality & Cost Based Selection (QCBS)"
+    assert retrieved["evaluationMethod"] == "Quality & Cost Based Selection (QCBS)"
 
     # 3. Update procurement governance attributes
     update_payload = {
         "tender_type": "National Competitive Bidding (NCB)",
         "budget_type": "Own Funds / Corporate Budget",
         "source_of_fund": "Government of Bangladesh (GoB)",
-        "procurement_method": "Single Stage Two Envelope (SSTE)",
+        "procurement_method": "Open Tendering Method (OTM)",
+        "evaluationMethod": "Least Cost Selection (LCS)",
     }
     put_res = client.put(f"/api/tenders/{test_id}", json=update_payload)
     assert put_res.status_code == 200
@@ -1658,7 +1664,9 @@ def test_24_tender_procurement_governance_attributes():
     assert updated["tender_type"] == "National Competitive Bidding (NCB)"
     assert updated["budget_type"] == "Own Funds / Corporate Budget"
     assert updated["source_of_fund"] == "Government of Bangladesh (GoB)"
-    assert updated["procurement_method"] == "Single Stage Two Envelope (SSTE)"
+    assert updated["procurement_method"] == "Open Tendering Method (OTM)"
+    assert updated["evaluation_method"] == "Least Cost Selection (LCS)"
+    assert updated["evaluationMethod"] == "Least Cost Selection (LCS)"
 
     # 4. Cleanup
     del_res = client.delete(f"/api/tenders/{test_id}")
