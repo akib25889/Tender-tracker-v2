@@ -66,10 +66,10 @@ class ImportantClauseSchema(BaseModel):
 
 class TenderBase(BaseModel):
     reference_no: Optional[str] = ""
-    title: str
-    organization: str
-    country: str
-    category: str
+    title: Optional[str] = ""
+    organization: Optional[str] = ""
+    country: Optional[str] = ""
+    category: Optional[str] = ""
     estimated_value: Optional[float] = None
     currency: str = "USD"
     exchange_rate_to_bdt: Optional[float] = 122.0

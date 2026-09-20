@@ -38,6 +38,11 @@ import {
 } from '../../types/tender';
 import { ImportantClausesManager } from '../tender/ImportantClausesManager';
 import { FinancialScenariosEditor } from '../tender/FinancialScenariosEditor';
+import { DateTimePicker } from '../ui/DateTimePicker';
+import {
+  combineDateTimeWithOffset,
+  formatTimeDisplay,
+} from '../../utils/dateTimeUtils';
 
 const CLASSIFICATIONS: TenderClassification[] = [
   'SOFTWARE / IT RELATED',
@@ -126,7 +131,14 @@ export const NewTenderModal: React.FC = () => {
   const [country, setCountry] = useState('');
   const [portal, setPortal] = useState('');
   const [publishedDate, setPublishedDate] = useState('');
+  const [publishedHour, setPublishedHour] = useState('');
+  const [publishedMinute, setPublishedMinute] = useState('');
+  const [publishedTimezone, setPublishedTimezone] = useState('BST');
+
   const [lastDate, setLastDate] = useState('');
+  const [closeHour, setCloseHour] = useState('');
+  const [closeMinute, setCloseMinute] = useState('');
+  const [closeTimezone, setCloseTimezone] = useState('BST');
   const [submissionTime, setSubmissionTime] = useState('');
   const [estimatedValue, setEstimatedValue] = useState('');
   const [tenderCurrency, setTenderCurrency] = useState('USD');
@@ -309,7 +321,13 @@ export const NewTenderModal: React.FC = () => {
     setCountry('');
     setPortal('');
     setPublishedDate('');
+    setPublishedHour('');
+    setPublishedMinute('');
+    setPublishedTimezone('BST');
     setLastDate('');
+    setCloseHour('');
+    setCloseMinute('');
+    setCloseTimezone('BST');
     setSubmissionTime('');
     setEstimatedValue('');
     setTenderCurrency('USD');
@@ -454,6 +472,10 @@ export const NewTenderModal: React.FC = () => {
       addCategory({ name: category.trim() });
     }
 
+    const parsedDeadline = combineDateTimeWithOffset(lastDate, closeHour, closeMinute, closeTimezone);
+    const combinedPublished = combineDateTimeWithOffset(publishedDate, publishedHour, publishedMinute, publishedTimezone);
+    const formattedSubmissionTime = formatTimeDisplay(closeHour, closeMinute, closeTimezone) || submissionTime;
+
     addTender({
       id: newTenderId,
       referenceNo: referenceNo.trim() || '',
@@ -482,10 +504,14 @@ export const NewTenderModal: React.FC = () => {
       parentEoiId: parentEoiId || undefined,
       priority,
       stage: 'DISCOVERED',
-      submissionDeadline:
-        lastDate && !isNaN(new Date(lastDate).getTime())
-          ? new Date(lastDate).toISOString()
-          : '',
+      publishedDate: combinedPublished || publishedDate,
+      publishedHour,
+      publishedMinute,
+      publishedTimezone,
+      submissionDeadline: parsedDeadline,
+      closeHour,
+      closeMinute,
+      closeTimezone,
       // Full Lifecycle Procurement Milestones (Req #20)
       openingDate: openingDate || undefined,
       contractSigningDate: contractSigningDate || undefined,
@@ -504,8 +530,14 @@ export const NewTenderModal: React.FC = () => {
         classification,
         projectName,
         portal,
-        publishedDate,
-        submissionTime,
+        publishedDate: combinedPublished || publishedDate,
+        publishedHour,
+        publishedMinute,
+        publishedTimezone,
+        submissionTime: formattedSubmissionTime,
+        closeHour,
+        closeMinute,
+        closeTimezone,
         mainIdea,
         tenderType,
         budgetType,
@@ -559,7 +591,7 @@ export const NewTenderModal: React.FC = () => {
         hardware: hardware.filter((h) => h.equipment.trim().length > 0),
         dates: {
           clarificationDeadline,
-          submissionDeadline: `${lastDate} ${submissionTime}`,
+          submissionDeadline: parsedDeadline || (lastDate ? `${lastDate} ${formattedSubmissionTime}`.trim() : ''),
           schedulePurchaseDeadline,
           openingDate,
           contractSigningDate,
@@ -711,7 +743,7 @@ export const NewTenderModal: React.FC = () => {
               {/* Classification Pills */}
               <div>
                 <label className="block font-bold text-[#0F172A] mb-1.5">
-                  Tender Domain Classification *
+                  Tender Domain Classification
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {CLASSIFICATIONS.map((c) => (
@@ -735,11 +767,10 @@ export const NewTenderModal: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-semibold text-[#0F172A] mb-1">
-                    Tender Title *
+                    Tender Title
                   </label>
                   <input
                     type="text"
-                    required
                     placeholder="Full statutory title from notice"
                     value={tenderTitle}
                     onChange={(e) => setTenderTitle(e.target.value)}
@@ -765,7 +796,7 @@ export const NewTenderModal: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
                   <label className="block font-semibold text-[#0F172A] mb-1">
-                    Tender ID *
+                    Tender ID
                   </label>
                   <input
                     type="text"
@@ -804,11 +835,10 @@ export const NewTenderModal: React.FC = () => {
 
                 <div>
                   <label className="block font-semibold text-[#0F172A] mb-1">
-                    Country / Territory *
+                    Country / Territory
                   </label>
                   <input
                     type="text"
-                    required
                     placeholder="e.g. Bangladesh"
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
@@ -821,11 +851,10 @@ export const NewTenderModal: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-semibold text-[#0F172A] mb-1">
-                    Client / Issuing Organization *
+                    Client / Issuing Organization
                   </label>
                   <input
                     type="text"
-                    required
                     placeholder="e.g. Ministry of Land / World Bank / UNDP"
                     value={client}
                     onChange={(e) => setClient(e.target.value)}
@@ -836,7 +865,7 @@ export const NewTenderModal: React.FC = () => {
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="block font-semibold text-[#0F172A]">
-                      Scope of Work (SOW) Category *
+                      Scope of Work (SOW) Category
                     </label>
                     <button
                       type="button"
@@ -859,7 +888,6 @@ export const NewTenderModal: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <input
                         type="text"
-                        required
                         autoFocus
                         placeholder="e.g. Industrial IoT & SCADA, Renewable Energy..."
                         value={category}
@@ -929,7 +957,7 @@ export const NewTenderModal: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                   <div>
                     <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
-                      Tender Currency *
+                      Tender Currency
                     </label>
                     <select
                       value={tenderCurrency}
@@ -947,11 +975,10 @@ export const NewTenderModal: React.FC = () => {
 
                   <div>
                     <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
-                      Net Value ({tenderCurrency}) *
+                      Net Value ({tenderCurrency})
                     </label>
                     <input
                       type="number"
-                      required
                       min="0"
                       step="any"
                       value={estimatedValue}
@@ -963,11 +990,10 @@ export const NewTenderModal: React.FC = () => {
 
                   <div>
                     <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
-                      Rate vs BDT (At that time) *
+                      Rate vs BDT (At that time)
                     </label>
                     <input
                       type="number"
-                      required
                       step="any"
                       disabled={tenderCurrency === 'BDT'}
                       value={tenderCurrency === 'BDT' ? '1.0' : exchangeRateToBdt}
@@ -1026,7 +1052,7 @@ export const NewTenderModal: React.FC = () => {
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
-                        Tender Type *
+                        Tender Type
                       </label>
                       <button
                         type="button"
@@ -1131,7 +1157,7 @@ export const NewTenderModal: React.FC = () => {
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
-                        Budget Type *
+                        Budget Type
                       </label>
                       <button
                         type="button"
@@ -1185,7 +1211,7 @@ export const NewTenderModal: React.FC = () => {
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
-                        Source of Fund (Financier) *
+                        Source of Fund (Financier)
                       </label>
                       <button
                         type="button"
@@ -1239,7 +1265,7 @@ export const NewTenderModal: React.FC = () => {
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
-                        Procurement Method *
+                        Procurement Method
                       </label>
                       <button
                         type="button"
@@ -1472,66 +1498,64 @@ export const NewTenderModal: React.FC = () => {
                 </div>
               </div>
 
-              {/* Published Date & Operational Priority */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
-                    Published Notice Date
-                  </label>
-                  <input
-                    type="date"
-                    value={publishedDate}
-                    onChange={(e) => {
-                      setPublishedDate(e.target.value);
-                      if (!exchangeRateDate) setExchangeRateDate(e.target.value);
-                    }}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
-                    Operational Priority *
-                  </label>
-                  <select
-                    value={priority}
-                    onChange={(e) => setPriority(e.target.value as TenderPriority)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-                  >
-                    <option value="CRITICAL">CRITICAL (Closing &lt; 48h / Tier 1)</option>
-                    <option value="HIGH">HIGH Priority</option>
-                    <option value="MEDIUM">MEDIUM Priority</option>
-                    <option value="LOW">LOW Priority</option>
-                  </select>
-                </div>
+              {/* Operational Priority */}
+              <div>
+                <label className="block font-semibold text-[#0F172A] mb-1">
+                  Operational Priority
+                </label>
+                <select
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value as TenderPriority)}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                >
+                  <option value="CRITICAL">CRITICAL (Closing &lt; 48h / Tier 1)</option>
+                  <option value="HIGH">HIGH Priority</option>
+                  <option value="MEDIUM">MEDIUM Priority</option>
+                  <option value="LOW">LOW Priority</option>
+                </select>
               </div>
 
-              {/* Submission Deadline & Time */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
-                    Last Date (Submission Deadline) *
-                  </label>
-                  <input
-                    type="date"
-                    required
-                    value={lastDate}
-                    onChange={(e) => setLastDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+              {/* Published Date & Submission Cutoff Time Pickers */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-3 bg-slate-50/50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-800">
+                  <DateTimePicker
+                    label="Notice / Published Date & Time"
+                    sublabel="Official issue date, time, and timezone of tender announcement"
+                    dateValue={publishedDate}
+                    hourValue={publishedHour}
+                    minuteValue={publishedMinute}
+                    timezoneValue={publishedTimezone}
+                    onDateChange={(val) => {
+                      setPublishedDate(val);
+                      if (!exchangeRateDate) setExchangeRateDate(val);
+                    }}
+                    onHourChange={setPublishedHour}
+                    onMinuteChange={setPublishedMinute}
+                    onTimezoneChange={setPublishedTimezone}
                   />
                 </div>
 
-                <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
-                    Submission Cutoff Time *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. 14:00 BST / 12:00 CET"
-                    value={submissionTime}
-                    onChange={(e) => setSubmissionTime(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                <div className="p-3 bg-slate-50/50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-800">
+                  <DateTimePicker
+                    label="Last Date (Submission Deadline) & Cutoff Time"
+                    sublabel="Official submission closing deadline and local cutoff time"
+                    dateValue={lastDate}
+                    hourValue={closeHour}
+                    minuteValue={closeMinute}
+                    timezoneValue={closeTimezone}
+                    onDateChange={setLastDate}
+                    onHourChange={(val) => {
+                      setCloseHour(val);
+                      setSubmissionTime(formatTimeDisplay(val, closeMinute, closeTimezone));
+                    }}
+                    onMinuteChange={(val) => {
+                      setCloseMinute(val);
+                      setSubmissionTime(formatTimeDisplay(closeHour, val, closeTimezone));
+                    }}
+                    onTimezoneChange={(val) => {
+                      setCloseTimezone(val);
+                      setSubmissionTime(formatTimeDisplay(closeHour, closeMinute, val));
+                    }}
                   />
                 </div>
               </div>
@@ -1630,7 +1654,7 @@ export const NewTenderModal: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[11px] font-semibold text-[#475569] mb-1">
-                      Security Deposit Amount ({tenderCurrency}) *
+                      Security Deposit Amount ({tenderCurrency})
                     </label>
                     <input
                       type="number"
@@ -1645,7 +1669,7 @@ export const NewTenderModal: React.FC = () => {
 
                   <div>
                     <label className="block text-[11px] font-semibold text-[#475569] mb-1">
-                      Security Instrument / Method *
+                      Security Instrument / Method
                     </label>
                     <select
                       value={tenderSecurityMethod}
@@ -2401,7 +2425,7 @@ export const NewTenderModal: React.FC = () => {
 
                   <div>
                     <label className="block text-[11px] font-semibold text-[#475569] mb-1">
-                      Tender Document / Bid Opening Date *
+                      Tender Document / Bid Opening Date
                     </label>
                     <input
                       type="date"
@@ -2413,7 +2437,7 @@ export const NewTenderModal: React.FC = () => {
 
                   <div>
                     <label className="block text-[11px] font-semibold text-[#475569] mb-1">
-                      Contract Signing Date *
+                      Contract Signing Date
                     </label>
                     <input
                       type="date"
@@ -2425,7 +2449,7 @@ export const NewTenderModal: React.FC = () => {
 
                   <div>
                     <label className="block text-[11px] font-semibold text-[#475569] mb-1">
-                      Work / Project Start Date (W.O.) *
+                      Work / Project Start Date (W.O.)
                     </label>
                     <input
                       type="date"
@@ -2453,7 +2477,7 @@ export const NewTenderModal: React.FC = () => {
 
                   <div>
                     <label className="block text-[11px] font-semibold text-[#475569] mb-1">
-                      Product / System Handover Date *
+                      Product / System Handover Date
                     </label>
                     <input
                       type="date"

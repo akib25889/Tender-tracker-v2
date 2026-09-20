@@ -250,6 +250,36 @@ export const STANDARD_EVALUATION_METHODS = [
   'Fixed Budget Selection (FBS)',
 ] as const;
 
+export interface TimezoneOption {
+  code: string;
+  label: string;
+  offset: string;
+}
+
+export const STANDARD_TIMEZONES: TimezoneOption[] = [
+  { code: 'BST', label: 'BST (UTC+06:00 - Bangladesh)', offset: '+06:00' },
+  { code: 'UTC', label: 'UTC (UTC+00:00 - Universal)', offset: '+00:00' },
+  { code: 'GMT', label: 'GMT (UTC+00:00 - Greenwich)', offset: '+00:00' },
+  { code: 'EST', label: 'EST (UTC-05:00 - US Eastern)', offset: '-05:00' },
+  { code: 'EDT', label: 'EDT (UTC-04:00 - US Eastern Daylight)', offset: '-04:00' },
+  { code: 'CST', label: 'CST (UTC-06:00 - US Central)', offset: '-06:00' },
+  { code: 'CDT', label: 'CDT (UTC-05:00 - US Central Daylight)', offset: '-05:00' },
+  { code: 'MST', label: 'MST (UTC-07:00 - US Mountain)', offset: '-07:00' },
+  { code: 'MDT', label: 'MDT (UTC-06:00 - US Mountain Daylight)', offset: '-06:00' },
+  { code: 'PST', label: 'PST (UTC-08:00 - US Pacific)', offset: '-08:00' },
+  { code: 'PDT', label: 'PDT (UTC-07:00 - US Pacific Daylight)', offset: '-07:00' },
+  { code: 'IST', label: 'IST (UTC+05:30 - India)', offset: '+05:30' },
+  { code: 'CET', label: 'CET (UTC+01:00 - Central European)', offset: '+01:00' },
+  { code: 'CEST', label: 'CEST (UTC+02:00 - Central European Summer)', offset: '+02:00' },
+  { code: 'GST', label: 'GST (UTC+04:00 - Gulf / UAE)', offset: '+04:00' },
+  { code: 'SGT', label: 'SGT (UTC+08:00 - Singapore)', offset: '+08:00' },
+  { code: 'JST', label: 'JST (UTC+09:00 - Tokyo)', offset: '+09:00' },
+  { code: 'AEST', label: 'AEST (UTC+10:00 - Sydney)', offset: '+10:00' },
+];
+
+export const STANDARD_HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
+export const STANDARD_MINUTES = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
+
 export interface TenderPersonnelReq {
   position: string;
   qualification: string;
@@ -274,7 +304,13 @@ export interface TenderExtendedSummary {
   shortTitle?: string;
   portal?: string;
   publishedDate?: string;
+  publishedHour?: string;
+  publishedMinute?: string;
+  publishedTimezone?: string;
   submissionTime?: string;
+  closeHour?: string;
+  closeMinute?: string;
+  closeTimezone?: string;
   mainIdea?: string;
   commercial?: {
     tenderSecurity?: string;
@@ -410,7 +446,14 @@ export interface Tender {
   stage: TenderStage;
   decision: DecisionStatus;
   priority: TenderPriority;
+  publishedDate?: string;
+  publishedHour?: string;
+  publishedMinute?: string;
+  publishedTimezone?: string;
   submissionDeadline: string;
+  closeHour?: string;
+  closeMinute?: string;
+  closeTimezone?: string;
   daysRemaining: number;
   hoursRemaining: number;
   readinessScore: number;
