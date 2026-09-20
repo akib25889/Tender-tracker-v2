@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, NavLink, Outlet, useLocation, useNavigate, Link } from 'react-router-dom';
 import {
   FileText,
@@ -46,32 +46,8 @@ import { TenderCommentsSection } from '../components/ui/TenderCommentsSection';
 import { TenderSummaryDocument } from '../components/ui/TenderSummaryDocument';
 import { TenderStage } from '../types/tender';
 import { NotFoundPage } from './status/NotFoundPage';
+import { getDualDeadlineInfo } from '../utils/dateTimeUtils';
 
-function formatTenderDeadlineTime(deadlineStr?: string): string {
-  if (!deadlineStr) return 'TBD';
-  const d = new Date(deadlineStr);
-  if (isNaN(d.getTime())) return deadlineStr;
-  const dateStr = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-
-  if (deadlineStr.includes('-04:00') || deadlineStr.includes('-0400')) {
-    return `${dateStr} (17:00 EDT / US Eastern)`;
-  }
-  if (deadlineStr.includes('-05:00') || deadlineStr.includes('-0500')) {
-    return `${dateStr} (17:00 EST / US Eastern)`;
-  }
-  if (deadlineStr.includes('-07:00') || deadlineStr.includes('-08:00')) {
-    return `${dateStr} (17:00 PDT / US Pacific)`;
-  }
-  if (deadlineStr.includes('+02:00')) {
-    return `${dateStr} (16:00 UTC+2)`;
-  }
-  if (deadlineStr.includes('T')) {
-    const timePart = deadlineStr.split('T')[1].slice(0, 5);
-    const tzLabel = deadlineStr.endsWith('Z') ? 'UTC' : 'BST';
-    return `${dateStr} (${timePart} ${tzLabel})`;
-  }
-  return dateStr;
-}
 
 export const TenderDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -99,6 +75,11 @@ export const TenderDetailPage: React.FC = () => {
   if (!tender) {
     return <NotFoundPage resource="Tender Proposal" resourceId={id} />;
   }
+
+  const dualCutoffInfo = useMemo(
+    () => (tender ? getDualDeadlineInfo(tender.submissionDeadline) : null),
+    [tender?.submissionDeadline]
+  );
 
   const handleDeleteTender = () => {
     if (window.confirm(`Are you sure you want to permanently delete tender "${tender.title}" (${tender.id})?`)) {
@@ -325,12 +306,34 @@ export const TenderDetailPage: React.FC = () => {
                 Lead: <span className="text-[#0F172A] font-semibold ml-0.5">{tender.leadOwner.name}</span>
               </span>
               <span className="text-[#CBD5E1]">•</span>
-              <span className="flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-[#94A3B8]" />
-                Cutoff: <span className="text-[#0F172A] font-medium ml-0.5">
-                  {formatTenderDeadlineTime(tender.submissionDeadline)}
-                </span>
-              </span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <Clock className="w-3.5 h-3.5 text-[#94A3B8] shrink-0" />
+                <span>Cutoff:</span>
+                {dualCutoffInfo ? (
+                  <span className="inline-flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[#0F172A] dark:text-slate-100 font-semibold ml-0.5">
+                      {dualCutoffInfo.isPrimaryBd ? dualCutoffInfo.bdDisplay : dualCutoffInfo.intlDisplay}
+                    </span>
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-mono font-bold border shadow-2xs ${
+                        dualCutoffInfo.isPrimaryBd
+                          ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800'
+                          : 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+                      }`}
+                      title={
+                        dualCutoffInfo.isPrimaryBd
+                          ? 'Coordinated Universal Time (UTC / GMT)'
+                          : 'Equivalent Bangladesh Standard Time (BST / UTC+6)'
+                      }
+                    >
+                      <span>{dualCutoffInfo.isPrimaryBd ? "🌐 Int'l:" : '🇧🇩 BD Time:'}</span>
+                      <span>{dualCutoffInfo.isPrimaryBd ? dualCutoffInfo.intlDisplay : dualCutoffInfo.bdDisplay}</span>
+                    </span>
+                  </span>
+                ) : (
+                  <span className="text-[#0F172A] dark:text-slate-100 font-medium ml-0.5">TBD</span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -906,17 +909,33 @@ export const TenderDetailPage: React.FC = () => {
                     </div>
 
                     {/* Final Closing Deadline */}
-                    <div className="p-3.5 rounded-xl bg-[#FFFBEB] border border-[#FDE68A]">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#B45309] block mb-1">
+                    <div className="p-3.5 rounded-xl bg-[#FFFBEB] dark:bg-amber-950/20 border border-[#FDE68A] dark:border-amber-800/40">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#B45309] dark:text-amber-400 block mb-1">
                         Submission Deadline &amp; Closing
                       </span>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold font-mono text-[#92400E]">
-                          {formatTenderDeadlineTime(tender.submissionDeadline)}
-                        </span>
-                        <span className="text-[10px] font-bold font-mono bg-[#FDE68A] text-[#92400E] px-1.5 py-0.5 rounded">
-                          T-{tender.daysRemaining} Days
-                        </span>
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold font-mono text-[#92400E] dark:text-amber-300">
+                            {dualCutoffInfo ? (dualCutoffInfo.isPrimaryBd ? dualCutoffInfo.bdDisplay : dualCutoffInfo.intlDisplay) : 'TBD'}
+                          </span>
+                          <span className="text-[10px] font-bold font-mono bg-[#FDE68A] dark:bg-amber-900/60 text-[#92400E] dark:text-amber-200 px-1.5 py-0.5 rounded">
+                            T-{tender.daysRemaining} Days
+                          </span>
+                        </div>
+                        {dualCutoffInfo && (
+                          <div
+                            className={`flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded border ${
+                              dualCutoffInfo.isPrimaryBd
+                                ? 'bg-purple-50/80 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border-purple-200/80 dark:border-purple-800/60'
+                                : 'bg-blue-50/80 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-200/80 dark:border-blue-800/60'
+                            }`}
+                          >
+                            <span className="font-sans font-semibold">
+                              {dualCutoffInfo.isPrimaryBd ? "🌐 Int'l Time:" : '🇧🇩 BD Time:'}
+                            </span>
+                            <span>{dualCutoffInfo.isPrimaryBd ? dualCutoffInfo.intlDisplay : dualCutoffInfo.bdDisplay}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

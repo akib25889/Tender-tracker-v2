@@ -12,11 +12,11 @@ interface TimezoneOption {
 }
 
 const TZ_OPTIONS: TimezoneOption[] = [
-  { id: 'dual', label: 'Dual Clocks (Dhaka | UTC+2)', shortLabel: 'Dual', badge: 'BST & UTC+2', offset: 6 },
-  { id: 'local', label: 'Dhaka Local (BST)', shortLabel: 'Dhaka', badge: 'UTC+6', offset: 6 },
+  { id: 'dual', label: 'Dual Clocks (Dhaka BD Time | UTC Int\'l)', shortLabel: 'BD | UTC', badge: 'BD & UTC', offset: 6 },
+  { id: 'local', label: 'Dhaka Local (BST / BD Time)', shortLabel: 'Dhaka', badge: 'UTC+6', offset: 6 },
+  { id: 'utc', label: 'Universal Time Coordinated (UTC / GMT Int\'l)', shortLabel: 'UTC', badge: 'UTC+0', offset: 0 },
   { id: 'us_east', label: 'New York / US Eastern (EDT)', shortLabel: 'New York', badge: 'UTC-4', offset: -4 },
-  { id: 'utc2', label: 'UTC+2 (Eastern Europe / Egypt)', shortLabel: 'UTC+2', badge: 'UTC+2', offset: 2 },
-  { id: 'utc', label: 'Universal Time Coordinated', shortLabel: 'UTC', badge: 'UTC+0', offset: 0 },
+  { id: 'utc2', label: 'UTC+2 (Eastern Europe / Egypt / South Africa)', shortLabel: 'UTC+2', badge: 'UTC+2', offset: 2 },
 ];
 
 function formatTime(date: Date, offsetHours: number, withSeconds = false): string {
@@ -79,20 +79,20 @@ export const HeaderClock: React.FC = () => {
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-100/90 hover:bg-slate-200/80 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium transition-colors shadow-2xs cursor-pointer select-none"
-        title="Switch timezone view (Dhaka UTC+6, US Eastern EDT, UTC+2, UTC)"
+        title="Switch timezone view (Dhaka BD Time UTC+6, Universal Time UTC/GMT, US Eastern EDT)"
       >
         <Clock className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
 
         {mode === 'dual' && (
           <div className="flex items-center gap-1.5 font-mono text-[11.5px] tracking-tight">
-            <span className="font-semibold text-slate-800 dark:text-slate-100">
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-sans mr-0.5">Dhaka</span>
+            <span className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-0.5">
+              <span className="text-[10px] text-blue-600 dark:text-blue-400 font-sans font-bold mr-0.5">BD</span>
               {dhakaTime}
             </span>
             <span className="text-slate-300 dark:text-slate-600">|</span>
-            <span className="text-slate-600 dark:text-slate-300">
-              <span className="text-[10px] text-slate-400 dark:text-slate-400 font-sans mr-0.5">UTC+2</span>
-              {utc2Time}
+            <span className="text-slate-600 dark:text-slate-300 flex items-center gap-0.5">
+              <span className="text-[10px] text-purple-600 dark:text-purple-400 font-sans font-bold mr-0.5">UTC</span>
+              {utcTime}
             </span>
           </div>
         )}
@@ -158,7 +158,7 @@ export const HeaderClock: React.FC = () => {
               const isSelected = mode === opt.id;
               const liveSample =
                 opt.id === 'dual'
-                  ? `${formatTime(now, 6)} · ${formatTime(now, 2)}`
+                  ? `${formatTime(now, 6)} · ${formatTime(now, 0)}`
                   : opt.id === 'local'
                   ? formatTime(now, 6, true)
                   : opt.id === 'us_east'

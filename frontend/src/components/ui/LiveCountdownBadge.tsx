@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Clock } from 'lucide-react';
+import { getDualDeadlineInfo } from '../../utils/dateTimeUtils';
 
 interface LiveCountdownBadgeProps {
   deadlineStr?: string;
@@ -63,6 +64,8 @@ export const LiveCountdownBadge: React.FC<LiveCountdownBadgeProps> = ({
     calculateTimeLeft(deadlineStr, daysRemaining, hoursRemaining)
   );
 
+  const dualInfo = deadlineStr ? getDualDeadlineInfo(deadlineStr) : null;
+
   useEffect(() => {
     const tick = () => {
       setTimeLeft(calculateTimeLeft(deadlineStr, daysRemaining, hoursRemaining));
@@ -94,7 +97,11 @@ export const LiveCountdownBadge: React.FC<LiveCountdownBadgeProps> = ({
           ? 'bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300 border border-red-200 dark:border-red-800'
           : 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
       } shadow-2xs ${className}`}
-      title="Live countdown to submission cutoff in Bangladesh Standard Time (BST / UTC+6)"
+      title={
+        dualInfo
+          ? `Cutoff: ${dualInfo.intlDisplay} · BD Time: ${dualInfo.bdDisplay}`
+          : 'Live countdown to submission cutoff'
+      }
     >
       <Clock
         className={`w-3.5 h-3.5 ${
@@ -103,8 +110,11 @@ export const LiveCountdownBadge: React.FC<LiveCountdownBadgeProps> = ({
       />
       <span>{timeLeft}</span>
       {!isExpired && (
-        <span className="text-[10px] font-sans font-semibold text-blue-600/80 dark:text-blue-400/80 uppercase tracking-wider ml-0.5">
-          BD Time
+        <span
+          className="text-[10px] font-sans font-semibold text-blue-600/80 dark:text-blue-400/80 uppercase tracking-wider ml-0.5"
+          title="Countdown synchronised with BD Time & International Time"
+        >
+          {dualInfo && !dualInfo.isPrimaryBd ? "Int'l / BD" : 'BD Time'}
         </span>
       )}
     </span>
