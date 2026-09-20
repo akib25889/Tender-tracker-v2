@@ -257,24 +257,74 @@ export interface TimezoneOption {
 }
 
 export const STANDARD_TIMEZONES: TimezoneOption[] = [
-  { code: 'BST', label: 'BST (UTC+06:00 - Bangladesh)', offset: '+06:00' },
-  { code: 'UTC', label: 'UTC (UTC+00:00 - Universal)', offset: '+00:00' },
-  { code: 'GMT', label: 'GMT (UTC+00:00 - Greenwich)', offset: '+00:00' },
-  { code: 'EST', label: 'EST (UTC-05:00 - US Eastern)', offset: '-05:00' },
-  { code: 'EDT', label: 'EDT (UTC-04:00 - US Eastern Daylight)', offset: '-04:00' },
-  { code: 'CST', label: 'CST (UTC-06:00 - US Central)', offset: '-06:00' },
-  { code: 'CDT', label: 'CDT (UTC-05:00 - US Central Daylight)', offset: '-05:00' },
-  { code: 'MST', label: 'MST (UTC-07:00 - US Mountain)', offset: '-07:00' },
-  { code: 'MDT', label: 'MDT (UTC-06:00 - US Mountain Daylight)', offset: '-06:00' },
-  { code: 'PST', label: 'PST (UTC-08:00 - US Pacific)', offset: '-08:00' },
-  { code: 'PDT', label: 'PDT (UTC-07:00 - US Pacific Daylight)', offset: '-07:00' },
-  { code: 'IST', label: 'IST (UTC+05:30 - India)', offset: '+05:30' },
-  { code: 'CET', label: 'CET (UTC+01:00 - Central European)', offset: '+01:00' },
+  // --- South Asia & Primary Hubs ---
+  { code: 'BST', label: 'BST (UTC+06:00 - Bangladesh Standard)', offset: '+06:00' },
+  { code: 'IST', label: 'IST (UTC+05:30 - India & Sri Lanka)', offset: '+05:30' },
+  { code: 'PKT', label: 'PKT (UTC+05:00 - Pakistan Standard)', offset: '+05:00' },
+  { code: 'NPT', label: 'NPT (UTC+05:45 - Nepal Time)', offset: '+05:45' },
+  { code: 'BTT', label: 'BTT (UTC+06:00 - Bhutan Time)', offset: '+06:00' },
+  { code: 'MMT', label: 'MMT (UTC+06:30 - Myanmar Time)', offset: '+06:30' },
+  { code: 'MVT', label: 'MVT (UTC+05:00 - Maldives Time)', offset: '+05:00' },
+
+  // --- Universal & Western Europe ---
+  { code: 'UTC', label: 'UTC (UTC+00:00 - Coordinated Universal)', offset: '+00:00' },
+  { code: 'GMT', label: 'GMT (UTC+00:00 - Greenwich Mean Time / London)', offset: '+00:00' },
+  { code: 'WEST', label: 'WEST (UTC+01:00 - Western European Summer / UK BST)', offset: '+01:00' },
+  { code: 'CET', label: 'CET (UTC+01:00 - Central European / Paris / Berlin)', offset: '+01:00' },
   { code: 'CEST', label: 'CEST (UTC+02:00 - Central European Summer)', offset: '+02:00' },
-  { code: 'GST', label: 'GST (UTC+04:00 - Gulf / UAE)', offset: '+04:00' },
-  { code: 'SGT', label: 'SGT (UTC+08:00 - Singapore)', offset: '+08:00' },
-  { code: 'JST', label: 'JST (UTC+09:00 - Tokyo)', offset: '+09:00' },
-  { code: 'AEST', label: 'AEST (UTC+10:00 - Sydney)', offset: '+10:00' },
+  { code: 'EET', label: 'EET (UTC+02:00 - Eastern European / Cairo / Athens)', offset: '+02:00' },
+  { code: 'EEST', label: 'EEST (UTC+03:00 - Eastern European Summer)', offset: '+03:00' },
+  { code: 'MSK', label: 'MSK (UTC+03:00 - Moscow Standard)', offset: '+03:00' },
+
+  // --- Middle East & Central Asia ---
+  { code: 'AST', label: 'AST (UTC+03:00 - Arabia Standard / Riyadh / Doha)', offset: '+03:00' },
+  { code: 'IRST', label: 'IRST (UTC+03:30 - Iran Standard / Tehran)', offset: '+03:30' },
+  { code: 'GST', label: 'GST (UTC+04:00 - Gulf Standard / Dubai / Abu Dhabi)', offset: '+04:00' },
+  { code: 'AFT', label: 'AFT (UTC+04:30 - Afghanistan Time / Kabul)', offset: '+04:30' },
+  { code: 'UZT', label: 'UZT (UTC+05:00 - Uzbekistan / Tashkent)', offset: '+05:00' },
+  { code: 'ALMT', label: 'ALMT (UTC+05:00 - Kazakhstan / Almaty)', offset: '+05:00' },
+
+  // --- Africa (Key for UN, AfDB, World Bank tenders) ---
+  { code: 'WAT', label: 'WAT (UTC+01:00 - West Africa / Nigeria / Lagos)', offset: '+01:00' },
+  { code: 'CAT', label: 'CAT (UTC+02:00 - Central Africa / South Africa / Harare)', offset: '+02:00' },
+  { code: 'EAT', label: 'EAT (UTC+03:00 - East Africa / Kenya / Nairobi)', offset: '+03:00' },
+
+  // --- Southeast & East Asia ---
+  { code: 'ICT', label: 'ICT (UTC+07:00 - Indochina / Bangkok / Jakarta / Hanoi)', offset: '+07:00' },
+  { code: 'SGT', label: 'SGT (UTC+08:00 - Singapore Standard)', offset: '+08:00' },
+  { code: 'MYT', label: 'MYT (UTC+08:00 - Malaysia / Kuala Lumpur)', offset: '+08:00' },
+  { code: 'PHT', label: 'PHT (UTC+08:00 - Philippines / Manila)', offset: '+08:00' },
+  { code: 'HKT', label: 'HKT (UTC+08:00 - Hong Kong Time)', offset: '+08:00' },
+  { code: 'CST_CN', label: 'CST (UTC+08:00 - China Standard / Beijing)', offset: '+08:00' },
+  { code: 'JST', label: 'JST (UTC+09:00 - Japan Standard / Tokyo)', offset: '+09:00' },
+  { code: 'KST', label: 'KST (UTC+09:00 - Korea Standard / Seoul)', offset: '+09:00' },
+
+  // --- Oceania & Pacific ---
+  { code: 'AWST', label: 'AWST (UTC+08:00 - Australian Western / Perth)', offset: '+08:00' },
+  { code: 'ACST', label: 'ACST (UTC+09:30 - Australian Central / Darwin)', offset: '+09:30' },
+  { code: 'AEST', label: 'AEST (UTC+10:00 - Australian Eastern / Sydney)', offset: '+10:00' },
+  { code: 'AEDT', label: 'AEDT (UTC+11:00 - Australian Eastern Daylight)', offset: '+11:00' },
+  { code: 'NZST', label: 'NZST (UTC+12:00 - New Zealand / Wellington)', offset: '+12:00' },
+  { code: 'NZDT', label: 'NZDT (UTC+13:00 - New Zealand Daylight)', offset: '+13:00' },
+  { code: 'FJT', label: 'FJT (UTC+12:00 - Fiji Time / Suva)', offset: '+12:00' },
+
+  // --- Americas (North, Central, South) ---
+  { code: 'EST', label: 'EST (UTC-05:00 - US Eastern / New York / DC)', offset: '-05:00' },
+  { code: 'EDT', label: 'EDT (UTC-04:00 - US Eastern Daylight)', offset: '-04:00' },
+  { code: 'CST', label: 'CST (UTC-06:00 - US Central / Chicago)', offset: '-06:00' },
+  { code: 'CDT', label: 'CDT (UTC-05:00 - US Central Daylight)', offset: '-05:00' },
+  { code: 'MST', label: 'MST (UTC-07:00 - US Mountain / Denver)', offset: '-07:00' },
+  { code: 'MDT', label: 'MDT (UTC-06:00 - US Mountain Daylight)', offset: '-06:00' },
+  { code: 'PST', label: 'PST (UTC-08:00 - US Pacific / Los Angeles)', offset: '-08:00' },
+  { code: 'PDT', label: 'PDT (UTC-07:00 - US Pacific Daylight)', offset: '-07:00' },
+  { code: 'AKST', label: 'AKST (UTC-09:00 - Alaska Standard)', offset: '-09:00' },
+  { code: 'HST', label: 'HST (UTC-10:00 - Hawaii Standard)', offset: '-10:00' },
+  { code: 'AST_CA', label: 'AST (UTC-04:00 - Atlantic Standard / Halifax)', offset: '-04:00' },
+  { code: 'COT', label: 'COT (UTC-05:00 - Colombia / Bogotá)', offset: '-05:00' },
+  { code: 'PET', label: 'PET (UTC-05:00 - Peru / Lima)', offset: '-05:00' },
+  { code: 'CLT', label: 'CLT (UTC-04:00 - Chile / Santiago)', offset: '-04:00' },
+  { code: 'BRT', label: 'BRT (UTC-03:00 - Brazil / São Paulo)', offset: '-03:00' },
+  { code: 'ART', label: 'ART (UTC-03:00 - Argentina / Buenos Aires)', offset: '-03:00' },
 ];
 
 export const STANDARD_HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));

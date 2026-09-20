@@ -111,12 +111,12 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
           <select
             value={timezoneValue || 'BST'}
             onChange={(e) => onTimezoneChange(e.target.value)}
-            className="w-full pl-6 pr-2 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
-            title="Timezone"
+            className="w-full pl-6 pr-2 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors truncate"
+            title={`${selectedTz.label} (${selectedTz.offset})`}
           >
             {STANDARD_TIMEZONES.map((tz) => (
-              <option key={tz.code} value={tz.code}>
-                {tz.code} ({tz.offset})
+              <option key={tz.code} value={tz.code} title={tz.label}>
+                {tz.label}
               </option>
             ))}
           </select>
