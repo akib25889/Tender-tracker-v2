@@ -52,9 +52,9 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
         <p className="text-[11px] text-slate-500 dark:text-slate-400">{sublabel}</p>
       )}
 
-      <div className="grid grid-cols-12 gap-2">
-        {/* Date Selector */}
-        <div className="col-span-12 sm:col-span-5 relative">
+      <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+        {/* Date Selector - Shorter and Compact */}
+        <div className="w-full sm:w-[145px] shrink-0 relative">
           <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
             <Calendar className="w-3.5 h-3.5" />
           </div>
@@ -62,19 +62,19 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
             type="date"
             value={dateValue || ''}
             onChange={(e) => onDateChange(e.target.value)}
-            className="w-full pl-8 pr-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+            className="w-full pl-8 pr-2 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
           />
         </div>
 
         {/* Hour Selector */}
-        <div className="col-span-4 sm:col-span-2 relative">
+        <div className="w-[calc(50%-4px)] sm:w-[72px] shrink-0 relative">
           <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-slate-400">
             <Clock className="w-3 h-3" />
           </div>
           <select
             value={hourValue || ''}
             onChange={(e) => onHourChange(e.target.value)}
-            className="w-full pl-6 pr-2 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+            className="w-full pl-6 pr-1.5 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors cursor-pointer"
             title="Hour (00-23)"
           >
             <option value="">HH</option>
@@ -87,11 +87,11 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
         </div>
 
         {/* Minute Selector */}
-        <div className="col-span-4 sm:col-span-2">
+        <div className="w-[calc(50%-4px)] sm:w-[62px] shrink-0">
           <select
             value={minuteValue || ''}
             onChange={(e) => onMinuteChange(e.target.value)}
-            className="w-full px-2 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+            className="w-full px-2 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors cursor-pointer"
             title="Minute (00-59)"
           >
             <option value="">MM</option>
@@ -103,15 +103,15 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
           </select>
         </div>
 
-        {/* Timezone Selector */}
-        <div className="col-span-4 sm:col-span-3 relative">
-          <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-slate-400">
-            <Globe className="w-3 h-3" />
+        {/* Timezone Selector - Maximally Wide */}
+        <div className="w-full sm:flex-1 min-w-0 relative">
+          <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+            <Globe className="w-3.5 h-3.5" />
           </div>
           <select
             value={timezoneValue || 'BST'}
             onChange={(e) => onTimezoneChange(e.target.value)}
-            className="w-full pl-6 pr-2 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors truncate"
+            className="w-full pl-8 pr-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors truncate cursor-pointer"
             title={`${selectedTz.label} (${selectedTz.offset})`}
           >
             {STANDARD_TIMEZONES.map((tz) => (
