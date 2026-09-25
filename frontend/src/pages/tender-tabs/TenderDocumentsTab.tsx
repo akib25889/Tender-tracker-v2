@@ -64,6 +64,7 @@ export const TenderDocumentsTab: React.FC = () => {
     addFolder,
     updateFolder,
     deleteFolder,
+    deleteDocument,
     moveDocumentFolder,
     reusableDocuments,
     linkReusableDocumentToTender,
@@ -811,6 +812,18 @@ export const TenderDocumentsTab: React.FC = () => {
                               title="Download file"
                             >
                               <Download className="w-3.5 h-3.5 text-[#64748B]" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (window.confirm(`Are you sure you want to delete "${doc.name}" from the vault?`)) {
+                                  deleteDocument(tender.id, doc.id);
+                                }
+                              }}
+                              className="p-1.5 text-[#DC2626] bg-white dark:bg-slate-800 border border-[#FECACA] dark:border-rose-900/50 hover:bg-[#FEF2F2] dark:hover:bg-rose-950/40 rounded-lg transition-colors shadow-2xs cursor-pointer"
+                              title="Delete file from vault"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         ) : (

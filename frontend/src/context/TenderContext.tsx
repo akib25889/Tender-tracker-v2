@@ -59,6 +59,7 @@ interface TenderContextType {
   addFolder: (tenderId: string, folder: { name: string; label: string }) => void;
   updateFolder: (tenderId: string, folderName: string, newLabel: string) => void;
   deleteFolder: (tenderId: string, folderName: string) => void;
+  deleteDocument: (tenderId: string, docId: string) => Promise<void>;
   moveDocumentFolder: (tenderId: string, docId: string, targetFolder: string) => void;
   requestDocumentReupload: (
     tenderId: string,
@@ -1667,6 +1668,26 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
+  const deleteDocument = async (tenderId: string, docId: string) => {
+    try {
+      await fetch(`${API_BASE_URL}/documents/${docId}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.warn('Backend delete document failed:', err);
+    }
+
+    setTenders((prev) =>
+      prev.map((t) => {
+        if (t.id !== tenderId) return t;
+        return {
+          ...t,
+          documents: t.documents.filter((d) => d.id !== docId),
+        };
+      })
+    );
+  };
+
   const moveDocumentFolder = (
     tenderId: string,
     docId: string,
@@ -2524,6 +2545,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         addFolder,
         updateFolder,
         deleteFolder,
+        deleteDocument,
         moveDocumentFolder,
         requestDocumentReupload,
         requestNewDocumentUpload,
