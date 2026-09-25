@@ -208,7 +208,6 @@ export const DashboardPage: React.FC = () => {
     { stage: 'UNDER_ANALYSIS', label: '3. Analysis' },
     { stage: 'PREPARATION', label: '4. Preparation' },
     { stage: 'SUBMITTED', label: '5. Submitted' },
-    { stage: 'AWARDED', label: '6. Awarded' },
   ];
 
   return (
@@ -364,58 +363,38 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 6-Gate Tender Pipeline Breakdown (Minimized Space-Efficient Strip) */}
-      <div className="bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 rounded-lg px-3.5 py-2.5 shadow-2xs">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-2.5">
-          {/* Compact Header Label */}
-          <div className="flex items-center justify-between lg:justify-start gap-2 shrink-0 lg:pr-3 lg:border-r border-[#E2E8F0] dark:border-slate-800">
-            <span className="font-display text-xs font-bold text-[#0F172A] dark:text-white whitespace-nowrap">
-              6-Gate Pipeline
-            </span>
-            <span className="text-[10px] font-semibold text-[#64748B] dark:text-slate-400 font-mono bg-[#F1F5F9] dark:bg-slate-800 px-1.5 py-0.5 rounded">
-              {tenders.length} Total
-            </span>
-          </div>
+      {/* 6-Gate Tender Pipeline Breakdown (Zero Money) */}
+      <Card
+        title="6-Gate Tender Pipeline Breakdown"
+      >
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {stages.map((s) => {
+            const count = tenders.filter((t) => t.stage === s.stage).length;
+            const pct = tenders.length > 0 ? Math.round((count / tenders.length) * 100) : 0;
 
-          {/* 6 Gates in a tight single-row responsive grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 flex-1">
-            {stages.map((s) => {
-              const count = tenders.filter((t) => t.stage === s.stage).length;
-              const pct = tenders.length > 0 ? Math.round((count / tenders.length) * 100) : 0;
-              const hasBids = count > 0;
-
-              return (
-                <Link
-                  key={s.stage}
-                  to={`/tenders?stage=${s.stage}`}
-                  className={`px-2.5 py-1.5 rounded-md border text-xs transition-all flex items-center justify-between group ${
-                    hasBids
-                      ? 'bg-blue-50/70 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800/80 hover:border-blue-400'
-                      : 'bg-[#F8FAFC] dark:bg-slate-800/50 border-[#E2E8F0] dark:border-slate-800 hover:border-[#CBD5E1] dark:hover:border-slate-700'
-                  }`}
-                  title={`Click to show all ${s.label} tenders`}
-                >
-                  <span className="text-[11px] font-medium text-[#475569] dark:text-slate-300 group-hover:text-[#0F172A] dark:group-hover:text-white truncate mr-1.5">
-                    {s.label}
+            return (
+              <Link
+                key={s.stage}
+                to={`/tenders?stage=${s.stage}`}
+                className="p-3 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] space-y-1 hover:border-[#2563EB] hover:bg-[#EFF6FF]/50 transition-all block group"
+                title={`Click to show all ${s.label} tenders`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs font-bold text-[#0F172A] group-hover:text-[#2563EB] transition-colors">
+                    {count} Bids
                   </span>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <span className={`font-mono text-xs font-bold ${
-                      hasBids ? 'text-[#2563EB] dark:text-blue-400' : 'text-[#64748B] dark:text-slate-400'
-                    }`}>
-                      {count}
-                    </span>
-                    {hasBids && (
-                      <span className="font-mono text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 opacity-75">
-                        ({pct}%)
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+                  <span className="font-mono text-[10px] text-[#2563EB] font-semibold">
+                    {pct}%
+                  </span>
+                </div>
+                <span className="text-[11px] font-semibold text-[#64748B] block truncate group-hover:text-[#0F172A] transition-colors">
+                  {s.label}
+                </span>
+              </Link>
+            );
+          })}
         </div>
-      </div>
+      </Card>
 
       {/* 10-Second Rule Attention Queue (Zero Money) */}
       <div id="intervention-queue-section" className="scroll-mt-6">

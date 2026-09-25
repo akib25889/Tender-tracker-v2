@@ -62,6 +62,8 @@ export const TenderDetailPage: React.FC = () => {
     updateTenderAiChatLink,
     showSuccessNotification,
     toggleRequirementStatus,
+    setActiveTenderIdForModal,
+    setUploadFolderTarget,
   } = useTenders();
 
   const [copiedRef, setCopiedRef] = useState(false);
@@ -1345,21 +1347,29 @@ export const TenderDetailPage: React.FC = () => {
                                 Ready
                               </span>
                             ) : isBlocker ? (
-                              <Link
-                                to={`/tenders/${tender.id}/documents`}
-                                className="px-2 py-1 text-[10px] font-bold bg-[#DC2626] text-white rounded hover:bg-[#B91C1C] transition-colors"
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setActiveTenderIdForModal(tender.id);
+                                  setUploadFolderTarget('02_company_statutory_documents');
+                                }}
+                                className="px-2 py-1 text-[10px] font-bold bg-[#DC2626] text-white rounded hover:bg-[#B91C1C] transition-colors cursor-pointer"
                                 title="Upload evidence to Document Vault"
                               >
                                 Upload
-                              </Link>
+                              </button>
                             ) : (
-                              <Link
-                                to={`/tenders/${tender.id}/documents`}
-                                className="px-2 py-1 text-[10px] font-semibold bg-[#FEF3C7] text-[#D97706] hover:bg-[#FDE68A] border border-[#FDE68A] rounded transition-colors"
-                                title="Upload or attach evidence"
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setActiveTenderIdForModal(tender.id);
+                                  setUploadFolderTarget('02_company_statutory_documents');
+                                }}
+                                className="px-2 py-1 text-[10px] font-semibold bg-[#FEF3C7] dark:bg-amber-950/40 text-[#D97706] dark:text-amber-400 hover:bg-[#FDE68A] dark:hover:bg-amber-900/60 border border-[#FDE68A] dark:border-amber-800/80 rounded transition-colors cursor-pointer"
+                                title="Upload evidence to Document Vault"
                               >
                                 Upload
-                              </Link>
+                              </button>
                             )}
                           </div>
                         </div>
