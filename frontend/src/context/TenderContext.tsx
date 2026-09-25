@@ -369,12 +369,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                       reviewer:
                         rv.signed_off_by ||
                         (rv.role_required === 'EXECUTIVE_MANAGER'
-                          ? 'Dr. Marcus Vance'
+                          ? 'Executive Manager'
                           : rv.role_required === 'SENIOR_MANAGER'
-                          ? 'Tariq Al-Mansoor'
+                          ? 'Senior Manager'
                           : rv.role_required === 'TENDER_ANALYST'
-                          ? 'Elena Rostova'
-                          : 'Sarah Jenkins'),
+                          ? 'Tender Analyst'
+                          : 'Reviewer'),
                       status: rv.sign_off_status as any,
                       date: rv.signed_off_at,
                       comments: rv.comments || '',
@@ -502,10 +502,10 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                 leadOwner: {
                   name:
                     dbt.lead_owner_name ||
-                    (existing ? existing.leadOwner.name : 'Sarah Jenkins'),
+                    (existing ? existing.leadOwner.name : 'Unassigned'),
                   role:
                     dbt.lead_owner_role ||
-                    (existing ? existing.leadOwner.role : 'Business Head'),
+                    (existing ? existing.leadOwner.role : 'Lead Officer'),
                 },
                 blockers,
                 tasks: dbTasks,
@@ -1085,35 +1085,18 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       completedTasksCount: 0,
       totalTasksCount: 5,
       leadOwner: tenderData.leadOwner || {
-        name: 'Sarah Jenkins',
-        role: 'Senior Bid Operations Director',
+        name: currentUser.name || 'Bid Manager',
+        role: currentUser.title || 'Bid Operations Director',
       },
       blockers: [],
-      tasks: [
-        {
-          id: `TSK-${Math.floor(100 + Math.random() * 900)}`,
-          title: 'Review Scope of Work (SOW) Specifications',
-          assignee: 'Dr. Marcus Vance',
-          priority: 'HIGH',
-          deadline: 'Day 3',
-          status: 'TODO',
-        },
-        {
-          id: `TSK-${Math.floor(100 + Math.random() * 900)}`,
-          title: 'Commercial BOQ & Tender Security Guarantee',
-          assignee: 'Tariq Al-Mansoor',
-          priority: 'HIGH',
-          deadline: 'Day 5',
-          status: 'TODO',
-        },
-      ],
+      tasks: tenderData.tasks || [],
       requirements: finalReqs,
       documents: [],
       reviews: [
-        { tierNumber: 1, name: 'Technical Sign-Off', reviewer: 'Dr. Marcus Vance', status: 'WAITING', comments: 'Pending review' },
-        { tierNumber: 2, name: 'Financial Sign-Off', reviewer: 'Tariq Al-Mansoor', status: 'WAITING', comments: 'Pending review' },
-        { tierNumber: 3, name: 'Legal Solvency Sign-Off', reviewer: 'Elena Rostova', status: 'WAITING', comments: 'Pending review' },
-        { tierNumber: 4, name: 'Executive Gatekeeper Sign-Off', reviewer: 'Sarah Jenkins', status: 'WAITING', comments: 'Pending review' },
+        { tierNumber: 1, name: 'Technical Sign-Off', reviewer: 'Technical Lead', status: 'WAITING', comments: 'Pending review' },
+        { tierNumber: 2, name: 'Financial Sign-Off', reviewer: 'Finance Lead', status: 'WAITING', comments: 'Pending review' },
+        { tierNumber: 3, name: 'Legal Solvency Sign-Off', reviewer: 'Legal Counsel', status: 'WAITING', comments: 'Pending review' },
+        { tierNumber: 4, name: 'Executive Gatekeeper Sign-Off', reviewer: currentUser.name || 'Executive Director', status: 'WAITING', comments: 'Pending review' },
       ],
       openingDate: tenderData.openingDate,
       contractSigningDate: tenderData.contractSigningDate,
@@ -1976,7 +1959,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         portal_reference: portalReference,
-        submitted_by: currentUser.name || 'Sarah Jenkins',
+        submitted_by: currentUser.name || 'Authorized Operator',
       }),
     }).catch(() => {});
 

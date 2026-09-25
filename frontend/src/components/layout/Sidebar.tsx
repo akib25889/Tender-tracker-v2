@@ -36,6 +36,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
   const { tenders } = useTenders();
   const newDiscoveredCount = tenders.filter((t) => t.stage === 'DISCOVERED').length;
   const archivedCount = tenders.filter((t) => t.stage === 'ARCHIVED').length;
+  const pendingTasksCount = tenders.reduce(
+    (acc, t) => acc + (t.tasks ? t.tasks.filter((tk) => tk.status !== 'DONE').length : 0),
+    0
+  );
+  const upcomingDeadlinesCount = tenders.filter(
+    (t) => t.daysRemaining >= 0 && t.daysRemaining <= 7 && t.stage !== 'SUBMITTED' && t.stage !== 'ARCHIVED'
+  ).length;
 
   const isToolsRoute =
     location.pathname.startsWith('/tools') ||
@@ -79,13 +86,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       label: 'My Tasks',
       path: '/tasks/my-tasks',
       icon: CheckCircle2,
-      badge: '18',
+      badge: pendingTasksCount > 0 ? `${pendingTasksCount}` : undefined,
     },
     {
       label: 'Calendar',
       path: '/calendar',
       icon: CalendarDays,
-      urgentBadge: '3 Due',
+      urgentBadge: upcomingDeadlinesCount > 0 ? `${upcomingDeadlinesCount} Due` : undefined,
     },
     {
       label: 'Client Visitors',

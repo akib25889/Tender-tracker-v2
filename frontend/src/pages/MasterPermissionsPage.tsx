@@ -158,7 +158,7 @@ export const MasterPermissionsPage: React.FC = () => {
   // --- State: Simulator Form ---
   const [simUser, setSimUser] = useState<string>(currentUser.id);
   const [simPartner, setSimPartner] = useState<string>('NONE');
-  const [simTender, setSimTender] = useState<string>(tenders[0]?.id || 'TDR-PRC0190428');
+  const [simTender, setSimTender] = useState<string>(tenders[0]?.id || '');
   const [simResource, setSimResource] = useState<string>('');
   const [selectedSimActions, setSelectedSimActions] = useState<string[]>(['*']);
   const [isSimulating, setIsSimulating] = useState(false);

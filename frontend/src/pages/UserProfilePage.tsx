@@ -883,7 +883,7 @@ export const UserProfilePage: React.FC = () => {
                 <input
                   type="text"
                   value={editForm.proposedDesignation}
-                  placeholder="e.g. Sarah Jenkins — Senior Bid Operations Director & Chief Commercial Strategist"
+                  placeholder="e.g. John Doe — Senior Bid Operations Director & Chief Commercial Strategist"
                   onChange={(e) =>
                     setEditForm({ ...editForm, proposedDesignation: e.target.value })
                   }

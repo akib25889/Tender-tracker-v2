@@ -64,7 +64,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
               can_download: true,
               expires_at: new Date(Date.now() + 6 * 86400000).toISOString(),
               status: 'ACTIVE',
-              shared_by: 'Sarah Jenkins (Business Head)',
+              shared_by: 'Commercial Director',
             });
             return;
           } else if (token === 'SHR-TOKEN-ADB-SCADA') {
@@ -82,7 +82,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
               can_download: false,
               expires_at: new Date(Date.now() + 5 * 86400000).toISOString(),
               status: 'ACTIVE',
-              shared_by: 'Dr. Marcus Vance (Technical Solutions Lead)',
+              shared_by: 'Technical Solutions Officer',
             });
             return;
           }
@@ -107,7 +107,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
             can_download: true,
             expires_at: new Date(Date.now() + 6 * 86400000).toISOString(),
             status: 'ACTIVE',
-            shared_by: 'Sarah Jenkins (Business Head)',
+            shared_by: 'Commercial Director',
           });
           return;
         } else if (token === 'SHR-TOKEN-ADB-SCADA') {
@@ -125,7 +125,7 @@ export const SharedDocumentPortalPage: React.FC = () => {
             can_download: false,
             expires_at: new Date(Date.now() + 5 * 86400000).toISOString(),
             status: 'ACTIVE',
-            shared_by: 'Dr. Marcus Vance (Technical Solutions Lead)',
+            shared_by: 'Technical Solutions Officer',
           });
           return;
         }

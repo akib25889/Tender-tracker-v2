@@ -617,10 +617,10 @@ export const ClientVisitsPage: React.FC = () => {
                         Internal Host
                       </span>
                       <div className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
-                        {visit.internal_host_name || 'Sarah Jenkins'}
+                        {visit.internal_host_name || 'Assigned Host'}
                       </div>
                       <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                        {visit.internal_host_role || 'Business Head'}
+                        {visit.internal_host_role || 'Staff'}
                       </div>
                     </div>
                   </div>
@@ -794,10 +794,10 @@ export const ClientVisitsPage: React.FC = () => {
                       </td>
                       <td className="py-3 px-4">
                         <div className="font-medium text-slate-900 dark:text-white">
-                          {visit.internal_host_name || 'Sarah Jenkins'}
+                          {visit.internal_host_name || 'Assigned Host'}
                         </div>
                         <div className="text-[11px] text-slate-500">
-                          {visit.internal_host_role || 'Business Head'}
+                          {visit.internal_host_role || 'Staff'}
                         </div>
                       </td>
                       <td className="py-3 px-4">

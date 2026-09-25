@@ -63,53 +63,7 @@ const DEFAULT_GENERAL_CHANNELS = [
   },
 ];
 
-const INITIAL_GENERAL_MESSAGES: GeneralMessage[] = [
-  {
-    id: 'MSG-001',
-    channelId: 'general-ops',
-    authorName: 'Sarah Jenkins',
-    authorRole: 'BUSINESS_HEAD',
-    authorAvatar: 'SJ',
-    content: 'Team, please review approaching Q3 submission deadlines. Ensure all statutory certificates in the Master Vault are renewed before Friday.',
-    createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-  },
-  {
-    id: 'MSG-002',
-    channelId: 'general-ops',
-    authorName: 'Dr. Marcus Vance',
-    authorRole: 'EXECUTIVE_MANAGER',
-    authorAvatar: 'MV',
-    content: 'Understood. Technical architecture for the ERP modernization tender is currently at 88% readiness and on track for Tier 1 sign-off.',
-    createdAt: new Date(Date.now() - 3600000 * 3).toISOString(),
-  },
-  {
-    id: 'MSG-003',
-    channelId: 'tech-architecture',
-    authorName: 'Dr. Marcus Vance',
-    authorRole: 'EXECUTIVE_MANAGER',
-    authorAvatar: 'MV',
-    content: 'Confirmed that sovereign cloud specifications require dual-zone disaster recovery nodes. Adding this to the methodology section.',
-    createdAt: new Date(Date.now() - 3600000 * 6).toISOString(),
-  },
-  {
-    id: 'MSG-004',
-    channelId: 'commercial-pricing',
-    authorName: 'Tariq Al-Mansoor',
-    authorRole: 'SENIOR_MANAGER',
-    authorAvatar: 'TA',
-    content: 'Foreign exchange rate for BDT conversions has been aligned to 122. Bank solvency verification letter is ready in the Master Vault.',
-    createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
-  },
-  {
-    id: 'MSG-005',
-    channelId: 'legal-compliance',
-    authorName: 'Elena Rostova',
-    authorRole: 'TENDER_ANALYST',
-    authorAvatar: 'ER',
-    content: 'JV framework agreement audited and confirmed compliant with UN procurement guidelines.',
-    createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-  },
-];
+const INITIAL_GENERAL_MESSAGES: GeneralMessage[] = [];
 
 const ROLE_BADGES: Record<UserRole, { bg: string; text: string; border: string; label: string }> = {
   SUPER_ADMIN: {

@@ -474,6 +474,12 @@ export interface Tender {
   sourceOfFund?: string;
   procurementMethod?: string;
   evaluationMethod?: string;
+  portalUrl?: string;
+  preBidMeetingDate?: string;
+  organizationType?: string;
+  scope?: string;
+  tags?: string[];
+  outcomeNotes?: string;
   // 2-Stage Procurement Lineage (EOI -> RFP) & Shortlisting
   parentEoiId?: string;
   spawnedRfpId?: string;

@@ -36,7 +36,6 @@ import {
   TrendingUp,
   ShieldCheck,
   Layers,
-  Plus,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -237,26 +236,10 @@ export const TenderDetailPage: React.FC = () => {
   const exRate = tender.exchangeRateToBdt || (tenderCur === 'BDT' ? 1.0 : 122.0);
   const bdtTotal = tender.estimatedValueBdt || (tenderCur === 'BDT' ? estVal : estVal * exRate);
   const bdtCrore = (bdtTotal / 10000000).toFixed(2);
-  const earnestVal = Math.round(estVal * 0.02);
+  const earnestVal = tender.tenderSecurityAmount || 0;
 
-  // Check if financial model has actually been configured
-  const hasFinancialModel = Boolean(
-    tender.financialModel && (
-      (tender.financialModel.milestones && tender.financialModel.milestones.length > 0) ||
-      tender.financialModel.advancePayment?.enabled ||
-      tender.financialModel.penaltiesAndDeductions?.retentionMoney?.enabled ||
-      tender.financialModel.penaltiesAndDeductions?.liquidatedDamages?.enabled ||
-      Boolean(tender.financialModel.penaltiesAndDeductions?.taxDeductionAtSourcePercent) ||
-      Boolean(tender.financialModel.penaltiesAndDeductions?.vatDeductionAtSourcePercent) ||
-      (tender.financialModel.subscriptionModel && (
-        (tender.financialModel.subscriptionModel.calculatedTcv ?? 0) > 0 ||
-        (tender.financialModel.subscriptionModel.annualBaseFee ?? 0) > 0
-      ))
-    )
-  );
-
-  // Scope tags derived from actual tender category
-  const scopeTags = tender.category ? [tender.category] : [];
+  // Scope tags derived
+  const scopeTags = tender.tags || [];
 
   return (
     <div className="space-y-6">
@@ -677,7 +660,7 @@ export const TenderDetailPage: React.FC = () => {
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold text-[#0F172A] flex items-center gap-2">
                           <ShieldCheck className="w-4 h-4 text-[#2563EB]" />
-                          {tender.tenderType || tender.summary?.tenderType || 'International Competitive Bidding (ICB)'}
+                          {tender.tenderType || tender.summary?.tenderType || '—'}
                         </span>
                         <span className="text-[10px] font-mono text-[#2563EB] bg-[#EFF6FF] px-1.5 py-0.5 rounded font-bold border border-[#BFDBFE]">
                           Bidding Mode
@@ -693,7 +676,7 @@ export const TenderDetailPage: React.FC = () => {
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold text-[#0F172A] flex items-center gap-1.5">
                           <CheckCircle2 className="w-3.5 h-3.5 text-[#059669]" />
-                          {tender.procurementMethod || tender.summary?.procurementMethod || 'Open Tendering Method (OTM)'}
+                          {tender.procurementMethod || tender.summary?.procurementMethod || '—'}
                         </span>
                         <span className="text-[10px] font-mono text-[#059669] bg-[#ECFDF5] px-1.5 py-0.5 rounded font-bold border border-[#A7F3D0]">
                           Method
@@ -727,7 +710,7 @@ export const TenderDetailPage: React.FC = () => {
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold text-[#0F172A] flex items-center gap-1.5">
                           <CreditCard className="w-3.5 h-3.5 text-[#2563EB]" />
-                          {tender.budgetType || tender.summary?.budgetType || 'Development Budget (ADP / Capex)'}
+                          {tender.budgetType || tender.summary?.budgetType || '—'}
                         </span>
                         <span className="text-[10px] font-mono text-[#B45309] bg-[#FFFBEB] px-1.5 py-0.5 rounded font-bold border border-[#FDE68A]">
                           Budget
@@ -743,7 +726,7 @@ export const TenderDetailPage: React.FC = () => {
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
                           <Landmark className="w-3.5 h-3.5 text-[#64748B]" />
-                          {tender.sourceOfFund || tender.summary?.sourceOfFund || 'Government Treasury (GoB)'}
+                          {tender.sourceOfFund || tender.summary?.sourceOfFund || '—'}
                         </span>
                         <span className="text-[10px] text-[#2563EB] bg-[#EFF6FF] px-1.5 py-0.5 rounded font-mono font-bold border border-[#BFDBFE]">
                           Financier
@@ -759,7 +742,7 @@ export const TenderDetailPage: React.FC = () => {
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold text-[#0F172A] flex items-center gap-2">
                           <Globe className="w-4 h-4 text-[#2563EB]" />
-                          {tender.country || 'Bangladesh'}
+                          {tender.country || '—'}
                         </span>
                         <span className="text-[10px] font-mono text-[#059669] bg-[#ECFDF5] px-1.5 py-0.5 rounded font-bold border border-[#A7F3D0]">
                           Verified
@@ -775,16 +758,18 @@ export const TenderDetailPage: React.FC = () => {
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold text-[#0F172A] flex items-center gap-1.5">
                           <ExternalLink className="w-3.5 h-3.5 text-[#2563EB]" />
-                          {tender.summary?.portal || 'e-GP Portal (eprocure.gov.bd)'}
+                          {tender.summary?.portal || tender.portalUrl || '—'}
                         </span>
-                        <a
-                          href="https://eprocure.gov.bd"
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-[10px] font-semibold text-[#2563EB] hover:underline flex items-center gap-0.5"
-                        >
-                          Link Source →
-                        </a>
+                        {tender.portalUrl && (
+                          <a
+                            href={tender.portalUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[10px] font-semibold text-[#2563EB] hover:underline flex items-center gap-0.5"
+                          >
+                            Link Source →
+                          </a>
+                        )}
                       </div>
                     </div>
 
@@ -798,7 +783,7 @@ export const TenderDetailPage: React.FC = () => {
                           <Landmark className="w-3.5 h-3.5 text-[#64748B]" />
                           {tender.organization}
                         </span>
-                        <span className="text-[10px] text-[#64748B] font-mono">Ministry Supervised</span>
+                        <span className="text-[10px] text-[#64748B] font-mono">{tender.organizationType || 'Procuring Entity'}</span>
                       </div>
                     </div>
 
@@ -881,13 +866,19 @@ export const TenderDetailPage: React.FC = () => {
                       </span>
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold font-mono text-[#059669]">
-                          {tenderCur} {estVal.toLocaleString()}{' '}
-                          <span className="text-[10px] font-normal text-[#64748B] font-sans">
-                            (≈ BDT {bdtCrore} Crore)
-                          </span>
+                          {estVal > 0 ? (
+                            <>
+                              {tenderCur} {estVal.toLocaleString()}{' '}
+                              <span className="text-[10px] font-normal text-[#64748B] font-sans">
+                                (≈ BDT {bdtCrore} Crore)
+                              </span>
+                            </>
+                          ) : (
+                            'Not specified'
+                          )}
                         </span>
                         <span className="text-[10px] font-mono text-[#B45309] bg-[#FFFBEB] px-1.5 py-0.5 rounded font-bold border border-[#FDE68A]">
-                          Pending Verification
+                          {estVal > 0 ? 'Budget Estimate' : 'Unestimated'}
                         </span>
                       </div>
                     </div>
@@ -899,13 +890,19 @@ export const TenderDetailPage: React.FC = () => {
                       </span>
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold font-mono text-[#0F172A]">
-                          {tenderCur} {earnestVal.toLocaleString()}{' '}
-                          <span className="text-[10px] font-normal text-[#64748B] font-sans">
-                            (Bank Guarantee required)
-                          </span>
+                          {earnestVal > 0 ? (
+                            <>
+                              {tenderCur} {earnestVal.toLocaleString()}{' '}
+                              <span className="text-[10px] font-normal text-[#64748B] font-sans">
+                                (Bank Guarantee required)
+                              </span>
+                            </>
+                          ) : (
+                            'Not specified / Not required'
+                          )}
                         </span>
-                        <span className="text-[10px] font-semibold text-[#DC2626] bg-[#FEF2F2] px-1.5 py-0.5 rounded border border-[#FECACA]">
-                          120 Days Validity
+                        <span className="text-[10px] font-semibold text-[#64748B] bg-[#F1F5F9] px-1.5 py-0.5 rounded border border-[#E2E8F0]">
+                          {earnestVal > 0 ? 'Bank Guarantee' : 'Not required'}
                         </span>
                       </div>
                     </div>
@@ -919,10 +916,10 @@ export const TenderDetailPage: React.FC = () => {
                         <div>
                           <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
                             <UserCheck className="w-3.5 h-3.5 text-[#2563EB]" />
-                            {tender.procurementManagerName || tender.summary?.procurementManager?.name || 'Assigned Procurement Officer'}
+                            {tender.procurementManagerName || tender.summary?.procurementManager?.name || 'Not specified'}
                           </span>
                           <span className="text-[11px] text-[#64748B] block mt-0.5">
-                            {tender.procurementManagerDesignation || tender.summary?.procurementManager?.designation || 'Tender Evaluation Committee'}
+                            {tender.procurementManagerDesignation || tender.summary?.procurementManager?.designation || '—'}
                           </span>
                           <div className="flex flex-wrap items-center gap-3 mt-1 text-[11px]">
                             {(tender.procurementManagerPhone || tender.summary?.procurementManager?.phone) && (
@@ -960,10 +957,10 @@ export const TenderDetailPage: React.FC = () => {
                         <div>
                           <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
                             <Headphones className="w-3.5 h-3.5 text-[#2563EB]" />
-                            {tender.helplinePhone || tender.summary?.helpline?.phone || 'Central e-GP Helpdesk'}
+                            {tender.helplinePhone || tender.summary?.helpline?.phone || 'Not specified'}
                           </span>
                           <span className="text-[11px] text-[#64748B] block mt-0.5">
-                            {tender.helplineHours || tender.summary?.helpline?.hours || '09:00 AM - 05:00 PM BST (Sun-Thu)'}
+                            {tender.helplineHours || tender.summary?.helpline?.hours || '—'}
                           </span>
                           {(tender.helplineEmail || tender.summary?.helpline?.email) && (
                             <a
@@ -981,20 +978,22 @@ export const TenderDetailPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Pre-Bid Meeting Date */}
-                    <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
-                        Pre-Bid Meeting Date
-                      </span>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-[#0F172A]">
-                          {new Date(new Date(tender.submissionDeadline).getTime() - 14 * 86400000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} • 11:00 AM
+                    {/* Pre-Bid Meeting Date (if available) */}
+                    {tender.preBidMeetingDate && (
+                      <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                          Pre-Bid Meeting Date
                         </span>
-                        <span className="text-[10px] font-medium text-[#2563EB] bg-[#EFF6FF] px-1.5 py-0.5 rounded">
-                          Hybrid / Zoom
-                        </span>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold text-[#0F172A]">
+                            {new Date(tender.preBidMeetingDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </span>
+                          <span className="text-[10px] font-medium text-[#2563EB] bg-[#EFF6FF] px-1.5 py-0.5 rounded">
+                            Hybrid / Zoom
+                          </span>
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     {/* Final Closing Deadline */}
                     <div className="p-3.5 rounded-xl bg-[#FFFBEB] dark:bg-amber-950/20 border border-[#FDE68A] dark:border-amber-800/40">
@@ -1040,13 +1039,11 @@ export const TenderDetailPage: React.FC = () => {
                       </span>
                     </div>
                     <p className="text-xs text-[#475569] leading-relaxed">
-                      {tender.summary?.mainIdea ||
-                        tender.title ||
-                        'No scope synopsis provided for this tender.'}
+                      {tender.scope || tender.summary?.mainIdea || 'No scope synopsis provided for this tender.'}
                     </p>
                     {scopeTags.length > 0 && (
                       <div className="mt-3 flex flex-wrap items-center gap-2">
-                        {scopeTags.map((tag) => (
+                        {scopeTags.map((tag: string) => (
                           <span
                             key={tag}
                             className="text-[10px] font-medium bg-white text-[#334155] border border-[#E2E8F0] px-2.5 py-0.5 rounded-md shadow-2xs"
@@ -1068,24 +1065,20 @@ export const TenderDetailPage: React.FC = () => {
                     <h3 className="text-sm font-bold text-[#0F172A] tracking-tight">
                       Financial Scenarios, Milestones &amp; Cash Flow Architecture
                     </h3>
-                    {hasFinancialModel && (
-                      <>
-                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE] uppercase">
-                          {tender.financialModel?.paymentScenario?.replace(/_/g, ' ') || 'MILESTONE BASED'}
-                        </span>
-                        <span
-                          className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border uppercase ${
-                            (tender.financialModel?.workingCapitalRisk || 'MEDIUM') === 'LOW'
-                              ? 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]'
-                              : (tender.financialModel?.workingCapitalRisk || 'MEDIUM') === 'HIGH'
-                              ? 'bg-[#FEF2F2] text-[#B91C1C] border-[#FECACA]'
-                              : 'bg-[#FFFBEB] text-[#B45309] border-[#FDE68A]'
-                          }`}
-                        >
-                          {(tender.financialModel?.workingCapitalRisk || 'MEDIUM')} RISK
-                        </span>
-                      </>
-                    )}
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE] uppercase">
+                      {tender.financialModel?.paymentScenario?.replace(/_/g, ' ') || 'MILESTONE BASED'}
+                    </span>
+                    <span
+                      className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border uppercase ${
+                        (tender.financialModel?.workingCapitalRisk || 'MEDIUM') === 'LOW'
+                          ? 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]'
+                          : (tender.financialModel?.workingCapitalRisk || 'MEDIUM') === 'HIGH'
+                          ? 'bg-[#FEF2F2] text-[#B91C1C] border-[#FECACA]'
+                          : 'bg-[#FFFBEB] text-[#B45309] border-[#FDE68A]'
+                      }`}
+                    >
+                      {(tender.financialModel?.workingCapitalRisk || 'MEDIUM')} RISK
+                    </span>
                   </div>
 
                   <Link
@@ -1097,168 +1090,160 @@ export const TenderDetailPage: React.FC = () => {
                   </Link>
                 </div>
 
-                {!hasFinancialModel ? (
-                  <div className="p-8 text-center">
-                    <div className="w-12 h-12 rounded-2xl bg-[#F1F5F9] flex items-center justify-center text-[#64748B] mx-auto mb-3">
-                      <CreditCard className="w-6 h-6" />
+                <div className="p-6 space-y-5">
+                  {/* Top 4 Metrics Strip */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                        Advance Mobilization
+                      </span>
+                      <span className="text-xs font-bold text-[#0F172A] block">
+                        {tender.financialModel?.advancePayment?.enabled
+                          ? `${tender.financialModel.advancePayment.percentage}% (${tenderCur} ${(tender.financialModel.advancePayment.amount || Math.round(estVal * tender.financialModel.advancePayment.percentage / 100)).toLocaleString()})`
+                          : 'None (0%)'}
+                      </span>
+                      <span className="text-[10px] text-[#64748B]">
+                        {tender.financialModel?.advancePayment?.bankGuaranteeRequired ? '100% APG Required' : 'No BG required'}
+                      </span>
                     </div>
-                    <h4 className="text-xs font-bold text-[#0F172A] mb-1">
-                      No Financial Scenarios Configured
-                    </h4>
-                    <p className="text-[11px] text-[#64748B] max-w-md mx-auto mb-4">
-                      Disbursement milestones, mobilization advance, retention money, and tax deduction rules have not been added to this tender yet.
-                    </p>
-                    <Link
-                      to={`/registry?id=${tender.id}`}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>Configure Financial Model in Registry</span>
-                    </Link>
+
+                    <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                        Retention Withholding
+                      </span>
+                      <span className="text-xs font-bold text-[#0F172A] block">
+                        {tender.financialModel?.penaltiesAndDeductions?.retentionMoney?.enabled
+                          ? `${tender.financialModel.penaltiesAndDeductions.retentionMoney.percentage}% Withheld`
+                          : 'None (0%)'}
+                      </span>
+                      <span className="text-[10px] text-[#64748B]">
+                        {tender.financialModel?.penaltiesAndDeductions?.retentionMoney?.enabled
+                          ? `${tender.financialModel?.penaltiesAndDeductions?.retentionMoney?.dlpMonths || 12}m Defects Liability`
+                          : 'No retention deduction'}
+                      </span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                        Liquidated Damages Cap
+                      </span>
+                      <span className="text-xs font-bold text-[#DC2626] block">
+                        {tender.financialModel?.penaltiesAndDeductions?.liquidatedDamages?.maxCapPercentage
+                          ? `Max ${tender.financialModel.penaltiesAndDeductions.liquidatedDamages.maxCapPercentage}% Cap`
+                          : 'Not specified'}
+                      </span>
+                      <span className="text-[10px] text-[#64748B]">
+                        {tender.financialModel?.penaltiesAndDeductions?.liquidatedDamages?.rate
+                          ? `${tender.financialModel.penaltiesAndDeductions.liquidatedDamages.rate}% / ${tender.financialModel?.penaltiesAndDeductions?.liquidatedDamages?.frequency === 'PER_DAY' ? 'day' : 'week'}`
+                          : 'Standard terms'}
+                      </span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                        Statutory Deductions
+                      </span>
+                      <span className="text-xs font-bold text-[#475569] block">
+                        {tender.financialModel?.penaltiesAndDeductions?.taxDeductionAtSourcePercent || tender.financialModel?.penaltiesAndDeductions?.vatDeductionAtSourcePercent
+                          ? `TDS ${tender.financialModel?.penaltiesAndDeductions?.taxDeductionAtSourcePercent || 0}% • VDS ${tender.financialModel?.penaltiesAndDeductions?.vatDeductionAtSourcePercent || 0}%`
+                          : 'Standard statutory rates'}
+                      </span>
+                      <span className="text-[10px] text-[#64748B]">
+                        At source invoice deduction
+                      </span>
+                    </div>
                   </div>
-                ) : (
-                  <div className="p-6 space-y-5">
-                    {/* Top 4 Metrics Strip */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
-                          Advance Mobilization
+
+                  {/* Milestone Schedule Table */}
+                  {tender.financialModel?.milestones && tender.financialModel.milestones.length > 0 ? (
+                    <div className="rounded-xl border border-[#E2E8F0] overflow-hidden">
+                      <div className="px-4 py-2.5 bg-[#F8FAFC] border-b border-[#E2E8F0] flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#0F172A] flex items-center gap-2">
+                          <TrendingUp className="w-3.5 h-3.5 text-[#2563EB]" />
+                          Milestone Disbursement Schedule &amp; Approval Gates
                         </span>
-                        <span className="text-xs font-bold text-[#0F172A] block">
-                          {tender.financialModel?.advancePayment?.enabled
-                            ? `${tender.financialModel.advancePayment.percentage}% (${tenderCur} ${(tender.financialModel.advancePayment.amount || Math.round(estVal * tender.financialModel.advancePayment.percentage / 100)).toLocaleString()})`
-                            : 'None (0%)'}
-                        </span>
-                        <span className="text-[10px] text-[#64748B]">
-                          {tender.financialModel?.advancePayment?.enabled
-                            ? (tender.financialModel.advancePayment.bankGuaranteeRequired ? '100% APG Required' : 'No BG required')
-                            : 'No Advance'}
+                        <span className="text-[11px] font-mono font-semibold text-[#2563EB]">
+                          Total Milestones: {tender.financialModel.milestones.length}
                         </span>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
-                          Retention Withholding
-                        </span>
-                        <span className="text-xs font-bold text-[#0F172A] block">
-                          {tender.financialModel?.penaltiesAndDeductions?.retentionMoney?.enabled
-                            ? `${tender.financialModel.penaltiesAndDeductions.retentionMoney.percentage}% Withheld`
-                            : 'None (0%)'}
-                        </span>
-                        <span className="text-[10px] text-[#64748B]">
-                          {tender.financialModel?.penaltiesAndDeductions?.retentionMoney?.enabled
-                            ? `${tender.financialModel.penaltiesAndDeductions.retentionMoney.dlpMonths || 12}m Defects Liability`
-                            : 'No Retention'}
-                        </span>
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
-                          Liquidated Damages Cap
-                        </span>
-                        <span className="text-xs font-bold text-[#DC2626] block">
-                          {tender.financialModel?.penaltiesAndDeductions?.liquidatedDamages?.enabled
-                            ? `Max ${tender.financialModel.penaltiesAndDeductions.liquidatedDamages.maxCapPercentage || 10}% Cap`
-                            : 'None'}
-                        </span>
-                        <span className="text-[10px] text-[#64748B]">
-                          {tender.financialModel?.penaltiesAndDeductions?.liquidatedDamages?.enabled
-                            ? `${tender.financialModel.penaltiesAndDeductions.liquidatedDamages.rate || 0.5}% / ${tender.financialModel.penaltiesAndDeductions.liquidatedDamages.frequency === 'PER_DAY' ? 'day' : 'week'}`
-                            : 'No LD Clause'}
-                        </span>
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
-                          Statutory Deductions
-                        </span>
-                        <span className="text-xs font-bold text-[#475569] block">
-                          {tender.financialModel?.penaltiesAndDeductions?.taxDeductionAtSourcePercent || tender.financialModel?.penaltiesAndDeductions?.vatDeductionAtSourcePercent
-                            ? `TDS ${tender.financialModel?.penaltiesAndDeductions?.taxDeductionAtSourcePercent || 0}% • VDS ${tender.financialModel?.penaltiesAndDeductions?.vatDeductionAtSourcePercent || 0}%`
-                            : 'None (0%)'}
-                        </span>
-                        <span className="text-[10px] text-[#64748B]">
-                          At source invoice deduction
-                        </span>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-xs text-left">
+                          <thead className="bg-[#F1F5F9] text-[#475569] font-semibold border-b border-[#E2E8F0]">
+                            <tr>
+                              <th className="py-2 px-3 w-10">#</th>
+                              <th className="py-2 px-3">Milestone / Deliverable</th>
+                              <th className="py-2 px-3">Approval Gate / Trigger</th>
+                              <th className="py-2 px-3 text-right">Share %</th>
+                              <th className="py-2 px-3 text-right">Projected Value</th>
+                              <th className="py-2 px-3 text-center">Turnaround</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[#F1F5F9]">
+                            {tender.financialModel.milestones.map((m, idx) => (
+                              <tr key={idx} className="hover:bg-[#F8FAFC]/80 transition-colors">
+                                <td className="py-2 px-3 font-mono text-[#64748B]">{m.milestoneNumber || idx + 1}</td>
+                                <td className="py-2 px-3">
+                                  <div className="font-semibold text-[#0F172A]">{m.name}</div>
+                                  {m.deliverable && <div className="text-[10px] text-[#64748B]">{m.deliverable}</div>}
+                                </td>
+                                <td className="py-2 px-3 text-[#475569]">{m.paymentTrigger || 'Client sign-off'}</td>
+                                <td className="py-2 px-3 text-right font-bold text-[#0F172A]">{m.percentage}%</td>
+                                <td className="py-2 px-3 text-right font-mono font-semibold text-[#2563EB]">
+                                  {tenderCur} {(m.amount || Math.round(estVal * m.percentage / 100)).toLocaleString()}
+                                </td>
+                                <td className="py-2 px-3 text-center font-mono text-[11px] text-[#64748B]">
+                                  {m.clientReviewDays || 14}d rev / {m.paymentProcessingDays || 30}d pay
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
+                  ) : (
+                    <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-center">
+                      <p className="text-xs text-[#64748B]">
+                        No milestone disbursement schedule configured for this tender. You can configure milestones and payment triggers in the Registry.
+                      </p>
+                      <Link
+                        to={`/registry?id=${tender.id}`}
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-[#2563EB] hover:underline mt-2"
+                      >
+                        <span>Add Milestones in Registry</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  )}
 
-                    {/* Milestone Schedule Table */}
-                    {tender.financialModel?.milestones && tender.financialModel.milestones.length > 0 && (
-                      <div className="rounded-xl border border-[#E2E8F0] overflow-hidden">
-                        <div className="px-4 py-2.5 bg-[#F8FAFC] border-b border-[#E2E8F0] flex items-center justify-between">
-                          <span className="text-xs font-bold text-[#0F172A] flex items-center gap-2">
-                            <TrendingUp className="w-3.5 h-3.5 text-[#2563EB]" />
-                            Milestone Disbursement Schedule &amp; Approval Gates
+                  {/* SaaS / Recurring Revenue Card if applicable */}
+                  {tender.financialModel?.subscriptionModel && (tender.financialModel.subscriptionModel.calculatedTcv > 0 || tender.financialModel.subscriptionModel.annualBaseFee > 0) && (
+                    <div className="p-4 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0]">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-bold text-[#065F46] flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-[#059669]" />
+                          SaaS &amp; Recurring Revenue Architecture
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono font-bold bg-[#D1FAE5] text-[#065F46] px-2 py-0.5 rounded border border-[#6EE7B7]">
+                            TCV: {tenderCur} {tender.financialModel.subscriptionModel.calculatedTcv.toLocaleString()}
                           </span>
-                          <span className="text-[11px] font-mono font-semibold text-[#2563EB]">
-                            Total Commitment: {tender.financialModel.milestones.reduce((acc, cur) => acc + (cur.percentage || 0), 0)}%
+                          <span className="text-[10px] font-mono font-bold bg-[#D1FAE5] text-[#065F46] px-2 py-0.5 rounded border border-[#6EE7B7]">
+                            ACV: {tenderCur} {tender.financialModel.subscriptionModel.calculatedAcv.toLocaleString()}
                           </span>
-                        </div>
-
-                        <div className="overflow-x-auto">
-                          <table className="w-full text-xs text-left">
-                            <thead className="bg-[#F1F5F9] text-[#475569] font-semibold border-b border-[#E2E8F0]">
-                              <tr>
-                                <th className="py-2 px-3 w-10">#</th>
-                                <th className="py-2 px-3">Milestone / Deliverable</th>
-                                <th className="py-2 px-3">Approval Gate / Trigger</th>
-                                <th className="py-2 px-3 text-right">Share %</th>
-                                <th className="py-2 px-3 text-right">Projected Value</th>
-                                <th className="py-2 px-3 text-center">Turnaround</th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-[#F1F5F9]">
-                              {tender.financialModel.milestones.map((m, idx) => (
-                                <tr key={idx} className="hover:bg-[#F8FAFC]/80 transition-colors">
-                                  <td className="py-2 px-3 font-mono text-[#64748B]">{m.milestoneNumber || idx + 1}</td>
-                                  <td className="py-2 px-3">
-                                    <div className="font-semibold text-[#0F172A]">{m.name}</div>
-                                    {m.deliverable && <div className="text-[10px] text-[#64748B]">{m.deliverable}</div>}
-                                  </td>
-                                  <td className="py-2 px-3 text-[#475569]">{m.paymentTrigger || 'Client sign-off'}</td>
-                                  <td className="py-2 px-3 text-right font-bold text-[#0F172A]">{m.percentage}%</td>
-                                  <td className="py-2 px-3 text-right font-mono font-semibold text-[#2563EB]">
-                                    {tenderCur} {(m.amount || Math.round(estVal * m.percentage / 100)).toLocaleString()}
-                                  </td>
-                                  <td className="py-2 px-3 text-center font-mono text-[11px] text-[#64748B]">
-                                    {m.clientReviewDays || 14}d rev / {m.paymentProcessingDays || 30}d pay
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
                         </div>
                       </div>
-                    )}
-
-                    {/* SaaS / Recurring Revenue Card if applicable */}
-                    {tender.financialModel?.subscriptionModel && (tender.financialModel.subscriptionModel.calculatedTcv > 0 || tender.financialModel.subscriptionModel.annualBaseFee > 0) && (
-                      <div className="p-4 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0]">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-bold text-[#065F46] flex items-center gap-1.5">
-                            <Sparkles className="w-3.5 h-3.5 text-[#059669]" />
-                            SaaS &amp; Recurring Revenue Architecture
-                          </span>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-mono font-bold bg-[#D1FAE5] text-[#065F46] px-2 py-0.5 rounded border border-[#6EE7B7]">
-                              TCV: {tenderCur} {tender.financialModel.subscriptionModel.calculatedTcv.toLocaleString()}
-                            </span>
-                            <span className="text-[10px] font-mono font-bold bg-[#D1FAE5] text-[#065F46] px-2 py-0.5 rounded border border-[#6EE7B7]">
-                              ACV: {tenderCur} {tender.financialModel.subscriptionModel.calculatedAcv.toLocaleString()}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-[#065F46]">
-                          <div>Model: <span className="font-semibold">{tender.financialModel.subscriptionModel.pricingModel?.replace(/_/g, ' ')}</span></div>
-                          <div>Billing: <span className="font-semibold">{tender.financialModel.subscriptionModel.billingFrequency}</span></div>
-                          <div>Contract Term: <span className="font-semibold">{tender.financialModel.subscriptionModel.durationYears} Years</span></div>
-                          <div>Escalation: <span className="font-semibold">{tender.financialModel.subscriptionModel.annualEscalationRate}% p.a.</span></div>
-                        </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-[#065F46]">
+                        <div>Model: <span className="font-semibold">{tender.financialModel.subscriptionModel.pricingModel?.replace(/_/g, ' ')}</span></div>
+                        <div>Billing: <span className="font-semibold">{tender.financialModel.subscriptionModel.billingFrequency}</span></div>
+                        <div>Contract Term: <span className="font-semibold">{tender.financialModel.subscriptionModel.durationYears} Years</span></div>
+                        <div>Escalation: <span className="font-semibold">{tender.financialModel.subscriptionModel.annualEscalationRate}% p.a.</span></div>
                       </div>
-                    )}
+                    </div>
+                  )}
 
-                    {/* Expected Cash Flow Realization Waterfall Ledger */}
+                  {/* Expected Cash Flow Realization Waterfall Ledger */}
+                  {estVal > 0 && (
                     <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-[#475569] block mb-3">
                         Expected Net Cash Flow Realization Waterfall
@@ -1308,8 +1293,8 @@ export const TenderDetailPage: React.FC = () => {
                         );
                       })()}
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
 
