@@ -118,7 +118,6 @@ def _inline_file_response(
         },
     )
 
-
 @router.get("/tenders/{tender_id}/documents", response_model=List[DocumentOut])
 def get_tender_documents(
     tender_id: str,
@@ -488,6 +487,7 @@ def delete_folder(tender_id: str, folder_name: str, db: Session = Depends(get_db
 
 
 @router.get("/reusable-documents", response_model=List[ReusableDocOut])
+@router.get("/documents/reusable", response_model=List[ReusableDocOut])
 def get_reusable_documents(
     category: Optional[str] = None, db: Session = Depends(get_db)
 ):
@@ -525,6 +525,11 @@ def download_reusable_document(doc_id: str, db: Session = Depends(get_db)):
 
 @router.post(
     "/reusable-documents",
+    response_model=ReusableDocOut,
+    status_code=status.HTTP_201_CREATED,
+)
+@router.post(
+    "/documents/reusable",
     response_model=ReusableDocOut,
     status_code=status.HTTP_201_CREATED,
 )

@@ -61,30 +61,36 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API Routers
-app.include_router(auth.router, prefix=settings.API_V1_STR)
-app.include_router(tenders.router, prefix=settings.API_V1_STR)
-app.include_router(tasks.router, prefix=settings.API_V1_STR)
-app.include_router(documents.router, prefix=settings.API_V1_STR)
-app.include_router(comments.router, prefix=settings.API_V1_STR)
-app.include_router(dashboard.router, prefix=settings.API_V1_STR)
-app.include_router(permissions.router, prefix=settings.API_V1_STR)
-app.include_router(alerts.router, prefix=settings.API_V1_STR)
-app.include_router(categories.router, prefix=settings.API_V1_STR)
-app.include_router(settings_router.router, prefix=settings.API_V1_STR)
-app.include_router(submissions.router, prefix=settings.API_V1_STR)
-app.include_router(chat.router, prefix=settings.API_V1_STR)
-app.include_router(organizations.router, prefix=settings.API_V1_STR)
-app.include_router(requirements.router, prefix=settings.API_V1_STR)
-app.include_router(company_credentials.router, prefix=settings.API_V1_STR)
-app.include_router(company_profiles.router, prefix=settings.API_V1_STR)
+# Include API Routers (support both /api and /api/v1 prefixes for robust client compatibility)
+API_PREFIXES = [settings.API_V1_STR]
+if "/api/v1" not in API_PREFIXES:
+    API_PREFIXES.append("/api/v1")
+
+for prefix in API_PREFIXES:
+    app.include_router(auth.router, prefix=prefix)
+    app.include_router(tenders.router, prefix=prefix)
+    app.include_router(tasks.router, prefix=prefix)
+    app.include_router(documents.router, prefix=prefix)
+    app.include_router(comments.router, prefix=prefix)
+    app.include_router(dashboard.router, prefix=prefix)
+    app.include_router(permissions.router, prefix=prefix)
+    app.include_router(alerts.router, prefix=prefix)
+    app.include_router(categories.router, prefix=prefix)
+    app.include_router(settings_router.router, prefix=prefix)
+    app.include_router(submissions.router, prefix=prefix)
+    app.include_router(chat.router, prefix=prefix)
+    app.include_router(organizations.router, prefix=prefix)
+    app.include_router(requirements.router, prefix=prefix)
+    app.include_router(company_credentials.router, prefix=prefix)
+    app.include_router(company_profiles.router, prefix=prefix)
+    app.include_router(users.router, prefix=prefix)
+    app.include_router(client_visits.router, prefix=prefix)
+
 app.include_router(financial_rules.router)
-app.include_router(users.router, prefix=settings.API_V1_STR)
-app.include_router(client_visits.router, prefix=settings.API_V1_STR)
-app.include_router(client_visits.router, prefix="/api/v1")
 
 
 @app.get(f"{settings.API_V1_STR}/health", tags=["Health"])
+@app.get("/api/v1/health", tags=["Health"])
 def health_check():
     return {
         "status": "healthy",

@@ -31,6 +31,7 @@ import {
   VisitStatus,
   VisitSentiment,
 } from '../types/clientVisit';
+import { API_BASE_URL } from '../utils/apiConfig';
 
 const STATUS_CONFIG: Record<
   VisitStatus,
@@ -108,7 +109,7 @@ export const ClientVisitsPage: React.FC = () => {
   const fetchVisits = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/v1/client-visits');
+      const res = await fetch(`${API_BASE_URL}/client-visits`);
       if (res.ok) {
         const data = await res.json();
         setVisits(data);
@@ -134,7 +135,7 @@ export const ClientVisitsPage: React.FC = () => {
         payload.actual_check_out = new Date().toISOString().slice(0, 16);
       }
 
-      const res = await fetch(`/api/v1/client-visits/${visitId}/status`, {
+      const res = await fetch(`${API_BASE_URL}/client-visits/${visitId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -158,7 +159,7 @@ export const ClientVisitsPage: React.FC = () => {
     };
 
     try {
-      const res = await fetch(`/api/v1/client-visits/${visit.id}`, {
+      const res = await fetch(`${API_BASE_URL}/client-visits/${visit.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -181,7 +182,7 @@ export const ClientVisitsPage: React.FC = () => {
   const handleDeleteVisit = async (visitId: string) => {
     if (!window.confirm('Are you sure you want to delete this visitor / meeting record?')) return;
     try {
-      const res = await fetch(`/api/v1/client-visits/${visitId}`, {
+      const res = await fetch(`${API_BASE_URL}/client-visits/${visitId}`, {
         method: 'DELETE',
       });
       if (res.ok) {

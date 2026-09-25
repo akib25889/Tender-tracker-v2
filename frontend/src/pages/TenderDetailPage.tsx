@@ -44,7 +44,7 @@ import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { LiveCountdownBadge } from '../components/ui/LiveCountdownBadge';
 import { TenderCommentsSection } from '../components/ui/TenderCommentsSection';
 import { TenderSummaryDocument } from '../components/ui/TenderSummaryDocument';
-import { TenderStage } from '../types/tender';
+import { TenderStage, RequirementStatus, TenderRequirement } from '../types/tender';
 import { NotFoundPage } from './status/NotFoundPage';
 import { getDualDeadlineInfo } from '../utils/dateTimeUtils';
 
@@ -61,6 +61,7 @@ export const TenderDetailPage: React.FC = () => {
     deleteTender,
     updateTenderAiChatLink,
     showSuccessNotification,
+    toggleRequirementStatus,
   } = useTenders();
 
   const [copiedRef, setCopiedRef] = useState(false);
@@ -133,9 +134,56 @@ export const TenderDetailPage: React.FC = () => {
     }
   };
 
+  // Dynamic Compliance Sentinel criteria
+  const complianceItems: TenderRequirement[] = useMemo(() => {
+    // 1. If tender has explicit requirements, use them
+    if (tender.requirements && tender.requirements.length > 0) {
+      return tender.requirements;
+    }
+    // 2. If tender has submission documents from registry tab 5, map them
+    if (tender.summary?.submissionDocuments && tender.summary.submissionDocuments.length > 0) {
+      return tender.summary.submissionDocuments.map((doc, idx) => {
+        const matchingDoc = tender.documents?.find(
+          (d) =>
+            d.name.toLowerCase().includes(doc.toLowerCase()) ||
+            d.folder === '02_company_statutory_documents'
+        );
+        return {
+          id: `REQ-DOC-${idx + 1}`,
+          title: doc,
+          category: 'Statutory Document',
+          status: (matchingDoc ? 'VERIFIED' : 'PENDING') as RequirementStatus,
+          evidenceFile: matchingDoc ? matchingDoc.name : undefined,
+          owner: 'Tender Lead',
+        };
+      });
+    }
+    return [];
+  }, [tender.requirements, tender.summary?.submissionDocuments, tender.documents]);
+
+  const clearedCount = useMemo(
+    () => complianceItems.filter((r) => r.status === 'VERIFIED').length,
+    [complianceItems]
+  );
+  const blockersCount = useMemo(
+    () => complianceItems.filter((r) => r.status === 'BLOCKER').length,
+    [complianceItems]
+  );
+  const totalCount = complianceItems.length;
+
+  const handleCycleSentinelStatus = (reqId: string, currentStatus: RequirementStatus) => {
+    const nextStatus: RequirementStatus =
+      currentStatus === 'VERIFIED'
+        ? 'PENDING'
+        : currentStatus === 'PENDING'
+        ? 'BLOCKER'
+        : 'VERIFIED';
+    toggleRequirementStatus(tender.id, reqId, nextStatus);
+  };
+
   const subNavTabs = [
     { label: 'Overview', path: `/tenders/${tender.id}`, exact: true, icon: FileText },
-    { label: 'Compliance Matrix', path: `/tenders/${tender.id}/requirements`, icon: CheckSquare, badge: tender.requirements?.length || 14 },
+    { label: 'Compliance Matrix', path: `/tenders/${tender.id}/requirements`, icon: CheckSquare, badge: totalCount },
     { label: 'Task Board', path: `/tenders/${tender.id}/tasks`, icon: Kanban },
     { label: 'Document Vault', path: `/tenders/${tender.id}/documents`, icon: FolderLock, hasAlert: (tender.missingDocumentsCount || 0) > 0 },
     { label: 'JV Partners', path: `/tenders/${tender.id}/partners`, icon: Users },
@@ -1187,11 +1235,35 @@ export const TenderDetailPage: React.FC = () => {
               <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-xs p-5">
                 <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#F1F5F9]">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#DC2626] animate-ping" />
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        blockersCount > 0
+                          ? 'bg-[#DC2626] animate-ping'
+                          : clearedCount === totalCount && totalCount > 0
+                          ? 'bg-[#059669]'
+                          : 'bg-[#D97706] animate-pulse'
+                      }`}
+                    />
                     <h3 className="text-sm font-bold text-[#0F172A]">Compliance Sentinel</h3>
                   </div>
-                  <span className="text-[10px] font-mono font-bold text-[#DC2626] bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FECACA]">
-                    2 / 8 Cleared
+                  <span
+                    className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border transition-colors ${
+                      totalCount === 0
+                        ? 'text-[#64748B] bg-[#F1F5F9] border-[#CBD5E1]'
+                        : blockersCount > 0
+                        ? 'text-[#DC2626] bg-[#FEF2F2] border-[#FECACA]'
+                        : clearedCount === totalCount
+                        ? 'text-[#059669] bg-[#ECFDF5] border-[#A7F3D0]'
+                        : 'text-[#D97706] bg-[#FFFBEB] border-[#FDE68A]'
+                    }`}
+                  >
+                    {totalCount === 0
+                      ? '0 Configured'
+                      : blockersCount > 0
+                      ? `${clearedCount} / ${totalCount} Cleared (${blockersCount} Blocker${blockersCount > 1 ? 's' : ''})`
+                      : clearedCount === totalCount
+                      ? `${clearedCount} / ${totalCount} Cleared (All Ready)`
+                      : `${clearedCount} / ${totalCount} Cleared`}
                   </span>
                 </div>
                 <p className="text-xs text-[#64748B] mb-4 leading-normal">
@@ -1199,96 +1271,111 @@ export const TenderDetailPage: React.FC = () => {
                 </p>
 
                 {/* Sentinel Checklist */}
-                <div className="space-y-2.5">
-                  {/* Item 1: Trade License */}
-                  <div className="p-2.5 rounded-xl border border-[#A7F3D0] bg-[#ECFDF5]/50 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-6 h-6 rounded-md bg-[#D1FAE5] text-[#059669] flex items-center justify-center text-xs font-bold">
-                        ✓
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-[#0F172A] block">Up-to-Date Trade License</span>
-                        <span className="text-[10px] text-[#64748B]">FY 2025–2026 Cleared</span>
-                      </div>
+                {complianceItems.length === 0 ? (
+                  <div className="p-4 bg-[#F8FAFC] rounded-xl border border-dashed border-[#CBD5E1] text-center space-y-2">
+                    <p className="text-xs text-[#64748B]">
+                      No compliance requirements registered yet for this tender.
+                    </p>
+                    <div className="flex flex-col gap-1.5 pt-1">
+                      <Link
+                        to={`/registry?edit=${tender.id}`}
+                        className="w-full py-1.5 px-2 bg-white border border-[#CBD5E1] hover:bg-[#F1F5F9] text-[#0F172A] rounded-lg text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors"
+                      >
+                        <span>+ Add in Registry (Tab 5)</span>
+                      </Link>
+                      <Link
+                        to={`/tenders/${tender.id}/requirements`}
+                        className="w-full py-1.5 px-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors"
+                      >
+                        <span>Open Compliance Matrix</span>
+                      </Link>
                     </div>
-                    <span className="text-[10px] font-bold text-[#059669] uppercase">Ready</span>
                   </div>
+                ) : (
+                  <div className="space-y-2.5">
+                    {complianceItems.slice(0, 6).map((req) => {
+                      const isVerified = req.status === 'VERIFIED';
+                      const isBlocker = req.status === 'BLOCKER';
 
-                  {/* Item 2: TIN & Tax Clearance */}
-                  <div className="p-2.5 rounded-xl border border-[#A7F3D0] bg-[#ECFDF5]/50 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-6 h-6 rounded-md bg-[#D1FAE5] text-[#059669] flex items-center justify-center text-xs font-bold">
-                        ✓
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-[#0F172A] block">TIN &amp; Tax Clearance</span>
-                        <span className="text-[10px] text-[#64748B]">NBR Certified PDF in vault</span>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-bold text-[#059669] uppercase">Ready</span>
-                  </div>
+                      return (
+                        <div
+                          key={req.id}
+                          className={`p-2.5 rounded-xl border transition-all flex items-center justify-between ${
+                            isVerified
+                              ? 'border-[#A7F3D0] bg-[#ECFDF5]/50'
+                              : isBlocker
+                              ? 'border-[#FECACA] bg-[#FEF2F2]/50'
+                              : 'border-[#FDE68A] bg-[#FFFBEB]/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                            <button
+                              type="button"
+                              onClick={() => handleCycleSentinelStatus(req.id, req.status)}
+                              title="Click to cycle status (Verified / Pending / Blocker)"
+                              className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold shrink-0 cursor-pointer transition-transform hover:scale-110 ${
+                                isVerified
+                                  ? 'bg-[#D1FAE5] text-[#059669]'
+                                  : isBlocker
+                                  ? 'bg-[#FEE2E2] text-[#DC2626]'
+                                  : 'bg-[#FEF3C7] text-[#D97706]'
+                              }`}
+                            >
+                              {isVerified ? '✓' : '!'}
+                            </button>
+                            <div className="min-w-0">
+                              <span className="text-xs font-bold text-[#0F172A] block truncate" title={req.title}>
+                                {req.title}
+                              </span>
+                              <span className="text-[10px] text-[#64748B] block truncate">
+                                {req.evidenceFile
+                                  ? `Evidence: ${req.evidenceFile}`
+                                  : req.category
+                                  ? `${req.category} • ${isVerified ? 'Cleared' : isBlocker ? 'Disqualification risk' : 'Pending verification'}`
+                                  : isVerified
+                                  ? 'Verified & Ready'
+                                  : 'Pending verification'}
+                              </span>
+                            </div>
+                          </div>
 
-                  {/* Item 3: Bank Solvency Certificate */}
-                  <div className="p-2.5 rounded-xl border border-[#FECACA] bg-[#FEF2F2]/50 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-6 h-6 rounded-md bg-[#FEE2E2] text-[#DC2626] flex items-center justify-center text-xs font-bold">
-                        !
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-[#0F172A] block">Bank Solvency Certificate</span>
-                        <span className="text-[10px] text-[#DC2626] font-medium">Min $2.5M Line of Credit</span>
-                      </div>
-                    </div>
-                    <Link
-                      to={`/tenders/${tender.id}/documents`}
-                      className="px-2 py-1 text-[10px] font-bold bg-[#DC2626] text-white rounded hover:bg-[#B91C1C] transition-colors"
-                    >
-                      Upload
-                    </Link>
-                  </div>
+                          <div className="shrink-0 flex items-center gap-1.5">
+                            {isVerified ? (
+                              <span className="text-[10px] font-bold text-[#059669] uppercase bg-[#D1FAE5]/60 px-1.5 py-0.5 rounded">
+                                Ready
+                              </span>
+                            ) : isBlocker ? (
+                              <Link
+                                to={`/tenders/${tender.id}/documents`}
+                                className="px-2 py-1 text-[10px] font-bold bg-[#DC2626] text-white rounded hover:bg-[#B91C1C] transition-colors"
+                                title="Upload evidence to Document Vault"
+                              >
+                                Upload
+                              </Link>
+                            ) : (
+                              <Link
+                                to={`/tenders/${tender.id}/documents`}
+                                className="px-2 py-1 text-[10px] font-semibold bg-[#FEF3C7] text-[#D97706] hover:bg-[#FDE68A] border border-[#FDE68A] rounded transition-colors"
+                                title="Upload or attach evidence"
+                              >
+                                Upload
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
 
-                  {/* Item 4: 5-Year Financial Audit Reports */}
-                  <div className="p-2.5 rounded-xl border border-[#FDE68A] bg-[#FFFBEB]/50 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-6 h-6 rounded-md bg-[#FEF3C7] text-[#D97706] flex items-center justify-center text-xs font-bold">
-                        !
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-[#0F172A] block">Audited Balance Sheets (5Y)</span>
-                        <span className="text-[10px] text-[#D97706] font-medium">FY24 pending CA signature</span>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-bold text-[#D97706] uppercase">Pending</span>
+                    {complianceItems.length > 6 && (
+                      <Link
+                        to={`/tenders/${tender.id}/requirements`}
+                        className="block text-center text-[11px] font-semibold text-[#2563EB] hover:underline pt-1"
+                      >
+                        + View all {complianceItems.length} requirements in Compliance Matrix →
+                      </Link>
+                    )}
                   </div>
-
-                  {/* Item 5: OEM Authorization Form (MAF) */}
-                  <div className="p-2.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-6 h-6 rounded-md bg-[#E2E8F0] text-[#64748B] flex items-center justify-center text-xs font-bold">
-                        ?
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-[#0F172A] block">OEM Authorization (MAF)</span>
-                        <span className="text-[10px] text-[#64748B]">From Cisco / HPE / Dell</span>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-semibold text-[#64748B] uppercase">Unassigned</span>
-                  </div>
-
-                  {/* Item 6: Joint Venture Deed */}
-                  <div className="p-2.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-6 h-6 rounded-md bg-[#E2E8F0] text-[#64748B] flex items-center justify-center text-xs font-bold">
-                        ?
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-[#0F172A] block">JV Agreement / Deed</span>
-                        <span className="text-[10px] text-[#64748B]">Notary Public stamp needed</span>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-semibold text-[#64748B] uppercase">Action Req</span>
-                  </div>
-                </div>
+                )}
 
                 {/* Sentinel CTA Button */}
                 <Link
@@ -1296,7 +1383,7 @@ export const TenderDetailPage: React.FC = () => {
                   className="w-full mt-4 py-2 px-3 bg-[#0F172A] hover:bg-[#1E293B] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs"
                 >
                   <ShieldAlert className="w-3.5 h-3.5" />
-                  <span>Launch Full Compliance Audit</span>
+                  <span>Launch Full Compliance Audit ({totalCount})</span>
                 </Link>
               </div>
             </div>

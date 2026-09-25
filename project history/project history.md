@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.23.0
+**Current Version:** 2.24.0
 **Stack:** FastAPI (Python 3.13+), SQLite (Zero-Config Dev) / MySQL 8.4 LTS (Prod), React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -19,6 +19,27 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 28-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 44 tests), automated 3-2-1 backup sentinel, corporate authentication, and live Azure Cloud VM deployment. |
+
+### [2026-09-23] — Version 2.24.0: Zero-Config Local Toolchain Setup, Dual-Prefix API Compatibility, and Workspace Realignment
+- **Category:** Environment Configuration, API Architecture, Developer Experience, Verification Hardening
+- **Summary:**
+  - **Toolchain Provisioning & Runtime Binding:**
+    - Installed official **Python 3.13.15** runtime to maintain exact binary ABI compatibility with precompiled C-extensions (`cffi`, `cryptography`, `greenlet`, `bcrypt`) in `backend/venv`.
+    - Bound `backend/venv/pyvenv.cfg` to the local Python 3.13 installation, restoring complete operability of `pytest`, `uvicorn`, and FastAPI.
+    - Installed **Node.js LTS (v24.19.0)** and **npm (11.17.0)** via WinGet, permanently added to User `PATH`, and configured PowerShell script execution policy (`RemoteSigned`).
+    - Located system Git binary (`2.55.0.windows.5`) and registered it in User `PATH` for terminal-wide version control support.
+  - **Dual-Prefix API Routing Compatibility Layer:**
+    - Updated `backend/app/main.py` to mount all 18 domain routers and the health check endpoints under both `/api` and `/api/v1` prefixes.
+    - Prevents 404 errors across legacy, versioned, or relative API calls from client components or external webhooks.
+  - **Frontend Client & Vite Dev Server Optimization:**
+    - Added local development reverse proxy in `frontend/vite.config.ts` mapping `/api` to `http://127.0.0.1:8000`, resolving origin and CORS discrepancies during local development.
+    - Synchronized `VITE_API_BASE_URL=http://localhost:8000/api` in `frontend/.env` and `frontend/.env.example`.
+    - Modernized `ClientVisitsPage.tsx` to dynamically consume `API_BASE_URL` from `apiConfig.ts` rather than hardcoding `/api/v1/client-visits`.
+  - **VS Code & Workspace Realignment:**
+    - Configured `.vscode/settings.json` with `"python.defaultInterpreterPath": "${workspaceFolder}/backend/venv/Scripts/python.exe"` and auto-environment activation.
+    - Realigned hardcoded drive paths from `H:\` to `F:\` across `Project_Start_Point.md`, `README.md`, `AGENTS.md`, and `GEMINI.md`.
+    - Re-indexed the knowledge graph via `tools/graphify/graphify.py` (54 nodes, 32 edges).
+    - Verified all 4 validation gates (`python run_all_tests.py` — 44/44 tests passed) and production build (`npm run build`).
 
 ### [2026-09-20] — Version 2.23.0: Distinct Evaluation Method Segregation, Schema & UI Modernization, and Live Cloud Deployment
 - **Category:** Database Schema Migration, UI / UX Architecture, Statutory Procurement Governance, Live Cloud Deployment
@@ -1246,6 +1267,16 @@
   3. *Full Intake & Workspace Integration:* Added interactive selectors to `NewTenderModal.tsx` and `TenderRegistryPage.tsx`, structured cards in `TenderDetailPage.tsx`, and formal rows in printable `TenderSummaryDocument.tsx`.
   4. *Test Verification:* Integrated comprehensive CRUD validation into `backend/tests/test_api_integration.py` (`test_24_tender_procurement_governance_attributes`).  
   *Impact:* Comprehensive procurement governance compliance across national and multilateral donor tenders without database overhead or external dependencies.
+
+- **ADR-015: Dual-Prefix API Compatibility Layer & Automated Local Toolchain Provisioning**  
+  *Context:* Project relocation across physical disk volumes and fresh developer environments often suffer from broken environment paths, binary extension architecture mismatches (e.g. Python 3.13 precompiled `.pyd` extensions vs Python 3.14 runtime), Node/npm installation discrepancies, and frontend/backend API prefix inconsistencies (`/api` vs `/api/v1`).  
+  *Decision:*
+  1. *Binary ABI Runtime Alignment:* Provisioned native Python 3.13.15 runtime to maintain 100% binary compatibility with existing precompiled C-extensions (`cffi`, `cryptography`, `greenlet`, `bcrypt`) in `backend/venv`. Updated `pyvenv.cfg` home and executable paths.
+  2. *Standardized Toolchain Provisioning:* Installed Node.js LTS (v24.19.0) and npm (11.17.0) via WinGet, permanently added to User `PATH`, and configured PowerShell execution policy to `RemoteSigned`. Discovered and registered system Git (`2.55.0.windows.5`) in User `PATH`.
+  3. *Dual-Prefix FastAPI Architecture:* Updated `backend/app/main.py` to register all 18 application routers and health check endpoints under both `/api` and `/api/v1` prefixes. This eliminates 404 errors for legacy, versioned, or external webhook calls.
+  4. *Vite Reverse Proxy & Dynamic Frontend Endpoints:* Added local development proxy in `frontend/vite.config.ts` mapping `/api` to `http://127.0.0.1:8000`. Updated `frontend/.env` to `http://localhost:8000/api` and updated `ClientVisitsPage.tsx` to dynamically consume `API_BASE_URL`.
+  5. *Zero-Config IDE Setup:* Configured `.vscode/settings.json` with the virtual environment interpreter path (`${workspaceFolder}/backend/venv/Scripts/python.exe`).  
+  *Impact:* Flawless, zero-friction developer onboarding, 100% passing verification gates (`run_all_tests.py`), and robust client-backend API resilience.
 
 ---
 
