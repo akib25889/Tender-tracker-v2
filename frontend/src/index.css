@@ -120,6 +120,65 @@
   --shadow-popover:      0 12px 24px -4px rgba(0, 0, 0, 0.65), 0 4px 8px -4px rgba(0, 0, 0, 0.4);
 }
 
+/* ─── Arctic Winter Theme (Soft Ice, Frost Blue, Glacier Blue & Deep Ocean Teal) ─── */
+.winter,
+[data-theme="winter"] {
+  /* Pale Frost Canvas (#EEF5FF) & Pure Ice Surfaces */
+  --bg-canvas:           #EEF5FF;
+  --bg-surface:          #FFFFFF;
+  --bg-surface-raised:   #F5F9FF;
+  --bg-subtle:           #E2EEFD;
+  --bg-muted:            #D0E3FF;
+  --bg-hover:            #E8F2FF;
+  --bg-active:           #DBEBFF;
+  --bg-input:            #FFFFFF;
+  --bg-dropdown:         #FFFFFF;
+
+  /* Typography / Text Contrast (Deep arctic ocean teal / navy) */
+  --text-primary:        #0E384C;
+  --text-secondary:      #176B87;
+  --text-muted:          #427D9D;
+  --text-faint:          #86B6F6;
+  --text-on-dark:        #EEF5FF;
+  --text-link:           #176B87;
+
+  /* Borders & Dividers (Soft frost sky blue #B4D4FF) */
+  --border-default:      #B4D4FF;
+  --border-subtle:       #D8E8FF;
+  --border-strong:       #86B6F6;
+  --border-focus:        #176B87;
+
+  /* Status Accents (Winter Harmonized Tints) */
+  --badge-info-bg:       #EEF5FF;
+  --badge-info-border:   #B4D4FF;
+  --badge-info-text:     #176B87;
+
+  --badge-success-bg:    #EBFDF8;
+  --badge-success-border:#99EED8;
+  --badge-success-text:  #0C6E56;
+
+  --badge-warning-bg:    #FFF8E6;
+  --badge-warning-border:#FCDFA0;
+  --badge-warning-text:  #945B03;
+
+  --badge-danger-bg:     #FFF0F2;
+  --badge-danger-border: #FFCCD4;
+  --badge-danger-text:   #AB1C38;
+
+  --badge-purple-bg:     #F0F3FF;
+  --badge-purple-border: #C8D5FE;
+  --badge-purple-text:   #3B4EAF;
+
+  /* Scrollbar */
+  --scrollbar-thumb:     #B4D4FF;
+  --scrollbar-hover:     #86B6F6;
+
+  /* Elevation Shadows with Subtle Frost Teal Glow */
+  --shadow-card:         0 1px 3px 0 rgba(23, 107, 135, 0.07), 0 1px 2px -1px rgba(23, 107, 135, 0.04);
+  --shadow-elevated:     0 4px 6px -1px rgba(23, 107, 135, 0.1), 0 2px 4px -2px rgba(23, 107, 135, 0.06);
+  --shadow-popover:      0 10px 15px -3px rgba(23, 107, 135, 0.12), 0 4px 6px -4px rgba(23, 107, 135, 0.08);
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    2. GLOBAL FOUNDATIONS & RESET
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -552,5 +611,192 @@ html, body {
 .animate-fadeIn {
   animation: fadeIn 0.15s ease-out;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   11. WINTER FROST THEME OVERRIDES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Canvas backgrounds */
+.winter .min-h-screen,
+.winter [class*="bg-[#FDFBF7]"],
+.winter [class*="bg-[#F8FAFC]"],
+.winter [class*="bg-\\[#F8FAFC\\]"],
+.winter .bg-\[\#F8FAFC\],
+.winter .bg-canvas {
+  background-color: var(--bg-canvas) !important;
+}
+
+/* Card surfaces */
+.winter [class*="bg-white"],
+.winter .bg-surface {
+  background-color: var(--bg-surface) !important;
+}
+
+/* Subtle table rows, headers, and tabs */
+.winter [class*="bg-[#F1F5F9]"],
+.winter [class*="bg-\\[#F1F5F9\\]"],
+.winter .bg-\[\#F1F5F9\],
+.winter [class*="bg-[#F0F4F8]"],
+.winter [class*="bg-[#E8F0FB]"],
+.winter .bg-slate-50,
+.winter .bg-slate-100,
+.winter [class*="bg-slate-50"],
+.winter [class*="bg-slate-100"] {
+  background-color: var(--bg-subtle) !important;
+}
+
+/* Muted containers */
+.winter [class*="bg-[#E2E8F0]"],
+.winter [class*="bg-\\[#E2E8F0\\]"],
+.winter .bg-\[\#E2E8F0\] {
+  background-color: var(--bg-muted) !important;
+}
+
+/* Topbar header */
+.winter header {
+  background-color: rgba(238, 245, 255, 0.94) !important;
+  border-color: var(--border-default) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Sidebar styling for Winter: Deep arctic ocean teal (#176B87) */
+.winter aside {
+  background-color: #176B87 !important;
+  border-color: #13566D !important;
+}
+.winter aside [class*="border-[#1E293B]"] {
+  border-color: rgba(180, 212, 255, 0.22) !important;
+}
+.winter aside [class*="bg-[#1E293B]"] {
+  background-color: rgba(255, 255, 255, 0.16) !important;
+}
+.winter aside [class*="hover:bg-[#1E293B]"]:hover {
+  background-color: rgba(255, 255, 255, 0.22) !important;
+}
+.winter aside [class*="text-[#94A3B8]"] {
+  color: #B4D4FF !important;
+}
+.winter aside [class*="text-[#64748B]"] {
+  color: #86B6F6 !important;
+}
+.winter aside [class*="hover:text-white"]:hover {
+  color: #FFFFFF !important;
+}
+.winter aside [class*="bg-[#2563EB]"] {
+  background-color: #86B6F6 !important;
+  color: #0E384C !important;
+}
+
+/* Borders & Dividers */
+.winter [class*="border-[#E2E8F0]"],
+.winter [class*="border-\\[#E2E8F0\\]"],
+.winter .border-\[\#E2E8F0\],
+.winter [class*="border-[#F1F5F9]"],
+.winter [class*="border-\\[#F1F5F9\\]"],
+.winter .border-\[\#F1F5F9\],
+.winter [class*="border-[#E8EDF2]"] {
+  border-color: var(--border-default) !important;
+}
+
+.winter [class*="border-[#CBD5E1]"],
+.winter [class*="border-\\[#CBD5E1\\]"],
+.winter .border-\[\#CBD5E1\],
+.winter [class*="border-[#C8D5E2]"] {
+  border-color: var(--border-strong) !important;
+}
+
+.winter hr {
+  border-color: var(--border-default) !important;
+}
+
+/* High contrast typography in Winter */
+.winter [class*="text-[#0F172A]"],
+.winter [class*="text-\\[#0F172A\\]"],
+.winter .text-\[\#0F172A\],
+.winter [class*="text-[#1A2B4A]"],
+.winter [class*="text-[#111827]"] {
+  color: var(--text-primary) !important;
+}
+
+.winter [class*="text-[#475569]"],
+.winter [class*="text-\\[#475569\\]"],
+.winter .text-\[\#475569\],
+.winter [class*="text-[#4B5563]"],
+.winter [class*="text-[#2D3A4A]"],
+.winter [class*="text-[#334155]"] {
+  color: var(--text-secondary) !important;
+}
+
+.winter [class*="text-[#64748B]"],
+.winter [class*="text-\\[#64748B\\]"],
+.winter .text-\[\#64748B\],
+.winter [class*="text-[#6B7280]"] {
+  color: var(--text-muted) !important;
+}
+
+/* Primary actions: blue-600 / #2563EB -> #176B87 */
+.winter [class*="bg-[#2563EB]"],
+.winter [class*="bg-\\[#2563EB\\]"],
+.winter .bg-\[\#2563EB\],
+.winter [class*="bg-blue-600"] {
+  background-color: #176B87 !important;
+  color: #FFFFFF !important;
+}
+.winter [class*="hover:bg-[#1D4ED8]"]:hover,
+.winter [class*="hover:bg-blue-700"]:hover {
+  background-color: #0E485C !important;
+}
+.winter [class*="text-[#2563EB]"],
+.winter [class*="text-\\[#2563EB\\]"],
+.winter .text-\[\#2563EB\],
+.winter [class*="text-blue-600"] {
+  color: #176B87 !important;
+}
+
+/* Form Controls */
+.winter input,
+.winter textarea,
+.winter select {
+  background-color: #FFFFFF !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-default) !important;
+}
+
+.winter input:focus,
+.winter textarea:focus,
+.winter select:focus {
+  border-color: #176B87 !important;
+  outline: 2px solid rgba(134, 182, 246, 0.5) !important;
+  outline-offset: 1px;
+}
+
+.winter input::placeholder,
+.winter textarea::placeholder {
+  color: #86B6F6 !important;
+}
+
+/* Tables & Rows */
+.winter thead tr,
+.winter th {
+  background-color: #E2EEFD !important;
+  color: #176B87 !important;
+  border-color: var(--border-default) !important;
+}
+
+.winter tbody tr:hover,
+.winter [class*="hover:bg-[#F8FAFC]"]:hover,
+.winter [class*="hover:bg-[#F1F5F9]"]:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+/* Modals & Dialogs */
+.winter [role="dialog"],
+.winter dialog,
+.winter .modal-content {
+  background-color: #FFFFFF !important;
+  border-color: var(--border-strong) !important;
+  box-shadow: var(--shadow-popover) !important;
+}
+
 
 

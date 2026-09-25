@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 
-export type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark' | 'winter';
 
 let currentTheme: Theme = (() => {
   if (typeof window === 'undefined') return 'light';
   const saved = localStorage.getItem('tt_theme');
-  if (saved === 'dark' || saved === 'light') return saved as Theme;
+  if (saved === 'dark' || saved === 'light' || saved === 'winter') return saved as Theme;
   return 'light';
 })();
 
@@ -14,17 +14,10 @@ const listeners = new Set<(theme: Theme) => void>();
 function applyThemeToDOM(theme: Theme) {
   if (typeof document !== 'undefined') {
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-      root.classList.remove('light');
-      root.setAttribute('data-theme', 'dark');
-      root.style.colorScheme = 'dark';
-    } else {
-      root.classList.add('light');
-      root.classList.remove('dark');
-      root.setAttribute('data-theme', 'light');
-      root.style.colorScheme = 'light';
-    }
+    root.classList.remove('dark', 'light', 'winter');
+    root.classList.add(theme);
+    root.setAttribute('data-theme', theme);
+    root.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
   }
 }
 
@@ -55,7 +48,13 @@ export function useTheme() {
   };
 
   const toggleTheme = () => {
-    notify(currentTheme === 'dark' ? 'light' : 'dark');
+    if (currentTheme === 'light') {
+      notify('dark');
+    } else if (currentTheme === 'dark') {
+      notify('winter');
+    } else {
+      notify('light');
+    }
   };
 
   return { theme, setTheme, toggleTheme };

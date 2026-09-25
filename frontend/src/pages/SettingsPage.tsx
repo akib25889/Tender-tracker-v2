@@ -17,6 +17,7 @@ import {
   Sun,
   Moon,
   Sparkles,
+  Snowflake,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { useTheme } from '../hooks/useTheme';
@@ -228,10 +229,10 @@ export const SettingsPage: React.FC = () => {
         {/* Appearance & Workspace Theme */}
         <Card
           title="Appearance & Interface Theme"
-          subtitle="Toggle workspace visual mode between Light Workspace and Dark Command Center"
+          subtitle="Toggle workspace visual mode between Light Workspace, Dark Command Center, and Winter Frost"
         >
           <div className="space-y-4 text-xs">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {/* Light Theme Card Option */}
               <button
                 type="button"
@@ -303,6 +304,49 @@ export const SettingsPage: React.FC = () => {
                   </p>
                 </div>
               </button>
+
+              {/* Winter Theme Card Option */}
+              <button
+                type="button"
+                onClick={() => setTheme('winter')}
+                className={`flex items-start gap-3.5 p-4 rounded-xl border text-left transition-all ${
+                  theme === 'winter'
+                    ? 'bg-[#EEF5FF] border-[#176B87] ring-2 ring-[#86B6F6]/60 shadow-xs'
+                    : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#B4D4FF] hover:bg-[#EEF5FF]/40'
+                }`}
+              >
+                <div
+                  className={`p-2.5 rounded-lg shrink-0 transition-colors ${
+                    theme === 'winter'
+                      ? 'bg-[#176B87] text-white shadow-xs'
+                      : 'bg-[#E2E8F0] text-[#64748B]'
+                  }`}
+                >
+                  <Snowflake className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-[#0F172A]">
+                      Winter Frost
+                    </span>
+                    {theme === 'winter' && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#B4D4FF] text-[#176B87] border border-[#86B6F6]">
+                        Active
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-[#64748B] mt-1">
+                    Arctic winter palette with ice white base, frost borders, glacier blue accents, and deep ocean teal contrast.
+                  </p>
+                  {/* Swatches */}
+                  <div className="flex items-center gap-1.5 mt-2.5">
+                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#EEF5FF' }} title="Ice White: #EEF5FF" />
+                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#B4D4FF' }} title="Frost Blue: #B4D4FF" />
+                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#86B6F6' }} title="Glacier Blue: #86B6F6" />
+                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#176B87' }} title="Ocean Teal: #176B87" />
+                  </div>
+                </div>
+              </button>
             </div>
 
             {/* Quick Toggle Action Strip */}
@@ -312,7 +356,7 @@ export const SettingsPage: React.FC = () => {
                 <span className="text-[#64748B]">
                   Currently active:{' '}
                   <strong className="text-[#0F172A] capitalize">
-                    {theme === 'dark' ? 'Dark Command Center' : 'Light Workspace'}
+                    {theme === 'dark' ? 'Dark Command Center' : theme === 'winter' ? 'Winter Frost' : 'Light Workspace'}
                   </strong>
                 </span>
               </div>
@@ -322,6 +366,11 @@ export const SettingsPage: React.FC = () => {
                 className="flex items-center justify-center gap-2 px-3.5 py-1.5 bg-white hover:bg-[#F1F5F9] border border-[#CBD5E1] text-[#0F172A] rounded-lg text-xs font-bold shadow-xs transition-colors shrink-0"
               >
                 {theme === 'dark' ? (
+                  <>
+                    <Snowflake className="w-3.5 h-3.5 text-[#176B87]" />
+                    <span>Switch to Winter Frost</span>
+                  </>
+                ) : theme === 'winter' ? (
                   <>
                     <Sun className="w-3.5 h-3.5 text-amber-500" />
                     <span>Switch to Light Mode</span>
