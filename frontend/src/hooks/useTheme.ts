@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 
-export type Theme = 'light' | 'dark' | 'winter';
+export type Theme = 'light' | 'dark' | 'winter' | 'warm';
 
 let currentTheme: Theme = (() => {
   if (typeof window === 'undefined') return 'light';
   const saved = localStorage.getItem('tt_theme');
-  if (saved === 'dark' || saved === 'light' || saved === 'winter') return saved as Theme;
+  if (saved === 'worm') return 'warm';
+  if (saved === 'dark' || saved === 'light' || saved === 'winter' || saved === 'warm') return saved as Theme;
   return 'light';
 })();
 
@@ -14,8 +15,11 @@ const listeners = new Set<(theme: Theme) => void>();
 function applyThemeToDOM(theme: Theme) {
   if (typeof document !== 'undefined') {
     const root = document.documentElement;
-    root.classList.remove('dark', 'light', 'winter');
+    root.classList.remove('dark', 'light', 'winter', 'warm', 'worm');
     root.classList.add(theme);
+    if (theme === 'warm') {
+      root.classList.add('worm'); // alias support
+    }
     root.setAttribute('data-theme', theme);
     root.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
   }
@@ -52,6 +56,8 @@ export function useTheme() {
       notify('dark');
     } else if (currentTheme === 'dark') {
       notify('winter');
+    } else if (currentTheme === 'winter') {
+      notify('warm');
     } else {
       notify('light');
     }

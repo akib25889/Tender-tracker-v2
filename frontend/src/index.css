@@ -179,6 +179,67 @@
   --shadow-popover:      0 10px 15px -3px rgba(23, 107, 135, 0.12), 0 4px 6px -4px rgba(23, 107, 135, 0.08);
 }
 
+/* ─── Warm Earth & Coastal Theme (Warm Linen, Sand Beige, Coastal Blue & Deep Indigo) ─── */
+.warm,
+.worm,
+[data-theme="warm"],
+[data-theme="worm"] {
+  /* Warm Linen Canvas (#F5F0E8) & Clean Warm Surfaces */
+  --bg-canvas:           #F5F0E8;
+  --bg-surface:          #FFFFFF;
+  --bg-surface-raised:   #FAF7F2;
+  --bg-subtle:           #ECE4DA;
+  --bg-muted:            #DFD3C6;
+  --bg-hover:            #F0E9DF;
+  --bg-active:           #E5DCD0;
+  --bg-input:            #FFFFFF;
+  --bg-dropdown:         #FFFFFF;
+
+  /* Typography / Text Contrast (Deep Indigo / Coastal Navy #1B3254) */
+  --text-primary:        #1B3254;
+  --text-secondary:      #2C4B75;
+  --text-muted:          #4E719D;
+  --text-faint:          #859CBB;
+  --text-on-dark:        #F5F0E8;
+  --text-link:           #1B3254;
+
+  /* Borders & Dividers (Warm Sand / Almond Beige #D9C5B7) */
+  --border-default:      #D9C5B7;
+  --border-subtle:       #E8DDD3;
+  --border-strong:       #4E719D;
+  --border-focus:        #1B3254;
+
+  /* Status Accents (Warm Harmonized Tints) */
+  --badge-info-bg:       #EBF1F8;
+  --badge-info-border:   #B4C6DC;
+  --badge-info-text:     #1B3254;
+
+  --badge-success-bg:    #F0F8F4;
+  --badge-success-border:#BCE3D0;
+  --badge-success-text:  #166534;
+
+  --badge-warning-bg:    #FDF6EB;
+  --badge-warning-border:#F9DFB0;
+  --badge-warning-text:  #9A530E;
+
+  --badge-danger-bg:     #FDF2F2;
+  --badge-danger-border: #F8C8C8;
+  --badge-danger-text:   #991B1B;
+
+  --badge-purple-bg:     #F4F1F9;
+  --badge-purple-border: #D8CCE8;
+  --badge-purple-text:   #583B82;
+
+  /* Scrollbar */
+  --scrollbar-thumb:     #D9C5B7;
+  --scrollbar-hover:     #4E719D;
+
+  /* Elevation Shadows with Warm Glow */
+  --shadow-card:         0 1px 3px 0 rgba(27, 50, 84, 0.07), 0 1px 2px -1px rgba(27, 50, 84, 0.04);
+  --shadow-elevated:     0 4px 6px -1px rgba(27, 50, 84, 0.09), 0 2px 4px -2px rgba(27, 50, 84, 0.06);
+  --shadow-popover:      0 10px 15px -3px rgba(27, 50, 84, 0.12), 0 4px 6px -4px rgba(27, 50, 84, 0.08);
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    2. GLOBAL FOUNDATIONS & RESET
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -793,6 +854,274 @@ html, body {
 .winter [role="dialog"],
 .winter dialog,
 .winter .modal-content {
+  background-color: #FFFFFF !important;
+  border-color: var(--border-strong) !important;
+  box-shadow: var(--shadow-popover) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   12. WARM EARTH & COASTAL THEME OVERRIDES (.warm, .worm)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Canvas backgrounds */
+.warm .min-h-screen,
+.warm [class*="bg-[#FDFBF7]"],
+.warm [class*="bg-[#F8FAFC]"],
+.warm [class*="bg-\\[#F8FAFC\\]"],
+.warm .bg-\[\#F8FAFC\],
+.warm .bg-canvas,
+.worm .min-h-screen,
+.worm [class*="bg-[#FDFBF7]"],
+.worm [class*="bg-[#F8FAFC]"],
+.worm [class*="bg-\\[#F8FAFC\\]"],
+.worm .bg-\[\#F8FAFC\],
+.worm .bg-canvas {
+  background-color: var(--bg-canvas) !important;
+}
+
+/* Card surfaces */
+.warm [class*="bg-white"],
+.warm .bg-surface,
+.worm [class*="bg-white"],
+.worm .bg-surface {
+  background-color: var(--bg-surface) !important;
+}
+
+/* Subtle table rows, headers, and tabs */
+.warm [class*="bg-[#F1F5F9]"],
+.warm [class*="bg-\\[#F1F5F9\\]"],
+.warm .bg-\[\#F1F5F9\],
+.warm [class*="bg-[#F0F4F8]"],
+.warm [class*="bg-[#E8F0FB]"],
+.warm .bg-slate-50,
+.warm .bg-slate-100,
+.warm [class*="bg-slate-50"],
+.warm [class*="bg-slate-100"],
+.worm [class*="bg-[#F1F5F9]"],
+.worm [class*="bg-\\[#F1F5F9\\]"],
+.worm .bg-\[\#F1F5F9\],
+.worm [class*="bg-[#F0F4F8]"],
+.worm [class*="bg-[#E8F0FB]"],
+.worm .bg-slate-50,
+.worm .bg-slate-100,
+.worm [class*="bg-slate-50"],
+.worm [class*="bg-slate-100"] {
+  background-color: var(--bg-subtle) !important;
+}
+
+/* Muted containers */
+.warm [class*="bg-[#E2E8F0]"],
+.warm [class*="bg-\\[#E2E8F0\\]"],
+.warm .bg-\[\#E2E8F0\],
+.worm [class*="bg-[#E2E8F0]"],
+.worm [class*="bg-\\[#E2E8F0\\]"],
+.worm .bg-\[\#E2E8F0\] {
+  background-color: var(--bg-muted) !important;
+}
+
+/* Topbar header */
+.warm header,
+.worm header {
+  background-color: rgba(245, 240, 232, 0.94) !important;
+  border-color: var(--border-default) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Sidebar styling for Warm: Deep midnight navy (#1B3254) */
+.warm aside,
+.worm aside {
+  background-color: #1B3254 !important;
+  border-color: #132540 !important;
+}
+.warm aside [class*="border-[#1E293B]"],
+.worm aside [class*="border-[#1E293B]"] {
+  border-color: rgba(217, 197, 183, 0.25) !important;
+}
+.warm aside [class*="bg-[#1E293B]"],
+.worm aside [class*="bg-[#1E293B]"] {
+  background-color: rgba(255, 255, 255, 0.14) !important;
+}
+.warm aside [class*="hover:bg-[#1E293B]"]:hover,
+.worm aside [class*="hover:bg-[#1E293B]"]:hover {
+  background-color: rgba(255, 255, 255, 0.20) !important;
+}
+.warm aside [class*="text-[#94A3B8]"],
+.worm aside [class*="text-[#94A3B8]"] {
+  color: #D9C5B7 !important;
+}
+.warm aside [class*="text-[#64748B]"],
+.worm aside [class*="text-[#64748B]"] {
+  color: #4E719D !important;
+}
+.warm aside [class*="hover:text-white"]:hover,
+.worm aside [class*="hover:text-white"]:hover {
+  color: #FFFFFF !important;
+}
+.warm aside [class*="bg-[#2563EB]"],
+.worm aside [class*="bg-[#2563EB]"] {
+  background-color: #4E719D !important;
+  color: #FFFFFF !important;
+}
+
+/* Borders & Dividers */
+.warm [class*="border-[#E2E8F0]"],
+.warm [class*="border-\\[#E2E8F0\\]"],
+.warm .border-\[\#E2E8F0\],
+.warm [class*="border-[#F1F5F9]"],
+.warm [class*="border-\\[#F1F5F9\\]"],
+.warm .border-\[\#F1F5F9\],
+.warm [class*="border-[#E8EDF2]"],
+.worm [class*="border-[#E2E8F0]"],
+.worm [class*="border-\\[#E2E8F0\\]"],
+.worm .border-\[\#E2E8F0\],
+.worm [class*="border-[#F1F5F9]"],
+.worm [class*="border-\\[#F1F5F9\\]"],
+.worm .border-\[\#F1F5F9\],
+.worm [class*="border-[#E8EDF2]"] {
+  border-color: var(--border-default) !important;
+}
+
+.warm [class*="border-[#CBD5E1]"],
+.warm [class*="border-\\[#CBD5E1\\]"],
+.warm .border-\[\#CBD5E1\],
+.warm [class*="border-[#C8D5E2]"],
+.worm [class*="border-[#CBD5E1]"],
+.worm [class*="border-\\[#CBD5E1\\]"],
+.worm .border-\[\#CBD5E1\],
+.worm [class*="border-[#C8D5E2]"] {
+  border-color: var(--border-strong) !important;
+}
+
+.warm hr,
+.worm hr {
+  border-color: var(--border-default) !important;
+}
+
+/* High contrast typography in Warm */
+.warm [class*="text-[#0F172A]"],
+.warm [class*="text-\\[#0F172A\\]"],
+.warm .text-\[\#0F172A\],
+.warm [class*="text-[#1A2B4A]"],
+.warm [class*="text-[#111827]"],
+.worm [class*="text-[#0F172A]"],
+.worm [class*="text-\\[#0F172A\\]"],
+.worm .text-\[\#0F172A\],
+.worm [class*="text-[#1A2B4A]"],
+.worm [class*="text-[#111827]"] {
+  color: var(--text-primary) !important;
+}
+
+.warm [class*="text-[#475569]"],
+.warm [class*="text-\\[#475569\\]"],
+.warm .text-\[\#475569\],
+.warm [class*="text-[#4B5563]"],
+.warm [class*="text-[#2D3A4A]"],
+.warm [class*="text-[#334155]"],
+.worm [class*="text-[#475569]"],
+.worm [class*="text-\\[#475569\\]"],
+.worm .text-\[\#475569\],
+.worm [class*="text-[#4B5563]"],
+.worm [class*="text-[#2D3A4A]"],
+.worm [class*="text-[#334155]"] {
+  color: var(--text-secondary) !important;
+}
+
+.warm [class*="text-[#64748B]"],
+.warm [class*="text-\\[#64748B\\]"],
+.warm .text-\[\#64748B\],
+.warm [class*="text-[#6B7280]"],
+.worm [class*="text-[#64748B]"],
+.worm [class*="text-\\[#64748B\\]"],
+.worm .text-\[\#64748B\],
+.worm [class*="text-[#6B7280]"] {
+  color: var(--text-muted) !important;
+}
+
+/* Primary actions: blue-600 / #2563EB -> #1B3254 */
+.warm [class*="bg-[#2563EB]"],
+.warm [class*="bg-\\[#2563EB\\]"],
+.warm .bg-\[\#2563EB\],
+.warm [class*="bg-blue-600"],
+.worm [class*="bg-[#2563EB]"],
+.worm [class*="bg-\\[#2563EB\\]"],
+.worm .bg-\[\#2563EB\],
+.worm [class*="bg-blue-600"] {
+  background-color: #1B3254 !important;
+  color: #FFFFFF !important;
+}
+.warm [class*="hover:bg-[#1D4ED8]"]:hover,
+.warm [class*="hover:bg-blue-700"]:hover,
+.worm [class*="hover:bg-[#1D4ED8]"]:hover,
+.worm [class*="hover:bg-blue-700"]:hover {
+  background-color: #12233B !important;
+}
+.warm [class*="text-[#2563EB]"],
+.warm [class*="text-\\[#2563EB\\]"],
+.warm .text-\[\#2563EB\],
+.warm [class*="text-blue-600"],
+.worm [class*="text-[#2563EB]"],
+.worm [class*="text-\\[#2563EB\\]"],
+.worm .text-\[\#2563EB\],
+.worm [class*="text-blue-600"] {
+  color: #1B3254 !important;
+}
+
+/* Form Controls */
+.warm input,
+.warm textarea,
+.warm select,
+.worm input,
+.worm textarea,
+.worm select {
+  background-color: #FFFFFF !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-default) !important;
+}
+
+.warm input:focus,
+.warm textarea:focus,
+.warm select:focus,
+.worm input:focus,
+.worm textarea:focus,
+.worm select:focus {
+  border-color: #1B3254 !important;
+  outline: 2px solid rgba(78, 113, 157, 0.45) !important;
+  outline-offset: 1px;
+}
+
+.warm input::placeholder,
+.warm textarea::placeholder,
+.worm input::placeholder,
+.worm textarea::placeholder {
+  color: #859CBB !important;
+}
+
+/* Tables & Rows */
+.warm thead tr,
+.warm th,
+.worm thead tr,
+.worm th {
+  background-color: #ECE4DA !important;
+  color: #1B3254 !important;
+  border-color: var(--border-default) !important;
+}
+
+.warm tbody tr:hover,
+.warm [class*="hover:bg-[#F8FAFC]"]:hover,
+.warm [class*="hover:bg-[#F1F5F9]"]:hover,
+.worm tbody tr:hover,
+.worm [class*="hover:bg-[#F8FAFC]"]:hover,
+.worm [class*="hover:bg-[#F1F5F9]"]:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+/* Modals & Dialogs */
+.warm [role="dialog"],
+.warm dialog,
+.warm .modal-content,
+.worm [role="dialog"],
+.worm dialog,
+.worm .modal-content {
   background-color: #FFFFFF !important;
   border-color: var(--border-strong) !important;
   box-shadow: var(--shadow-popover) !important;

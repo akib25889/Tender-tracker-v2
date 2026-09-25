@@ -18,6 +18,7 @@ import {
   Moon,
   Sparkles,
   Snowflake,
+  Flame,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { useTheme } from '../hooks/useTheme';
@@ -229,10 +230,10 @@ export const SettingsPage: React.FC = () => {
         {/* Appearance & Workspace Theme */}
         <Card
           title="Appearance & Interface Theme"
-          subtitle="Toggle workspace visual mode between Light Workspace, Dark Command Center, and Winter Frost"
+          subtitle="Toggle workspace visual mode between Light Workspace, Dark Command Center, Winter Frost, and Warm Earth"
         >
           <div className="space-y-4 text-xs">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               {/* Light Theme Card Option */}
               <button
                 type="button"
@@ -347,6 +348,49 @@ export const SettingsPage: React.FC = () => {
                   </div>
                 </div>
               </button>
+
+              {/* Warm (Worm) Theme Card Option */}
+              <button
+                type="button"
+                onClick={() => setTheme('warm')}
+                className={`flex items-start gap-3.5 p-4 rounded-xl border text-left transition-all ${
+                  theme === 'warm'
+                    ? 'bg-[#F5F0E8] border-[#1B3254] ring-2 ring-[#4E719D]/60 shadow-xs'
+                    : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#D9C5B7] hover:bg-[#F5F0E8]/50'
+                }`}
+              >
+                <div
+                  className={`p-2.5 rounded-lg shrink-0 transition-colors ${
+                    theme === 'warm'
+                      ? 'bg-[#1B3254] text-white shadow-xs'
+                      : 'bg-[#E2E8F0] text-[#64748B]'
+                  }`}
+                >
+                  <Flame className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-[#0F172A]">
+                      Warm Earth
+                    </span>
+                    {theme === 'warm' && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D9C5B7] text-[#1B3254] border border-[#4E719D]">
+                        Active
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-[#64748B] mt-1">
+                    Warm earth & coastal palette with linen cream base, sand beige borders, coastal slate blue accents, and deep indigo navy.
+                  </p>
+                  {/* Swatches */}
+                  <div className="flex items-center gap-1.5 mt-2.5">
+                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#F5F0E8' }} title="Warm Cream: #F5F0E8" />
+                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#D9C5B7' }} title="Warm Sand: #D9C5B7" />
+                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#4E719D' }} title="Slate Blue: #4E719D" />
+                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#1B3254' }} title="Midnight Navy: #1B3254" />
+                  </div>
+                </div>
+              </button>
             </div>
 
             {/* Quick Toggle Action Strip */}
@@ -356,7 +400,7 @@ export const SettingsPage: React.FC = () => {
                 <span className="text-[#64748B]">
                   Currently active:{' '}
                   <strong className="text-[#0F172A] capitalize">
-                    {theme === 'dark' ? 'Dark Command Center' : theme === 'winter' ? 'Winter Frost' : 'Light Workspace'}
+                    {theme === 'dark' ? 'Dark Command Center' : theme === 'winter' ? 'Winter Frost' : theme === 'warm' ? 'Warm Earth' : 'Light Workspace'}
                   </strong>
                 </span>
               </div>
@@ -365,20 +409,25 @@ export const SettingsPage: React.FC = () => {
                 onClick={toggleTheme}
                 className="flex items-center justify-center gap-2 px-3.5 py-1.5 bg-white hover:bg-[#F1F5F9] border border-[#CBD5E1] text-[#0F172A] rounded-lg text-xs font-bold shadow-xs transition-colors shrink-0"
               >
-                {theme === 'dark' ? (
+                {theme === 'light' ? (
+                  <>
+                    <Moon className="w-3.5 h-3.5 text-indigo-600" />
+                    <span>Switch to Dark Mode</span>
+                  </>
+                ) : theme === 'dark' ? (
                   <>
                     <Snowflake className="w-3.5 h-3.5 text-[#176B87]" />
                     <span>Switch to Winter Frost</span>
                   </>
                 ) : theme === 'winter' ? (
                   <>
-                    <Sun className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Switch to Light Mode</span>
+                    <Flame className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Switch to Warm Mode</span>
                   </>
                 ) : (
                   <>
-                    <Moon className="w-3.5 h-3.5 text-indigo-600" />
-                    <span>Switch to Dark Mode</span>
+                    <Sun className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Switch to Light Mode</span>
                   </>
                 )}
               </button>
