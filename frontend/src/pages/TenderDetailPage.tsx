@@ -143,37 +143,11 @@ export const TenderDetailPage: React.FC = () => {
     // 2. If tender has submission documents from registry tab 5, map them
     if (tender.summary?.submissionDocuments && tender.summary.submissionDocuments.length > 0) {
       return tender.summary.submissionDocuments.map((doc, idx) => {
-        const reqClean = doc.trim().toLowerCase();
-        const reqAlpha = reqClean.replace(/[^a-z0-9]/g, '');
-
-        const matchingDoc = tender.documents?.find((d) => {
-          const fileBase = d.name.toLowerCase().replace(/\.[^/.]+$/, '');
-          const fileAlpha = fileBase.replace(/[^a-z0-9]/g, '');
-
-          // If requirement is very short (e.g. "A", "B", "1"):
-          if (reqAlpha.length <= 2) {
-            return (
-              fileAlpha === reqAlpha ||
-              fileAlpha === `form${reqAlpha}` ||
-              fileAlpha === `doc${reqAlpha}` ||
-              fileAlpha === `schedule${reqAlpha}` ||
-              fileBase === `form-${reqClean}` ||
-              fileBase === `form_${reqClean}` ||
-              fileBase === `form ${reqClean}`
-            );
-          }
-
-          // For longer requirement names, check exact base name or strict word inclusion
-          return (
-            fileAlpha === reqAlpha ||
-            fileBase === reqClean ||
-            fileBase.startsWith(`${reqClean}_`) ||
-            fileBase.startsWith(`${reqClean}-`) ||
-            fileBase.endsWith(`_${reqClean}`) ||
-            fileBase.endsWith(`-${reqClean}`)
-          );
-        });
-
+        const matchingDoc = tender.documents?.find(
+          (d) =>
+            d.name.toLowerCase().includes(doc.toLowerCase()) ||
+            d.folder === '02_company_statutory_documents'
+        );
         return {
           id: `REQ-DOC-${idx + 1}`,
           title: doc,
