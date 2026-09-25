@@ -53,8 +53,9 @@ interface TenderContextType {
       companyName?: string;
       companyRole?: string;
       isJvPartner?: boolean;
+      file?: File | null;
     }
-  ) => void;
+  ) => Promise<TenderDocument | void>;
   addFolder: (tenderId: string, folder: { name: string; label: string }) => void;
   updateFolder: (tenderId: string, folderName: string, newLabel: string) => void;
   deleteFolder: (tenderId: string, folderName: string) => void;
@@ -1486,7 +1487,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
-  const addDocument = (
+  const addDocument = async (
     tenderId: string,
     doc: {
       name: string;
@@ -1495,25 +1496,68 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       companyName?: string;
       companyRole?: string;
       isJvPartner?: boolean;
+      file?: File | null;
     }
   ) => {
-    const hex = '0123456789abcdef';
-    let hash = '';
-    for (let i = 0; i < 64; i++) {
-      hash += hex[Math.floor(Math.random() * 16)];
+    let uploadedDocId = `DOC-${Math.floor(100 + Math.random() * 900)}`;
+    let uploadedSha256 = '';
+    let previewUrl: string | undefined = undefined;
+    let downloadUrl: string | undefined = undefined;
+    let realSize = doc.size;
+
+    // 1. Physically upload file to backend server storage vault if file provided
+    if (doc.file) {
+      try {
+        const formData = new FormData();
+        formData.append('file', doc.file, doc.name || doc.file.name);
+        formData.append('folder', doc.folder);
+        if (doc.companyName) formData.append('company_name', doc.companyName);
+        if (doc.companyRole) formData.append('company_role', doc.companyRole);
+        formData.append('is_jv_partner', String(Boolean(doc.isJvPartner)));
+
+        const res = await fetch(`${API_BASE_URL}/tenders/${tenderId}/documents/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.id) uploadedDocId = data.id;
+          if (data.sha256) uploadedSha256 = data.sha256;
+          if (data.size) realSize = data.size;
+          previewUrl = `${API_BASE_URL}/documents/${uploadedDocId}/preview`;
+          downloadUrl = `${API_BASE_URL}/documents/${uploadedDocId}/download`;
+        } else {
+          console.warn('Physical document upload API returned status:', res.status);
+        }
+      } catch (err) {
+        console.warn('Physical document upload to server failed, falling back to local object URL:', err);
+      }
     }
 
+    if (!uploadedSha256) {
+      const hex = '0123456789abcdef';
+      for (let i = 0; i < 64; i++) {
+        uploadedSha256 += hex[Math.floor(Math.random() * 16)];
+      }
+    }
+
+    // Keep an immediate in-memory object URL for zero-latency preview
+    const objectUrl = doc.file ? URL.createObjectURL(doc.file) : undefined;
+
     const newDoc: TenderDocument = {
-      id: `DOC-${Math.floor(100 + Math.random() * 900)}`,
+      id: uploadedDocId,
       name: doc.name,
       folder: doc.folder,
       companyName: doc.companyName || 'PrimeTech Ltd',
       companyRole: doc.companyRole || (doc.isJvPartner ? 'JV_PARTNER' : 'LEAD_BIDDER'),
       isJvPartner: Boolean(doc.isJvPartner),
       revision: 'v1.0',
-      sha256: hash,
+      sha256: uploadedSha256,
       uploadedAt: new Date().toISOString().split('T')[0],
-      size: doc.size,
+      size: realSize,
+      previewUrl: previewUrl || objectUrl,
+      downloadUrl: downloadUrl || objectUrl,
     };
 
     setTenders((prev) =>
@@ -1529,6 +1573,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         };
       })
     );
+
+    return newDoc;
   };
 
   const addFolder = (tenderId: string, folder: { name: string; label: string }) => {

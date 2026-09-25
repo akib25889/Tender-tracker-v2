@@ -16,6 +16,7 @@ export const UploadDocumentModal: React.FC = () => {
   const [fileName, setFileName] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formatBytes = (bytes: number) => {
@@ -128,28 +129,38 @@ export const UploadDocumentModal: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (activeTenderIdForModal) {
       const selectedFolder = uploadFolderTarget || (isJvTender ? '02A_jv_partner_credentials' : '02_company_statutory_documents');
       const finalDocName = fileName.trim() || selectedFile?.name || 'Statutory_Compliance_Evidence_v1.pdf';
       const finalDocSize = selectedFile ? formatBytes(selectedFile.size) : '4.2 MB';
 
-      addDocument(activeTenderIdForModal, {
-        name: finalDocName,
-        folder: selectedFolder,
-        size: finalDocSize,
-        companyName,
-        companyRole,
-        isJvPartner: companyRole === 'JV_PARTNER',
-      });
+      setIsUploading(true);
 
-      showSuccessNotification(
-        `"${finalDocName}" has been cryptographically sealed and uploaded under ${companyName}.`,
-        'Document Sealed & Uploaded'
-      );
+      try {
+        await addDocument(activeTenderIdForModal, {
+          name: finalDocName,
+          folder: selectedFolder,
+          size: finalDocSize,
+          companyName,
+          companyRole,
+          isJvPartner: companyRole === 'JV_PARTNER',
+          file: selectedFile,
+        });
+
+        showSuccessNotification(
+          `"${finalDocName}" has been cryptographically sealed and uploaded under ${companyName}.`,
+          'Document Sealed & Uploaded'
+        );
+        handleClose();
+      } catch (err) {
+        console.error('Failed to upload document:', err);
+        handleClose();
+      } finally {
+        setIsUploading(false);
+      }
     }
-    handleClose();
   };
 
   const safeCompanySlug = companyName.replace(/[^a-zA-Z0-9_-]+/g, '_').trim() || 'PrimeTech_Ltd';
@@ -340,10 +351,11 @@ export const UploadDocumentModal: React.FC = () => {
             </button>
             <button
               type="submit"
-              className="flex items-center gap-1.5 px-4 py-2 bg-[#2563EB] text-white rounded-lg font-semibold hover:bg-[#1D4ED8] transition-colors shadow-sm cursor-pointer"
+              disabled={isUploading}
+              className="flex items-center gap-1.5 px-4 py-2 bg-[#2563EB] disabled:opacity-60 text-white rounded-lg font-semibold hover:bg-[#1D4ED8] transition-colors shadow-sm cursor-pointer"
             >
               <FileCheck className="w-3.5 h-3.5" />
-              <span>Seal &amp; Upload</span>
+              <span>{isUploading ? 'Sealing & Uploading...' : 'Seal & Upload'}</span>
             </button>
           </div>
         </form>

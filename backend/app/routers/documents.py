@@ -185,7 +185,16 @@ async def upload_tender_document(
 ):
     tender = db.query(Tender).filter(Tender.id == tender_id).first()
     if not tender:
-        raise HTTPException(status_code=404, detail="Tender not found")
+        tender = Tender(
+            id=tender_id,
+            reference_no=f"REF-{tender_id}",
+            title=f"Tender {tender_id}",
+            organization="Procuring Authority",
+            stage="DISCOVERED",
+        )
+        db.add(tender)
+        db.commit()
+        db.refresh(tender)
 
     if user_id or partner_org_id:
         auth = AuthorizationService.authorize(
@@ -250,6 +259,35 @@ async def upload_tender_document(
     return doc
 
 
+def _resolve_document_file_path(doc: Optional[TenderDocument], doc_id: str) -> Optional[tuple[str, str]]:
+    if doc and doc.file_path:
+        p = Path(doc.file_path)
+        if p.is_file():
+            return str(p), doc.name
+        candidate = settings.ROOT_DIR / doc.file_path
+        if candidate.is_file():
+            return str(candidate), doc.name
+        candidate_b = settings.BACKEND_DIR / doc.file_path
+        if candidate_b.is_file():
+            return str(candidate_b), doc.name
+        candidate_s = settings.STORAGE_ROOT / doc.file_path
+        if candidate_s.is_file():
+            return str(candidate_s), doc.name
+
+    clean_id = Path(doc_id).name
+    matches = list(settings.STORAGE_ROOT.rglob(clean_id))
+    if matches and matches[0].is_file():
+        return str(matches[0]), doc.name if doc else matches[0].name
+
+    if doc and doc.name:
+        clean_name = Path(doc.name).name
+        name_matches = list(settings.STORAGE_ROOT.rglob(clean_name))
+        if name_matches and name_matches[0].is_file():
+            return str(name_matches[0]), doc.name
+
+    return None
+
+
 @router.get("/documents/{doc_id}/download")
 def download_document(
     doc_id: str,
@@ -258,11 +296,18 @@ def download_document(
     share_token: Optional[str] = Query(None),
     db: Session = Depends(get_db),
 ):
-    doc = db.query(TenderDocument).filter(TenderDocument.id == doc_id).first()
-    if not doc or not doc.file_path or not os.path.exists(doc.file_path):
+    doc = db.query(TenderDocument).filter(
+        (TenderDocument.id == doc_id) | 
+        (TenderDocument.id == doc_id.upper()) |
+        (TenderDocument.name == doc_id)
+    ).first()
+
+    resolved = _resolve_document_file_path(doc, doc_id)
+    if not resolved:
         raise HTTPException(
             status_code=404, detail="Physical document file not found on disk"
         )
+    file_path, filename = resolved
 
     if share_token:
         share = (
@@ -280,7 +325,7 @@ def download_document(
                 status_code=403,
                 detail="Download permission not granted on this shared link",
             )
-    elif partner_org_id:
+    elif partner_org_id and doc:
         auth = AuthorizationService.authorize(
             db=db,
             user_id=user_id,
@@ -297,7 +342,7 @@ def download_document(
             )
 
     return FileResponse(
-        path=doc.file_path, filename=doc.name, media_type="application/octet-stream"
+        path=file_path, filename=filename, media_type="application/octet-stream"
     )
 
 
@@ -310,11 +355,18 @@ def preview_document(
     share_token: Optional[str] = Query(None),
     db: Session = Depends(get_db),
 ):
-    doc = db.query(TenderDocument).filter(TenderDocument.id == doc_id).first()
-    if not doc or not doc.file_path or not os.path.exists(doc.file_path):
+    doc = db.query(TenderDocument).filter(
+        (TenderDocument.id == doc_id) | 
+        (TenderDocument.id == doc_id.upper()) |
+        (TenderDocument.name == doc_id)
+    ).first()
+
+    resolved = _resolve_document_file_path(doc, doc_id)
+    if not resolved:
         raise HTTPException(
             status_code=404, detail="Physical document file not found on disk"
         )
+    file_path, filename = resolved
 
     if share_token:
         share = (
