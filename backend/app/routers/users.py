@@ -108,10 +108,7 @@ def get_user_activities(user_id: str, db: Session = Depends(get_db)):
     # 1. Authorization & Permission audit logs
     audit_logs = (
         db.query(AuthorizationAuditLog)
-        .filter(
-            (AuthorizationAuditLog.user_id == user.id)
-            | (AuthorizationAuditLog.user_email == user.email)
-        )
+        .filter(AuthorizationAuditLog.user_id == user.id)
         .order_by(AuthorizationAuditLog.created_at.desc())
         .limit(40)
         .all()
@@ -124,7 +121,7 @@ def get_user_activities(user_id: str, db: Session = Depends(get_db)):
             "tenderId": log.tender_id,
             "tenderTitle": f"Tender {log.tender_id}" if log.tender_id else None,
             "timestamp": log.created_at.isoformat() if log.created_at else "",
-            "details": f"Status: {log.decision} | Reason: {log.reason or 'Access policy verified'}",
+            "details": f"Status: {log.decision} | Reason: {log.denial_message or log.denial_reason_code or 'Policy evaluated'}",
             "status": log.decision,
         })
 
