@@ -327,7 +327,17 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                   ? existing.tasks
                   : [];
 
-              const dbReqs: TenderRequirement[] =
+              let dbSummary = existing ? existing.summary : undefined;
+              if (dbt.summary_json) {
+                try {
+                  dbSummary =
+                    typeof dbt.summary_json === 'string'
+                      ? JSON.parse(dbt.summary_json)
+                      : dbt.summary_json;
+                } catch {}
+              }
+
+              let dbReqs: TenderRequirement[] =
                 Array.isArray(dbt.requirements) && dbt.requirements.length > 0
                   ? dbt.requirements.map((rq: any) => ({
                       id: rq.id,
@@ -336,9 +346,28 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                       status: rq.status || 'PENDING',
                       owner: rq.owner || 'Tariq Al-Mansoor',
                     }))
-                  : existing
-                  ? existing.requirements
                   : [];
+
+              if (
+                dbReqs.length === 0 &&
+                dbSummary?.submissionDocuments &&
+                Array.isArray(dbSummary.submissionDocuments) &&
+                dbSummary.submissionDocuments.length > 0
+              ) {
+                dbReqs = dbSummary.submissionDocuments
+                  .filter((d: string) => d && d.trim().length > 0)
+                  .map((doc: string, idx: number) => ({
+                    id: `REQ-DOC-${idx + 1}`,
+                    title: doc,
+                    category: 'Statutory Document',
+                    status: 'PENDING',
+                    owner: 'Tender Lead',
+                  }));
+              }
+
+              if (dbReqs.length === 0 && existing?.requirements) {
+                dbReqs = existing.requirements;
+              }
 
               const dbDocs: TenderDocument[] =
                 Array.isArray(dbt.documents) && dbt.documents.length > 0
@@ -400,16 +429,6 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                 : existing
                 ? existing.decisionMatrix
                 : undefined;
-
-              let dbSummary = existing ? existing.summary : undefined;
-              if (dbt.summary_json) {
-                try {
-                  dbSummary =
-                    typeof dbt.summary_json === 'string'
-                      ? JSON.parse(dbt.summary_json)
-                      : dbt.summary_json;
-                } catch {}
-              }
 
               const completedTasks = dbTasks.filter((tk) => tk.status === 'DONE').length;
               const missingDocs = dbReqs.filter((rq) => rq.status !== 'VERIFIED').length;
@@ -1140,9 +1159,13 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       aiChatShareLink: tenderData.aiChatShareLink,
     };
 
-    // Persist new tender to FastAPI backend
-    fetch(`${API_BASE_URL}/tenders`, {
-      method: 'POST',
+    // Persist tender to FastAPI backend (support upsert for existing tender)
+    const isExisting = tenders.some((t) => t.id === newId);
+    const method = isExisting ? 'PUT' : 'POST';
+    const endpoint = isExisting ? `${API_BASE_URL}/tenders/${newId}` : `${API_BASE_URL}/tenders`;
+
+    fetch(endpoint, {
+      method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         id: newTender.id,
@@ -1216,6 +1239,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                     ? Number(tenderData.estimatedValue)
                     : t.estimatedValue,
                 summary: { ...t.summary, ...tenderData.summary },
+                requirements: docReqs.length > 0 ? docReqs : (t.requirements || []),
+                missingDocumentsCount: docReqs.length > 0 ? docReqs.length : t.missingDocumentsCount,
                 importantClauses: tenderData.importantClauses !== undefined ? tenderData.importantClauses : t.importantClauses,
                 financialModel: tenderData.financialModel !== undefined ? tenderData.financialModel : t.financialModel,
               }

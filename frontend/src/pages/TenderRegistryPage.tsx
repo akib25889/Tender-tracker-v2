@@ -27,6 +27,7 @@ import {
   TenderClassification,
   TenderStage,
   TenderPriority,
+  RequirementStatus,
   TenderPersonnelReq,
   TenderHardwareReq,
   TenderRiskPoint,
@@ -608,7 +609,12 @@ export const TenderRegistryPage: React.FC = () => {
       selectedTender.summary?.jv?.jvAgreement || ''
     );
 
-    setDocuments(selectedTender.summary?.submissionDocuments || []);
+    const rawDocs =
+      selectedTender.summary?.submissionDocuments &&
+      selectedTender.summary.submissionDocuments.length > 0
+        ? selectedTender.summary.submissionDocuments
+        : (selectedTender.requirements || []).map((r) => r.title);
+    setDocuments(rawDocs.length > 0 ? rawDocs : []);
     setPersonnel(selectedTender.summary?.personnel || []);
     setHardware(selectedTender.summary?.hardware || []);
 
@@ -814,6 +820,13 @@ export const TenderRegistryPage: React.FC = () => {
         notes,
         financialModel,
       },
+      requirements: documents.filter((s) => s.trim().length > 0).map((doc, idx) => ({
+        id: `REQ-DOC-${idx + 1}`,
+        title: doc,
+        category: 'Statutory Document',
+        status: (selectedTender?.requirements?.find((r) => r.title.toLowerCase() === doc.trim().toLowerCase())?.status || 'PENDING') as RequirementStatus,
+        owner: 'Tender Lead',
+      })),
       financialModel,
       importantClauses,
       aiChatShareLink: aiChatShareLink.trim() || undefined,

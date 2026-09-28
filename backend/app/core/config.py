@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     # Security & JWT
     SECRET_KEY: str = "tendertracker-command-center-secret-key-2026-v2"
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 30  # 30 days
 
     @field_validator("DATABASE_URL", mode="after")
     @classmethod
