@@ -1249,7 +1249,7 @@ export const TenderRegistryPage: React.FC = () => {
 
                   {/* Preset language toggle buttons */}
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {Array.from(new Set([
+                    {[
                       'English',
                       'Bengali',
                       'French',
@@ -1261,23 +1261,8 @@ export const TenderRegistryPage: React.FC = () => {
                       'Japanese',
                       'Hindi',
                       'Portuguese',
-                      ...languages,
-                    ])).map((lang) => {
+                    ].map((lang) => {
                       const isSelected = languages.includes(lang);
-                      const isStandard = [
-                        'English',
-                        'Bengali',
-                        'French',
-                        'Arabic',
-                        'Spanish',
-                        'German',
-                        'Chinese (Mandarin)',
-                        'Russian',
-                        'Japanese',
-                        'Hindi',
-                        'Portuguese',
-                      ].includes(lang);
-
                       return (
                         <button
                           key={lang}
@@ -1299,57 +1284,67 @@ export const TenderRegistryPage: React.FC = () => {
                         >
                           {isSelected && <Check className="w-3 h-3 text-emerald-400" />}
                           <span>{lang}</span>
-                          {!isStandard && (
-                            <span
-                              role="button"
-                              tabIndex={0}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setLanguages(languages.filter((l) => l !== lang));
-                              }}
-                              className="ml-1 text-slate-400 hover:text-red-400 font-bold"
-                              title={`Remove custom language ${lang}`}
-                            >
-                              ×
-                            </span>
-                          )}
                         </button>
                       );
                     })}
                   </div>
 
-                  {/* Custom language input */}
-                  <div className="flex items-center gap-1.5 pt-1 border-t border-[#E2E8F0]/70">
-                    <input
-                      type="text"
-                      placeholder="Add another required language (e.g. Italian, Urdu, Bahasa)..."
-                      value={customLanguageInput}
-                      onChange={(e) => setCustomLanguageInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
+                  {/* Custom language input & selected pills */}
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-1 border-t border-[#E2E8F0]/70">
+                    <div className="flex items-center gap-1.5 flex-1">
+                      <input
+                        type="text"
+                        placeholder="Add another required language (e.g. Italian, Urdu, Bahasa)..."
+                        value={customLanguageInput}
+                        onChange={(e) => setCustomLanguageInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const trimmed = customLanguageInput.trim();
+                            if (trimmed && !languages.includes(trimmed)) {
+                              setLanguages([...languages, trimmed]);
+                              setCustomLanguageInput('');
+                            }
+                          }
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
                           const trimmed = customLanguageInput.trim();
                           if (trimmed && !languages.includes(trimmed)) {
                             setLanguages([...languages, trimmed]);
                             setCustomLanguageInput('');
                           }
-                        }
-                      }}
-                      className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const trimmed = customLanguageInput.trim();
-                        if (trimmed && !languages.includes(trimmed)) {
-                          setLanguages([...languages, trimmed]);
-                          setCustomLanguageInput('');
-                        }
-                      }}
-                      className="px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-lg text-xs transition-colors shrink-0"
-                    >
-                      + Add
-                    </button>
+                        }}
+                        className="px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-lg text-xs transition-colors shrink-0"
+                      >
+                        + Add
+                      </button>
+                    </div>
+
+                    {/* Active Selected Badges */}
+                    <div className="flex flex-wrap gap-1 items-center">
+                      {languages.map((lang) => (
+                        <span
+                          key={lang}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white text-[#0F172A] border border-[#CBD5E1] font-medium text-[11px] shadow-2xs"
+                        >
+                          <span>{lang}</span>
+                          {languages.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => setLanguages(languages.filter((l) => l !== lang))}
+                              className="text-[#94A3B8] hover:text-[#DC2626] ml-0.5 font-bold"
+                              title={`Remove ${lang}`}
+                            >
+                              ×
+                            </button>
+                          )}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
