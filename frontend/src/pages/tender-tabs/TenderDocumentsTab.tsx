@@ -735,8 +735,7 @@ export const TenderDocumentsTab: React.FC = () => {
                         </select>
                       </td>
 
-                      <td className="py-3 px-3 text-[#64748B]">{doc.uploadedAt}</td>
-                      <td className="py-3 px-3 text-[#64748B]">
+                      <td className="py-3 px-3 text-[#64748B] whitespace-nowrap">
                         <div>{doc.uploadedAt}</div>
                         <div className="text-[10px] text-[#94A3B8] font-mono">{doc.revision} • {doc.size}</div>
                       </td>

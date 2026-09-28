@@ -12,7 +12,6 @@ class RequirementOut(BaseModel):
     title: str
     category: str
     status: str
-    evidence_file: Optional[str] = None
     owner: str
 
     class Config:

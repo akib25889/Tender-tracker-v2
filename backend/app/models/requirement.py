@@ -10,7 +10,6 @@ class TenderRequirement(Base):
     title = Column(String(255), nullable=False)
     category = Column(String(100), nullable=False, default="Statutory")
     status = Column(String(50), nullable=False, default="PENDING")
-    evidence_file = Column(String(255), nullable=True, default=None)
     owner = Column(String(100), nullable=False, default="Tariq Al-Mansoor")
 
     tender = relationship("Tender", back_populates="requirements")

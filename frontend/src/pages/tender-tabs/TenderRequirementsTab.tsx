@@ -13,7 +13,6 @@ export const TenderRequirementsTab: React.FC = () => {
     toggleRequirementStatus,
     setUploadFolderTarget,
     setActiveTenderIdForModal,
-    setActiveRequirementForModal,
     updateTender,
   } = useTenders();
   const tender = tenders.find((t) => t.id === id) || tenders[0];
@@ -29,17 +28,12 @@ export const TenderRequirementsTab: React.FC = () => {
 
   const handleStatusCycle = (reqId: string, current: RequirementStatus) => {
     const next: RequirementStatus =
-      current === 'PENDING'
-        ? 'VERIFIED'
-        : current === 'VERIFIED'
+      current === 'VERIFIED'
+        ? 'PENDING'
+        : current === 'PENDING'
         ? 'BLOCKER'
-        : 'PENDING';
-    const currentReq = tender.requirements?.find((r) => r.id === reqId);
-    const evidenceToSet =
-      next === 'VERIFIED'
-        ? currentReq?.evidenceFile || (tender.documents && tender.documents.length > 0 ? tender.documents[0].name : undefined)
-        : undefined;
-    toggleRequirementStatus(tender.id, reqId, next, evidenceToSet);
+        : 'VERIFIED';
+    toggleRequirementStatus(tender.id, reqId, next);
   };
 
   const blockers = (tender.requirements || []).filter((r) => r.status === 'BLOCKER');
@@ -161,7 +155,6 @@ export const TenderRequirementsTab: React.FC = () => {
                       <button
                         onClick={() => {
                           setActiveTenderIdForModal(tender.id);
-                          setActiveRequirementForModal({ id: req.id, title: req.title });
                           setUploadFolderTarget('02_company_statutory_documents');
                         }}
                         className="text-[#94A3B8] hover:text-[#2563EB] italic"
