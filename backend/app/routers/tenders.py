@@ -12,6 +12,7 @@ from app.schemas.tender import (
     DecisionMatrixIn,
     DecisionMatrixOut,
     AiChatLinkUpdate,
+    TenderAmendmentIn,
 )
 from app.services.storage import ensure_tender_directories
 
@@ -130,6 +131,8 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
         post_award_data=tender_in.post_award_data,
         financial_model=tender_in.financial_model or {},
         ai_chat_share_link=tender_in.ai_chat_share_link,
+        languages=tender_in.languages or [],
+        amendments=tender_in.amendments or [],
     )
     db.add(db_tender)
     db.flush()
@@ -309,3 +312,69 @@ def restore_tender(tender_id: str, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(tender)
     return tender
+
+
+@router.post("/{tender_id}/amendments", response_model=TenderOut)
+def add_tender_amendment(
+    tender_id: str,
+    amendment_in: TenderAmendmentIn,
+    db: Session = Depends(get_db),
+):
+    """Register a client corrigendum / amendment, optionally extending deadline and adding new rules."""
+    from datetime import timezone
+    tender = db.query(Tender).filter(Tender.id == tender_id).first()
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
+
+    amendments = list(tender.amendments or [])
+    amd_num = amendment_in.amendment_number or (len(amendments) + 1)
+    new_amd = {
+        "id": f"AMD-{tender_id}-{len(amendments) + 1}",
+        "amendmentNumber": amd_num,
+        "title": amendment_in.title,
+        "issuedDate": amendment_in.issued_date or datetime.now().strftime("%Y-%m-%d"),
+        "isDeadlineExtended": amendment_in.is_deadline_extended,
+        "previousDeadline": amendment_in.previous_deadline or tender.submission_deadline,
+        "newDeadline": amendment_in.new_deadline,
+        "newRules": amendment_in.new_rules or [],
+        "ruleChangesDescription": amendment_in.rule_changes_description,
+        "referenceNotice": amendment_in.reference_notice,
+        "notes": amendment_in.notes,
+        "createdAt": datetime.now().isoformat(),
+    }
+
+    # If client extended submission deadline, apply immediately to tender
+    if amendment_in.is_deadline_extended and amendment_in.new_deadline:
+        tender.submission_deadline = amendment_in.new_deadline
+        try:
+            target_dt = datetime.fromisoformat(amendment_in.new_deadline.replace("Z", "+00:00"))
+            now_dt = datetime.now(target_dt.tzinfo or timezone.utc)
+            diff = target_dt - now_dt
+            tender.days_remaining = max(0, diff.days)
+            tender.hours_remaining = max(0, int(diff.total_seconds() // 3600))
+        except Exception:
+            pass
+
+    # If rule changes provided, also append to important_clauses for compliance audit
+    if amendment_in.new_rules:
+        existing_clauses = list(tender.important_clauses or [])
+        for idx, rule in enumerate(amendment_in.new_rules):
+            if rule.strip():
+                existing_clauses.append({
+                    "id": f"CLS-AMD-{len(existing_clauses) + 1}",
+                    "clause_title": f"Corrigendum #{amd_num}: {rule[:45]}...",
+                    "category": "TECHNICAL_MANDATORY",
+                    "criticality": "HIGH",
+                    "doc_reference": amendment_in.reference_notice or f"Corrigendum #{amd_num}",
+                    "clause_text": rule,
+                    "implication": "Introduced via client corrigendum / amendment.",
+                })
+        tender.important_clauses = existing_clauses
+
+    amendments.append(new_amd)
+    tender.amendments = amendments
+
+    db.commit()
+    db.refresh(tender)
+    return tender
+

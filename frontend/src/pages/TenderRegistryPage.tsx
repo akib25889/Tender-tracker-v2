@@ -20,6 +20,7 @@ import {
   ArrowRight,
   CreditCard,
   Sparkles,
+  Languages,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import {
@@ -176,6 +177,9 @@ export const TenderRegistryPage: React.FC = () => {
   const [category, setCategory] = useState('');
   const [isCustomCategory, setIsCustomCategory] = useState(false);
   const [aiChatShareLink, setAiChatShareLink] = useState('');
+  // Multi-Language Support (Req #29)
+  const [languages, setLanguages] = useState<string[]>(['English']);
+  const [customLanguageInput, setCustomLanguageInput] = useState('');
 
   // Procurement Governance & Sourcing Attributes (Req #21)
   const [tenderType, setTenderType] = useState<string>('');
@@ -357,6 +361,8 @@ export const TenderRegistryPage: React.FC = () => {
       setCategory('');
       setIsCustomCategory(false);
       setAiChatShareLink('');
+      setLanguages(['English']);
+      setCustomLanguageInput('');
       setTenderType('');
       setBudgetType('');
       setSourceOfFund('');
@@ -482,6 +488,11 @@ export const TenderRegistryPage: React.FC = () => {
     setCategory(selectedTender.category);
     setIsCustomCategory(false);
     setAiChatShareLink(selectedTender.aiChatShareLink || '');
+    const rawLangs = (selectedTender.languages && selectedTender.languages.length > 0)
+      ? selectedTender.languages
+      : (selectedTender.language ? selectedTender.language.split(',').map((s: string) => s.trim()).filter(Boolean) : ['English']);
+    setLanguages(rawLangs.length > 0 ? rawLangs : ['English']);
+    setCustomLanguageInput('');
 
     setTenderType(
       selectedTender.tenderType || selectedTender.summary?.tenderType || STANDARD_TENDER_TYPES[0]
@@ -681,6 +692,8 @@ export const TenderRegistryPage: React.FC = () => {
       organization: client,
       country,
       category,
+      languages: languages.length > 0 ? languages : ['English'],
+      language: languages.join(', ') || 'English',
       priority,
       stage: stage || selectedTender?.stage || 'DISCOVERED',
       estimatedValue: parsedEstVal,
@@ -1214,6 +1227,124 @@ export const TenderRegistryPage: React.FC = () => {
                         </option>
                       </select>
                     )}
+                  </div>
+                </div>
+
+                {/* Multi-Language Selection (Req #29) */}
+                <div className="p-3.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-2.5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                    <div>
+                      <label className="font-bold text-[#0F172A] flex items-center gap-1.5 text-xs">
+                        <Languages className="w-4 h-4 text-[#2563EB]" />
+                        <span>Project Official Languages (Multiple Allowed)</span>
+                      </label>
+                      <p className="text-[11px] text-[#64748B]">
+                        Specify all official languages required for bidding documents, RFPs, technical proposals, or client communication.
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] self-start sm:self-auto">
+                      {languages.length} Language{languages.length === 1 ? '' : 's'} Selected
+                    </span>
+                  </div>
+
+                  {/* Preset language toggle buttons */}
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {[
+                      'English',
+                      'Bengali',
+                      'French',
+                      'Arabic',
+                      'Spanish',
+                      'German',
+                      'Chinese (Mandarin)',
+                      'Russian',
+                      'Japanese',
+                      'Hindi',
+                      'Portuguese',
+                    ].map((lang) => {
+                      const isSelected = languages.includes(lang);
+                      return (
+                        <button
+                          key={lang}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              if (languages.length > 1) {
+                                setLanguages(languages.filter((l) => l !== lang));
+                              }
+                            } else {
+                              setLanguages([...languages, lang]);
+                            }
+                          }}
+                          className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all flex items-center gap-1 ${
+                            isSelected
+                              ? 'bg-[#0F172A] text-white shadow-2xs font-bold'
+                              : 'bg-white border border-[#CBD5E1] text-[#475569] hover:border-[#94A3B8] hover:bg-[#F1F5F9]'
+                          }`}
+                        >
+                          {isSelected && <Check className="w-3 h-3 text-emerald-400" />}
+                          <span>{lang}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Custom language input & selected pills */}
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-1 border-t border-[#E2E8F0]/70">
+                    <div className="flex items-center gap-1.5 flex-1">
+                      <input
+                        type="text"
+                        placeholder="Add another required language (e.g. Italian, Urdu, Bahasa)..."
+                        value={customLanguageInput}
+                        onChange={(e) => setCustomLanguageInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const trimmed = customLanguageInput.trim();
+                            if (trimmed && !languages.includes(trimmed)) {
+                              setLanguages([...languages, trimmed]);
+                              setCustomLanguageInput('');
+                            }
+                          }
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const trimmed = customLanguageInput.trim();
+                          if (trimmed && !languages.includes(trimmed)) {
+                            setLanguages([...languages, trimmed]);
+                            setCustomLanguageInput('');
+                          }
+                        }}
+                        className="px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-lg text-xs transition-colors shrink-0"
+                      >
+                        + Add
+                      </button>
+                    </div>
+
+                    {/* Active Selected Badges */}
+                    <div className="flex flex-wrap gap-1 items-center">
+                      {languages.map((lang) => (
+                        <span
+                          key={lang}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white text-[#0F172A] border border-[#CBD5E1] font-medium text-[11px] shadow-2xs"
+                        >
+                          <span>{lang}</span>
+                          {languages.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => setLanguages(languages.filter((l) => l !== lang))}
+                              className="text-[#94A3B8] hover:text-[#DC2626] ml-0.5 font-bold"
+                              title={`Remove ${lang}`}
+                            >
+                              ×
+                            </button>
+                          )}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 

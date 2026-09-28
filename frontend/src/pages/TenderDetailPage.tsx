@@ -36,6 +36,8 @@ import {
   TrendingUp,
   ShieldCheck,
   Layers,
+  Languages,
+  Plus,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -62,6 +64,7 @@ export const TenderDetailPage: React.FC = () => {
     updateTenderAiChatLink,
     showSuccessNotification,
     toggleRequirementStatus,
+    addTenderAmendment,
   } = useTenders();
 
   const [copiedRef, setCopiedRef] = useState(false);
@@ -70,6 +73,23 @@ export const TenderDetailPage: React.FC = () => {
   const [aiLinkInput, setAiLinkInput] = useState('');
   const [isSavingAiLink, setIsSavingAiLink] = useState(false);
   const [copiedAiLink, setCopiedAiLink] = useState(false);
+
+  // Corrigenda & Amendments State (Req #30)
+  const [isAmendmentModalOpen, setIsAmendmentModalOpen] = useState(false);
+  const [amendmentForm, setAmendmentForm] = useState({
+    corrigendumNumber: '',
+    title: '',
+    issueDate: new Date().toISOString().split('T')[0],
+    isDeadlineExtension: false,
+    newDeadlineDate: '',
+    newDeadlineHour: '17',
+    newDeadlineMinute: '00',
+    newDeadlineTimezone: 'BST',
+    rulesChanged: '',
+    referenceMemo: '',
+    addToImportantClauses: true,
+  });
+  const [isSubmittingAmendment, setIsSubmittingAmendment] = useState(false);
 
   // Find the tender by route param ID
   const tender = tenders.find((t) => t.id === id);
@@ -131,6 +151,50 @@ export const TenderDetailPage: React.FC = () => {
       navigator.clipboard.writeText(tender.aiChatShareLink);
       setCopiedAiLink(true);
       setTimeout(() => setCopiedAiLink(false), 2000);
+    }
+  };
+
+  const handleSaveAmendment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!amendmentForm.corrigendumNumber.trim() || !amendmentForm.title.trim()) return;
+    setIsSubmittingAmendment(true);
+
+    try {
+      let combinedDeadline: string | undefined = undefined;
+      if (amendmentForm.isDeadlineExtension && amendmentForm.newDeadlineDate) {
+        combinedDeadline = `${amendmentForm.newDeadlineDate} ${amendmentForm.newDeadlineHour}:${amendmentForm.newDeadlineMinute} ${amendmentForm.newDeadlineTimezone}`.trim();
+      }
+
+      await addTenderAmendment(tender.id, {
+        corrigendumNumber: amendmentForm.corrigendumNumber.trim(),
+        title: amendmentForm.title.trim(),
+        issueDate: amendmentForm.issueDate,
+        isDeadlineExtension: amendmentForm.isDeadlineExtension,
+        newDeadline: combinedDeadline,
+        rulesChanged: amendmentForm.rulesChanged.trim() || undefined,
+        referenceMemo: amendmentForm.referenceMemo.trim() || undefined,
+        addToImportantClauses: amendmentForm.addToImportantClauses,
+      });
+
+      setIsAmendmentModalOpen(false);
+      setAmendmentForm({
+        corrigendumNumber: '',
+        title: '',
+        issueDate: new Date().toISOString().split('T')[0],
+        isDeadlineExtension: false,
+        newDeadlineDate: '',
+        newDeadlineHour: '17',
+        newDeadlineMinute: '00',
+        newDeadlineTimezone: 'BST',
+        rulesChanged: '',
+        referenceMemo: '',
+        addToImportantClauses: true,
+      });
+      showSuccessNotification('Corrigendum amendment recorded and active countdown updated.', 'Corrigendum Issued');
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmittingAmendment(false);
     }
   };
 
@@ -611,6 +675,50 @@ export const TenderDetailPage: React.FC = () => {
       {/* OVERVIEW TAB CONTENT OR NESTED SUB-ROUTES */}
       {isOverview ? (
         <div className="space-y-6 animate-fadeIn">
+          {/* Corrigendum / Amendment Active Notification Banner (Req #30) */}
+          {tender.amendments && tender.amendments.length > 0 && (
+            <div className="p-4 bg-amber-50/90 dark:bg-amber-950/30 border-2 border-amber-300 dark:border-amber-700/60 rounded-2xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3 animate-fadeIn">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-mono font-bold uppercase px-2 py-0.5 rounded bg-amber-200/90 text-amber-900 border border-amber-400/50">
+                      Corrigendum / Addendum Active
+                    </span>
+                    <span className="text-xs font-semibold text-amber-900 dark:text-amber-200">
+                      {tender.amendments.length} Amendment{tender.amendments.length > 1 ? 's' : ''} Issued by Client
+                    </span>
+                  </div>
+                  <p className="text-xs font-medium text-amber-950 dark:text-amber-100 mt-1">
+                    <strong>Latest: {tender.amendments[tender.amendments.length - 1].corrigendumNumber}</strong> — {tender.amendments[tender.amendments.length - 1].title}
+                    {tender.amendments[tender.amendments.length - 1].isDeadlineExtension && (
+                      <span className="ml-1.5 text-emerald-800 dark:text-emerald-300 font-bold bg-emerald-100 dark:bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-300 dark:border-emerald-700">
+                        ✓ Submission Deadline Extended: {tender.submissionDeadline}
+                      </span>
+                    )}
+                  </p>
+                  {tender.amendments[tender.amendments.length - 1].rulesChanged && (
+                    <p className="text-[11px] text-amber-800 dark:text-amber-300 line-clamp-1 mt-0.5">
+                      Rules Modified: {tender.amendments[tender.amendments.length - 1].rulesChanged}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
+                <button
+                  type="button"
+                  onClick={() => setIsAmendmentModalOpen(true)}
+                  className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>+ Add Corrigendum</span>
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* HIGH-DENSITY WORKSPACE GRID (Left 8 Cols: Specs, Right 4 Cols: Compliance Sentinel) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Column 1: Core Tender Specifications & Contract Details (8 Cols) */}
@@ -746,6 +854,32 @@ export const TenderDetailPage: React.FC = () => {
                         </span>
                         <span className="text-[10px] font-mono text-[#059669] bg-[#ECFDF5] px-1.5 py-0.5 rounded font-bold border border-[#A7F3D0]">
                           Verified
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Official Project Language(s) (Req #29) */}
+                    <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
+                        Official Language(s) of Bid
+                      </span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex flex-wrap gap-1.5 items-center">
+                          <Languages className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
+                          {((tender.languages && tender.languages.length > 0)
+                            ? tender.languages
+                            : [tender.language || 'English']
+                          ).map((lang) => (
+                            <span
+                              key={lang}
+                              className="text-[11px] font-semibold text-[#1E293B] bg-white border border-[#CBD5E1] px-2 py-0.5 rounded shadow-2xs"
+                            >
+                              {lang}
+                            </span>
+                          ))}
+                        </div>
+                        <span className="text-[10px] font-mono text-[#2563EB] bg-[#EFF6FF] px-1.5 py-0.5 rounded font-bold border border-[#BFDBFE]">
+                          {((tender.languages && tender.languages.length > 0) ? tender.languages.length : 1)} Lang
                         </span>
                       </div>
                     </div>
@@ -1054,6 +1188,93 @@ export const TenderDetailPage: React.FC = () => {
                       </div>
                     )}
                   </div>
+                </div>
+              </div>
+
+              {/* AMENDMENTS, CORRIGENDA & RULE REVISIONS LEDGER (Req #30) */}
+              <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-xs overflow-hidden">
+                <div className="px-6 py-4 border-b border-[#F1F5F9] flex items-center justify-between bg-[#F8FAFC]">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                    <h3 className="text-sm font-bold text-[#0F172A] tracking-tight">
+                      Corrigenda, Addenda &amp; Rule Amendments
+                    </h3>
+                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200">
+                      {(tender.amendments || []).length} Recorded
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsAmendmentModalOpen(true)}
+                    className="px-3 py-1.5 text-xs font-bold text-white bg-[#0F172A] hover:bg-[#1E293B] rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5 text-amber-400" />
+                    <span>+ Record Corrigendum</span>
+                  </button>
+                </div>
+
+                <div className="p-6">
+                  {(!tender.amendments || tender.amendments.length === 0) ? (
+                    <div className="py-6 text-center text-[#64748B] text-xs">
+                      <p>No corrigendum or tender amendments have been issued yet for this RFP.</p>
+                      <button
+                        type="button"
+                        onClick={() => setIsAmendmentModalOpen(true)}
+                        className="mt-2 text-xs font-semibold text-[#2563EB] hover:underline cursor-pointer"
+                      >
+                        + Issue Corrigendum / Extend Submission Deadline / Amend Rules
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {tender.amendments.map((amd, idx) => (
+                        <div
+                          key={amd.id || idx}
+                          className="p-4 rounded-xl border border-amber-200/80 bg-amber-50/30 space-y-2.5"
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500 text-white">
+                                {amd.corrigendumNumber}
+                              </span>
+                              <h4 className="text-xs font-bold text-[#0F172A]">
+                                {amd.title}
+                              </h4>
+                            </div>
+                            <span className="text-[11px] font-mono text-[#64748B]">
+                              Issued: {amd.issueDate}
+                            </span>
+                          </div>
+
+                          {amd.isDeadlineExtension && (
+                            <div className="flex items-center gap-2 text-xs p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-950 font-medium">
+                              <Clock className="w-4 h-4 text-emerald-600 shrink-0" />
+                              <span>
+                                <strong>Submission Deadline Extended:</strong> {amd.oldDeadline ? `From ${amd.oldDeadline} → ` : ''}
+                                <span className="font-bold text-emerald-800">{amd.newDeadline || tender.submissionDeadline}</span>
+                              </span>
+                            </div>
+                          )}
+
+                          {amd.rulesChanged && (
+                            <div className="text-xs text-[#334155] bg-white p-3 rounded-lg border border-[#E2E8F0] space-y-1">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
+                                Amended Rules &amp; Clause Modifications:
+                              </span>
+                              <p className="whitespace-pre-line leading-relaxed">{amd.rulesChanged}</p>
+                            </div>
+                          )}
+
+                          {amd.referenceMemo && (
+                            <div className="text-[11px] text-[#64748B] flex items-center gap-1.5 font-mono">
+                              <span>Ref / Circular / Memo:</span>
+                              <span className="font-semibold text-[#0F172A]">{amd.referenceMemo}</span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1591,6 +1812,223 @@ export const TenderDetailPage: React.FC = () => {
                     <span>{isSavingAiLink ? 'Saving...' : 'Save AI Link'}</span>
                   </button>
                 </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ISSUE CORRIGENDUM / AMENDMENT MODAL (Req #30) */}
+      {isAmendmentModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-amber-200 dark:border-amber-800 shadow-2xl max-w-xl w-full p-6 space-y-5 animate-scaleIn my-8">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/60 flex items-center justify-center text-amber-700 dark:text-amber-300">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#0F172A] dark:text-slate-100">
+                    Record Corrigendum / Tender Amendment
+                  </h3>
+                  <p className="text-xs text-[#64748B] dark:text-slate-400">
+                    Client RFP: <span className="font-semibold text-[#0F172A] dark:text-slate-200">{tender.id}</span> • {tender.title}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAmendmentModalOpen(false)}
+                className="text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-slate-200 text-lg font-bold p-1 rounded-md cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-[#475569] dark:text-slate-300 leading-relaxed">
+              Record official client notices, addenda, deadline extensions, or rule modifications issued by the procuring entity. Submitting will update the active countdown timer and log compliance clauses.
+            </p>
+
+            <form onSubmit={handleSaveAmendment} className="space-y-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-[#0F172A] dark:text-slate-200 mb-1">
+                    Corrigendum / Addendum # *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Corrigendum No. 1, Addendum 02"
+                    value={amendmentForm.corrigendumNumber}
+                    onChange={(e) => setAmendmentForm({ ...amendmentForm, corrigendumNumber: e.target.value })}
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100 font-mono focus:ring-1 focus:ring-amber-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-[#0F172A] dark:text-slate-200 mb-1">
+                    Official Issue Date *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={amendmentForm.issueDate}
+                    onChange={(e) => setAmendmentForm({ ...amendmentForm, issueDate: e.target.value })}
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100 focus:ring-1 focus:ring-amber-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-[#0F172A] dark:text-slate-200 mb-1">
+                  Amendment Title / Purpose *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Time Extension for Bid Submission & Technical Specification Revisions"
+                  value={amendmentForm.title}
+                  onChange={(e) => setAmendmentForm({ ...amendmentForm, title: e.target.value })}
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100 focus:ring-1 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Deadline Extension Toggle */}
+              <div className="p-3.5 bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/50 rounded-xl space-y-3">
+                <label className="flex items-center gap-2 font-bold text-[#0F172A] dark:text-slate-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={amendmentForm.isDeadlineExtension}
+                    onChange={(e) => setAmendmentForm({ ...amendmentForm, isDeadlineExtension: e.target.checked })}
+                    className="w-4 h-4 text-amber-600 rounded border-gray-300 focus:ring-amber-500"
+                  />
+                  <span>Extends Tender Submission Deadline &amp; Cutoff Time</span>
+                </label>
+
+                {amendmentForm.isDeadlineExtension && (
+                  <div className="space-y-2 pt-2 border-t border-amber-200/60 dark:border-amber-800/40">
+                    <div className="text-[11px] text-[#64748B] dark:text-slate-400">
+                      Current Active Deadline: <span className="font-mono font-bold text-[#0F172A] dark:text-slate-200">{tender.submissionDeadline}</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                      <div className="sm:col-span-2">
+                        <label className="block text-[11px] font-semibold text-[#475569] dark:text-slate-300 mb-1">
+                          New Extended Date *
+                        </label>
+                        <input
+                          type="date"
+                          required={amendmentForm.isDeadlineExtension}
+                          value={amendmentForm.newDeadlineDate}
+                          onChange={(e) => setAmendmentForm({ ...amendmentForm, newDeadlineDate: e.target.value })}
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-950 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-[#475569] dark:text-slate-300 mb-1">
+                          Time (HH:MM)
+                        </label>
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="text"
+                            maxLength={2}
+                            placeholder="17"
+                            value={amendmentForm.newDeadlineHour}
+                            onChange={(e) => setAmendmentForm({ ...amendmentForm, newDeadlineHour: e.target.value })}
+                            className="w-12 px-2 py-1.5 text-center bg-white dark:bg-slate-950 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100 font-mono"
+                          />
+                          <span>:</span>
+                          <input
+                            type="text"
+                            maxLength={2}
+                            placeholder="00"
+                            value={amendmentForm.newDeadlineMinute}
+                            onChange={(e) => setAmendmentForm({ ...amendmentForm, newDeadlineMinute: e.target.value })}
+                            className="w-12 px-2 py-1.5 text-center bg-white dark:bg-slate-950 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100 font-mono"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-[#475569] dark:text-slate-300 mb-1">
+                          Zone
+                        </label>
+                        <select
+                          value={amendmentForm.newDeadlineTimezone}
+                          onChange={(e) => setAmendmentForm({ ...amendmentForm, newDeadlineTimezone: e.target.value })}
+                          className="w-full px-2 py-1.5 bg-white dark:bg-slate-950 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100"
+                        >
+                          <option value="BST">BST (UTC+6)</option>
+                          <option value="UTC">UTC (GMT)</option>
+                          <option value="EST">EST (UTC-5)</option>
+                          <option value="PST">PST (UTC-8)</option>
+                          <option value="CET">CET (UTC+1)</option>
+                          <option value="IST">IST (UTC+5:30)</option>
+                          <option value="SGT">SGT (UTC+8)</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Rules / Terms Changed */}
+              <div>
+                <label className="block font-bold text-[#0F172A] dark:text-slate-200 mb-1">
+                  Amended Rules, Clause Additions &amp; Requirements Revised
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="Detail any changes to qualification criteria, turnover, warranty, liquidated damages, or technical specifications..."
+                  value={amendmentForm.rulesChanged}
+                  onChange={(e) => setAmendmentForm({ ...amendmentForm, rulesChanged: e.target.value })}
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100 leading-relaxed focus:ring-1 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Reference Memo / Circular */}
+              <div>
+                <label className="block font-bold text-[#0F172A] dark:text-slate-200 mb-1">
+                  Authority Circular / Memo / Portal Notice Reference
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Memo No. 46.02.0000.000.14.001.26-892 or e-GP Notice Ref"
+                  value={amendmentForm.referenceMemo}
+                  onChange={(e) => setAmendmentForm({ ...amendmentForm, referenceMemo: e.target.value })}
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100 font-mono focus:ring-1 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Append to Important Clauses Checkbox */}
+              <label className="flex items-center gap-2 text-xs text-[#475569] dark:text-slate-300 cursor-pointer pt-1">
+                <input
+                  type="checkbox"
+                  checked={amendmentForm.addToImportantClauses}
+                  onChange={(e) => setAmendmentForm({ ...amendmentForm, addToImportantClauses: e.target.checked })}
+                  className="w-4 h-4 text-[#2563EB] rounded border-gray-300 focus:ring-blue-500"
+                />
+                <span>Automatically sync new rules into Tender Important Clauses &amp; Compliance Matrix</span>
+              </label>
+
+              {/* Modal Actions */}
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E2E8F0] dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsAmendmentModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-[#475569] dark:text-slate-300 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingAmendment}
+                  className="px-4 py-2 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 disabled:opacity-50 rounded-lg transition-colors shadow-2xs inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  <span>{isSubmittingAmendment ? 'Recording Amendment...' : 'Record Corrigendum'}</span>
+                </button>
               </div>
             </form>
           </div>

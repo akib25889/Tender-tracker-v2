@@ -24,6 +24,8 @@ import {
   CompanyProfile,
   PastProjectAssignment,
   TenderFolder,
+  TenderAmendment,
+  UserActivityItem,
 } from '../types/tender';
 
 export type CurrencyMode = 'USD' | 'BDT';
@@ -185,6 +187,8 @@ interface TenderContextType {
   isCommandPaletteOpen: boolean;
   setIsCommandPaletteOpen: (open: boolean) => void;
   showSuccessNotification: (message: string, title?: string) => void;
+  addTenderAmendment: (tenderId: string, amendment: Omit<TenderAmendment, 'id'>) => Promise<boolean>;
+  getUserActivities: (userId: string, userName?: string) => Promise<UserActivityItem[]>;
 }
 
 const TenderContext = createContext<TenderContextType | undefined>(undefined);
@@ -543,6 +547,12 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                 postAward: dbt.post_award_data || existing?.postAward,
                 financialModel: dbt.financial_model || existing?.financialModel,
                 aiChatShareLink: dbt.ai_chat_share_link || existing?.aiChatShareLink,
+                languages: Array.isArray(dbt.languages)
+                  ? dbt.languages
+                  : existing?.languages || [],
+                amendments: Array.isArray(dbt.amendments)
+                  ? dbt.amendments
+                  : existing?.amendments || [],
               });
             }
             return Array.from(map.values());
@@ -1980,6 +1990,174 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
+  const addTenderAmendment = async (
+    tenderId: string,
+    amendment: Omit<TenderAmendment, 'id'>
+  ): Promise<boolean> => {
+    try {
+      fetch(`${API_BASE_URL}/tenders/${tenderId}/amendments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amendment_number: amendment.amendmentNumber,
+          title: amendment.title,
+          issued_date: amendment.issuedDate,
+          is_deadline_extended: Boolean(amendment.isDeadlineExtended),
+          previous_deadline: amendment.previousDeadline,
+          new_deadline: amendment.newDeadline,
+          new_rules: amendment.newRules || [],
+          rule_changes_description: amendment.ruleChangesDescription,
+          reference_notice: amendment.referenceNotice,
+          notes: amendment.notes,
+        }),
+      }).catch((e) => console.error('Failed to sync amendment to backend:', e));
+
+      const newId = `AMD-${tenderId}-${Date.now().toString().slice(-4)}`;
+      const newRecord: TenderAmendment = {
+        id: newId,
+        ...amendment,
+        createdAt: new Date().toISOString(),
+      };
+
+      setTenders((prev) =>
+        prev.map((t) => {
+          if (t.id !== tenderId) return t;
+          const currentAmds = t.amendments || [];
+          const updatedAmds = [...currentAmds, newRecord];
+          let updatedTender = { ...t, amendments: updatedAmds };
+
+          if (amendment.isDeadlineExtended && amendment.newDeadline) {
+            const target = new Date(amendment.newDeadline);
+            const now = new Date();
+            const diff = target.getTime() - now.getTime();
+            const days = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+            const hours = Math.max(0, Math.ceil(diff / (1000 * 60 * 60)));
+            updatedTender.submissionDeadline = amendment.newDeadline;
+            updatedTender.daysRemaining = days;
+            updatedTender.hoursRemaining = hours;
+          }
+
+          if (amendment.newRules && amendment.newRules.length > 0) {
+            const currentClauses = t.importantClauses || [];
+            const newClauses = amendment.newRules
+              .filter((r) => r.trim())
+              .map((r, i) => ({
+                id: `CLS-AMD-${Date.now()}-${i}`,
+                clause_title: `Corrigendum #${amendment.amendmentNumber}: ${r.slice(0, 45)}...`,
+                category: 'TECHNICAL_MANDATORY',
+                criticality: 'HIGH',
+                doc_reference: amendment.referenceNotice || `Corrigendum #${amendment.amendmentNumber}`,
+                clause_text: r,
+                implication: 'Introduced via client corrigendum / amendment.',
+              }));
+            updatedTender.importantClauses = [...currentClauses, ...newClauses];
+          }
+
+          return updatedTender;
+        })
+      );
+
+      showSuccessNotification(
+        'Corrigendum amendment recorded and submission deadline updated!',
+        'Amendment Applied'
+      );
+      return true;
+    } catch (err) {
+      console.error('Failed to apply amendment:', err);
+      return false;
+    }
+  };
+
+  const getUserActivities = async (userId: string, userName?: string): Promise<UserActivityItem[]> => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/users/${userId}/activities`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) return data;
+      }
+    } catch {}
+
+    const member = teamMembers.find((m) => m.id === userId) || currentUser;
+    const nameLower = (userName || member.name || '').toLowerCase();
+    const activities: UserActivityItem[] = [];
+
+    tenders.forEach((t) => {
+      if ((t.leadOwner?.name || '').toLowerCase().includes(nameLower)) {
+        activities.push({
+          id: `act-lead-${t.id}`,
+          type: 'TENDER',
+          action: `Assigned as Lead Proposal Manager on ${t.referenceNo || t.id}`,
+          tenderId: t.id,
+          tenderTitle: t.title,
+          timestamp: t.publishedDate || new Date().toISOString(),
+          details: `Stage: ${t.stage} • Value: ${t.currency || 'USD'} ${(t.estimatedValue || 0).toLocaleString()} • Client: ${t.organization}`,
+          status: t.stage,
+        });
+      }
+
+      (t.tasks || []).forEach((tk) => {
+        if ((tk.assignee || '').toLowerCase().includes(nameLower)) {
+          activities.push({
+            id: `act-task-${tk.id}`,
+            type: 'TASK',
+            action: `Task '${tk.title}' (${tk.status})`,
+            tenderId: t.id,
+            tenderTitle: t.title,
+            timestamp: new Date().toISOString(),
+            details: `Status: ${tk.status} • Priority: ${tk.priority} • Due: ${tk.deadline || (tk as any).due_date || 'TBD'}`,
+            status: tk.status,
+          });
+        }
+      });
+
+      if (t.submissionProof && t.stage === 'SUBMITTED') {
+        activities.push({
+          id: `act-sub-${t.id}`,
+          type: 'SUBMISSION',
+          action: `Proposal Submitted via Portal`,
+          tenderId: t.id,
+          tenderTitle: t.title,
+          timestamp: t.submissionProof.timestamp || new Date().toISOString(),
+          details: `Portal Ref: ${t.submissionProof.portalReference} • Status: LOCKED`,
+          status: 'SUBMITTED',
+        });
+      }
+
+      (t.comments || []).forEach((c) => {
+        if ((c.authorName || '').toLowerCase().includes(nameLower)) {
+          activities.push({
+            id: `act-cmt-${c.id}`,
+            type: 'COMMENT',
+            action: `Posted discussion note on proposal`,
+            tenderId: t.id,
+            tenderTitle: t.title,
+            timestamp: c.createdAt || new Date().toISOString(),
+            details: c.content.length > 100 ? `${c.content.slice(0, 100)}...` : c.content,
+            status: 'POSTED',
+          });
+        }
+      });
+
+      (t.amendments || []).forEach((amd) => {
+        activities.push({
+          id: `act-amd-${amd.id}`,
+          type: 'AMENDMENT',
+          action: `Corrigendum #${amd.amendmentNumber}: ${amd.title}`,
+          tenderId: t.id,
+          tenderTitle: t.title,
+          timestamp: amd.createdAt || amd.issuedDate || new Date().toISOString(),
+          details: amd.isDeadlineExtended
+            ? `Submission deadline extended to ${amd.newDeadline}`
+            : `Rules amended: ${amd.ruleChangesDescription || 'Rule updates'}`,
+          status: 'AMENDED',
+        });
+      });
+    });
+
+    activities.sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''));
+    return activities;
+  };
+
   // RBAC & Collaborative State
   const [teamMembers, setTeamMembers] = useState<UserProfile[]>(() => {
     const saved = localStorage.getItem('tendertracker_team_profiles');
@@ -2595,6 +2773,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         isCommandPaletteOpen,
         setIsCommandPaletteOpen,
         showSuccessNotification,
+        addTenderAmendment,
+        getUserActivities,
       }}
     >
       {children}
