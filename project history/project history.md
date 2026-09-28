@@ -2,7 +2,7 @@
 
 **Project Name:** TenderTracker Procurement Core & Command Center  
 **Repository:** [github.com/akib25889/Tender-tracker-v2](https://github.com/akib25889/Tender-tracker-v2)  
-**Current Version:** 2.24.0
+**Current Version:** 2.25.0
 **Stack:** FastAPI (Python 3.13+), SQLite (Zero-Config Dev) / MySQL 8.4 LTS (Prod), React 18+ (Vite, TypeScript, Tailwind CSS), Local Server Storage (HDD / SSD)  
 **Optimization Engines:** Ponytail ("Lazy Senior Dev" code generation) & Graphify (Knowledge Graph retrieval)
 
@@ -19,6 +19,40 @@
 | **M4** | **Frontend Foundation & Design System**| **Completed** | React + Vite + TypeScript scaffold, Tailwind theme (Plus Jakarta Sans, Inter, JetBrains Mono), collapsible shell, 28-screen routing. |
 | **M5** | **Dark Theme & Accessibility Engineering** | **Completed** | Full CSS-only WCAG AA dark mode overhaul, design token surface elevation hierarchy, luminous status badges, and system dark mode auto-detection. |
 | **M6** | **E2E Testing & Production Hardening** | **Completed** | Full integration test suite (100% pass, 44 tests), automated 3-2-1 backup sentinel, corporate authentication, and live Azure Cloud VM deployment. |
+
+### [2026-09-28] — Version 2.25.0: Multi-Language Projects, Dynamic Corrigenda Ledger, Personnel Activity Tracking & Compact Mission Control Dashboard
+- **Category:** Feature Expansion, Statutory Procurement Governance, Personnel Workspace, UI/UX Optimization, Cloud Deployment
+- **Summary:**
+  - **Multi-Language Project Requirements (Req #29):**
+    - Enabled multiple procurement and submission language tagging in `TenderRegistryPage.tsx` under Basic Information.
+    - Quick-select chip presets (English, Bengali, French, Arabic, Spanish, German, Japanese, Chinese) plus custom language entry with auto-deduplication.
+    - Database migration: added `languages` JSON array column to `tenders` table with zero-downtime auto-migration in `backend/app/core/database.py` and `backend/app/models/tender.py`.
+    - Integrated multi-language badges in `TenderDetailPage.tsx` specification matrix and filterable language chips in `TenderListPage.tsx`.
+  - **Tender Corrigenda, Addenda & Dynamic Deadline Extensions (Req #30):**
+    - Implemented `POST /api/tenders/{tender_id}/amendments` backend endpoint to record official tender addenda, corrigendum notices, and rule changes.
+    - Dynamic deadline recalculation: automatically updates `submission_deadline`, `daysRemaining`, and reactivates expired opportunities when an extension is granted.
+    - Automatic clause synchronization: newly introduced procurement rules are immediately synchronized into `important_clauses` under category `CORRIGENDUM`.
+    - UI integration on `TenderDetailPage.tsx`: Corrigendum Active Alert Banner, expandable Corrigendum History Ledger card with chronologically sequenced amendments, and "+ Record Corrigendum" modal.
+  - **Personnel Profile: "Projects I Work On" & "All My Activities" (Req #31):**
+    - Built dedicated sub-routes `/profile/projects` and `/profile/activities` registered in `router.tsx` with seamless tab bar navigation on `UserProfilePage.tsx`.
+    - **Projects I Work On:** High-density project catalog filtered by active involvement, stage, and readiness, allowing immediate navigation to assigned tender workspaces.
+    - **All My Activities:** Chronological audit feed powered by `GET /api/users/{user_id}/activities`, tracking user updates, status modifications, document uploads, and authorization events with timestamps and action badges.
+  - **Ultra-Compact Mission Control Dashboard Layout:**
+    - Redesigned top banner, KPI ribbons, and pipeline breakdown to reduce vertical height by >55% (~380px to ~165px), achieving instant 10-Second Rule visibility for the Intervention Queue.
+    - Compacted 4 KPI cards (`px-3.5 py-2.5`, 32px icons) with horizontal metric alignment.
+    - Streamlined 6-Gate Pipeline Breakdown into a lightweight single-row ribbon with complete 6-stage representation including `6. Won / Award`.
+  - **Physical Document Vault & File Upload Integration:**
+    - Wired physical multipart file uploads directly to backend (`POST /api/documents/upload`), resolving 404 errors on file preview and downloads.
+    - Connected Compliance Sentinel "Upload" action directly to `UploadDocumentModal` with requirement pre-selection.
+    - Added document deletion with confirmation dialog.
+  - **Theme System Extensions & Interface Polish:**
+    - Integrated Winter Frost and Warm (Earth) themes from Stitch palette into Settings.
+    - Cleaned up top header bar by relocating theme controls to Account Settings.
+    - Purged all remaining mock fallbacks, fake milestones, and dummy links across the application.
+  - **Verification & Azure Cloud Deployment:**
+    - Verified clean TypeScript build (`tsc -b && vite build` — 0 errors).
+    - Synchronized knowledge graph via `tools/graphify/graphify.py`.
+    - Automated live deployment to Azure VM (`https://tendertracker-app.centralindia.cloudapp.azure.com`) with passing health checks.
 
 ### [2026-09-23] — Version 2.24.0: Zero-Config Local Toolchain Setup, Dual-Prefix API Compatibility, and Workspace Realignment
 - **Category:** Environment Configuration, API Architecture, Developer Experience, Verification Hardening

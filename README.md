@@ -1,4 +1,4 @@
-# TenderTracker Command Center (v2.22.0)
+# TenderTracker Command Center (v2.25.0)
 
 [![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF?logo=vite)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://reactjs.org/)
@@ -8,7 +8,7 @@
 [![SQLite](https://img.shields.io/badge/SQLite-Zero--Config-003B57?logo=sqlite)](https://www.sqlite.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.4_LTS-4479A1?logo=mysql)](https://www.mysql.com/)
 
-**TenderTracker Command Center** is an enterprise-grade procurement lifecycle management system designed for public and multilateral tenders (e-GP, UNDP, World Bank, ADB, JICA). It guides bid teams across the **tender lifecycle**, implements the **10-Second Attention Rule** for triage, and provides complete cryptographic document assurance.
+**TenderTracker Command Center** is an enterprise-grade procurement lifecycle management system designed for public and multilateral tenders (e-GP, UNDP, World Bank, ADB, JICA). It guides bid teams across the **6-gate tender lifecycle**, implements the **10-Second Attention Rule** for triage, and provides complete cryptographic document assurance.
 
 🌐 **Live Production Cloud URL**: [https://tendertracker-app.centralindia.cloudapp.azure.com](https://tendertracker-app.centralindia.cloudapp.azure.com)  
 🔑 **Default Super Admin**: `admin@tendertracker.com` / `Admin@2026!`
@@ -49,17 +49,18 @@ Executes: DB health → Pytest suite (44/44 tests) → TypeScript type-check →
 
 ---
 
-## 🏛️ Tender Lifecycle Stages
+## 🏛️ 6-Gate Tender Lifecycle Stages
 
-1. **Stage 1 — Bid Discovery**: Scanner intake and portal integration with confidence scoring.
-2. **Stage 2 — Screening**: Entity jurisdiction check, debarment screening, and mandatory criteria.
-3. **Stage 3 — Analysis & Go/No-Go**: Scope breakdown, SLA viability, geometric radar evaluation (35% Tech, 30% Fin, 20% Team, 15% SLA), and predicted win probability (`pWin`).
-4. **Stage 4 — Preparation**: Task board, statutory document vault population, and clause compliance checklist.
-5. **Stage 5 — Submission & Outcome**: Portal proof verification, SHA-256 cryptographic locking, and win/loss debrief ledger.
+1. **Gate 1 — Bid Discovery**: Scanner intake and portal integration with confidence scoring.
+2. **Gate 2 — Screening**: Entity jurisdiction check, debarment screening, and mandatory criteria.
+3. **Gate 3 — Analysis & Go/No-Go**: Scope breakdown, SLA viability, geometric radar evaluation (35% Tech, 30% Fin, 20% Team, 15% SLA), and predicted win probability (`pWin`).
+4. **Gate 4 — Preparation**: Task board, statutory document vault population, and clause compliance checklist.
+5. **Gate 5 — Submission & Outcome**: Portal proof verification, SHA-256 cryptographic locking, and win/loss debrief ledger.
+6. **Gate 6 — Won / Award**: Post-award contract execution, performance security monitoring, and handover milestones.
 
 ---
 
-## 🖥️ Screen & Route Directory (30 Modules)
+## 🖥️ Screen & Route Directory (33 Modules)
 
 | Screen ID | Screen Name | Route | Module |
 | :--- | :--- | :--- | :--- |
@@ -75,6 +76,9 @@ Executes: DB health → Pytest suite (44/44 tests) → TypeScript type-check →
 | `screen:tender_tasks` | Tender Task Board | `/tenders/{id}/tasks` | `tasks` |
 | `screen:tender_documents` | Tender Document Vault & Custom Folders | `/tenders/{id}/documents` | `documents` |
 | `screen:tender_partners` | JV Partner Collaboration & Allocation Hub | `/tenders/{id}/partners` | `collaboration` |
+| `screen:user_profile` | Personnel Dossier & Profile Hub | `/profile` | `profile` |
+| `screen:profile_projects` | Key Personnel Assigned Projects | `/profile/projects` | `profile` |
+| `screen:profile_activities` | User Action Audit & History Feed | `/profile/activities` | `profile` |
 | `screen:master_documents` | Master Reusable Document Vault & Permissions | `/documents` | `documents` |
 | `screen:company_credentials` | Company Project Credentials (WO & CC) | `/documents?tab=credentials` | `credentials` |
 | `screen:company_profiles` | Corporate Entities & Company Profiles | `/tools/company-profiles` | `tools` |
@@ -101,13 +105,17 @@ Executes: DB health → Pytest suite (44/44 tests) → TypeScript type-check →
 
 ## ⚡ Architecture & Optimization Engines
 
+- **Ultra-Compact Real-Time Mission Control Dashboard:** Redesigned header, KPI cards (`px-3.5 py-2.5`), and 6-gate ribbon (`px-3.5 py-2`) that saves over 55% of vertical space, providing instant 10-Second rule visibility into critical blockers and immediate intervention priorities.
+- **Multi-Language Project Requirements Framework:** Support for multiple language tagging across tender requirements and submissions with preset chips and custom entries, backed by database JSON column storage and localized badges.
+- **Tender Corrigenda & Addenda Ledger:** Dynamic tracking of official client amendments, automatic recalculation of submission cutoff dates and remaining days, reactivating expired bids, and auto-syncing amended clauses into the compliance register.
+- **Personnel Workspace & Activity Tracking:** Dedicated `/profile/projects` and `/profile/activities` views tracking individual active projects and live audit trails of user operations.
+- **Multi-Theme Engine:** Seamless switching between Light, Dark, Winter Frost, and Warm Earth palettes configured via Account Settings.
 - **Multi-Timezone Header Clock & Internationalization:** Real-time clock widget in the top navigation bar supporting Dual Clocks, UTC, UTC+2, EDT, and Local timezones. Dynamically parses ISO 8601 offset strings (e.g. `-04:00`) across all Tender deadlines to render localized timezones accurately.
 - **Master Access & Permissions Control Center (`/permissions`)**: Enterprise 5-tab permissions governance console:
   - *Live Diagnostic Simulator:* Multi-select permission tester with "Select All", "Reset (*)", badge counters, and multi-action authorization evaluation.
   - *JV & Partner Ceilings:* Maximum boundary ceiling matrix ($Actual = Ceiling \cap Granted$) with batch "Allow All Permissions" and "Deny All" controls.
   - *Role Baselines & Scope Overrides:* Hierarchical permission rules (Resource > Tender > Organization > Role baseline) supporting wildcard `*` ("Grant All Permissions").
   - *Security Blockers (Layer 1):* Hard DENY conditions (account suspensions, NDA flags) that supersede all granted roles.
-  - *Authorization Audit Trail:* Immutable append-only audit trail logging request IDs, decisions, matched scopes, and denial reason codes with CSV and JSON exports.
 - **Client Visitor & Scheduled Meetings Management System (`/clients/visits`)**: Executive hub for managing in-person delegations, pre-bid clarification meetings, and site visits with reception check-in/out workflows, Minutes of Meeting (MoM) logs, actionable deliverable checkboxes, and sentiment tracking.
 - **Procurement Governance & Sourcing Framework (Req #21)**: Full-stack persistence, API serialization, and multi-surface UI representation for 4 critical public procurement attributes: `tender_type`, `budget_type`, `source_of_fund`, and `procurement_method`.
 - **Corporate Entities & Company Profiles Command Center (`/tools/company-profiles`)**: Dedicated multi-entity management hub for Lead Bidders and JV Partners storing legal identities, statutory & tax credentials, banking standing (turnovers, credit lines), accreditations, and 1-click **"Copy Tender Profile Summary"** generation.

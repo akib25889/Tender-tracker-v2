@@ -133,7 +133,16 @@ Statutory compliance attributes governed by standard public procurement rules (P
 
 ---
 
-### 3.7. Procuring Authority Contact & Helpdesk Information
+### 3.7. Project Languages & Submission Requirements (Req #29)
+The system supports multiple procurement, RFP, and proposal submission languages to accommodate domestic and multilateral international requirements.
+
+| Field Name | UI Label | Component | Presets & Custom Input | Storage Format |
+|:---|:---|:---|:---|:---|
+| `languages` | `Project Languages` | Multi-Select Chip Group + Add Custom | Presets: `English`, `Bengali`, `French`, `Arabic`, `Spanish`, `German`, `Japanese`, `Chinese`. Custom language text input with `+ Add` button. | JSON Array of strings (e.g. `["English", "Bengali"]`) in database `tenders.languages`. |
+
+---
+
+### 3.8. Procuring Authority Contact & Helpdesk Information
 | Field Name | UI Label | Input Type | Description |
 |:---|:---|:---|:---|
 | `procurementManagerName` | `Officer Full Name` | Text Input | Official procurement officer / project director (e.g. `Engr. Rafiqul Islam`). |
@@ -146,7 +155,7 @@ Statutory compliance attributes governed by standard public procurement rules (P
 
 ---
 
-### 3.8. Lifecycle Stage & Operational Priority
+### 3.9. Lifecycle Stage & Operational Priority
 | Field Name | UI Label | Component | Options & Descriptions |
 |:---|:---|:---|:---|
 | `stage` | `Lifecycle Stage / Status` | Select Dropdown | - `DISCOVERED`: 1. Bid Discovery & Ingestion<br>- `SCREENING`: 2. Initial Assessment & Pre-Qualification<br>- `UNDER_ANALYSIS`: 3. Under Analysis & Go/No-Go Decision Matrix<br>- `PREPARATION`: 4. Proposal Authoring & Envelope Assembling<br>- `SUBMITTED`: 5. Formally Submitted to Authority<br>- `AWARDED`: 6. Won / Contract Awarded<br>- `LOST`: Closed: Lost / Bid Rejected<br>- `DECLINED`: Closed: Declined / No-Go Decision Executed<br>- `ARCHIVED`: Archived for historical records |
@@ -458,7 +467,30 @@ Users can insert standard presets with one click:
 
 ---
 
-## 10. Summary Data Dictionary & JSON Schema Mapping
+## 10. Tender Corrigenda, Addenda & Dynamic Amendments (Req #30)
+
+Procuring authorities routinely publish official addenda, corrigendum circulars, and clarifications that alter bid deadlines or amend tender clauses. TenderTracker provides an official **Corrigenda Ledger**:
+
+### 10.1. Corrigendum Data Structure (`TenderAmendment`)
+| Field Name | UI Label | Data Type | Required? | Description |
+|:---|:---|:---|:---:|:---|
+| `id` | `Amendment ID` | String | **Yes** | Unique identifier (e.g. `amd_1727539200000`). |
+| `corrigendumNumber` | `Corrigendum / Addendum No.` | String | **Yes** | Official notice designation (e.g. `Corrigendum No. 01`, `Addendum-II`). |
+| `issueDate` | `Issue Date` | Date (`YYYY-MM-DD`) | **Yes** | Date published by the procuring agency. |
+| `extendedDeadline` | `Extended Submission Deadline` | String (ISO timestamp) | No | Optional new cutoff timestamp. When populated, dynamically updates `submission_deadline` and remaining days. |
+| `scopeChanges` | `Summary of Amendments & Clarifications` | String (Multiline) | **Yes** | Description of scope, milestone, or terms modifications. |
+| `newRulesAdded` | `New Rules & Clauses Introduced` | String (Multiline) | No | Newly introduced statutory rules. Automatically synchronized into `important_clauses` under category `CORRIGENDUM`. |
+| `recordedBy` | `Recorded By` | String | No | Name or email of the officer documenting the amendment. |
+| `recordedAt` | `Recorded Timestamp` | String (ISO timestamp) | **Yes** | Audit timestamp when the amendment was recorded. |
+
+### 10.2. Dynamic Lifecycle Behaviors
+- **Dynamic Deadline Recalculation:** When an `extendedDeadline` is supplied, TenderTracker automatically updates the live submission cutoff, re-evaluates `daysRemaining`, and reactivates expired opportunities into active drafting.
+- **Rule Synchronization:** New clauses documented in `newRulesAdded` are automatically created inside `important_clauses` under `category: CORRIGENDUM`, alerting compliance auditors.
+- **UI Surfaces:** Active Corrigendum Warning Banner and expandable Corrigenda History Ledger on `TenderDetailPage.tsx` with "+ Record Corrigendum" modal.
+
+---
+
+## 11. Summary Data Dictionary & JSON Schema Mapping
 
 When saving a tender via `handleSaveEntry`, all tab inputs are consolidated into the canonical `Tender` entity:
 
@@ -470,6 +502,7 @@ When saving a tender via `handleSaveEntry`, all tab inputs are consolidated into
   "organization": "Dhaka Transport Coordination Authority (DTCA)",
   "country": "Bangladesh",
   "category": "Software & Web Application Development",
+  "languages": ["English", "Bengali"],
   "priority": "HIGH",
   "stage": "UNDER_ANALYSIS",
   "decision": "PENDING",
@@ -577,7 +610,7 @@ When saving a tender via `handleSaveEntry`, all tab inputs are consolidated into
 
 ---
 
-## 11. Maintenance & Extension Guidelines
+## 12. Maintenance & Extension Guidelines
 
 1. **Adding a New Form Field**:
    - Register the property in [`frontend/src/types/tender.ts`](file:///f:/Tender%20tracker%20v2/frontend/src/types/tender.ts) under `Tender` and `TenderExtendedSummary`.
