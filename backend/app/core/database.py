@@ -416,9 +416,26 @@ def run_migrations():
                         )
                     )
 
+                result_r = conn.execute(
+                    text("PRAGMA table_info(tender_requirements)")
+                ).fetchall()
+                req_cols = {row[1] for row in result_r}
+                if "evidence_file" not in req_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tender_requirements ADD COLUMN evidence_file VARCHAR(255) DEFAULT NULL"
+                        )
+                    )
+
                 conn.commit()
             elif engine.dialect.name == "mysql":
                 for tbl, cols in [
+                    (
+                        "tender_requirements",
+                        [
+                            ("evidence_file", "VARCHAR(255) DEFAULT NULL"),
+                        ],
+                    ),
                     (
                         "tenders",
                         [

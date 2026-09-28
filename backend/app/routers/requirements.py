@@ -49,6 +49,7 @@ def create_requirement(
         title=req_in.title,
         category=req_in.category,
         status=req_in.status,
+        evidence_file=req_in.evidence_file,
         owner=req_in.owner,
     )
     db.add(db_req)
