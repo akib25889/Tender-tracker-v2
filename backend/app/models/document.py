@@ -32,7 +32,7 @@ class TenderDocument(Base):
     )
     name = Column(String(255), nullable=False)
     folder = Column(String(100), nullable=False, default="01_original_tender_documents")
-    company_name = Column(String(150), nullable=True, default="PrimeTech Ltd")
+    company_name = Column(String(150), nullable=True, default="NYK Advance Limited")
     company_role = Column(
         String(50), nullable=True, default="LEAD_BIDDER"
     )  # LEAD_BIDDER, JV_PARTNER, CONSORTIUM_MEMBER, SUBCONTRACTOR
