@@ -76,3 +76,7 @@ Project_Start_Point.md
 [Tt]ender [Dd]ocument/
 ministry/
 
+# Ignore all Markdown files
+*.md
+**/*.md
+
