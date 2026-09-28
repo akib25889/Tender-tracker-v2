@@ -239,6 +239,18 @@ def run_migrations():
                             "ALTER TABLE tenders ADD COLUMN ai_chat_share_link TEXT DEFAULT NULL"
                         )
                     )
+                if "languages" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN languages JSON DEFAULT '[]'"
+                        )
+                    )
+                if "amendments" not in existing_cols:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE tenders ADD COLUMN amendments JSON DEFAULT '[]'"
+                        )
+                    )
                 # Ensure tender_financial_rules table exists in SQLite
                 conn.execute(text("""
                         CREATE TABLE IF NOT EXISTS tender_financial_rules (
@@ -446,6 +458,8 @@ def run_migrations():
                             ("post_award_data", "JSON DEFAULT NULL"),
                             ("financial_model", "JSON DEFAULT NULL"),
                             ("ai_chat_share_link", "TEXT DEFAULT NULL"),
+                            ("languages", "JSON DEFAULT NULL"),
+                            ("amendments", "JSON DEFAULT NULL"),
                         ],
                     ),
                     (

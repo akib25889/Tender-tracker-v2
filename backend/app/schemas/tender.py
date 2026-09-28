@@ -82,10 +82,12 @@ class TenderBase(BaseModel):
     days_remaining: int = 0
     hours_remaining: int = 0
     readiness_score: int = 0
-    lead_owner_name: Optional[str] = "Sarah Jenkins"
+    lead_owner_name: Optional[str] = "Authorized Bid Lead"
     lead_owner_role: Optional[str] = "Business Head"
     summary_json: Optional[str] = None
     important_clauses: Optional[List[ImportantClauseSchema]] = []
+    languages: Optional[List[str]] = []
+    amendments: Optional[List[Dict[str, Any]]] = []
     procurement_manager_name: Optional[str] = None
     procurement_manager_designation: Optional[str] = None
     procurement_manager_email: Optional[str] = None
@@ -201,6 +203,21 @@ class TenderUpdate(BaseModel):
     financial_model: Optional[Dict[str, Any]] = None
     ai_chat_share_link: Optional[str] = None
     archived_from_stage: Optional[str] = None
+    languages: Optional[List[str]] = None
+    amendments: Optional[List[Dict[str, Any]]] = None
+
+
+class TenderAmendmentIn(BaseModel):
+    amendment_number: Optional[Any] = 1
+    title: str
+    issued_date: Optional[str] = None
+    is_deadline_extended: bool = False
+    previous_deadline: Optional[str] = None
+    new_deadline: Optional[str] = None
+    new_rules: Optional[List[str]] = []
+    rule_changes_description: Optional[str] = None
+    reference_notice: Optional[str] = None
+    notes: Optional[str] = None
 
 
 class AiChatLinkUpdate(BaseModel):

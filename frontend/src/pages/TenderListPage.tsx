@@ -16,6 +16,7 @@ import {
   RotateCcw,
   FileText,
   Upload,
+  Languages,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -354,6 +355,23 @@ export const TenderListPage: React.FC = () => {
                       {tender.tenderType || tender.summary?.tenderType || 'Request for Proposals (RFP)'}
                     </span>
                   </div>
+
+                  {/* Languages (Req #29) */}
+                  {((tender.languages && tender.languages.length > 0) || tender.language) && (
+                    <div className="flex items-center gap-1 text-[11px] text-[#475569] bg-[#F8FAFC] px-1.5 py-0.5 rounded border border-[#E2E8F0]">
+                      <Languages className="w-3 h-3 text-[#2563EB]" />
+                      <span>
+                        {(tender.languages && tender.languages.length > 0 ? tender.languages : [tender.language]).join(', ')}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Corrigendum Indicator (Req #30) */}
+                  {tender.amendments && tender.amendments.length > 0 && (
+                    <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                      Corrigendum ({tender.amendments.length})
+                    </span>
+                  )}
 
                   <div className="flex items-center gap-1.5 font-mono">
                     <span className="text-[#64748B] font-sans font-medium text-xs">Value:</span>
