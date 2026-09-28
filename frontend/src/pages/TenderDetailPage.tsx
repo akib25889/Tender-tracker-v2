@@ -38,6 +38,7 @@ import {
   Layers,
   Languages,
   Plus,
+  UploadCloud,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -65,6 +66,8 @@ export const TenderDetailPage: React.FC = () => {
     showSuccessNotification,
     toggleRequirementStatus,
     addTenderAmendment,
+    setActiveTenderIdForModal,
+    setActiveRequirementForModal,
   } = useTenders();
 
   const [copiedRef, setCopiedRef] = useState(false);
@@ -200,55 +203,94 @@ export const TenderDetailPage: React.FC = () => {
 
   // Dynamic Compliance Sentinel criteria
   const complianceItems: TenderRequirement[] = useMemo(() => {
-    // 1. If tender has explicit requirements, use them
-    if (tender.requirements && tender.requirements.length > 0) {
-      return tender.requirements;
-    }
-    // 2. If tender has submission documents from registry tab 5, map them
-    if (tender.summary?.submissionDocuments && tender.summary.submissionDocuments.length > 0) {
-      return tender.summary.submissionDocuments.map((doc, idx) => {
-        const reqClean = doc.trim().toLowerCase();
-        const reqAlpha = reqClean.replace(/[^a-z0-9]/g, '');
+    // 1. Gather raw list of requirements from tender.requirements or submissionDocuments
+    const rawItems: {
+      id?: string;
+      title: string;
+      category?: string;
+      status?: RequirementStatus;
+      evidenceFile?: string;
+      owner?: string;
+    }[] =
+      tender.requirements && tender.requirements.length > 0
+        ? tender.requirements
+        : tender.summary?.submissionDocuments && tender.summary.submissionDocuments.length > 0
+        ? tender.summary.submissionDocuments.map((doc, idx) => ({
+            id: `REQ-DOC-${idx + 1}`,
+            title: doc,
+            category: 'Statutory Document',
+            status: 'PENDING' as RequirementStatus,
+            owner: 'Tender Lead',
+          }))
+        : [];
 
-        const matchingDoc = tender.documents?.find((d) => {
-          const fileBase = d.name.toLowerCase().replace(/\.[^/.]+$/, '');
-          const fileAlpha = fileBase.replace(/[^a-z0-9]/g, '');
+    return rawItems.map((req, idx) => {
+      const currentStatus = req.status || 'PENDING';
 
-          // If requirement is very short (e.g. "A", "B", "1"):
-          if (reqAlpha.length <= 2) {
-            return (
-              fileAlpha === reqAlpha ||
-              fileAlpha === `form${reqAlpha}` ||
-              fileAlpha === `doc${reqAlpha}` ||
-              fileAlpha === `schedule${reqAlpha}` ||
-              fileBase === `form-${reqClean}` ||
-              fileBase === `form_${reqClean}` ||
-              fileBase === `form ${reqClean}`
-            );
-          }
+      // If user has already verified it and evidenceFile is explicitly recorded
+      if (currentStatus === 'VERIFIED' && req.evidenceFile) {
+        return {
+          id: req.id || `REQ-DOC-${idx + 1}`,
+          title: req.title,
+          category: req.category || 'Statutory Document',
+          status: 'VERIFIED' as RequirementStatus,
+          evidenceFile: req.evidenceFile,
+          owner: req.owner || 'Tender Lead',
+        };
+      }
 
-          // For longer requirement names, check exact base name or strict word inclusion
+      // Check if any document in tender.documents matches this requirement
+      const reqClean = req.title.trim().toLowerCase();
+      const reqAlpha = reqClean.replace(/[^a-z0-9]/g, '');
+
+      const matchingDoc = tender.documents?.find((d) => {
+        const fileBase = d.name.toLowerCase().replace(/\.[^/.]+$/, '');
+        const fileAlpha = fileBase.replace(/[^a-z0-9]/g, '');
+
+        if (req.evidenceFile && d.name.toLowerCase() === req.evidenceFile.toLowerCase()) {
+          return true;
+        }
+
+        // If requirement is very short (e.g. "A", "B", "1"):
+        if (reqAlpha.length <= 2) {
           return (
             fileAlpha === reqAlpha ||
-            fileBase === reqClean ||
-            fileBase.startsWith(`${reqClean}_`) ||
-            fileBase.startsWith(`${reqClean}-`) ||
-            fileBase.endsWith(`_${reqClean}`) ||
-            fileBase.endsWith(`-${reqClean}`)
+            fileAlpha === `form${reqAlpha}` ||
+            fileAlpha === `doc${reqAlpha}` ||
+            fileAlpha === `schedule${reqAlpha}` ||
+            fileBase === `form-${reqClean}` ||
+            fileBase === `form_${reqClean}` ||
+            fileBase === `form ${reqClean}`
           );
-        });
+        }
 
-        return {
-          id: `REQ-DOC-${idx + 1}`,
-          title: doc,
-          category: 'Statutory Document',
-          status: (matchingDoc ? 'VERIFIED' : 'PENDING') as RequirementStatus,
-          evidenceFile: matchingDoc ? matchingDoc.name : undefined,
-          owner: 'Tender Lead',
-        };
+        // For longer requirement names, check exact base name or word inclusion
+        return (
+          fileAlpha === reqAlpha ||
+          fileBase === reqClean ||
+          fileBase.includes(reqClean) ||
+          fileAlpha.includes(reqAlpha) ||
+          fileBase.startsWith(`${reqClean}_`) ||
+          fileBase.startsWith(`${reqClean}-`) ||
+          fileBase.endsWith(`_${reqClean}`) ||
+          fileBase.endsWith(`-${reqClean}`) ||
+          (reqClean.includes('technical') && fileBase.includes('technical')) ||
+          (reqClean.includes('financial') && fileBase.includes('financial'))
+        );
       });
-    }
-    return [];
+
+      const isVerified = currentStatus === 'VERIFIED' || Boolean(matchingDoc);
+      const evidence = req.evidenceFile || (matchingDoc ? matchingDoc.name : undefined);
+
+      return {
+        id: req.id || `REQ-DOC-${idx + 1}`,
+        title: req.title,
+        category: req.category || 'Statutory Document',
+        status: (isVerified ? 'VERIFIED' : currentStatus) as RequirementStatus,
+        evidenceFile: evidence,
+        owner: req.owner || 'Tender Lead',
+      };
+    });
   }, [tender.requirements, tender.summary?.submissionDocuments, tender.documents]);
 
   const clearedCount = useMemo(
@@ -262,13 +304,21 @@ export const TenderDetailPage: React.FC = () => {
   const totalCount = complianceItems.length;
 
   const handleCycleSentinelStatus = (reqId: string, currentStatus: RequirementStatus) => {
+    // Intuitive cycle: PENDING -> VERIFIED -> BLOCKER -> PENDING
     const nextStatus: RequirementStatus =
-      currentStatus === 'VERIFIED'
-        ? 'PENDING'
-        : currentStatus === 'PENDING'
+      currentStatus === 'PENDING'
+        ? 'VERIFIED'
+        : currentStatus === 'VERIFIED'
         ? 'BLOCKER'
-        : 'VERIFIED';
-    toggleRequirementStatus(tender.id, reqId, nextStatus);
+        : 'PENDING';
+
+    const currentReq = tender.requirements?.find((r) => r.id === reqId);
+    const evidenceToSet =
+      nextStatus === 'VERIFIED'
+        ? currentReq?.evidenceFile || (tender.documents && tender.documents.length > 0 ? tender.documents[0].name : undefined)
+        : undefined;
+
+    toggleRequirementStatus(tender.id, reqId, nextStatus, evidenceToSet);
   };
 
   const subNavTabs = [
@@ -1630,25 +1680,61 @@ export const TenderDetailPage: React.FC = () => {
 
                           <div className="shrink-0 flex items-center gap-1.5">
                             {isVerified ? (
-                              <span className="text-[10px] font-bold text-[#059669] uppercase bg-[#D1FAE5]/60 px-1.5 py-0.5 rounded">
-                                Ready
-                              </span>
-                            ) : isBlocker ? (
-                              <Link
-                                to={`/tenders/${tender.id}/documents`}
-                                className="px-2 py-1 text-[10px] font-bold bg-[#DC2626] text-white rounded hover:bg-[#B91C1C] transition-colors"
-                                title="Upload evidence to Document Vault"
-                              >
-                                Upload
-                              </Link>
+                              <div className="flex items-center gap-1">
+                                <span className="text-[10px] font-bold text-[#059669] uppercase bg-[#D1FAE5]/60 px-1.5 py-0.5 rounded flex items-center gap-1">
+                                  <Check className="w-3 h-3" />
+                                  Ready
+                                </span>
+                                {req.evidenceFile && (
+                                  <Link
+                                    to={`/tenders/${tender.id}/documents`}
+                                    className="p-1 text-[#64748B] hover:text-[#2563EB] transition-colors"
+                                    title={`View ${req.evidenceFile} in vault`}
+                                  >
+                                    <FileText className="w-3.5 h-3.5" />
+                                  </Link>
+                                )}
+                              </div>
                             ) : (
-                              <Link
-                                to={`/tenders/${tender.id}/documents`}
-                                className="px-2 py-1 text-[10px] font-semibold bg-[#FEF3C7] text-[#D97706] hover:bg-[#FDE68A] border border-[#FDE68A] rounded transition-colors"
-                                title="Upload or attach evidence"
-                              >
-                                Upload
-                              </Link>
+                              <div className="flex items-center gap-1">
+                                {tender.documents && tender.documents.length > 0 && (
+                                  <select
+                                    aria-label={`Link file to ${req.title}`}
+                                    value=""
+                                    onChange={(e) => {
+                                      if (e.target.value) {
+                                        toggleRequirementStatus(tender.id, req.id, 'VERIFIED', e.target.value);
+                                        showSuccessNotification(`Attached "${e.target.value}" to ${req.title}`, 'Requirement Cleared');
+                                      }
+                                    }}
+                                    className="px-1.5 py-1 text-[10px] font-semibold bg-white dark:bg-slate-800 border border-[#CBD5E1] dark:border-slate-700 text-[#475569] dark:text-slate-300 rounded hover:border-[#2563EB] cursor-pointer max-w-[85px] truncate"
+                                    title="Link an already uploaded document from vault"
+                                  >
+                                    <option value="">Link File...</option>
+                                    {tender.documents.map((d) => (
+                                      <option key={d.id} value={d.name}>
+                                        {d.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveTenderIdForModal(tender.id);
+                                    setActiveRequirementForModal({ id: req.id, title: req.title });
+                                  }}
+                                  className={`px-2 py-1 text-[10px] font-semibold text-white rounded transition-colors flex items-center gap-1 cursor-pointer shadow-xs ${
+                                    isBlocker
+                                      ? 'bg-[#DC2626] hover:bg-[#B91C1C]'
+                                      : 'bg-[#2563EB] hover:bg-[#1D4ED8]'
+                                  }`}
+                                  title={`Upload evidence file specifically for ${req.title}`}
+                                >
+                                  <UploadCloud className="w-3 h-3" />
+                                  <span>Upload</span>
+                                </button>
+                              </div>
                             )}
                           </div>
                         </div>

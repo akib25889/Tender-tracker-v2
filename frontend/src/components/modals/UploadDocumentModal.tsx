@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { X, UploadCloud, Folder, FileCheck, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 
@@ -8,6 +8,8 @@ export const UploadDocumentModal: React.FC = () => {
     setUploadFolderTarget,
     activeTenderIdForModal,
     setActiveTenderIdForModal,
+    activeRequirementForModal,
+    setActiveRequirementForModal,
     addDocument,
     tenders,
     showSuccessNotification,
@@ -15,9 +17,22 @@ export const UploadDocumentModal: React.FC = () => {
 
   const [fileName, setFileName] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedRequirementId, setSelectedRequirementId] = useState<string>(
+    activeRequirementForModal?.id || ''
+  );
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (activeRequirementForModal) {
+      setSelectedRequirementId(activeRequirementForModal.id);
+      if (!fileName.trim()) {
+        const safeTitle = activeRequirementForModal.title.replace(/[^a-zA-Z0-9_\-\.]/g, '_');
+        setFileName(`${safeTitle}.pdf`);
+      }
+    }
+  }, [activeRequirementForModal]);
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
@@ -114,6 +129,8 @@ export const UploadDocumentModal: React.FC = () => {
   const handleClose = () => {
     setUploadFolderTarget(null);
     setActiveTenderIdForModal(null);
+    setActiveRequirementForModal(null);
+    setSelectedRequirementId('');
     setSelectedFile(null);
     setFileName('');
   };
@@ -147,6 +164,7 @@ export const UploadDocumentModal: React.FC = () => {
           companyRole,
           isJvPartner: companyRole === 'JV_PARTNER',
           file: selectedFile,
+          requirementId: selectedRequirementId || undefined,
         });
 
         showSuccessNotification(
@@ -271,6 +289,40 @@ export const UploadDocumentModal: React.FC = () => {
               Physical HDD Path: storage/tenders/{tender?.id || '{TDR-ID}'}/{effectiveFolder}/<span className="text-[#2563EB] dark:text-blue-400 font-bold">[{safeCompanySlug}]</span>/
             </div>
           </div>
+
+          {/* Compliance Requirement Association */}
+          {tender?.requirements && tender.requirements.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block font-semibold text-[#0F172A] dark:text-slate-200">
+                  Link to Compliance Requirement
+                </label>
+                {selectedRequirementId && (
+                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                    ✓ Clears requirement on upload
+                  </span>
+                )}
+              </div>
+              <select
+                value={selectedRequirementId}
+                onChange={(e) => {
+                  setSelectedRequirementId(e.target.value);
+                  const matchedReq = tender.requirements.find((r) => r.id === e.target.value);
+                  if (matchedReq && (!fileName.trim() || tender.requirements.some(r => fileName.startsWith(r.title)))) {
+                    setFileName(`${matchedReq.title.replace(/[^a-zA-Z0-9_\-\.]/g, '_')}.pdf`);
+                  }
+                }}
+                className="w-full px-3 py-2 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-xs font-medium text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2563EB] cursor-pointer"
+              >
+                <option value="">None (General Vault Document)</option>
+                {tender.requirements.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.status === 'VERIFIED' ? '✓' : '!'} {r.title} ({r.category})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div>
             <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">

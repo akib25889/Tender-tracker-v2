@@ -1,12 +1,9 @@
-import json
-import uuid
 from datetime import datetime
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.tender import Tender, TenderDecisionMatrix
-from app.models.requirement import TenderRequirement
 from app.models.permission import ResourceShare
 from app.schemas.tender import (
     TenderCreate,
@@ -20,46 +17,6 @@ from app.schemas.tender import (
 from app.services.storage import ensure_tender_directories
 
 router = APIRouter(prefix="/tenders", tags=["Tenders"])
-
-
-def sync_submission_docs_to_requirements(
-    tender: Tender, summary_json_str: Optional[str], db: Session
-):
-    """Automatically populate TenderRequirement entries from summary_json.submissionDocuments if missing."""
-    if not summary_json_str:
-        return
-    try:
-        data = (
-            json.loads(summary_json_str)
-            if isinstance(summary_json_str, str)
-            else summary_json_str
-        )
-        sub_docs = data.get("submissionDocuments")
-        if isinstance(sub_docs, list) and len(sub_docs) > 0:
-            cleaned_docs = [str(d).strip() for d in sub_docs if str(d).strip()]
-            if not cleaned_docs:
-                return
-            existing_reqs = (
-                db.query(TenderRequirement)
-                .filter(TenderRequirement.tender_id == tender.id)
-                .all()
-            )
-            existing_map = {r.title.strip().lower(): r for r in existing_reqs}
-
-            for idx, doc_title in enumerate(cleaned_docs):
-                key = doc_title.lower()
-                if key not in existing_map:
-                    new_req = TenderRequirement(
-                        id=f"REQ-{tender.id[:8]}-{idx + 1}-{uuid.uuid4().hex[:4]}",
-                        tender_id=tender.id,
-                        title=doc_title,
-                        category="Statutory Document",
-                        status="PENDING",
-                        owner=tender.lead_owner_name or "Tender Lead",
-                    )
-                    db.add(new_req)
-    except Exception:
-        pass
 
 
 @router.get("", response_model=List[TenderOut])
@@ -107,47 +64,9 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
 
     existing = db.query(Tender).filter(Tender.id == tender_id).first()
     if existing:
-        # Upsert: update existing tender with incoming data
-        update_data = tender_in.model_dump(exclude_unset=True)
-        for field, value in update_data.items():
-            if field == "id":
-                continue
-            if field == "important_clauses" and value is not None:
-                existing.important_clauses = [
-                    c.model_dump() if hasattr(c, "model_dump") else c for c in value
-                ]
-            elif field == "evaluation_method":
-                existing.evaluation_method = value or tender_in.evaluationMethod
-            elif hasattr(existing, field):
-                setattr(existing, field, value)
-
-        rate = (
-            tender_in.exchange_rate_to_bdt
-            if tender_in.exchange_rate_to_bdt is not None
-            else (1.0 if existing.currency == "BDT" else (existing.exchange_rate_to_bdt or 122.0))
+        raise HTTPException(
+            status_code=400, detail=f"Tender {tender_id} already exists"
         )
-        existing.exchange_rate_to_bdt = rate
-        val = existing.estimated_value or 0.0
-        existing.estimated_value_bdt = (
-            tender_in.estimated_value_bdt
-            if tender_in.estimated_value_bdt is not None
-            else (val if existing.currency == "BDT" else round(val * rate, 2))
-        )
-
-        if existing.parent_eoi_id:
-            parent_eoi = (
-                db.query(Tender).filter(Tender.id == existing.parent_eoi_id).first()
-            )
-            if parent_eoi:
-                parent_eoi.spawned_rfp_id = existing.id
-                if not parent_eoi.eoi_shortlist_status:
-                    parent_eoi.eoi_shortlist_status = "SHORTLISTED"
-
-        sync_submission_docs_to_requirements(existing, existing.summary_json, db)
-        ensure_tender_directories(existing.id)
-        db.commit()
-        db.refresh(existing)
-        return existing
 
     rate = (
         tender_in.exchange_rate_to_bdt
@@ -228,8 +147,6 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
             if not parent_eoi.eoi_shortlist_status:
                 parent_eoi.eoi_shortlist_status = "SHORTLISTED"
 
-    sync_submission_docs_to_requirements(db_tender, db_tender.summary_json, db)
-
     # Auto-provision local SSD storage vault folders
     ensure_tender_directories(db_tender.id)
 
@@ -264,9 +181,6 @@ def update_tender(tender_id: str, updates: TenderUpdate, db: Session = Depends(g
                 else (1.0 if cur == "BDT" else 122.0)
             )
             tender.estimated_value_bdt = val if cur == "BDT" else round(val * rate, 2)
-
-    if "summary_json" in update_data:
-        sync_submission_docs_to_requirements(tender, tender.summary_json, db)
 
     db.commit()
     db.refresh(tender)

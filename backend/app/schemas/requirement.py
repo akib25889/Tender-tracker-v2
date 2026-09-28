@@ -6,6 +6,7 @@ class RequirementBase(BaseModel):
     title: str
     category: str = "Statutory"
     status: str = "PENDING"  # VERIFIED, PENDING, BLOCKER
+    evidence_file: Optional[str] = None
     owner: str = "Tariq Al-Mansoor"
 
 
@@ -17,6 +18,7 @@ class RequirementUpdate(BaseModel):
     title: Optional[str] = None
     category: Optional[str] = None
     status: Optional[str] = None
+    evidence_file: Optional[str] = None
     owner: Optional[str] = None
 
 

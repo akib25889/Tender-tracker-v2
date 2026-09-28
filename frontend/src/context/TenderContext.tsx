@@ -56,6 +56,7 @@ interface TenderContextType {
       companyRole?: string;
       isJvPartner?: boolean;
       file?: File | null;
+      requirementId?: string;
     }
   ) => Promise<TenderDocument | void>;
   addFolder: (tenderId: string, folder: { name: string; label: string }) => void;
@@ -92,7 +93,8 @@ interface TenderContextType {
   toggleRequirementStatus: (
     tenderId: string,
     reqId: string,
-    newStatus: RequirementStatus
+    newStatus: RequirementStatus,
+    evidenceFile?: string
   ) => void;
   submitTenderProof: (tenderId: string, portalReference: string) => void;
   // RBAC
@@ -182,6 +184,8 @@ interface TenderContextType {
   setUploadFolderTarget: (folder: string | null) => void;
   activeTenderIdForModal: string | null;
   setActiveTenderIdForModal: (id: string | null) => void;
+  activeRequirementForModal: { id: string; title: string } | null;
+  setActiveRequirementForModal: (req: { id: string; title: string } | null) => void;
   activeTierForSignOff: number | null;
   setActiveTierForSignOff: (tier: number | null) => void;
   isCommandPaletteOpen: boolean;
@@ -255,6 +259,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isNewTenderModalOpen, setIsNewTenderModalOpen] = useState(false);
   const [uploadFolderTarget, setUploadFolderTarget] = useState<string | null>(null);
   const [activeTenderIdForModal, setActiveTenderIdForModal] = useState<string | null>(null);
+  const [activeRequirementForModal, setActiveRequirementForModal] = useState<{ id: string; title: string } | null>(null);
   const [activeTierForSignOff, setActiveTierForSignOff] = useState<number | null>(null);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   // Toast Notifications State
@@ -327,47 +332,19 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                   ? existing.tasks
                   : [];
 
-              let dbSummary = existing ? existing.summary : undefined;
-              if (dbt.summary_json) {
-                try {
-                  dbSummary =
-                    typeof dbt.summary_json === 'string'
-                      ? JSON.parse(dbt.summary_json)
-                      : dbt.summary_json;
-                } catch {}
-              }
-
-              let dbReqs: TenderRequirement[] =
+              const dbReqs: TenderRequirement[] =
                 Array.isArray(dbt.requirements) && dbt.requirements.length > 0
                   ? dbt.requirements.map((rq: any) => ({
                       id: rq.id,
                       title: rq.title,
                       category: rq.category || 'Statutory',
                       status: rq.status || 'PENDING',
+                      evidenceFile: rq.evidence_file || rq.evidenceFile || undefined,
                       owner: rq.owner || 'Tariq Al-Mansoor',
                     }))
+                  : existing
+                  ? existing.requirements
                   : [];
-
-              if (
-                dbReqs.length === 0 &&
-                dbSummary?.submissionDocuments &&
-                Array.isArray(dbSummary.submissionDocuments) &&
-                dbSummary.submissionDocuments.length > 0
-              ) {
-                dbReqs = dbSummary.submissionDocuments
-                  .filter((d: string) => d && d.trim().length > 0)
-                  .map((doc: string, idx: number) => ({
-                    id: `REQ-DOC-${idx + 1}`,
-                    title: doc,
-                    category: 'Statutory Document',
-                    status: 'PENDING',
-                    owner: 'Tender Lead',
-                  }));
-              }
-
-              if (dbReqs.length === 0 && existing?.requirements) {
-                dbReqs = existing.requirements;
-              }
 
               const dbDocs: TenderDocument[] =
                 Array.isArray(dbt.documents) && dbt.documents.length > 0
@@ -429,6 +406,16 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                 : existing
                 ? existing.decisionMatrix
                 : undefined;
+
+              let dbSummary = existing ? existing.summary : undefined;
+              if (dbt.summary_json) {
+                try {
+                  dbSummary =
+                    typeof dbt.summary_json === 'string'
+                      ? JSON.parse(dbt.summary_json)
+                      : dbt.summary_json;
+                } catch {}
+              }
 
               const completedTasks = dbTasks.filter((tk) => tk.status === 'DONE').length;
               const missingDocs = dbReqs.filter((rq) => rq.status !== 'VERIFIED').length;
@@ -1159,13 +1146,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       aiChatShareLink: tenderData.aiChatShareLink,
     };
 
-    // Persist tender to FastAPI backend (support upsert for existing tender)
-    const isExisting = tenders.some((t) => t.id === newId);
-    const method = isExisting ? 'PUT' : 'POST';
-    const endpoint = isExisting ? `${API_BASE_URL}/tenders/${newId}` : `${API_BASE_URL}/tenders`;
-
-    fetch(endpoint, {
-      method,
+    // Persist new tender to FastAPI backend
+    fetch(`${API_BASE_URL}/tenders`, {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         id: newTender.id,
@@ -1239,8 +1222,6 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                     ? Number(tenderData.estimatedValue)
                     : t.estimatedValue,
                 summary: { ...t.summary, ...tenderData.summary },
-                requirements: docReqs.length > 0 ? docReqs : (t.requirements || []),
-                missingDocumentsCount: docReqs.length > 0 ? docReqs.length : t.missingDocumentsCount,
                 importantClauses: tenderData.importantClauses !== undefined ? tenderData.importantClauses : t.importantClauses,
                 financialModel: tenderData.financialModel !== undefined ? tenderData.financialModel : t.financialModel,
               }
@@ -1516,6 +1497,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       companyRole?: string;
       isJvPartner?: boolean;
       file?: File | null;
+      requirementId?: string;
     }
   ) => {
     let uploadedDocId = `DOC-${Math.floor(100 + Math.random() * 900)}`;
@@ -1561,6 +1543,15 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     }
 
+    // If linked to a compliance requirement, patch requirement status in backend
+    if (doc.requirementId) {
+      fetch(`${API_BASE_URL}/requirements/${doc.requirementId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'VERIFIED', evidence_file: doc.name }),
+      }).catch(() => {});
+    }
+
     // Keep an immediate in-memory object URL for zero-latency preview
     const objectUrl = doc.file ? URL.createObjectURL(doc.file) : undefined;
 
@@ -1584,9 +1575,17 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         if (t.id !== tenderId) return t;
         const updatedDocs = [newDoc, ...t.documents];
         const missing = Math.max(0, t.missingDocumentsCount - 1);
+        const updatedReqs = doc.requirementId
+          ? t.requirements.map((r) =>
+              r.id === doc.requirementId
+                ? { ...r, status: 'VERIFIED' as RequirementStatus, evidenceFile: doc.name }
+                : r
+            )
+          : t.requirements;
         return {
           ...t,
           documents: updatedDocs,
+          requirements: updatedReqs,
           missingDocumentsCount: missing,
           readinessScore: Math.min(100, t.readinessScore + 5),
         };
@@ -1962,19 +1961,35 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
   const toggleRequirementStatus = (
     tenderId: string,
     reqId: string,
-    newStatus: RequirementStatus
+    newStatus: RequirementStatus,
+    evidenceFile?: string
   ) => {
+    const patchBody: any = { status: newStatus };
+    if (evidenceFile !== undefined) {
+      patchBody.evidence_file = evidenceFile;
+    }
     fetch(`${API_BASE_URL}/requirements/${reqId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus }),
+      body: JSON.stringify(patchBody),
     }).catch(() => {});
 
     setTenders((prev) =>
       prev.map((t) => {
         if (t.id !== tenderId) return t;
         const updatedReqs = t.requirements.map((r) =>
-          r.id === reqId ? { ...r, status: newStatus } : r
+          r.id === reqId
+            ? {
+                ...r,
+                status: newStatus,
+                evidenceFile:
+                  evidenceFile !== undefined
+                    ? evidenceFile
+                    : newStatus === 'VERIFIED'
+                    ? r.evidenceFile || t.documents?.[0]?.name
+                    : r.evidenceFile,
+              }
+            : r
         );
         const blockers = updatedReqs
           .filter((r) => r.status === 'BLOCKER')
@@ -2793,6 +2808,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         setUploadFolderTarget,
         activeTenderIdForModal,
         setActiveTenderIdForModal,
+        activeRequirementForModal,
+        setActiveRequirementForModal,
         activeTierForSignOff,
         setActiveTierForSignOff,
         isCommandPaletteOpen,
