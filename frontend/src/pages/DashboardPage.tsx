@@ -203,32 +203,31 @@ export const DashboardPage: React.FC = () => {
   };
 
   const stages: { stage: TenderStage; label: string }[] = [
-    { stage: 'DISCOVERED', label: '1. Bid Discovery' },
+    { stage: 'DISCOVERED', label: '1. Discovery' },
     { stage: 'SCREENING', label: '2. Screening' },
     { stage: 'UNDER_ANALYSIS', label: '3. Analysis' },
     { stage: 'PREPARATION', label: '4. Preparation' },
     { stage: 'SUBMITTED', label: '5. Submitted' },
+    { stage: 'AWARDED', label: '6. Won / Award' },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3.5">
       {/* Top Banner / Welcome Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
-            <span>Operations</span>
-            <span>•</span>
-            <span className="font-semibold text-[#0F172A]">Real-Time Mission Control</span>
-          </div>
-          <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <h1 className="font-display text-xl font-bold text-[#0F172A] dark:text-white tracking-tight">
             Tender Command Center
           </h1>
+          <span className="inline-flex items-center text-[10.5px] font-medium text-[#64748B] dark:text-slate-400 bg-[#F1F5F9] dark:bg-slate-800 px-2 py-0.5 rounded">
+            Operations • Real-Time Mission Control
+          </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <Link
             to="/registry"
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0F172A] text-white rounded-md text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Tender Registry &amp; Data Entry</span>
@@ -237,36 +236,36 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* 4 Operational KPI Ribbons (Interactive Click-to-View) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
         {/* KPI 1: Active Opportunities */}
         <div
           role="button"
           tabIndex={0}
           onClick={() => handleKpiCardClick('ALL_TENDERS')}
           onKeyDown={(e) => e.key === 'Enter' && handleKpiCardClick('ALL_TENDERS')}
-          className={`bg-white dark:bg-slate-900 p-4 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#2563EB] hover:shadow-md transition-all group ${
+          className={`bg-white dark:bg-slate-900 px-3.5 py-2.5 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#2563EB] hover:shadow-md transition-all group ${
             filterMode === 'ALL_TENDERS' ? 'ring-2 ring-[#2563EB] border-[#2563EB]' : ''
           }`}
           title="Click to view all live proposals in table"
         >
-          <div>
-            <span className="text-[11px] font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
+          <div className="min-w-0 pr-2">
+            <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
               Active Opportunities
             </span>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="font-display text-2xl font-bold text-[#0F172A] dark:text-white">
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className="font-display text-xl font-bold text-[#0F172A] dark:text-white">
                 {activeTenders.length}
               </span>
-              <span className="text-xs text-[#2563EB] font-semibold">
+              <span className="text-[11px] text-[#2563EB] font-semibold">
                 Proposals Live
               </span>
             </div>
-            <span className="text-[11px] text-[#16A34A] font-medium mt-0.5 block">
+            <span className="text-[10px] text-[#16A34A] font-medium block truncate">
               {tenders.filter((t) => t.stage === 'PREPARATION').length} in active drafting
             </span>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <FolderGit2 className="w-5 h-5" />
+          <div className="w-8 h-8 rounded-md bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <FolderGit2 className="w-4 h-4" />
           </div>
         </div>
 
@@ -276,27 +275,27 @@ export const DashboardPage: React.FC = () => {
           tabIndex={0}
           onClick={() => handleKpiCardClick('CLOSING_SOON')}
           onKeyDown={(e) => e.key === 'Enter' && handleKpiCardClick('CLOSING_SOON')}
-          className={`bg-white dark:bg-slate-900 p-4 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#DC2626] hover:shadow-md transition-all group ${
+          className={`bg-white dark:bg-slate-900 px-3.5 py-2.5 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#DC2626] hover:shadow-md transition-all group ${
             filterMode === 'CLOSING_SOON' ? 'ring-2 ring-[#DC2626] border-[#DC2626]' : ''
           }`}
           title="Click to view closing bids in table"
         >
-          <div>
-            <span className="text-[11px] font-semibold text-[#DC2626] uppercase tracking-wider block">
+          <div className="min-w-0 pr-2">
+            <span className="text-[10px] font-bold text-[#DC2626] uppercase tracking-wider block">
               Closing This Week
             </span>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="font-display text-2xl font-bold text-[#DC2626]">
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className="font-display text-xl font-bold text-[#DC2626]">
                 {dueThisWeek.length}
               </span>
-              <span className="text-xs text-[#64748B] dark:text-slate-400">Bids</span>
+              <span className="text-[11px] text-[#64748B] dark:text-slate-400">Bids</span>
             </div>
-            <span className="text-[11px] text-[#DC2626] font-medium mt-0.5 block">
+            <span className="text-[10px] text-[#DC2626] font-medium block truncate">
               {dueThisWeek.filter((t) => t.daysRemaining <= 2).length} bids &lt; 48h window
             </span>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-[#FEF2F2] text-[#DC2626] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <Clock className="w-5 h-5" />
+          <div className="w-8 h-8 rounded-md bg-[#FEF2F2] text-[#DC2626] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <Clock className="w-4 h-4" />
           </div>
         </div>
 
@@ -306,27 +305,27 @@ export const DashboardPage: React.FC = () => {
           tabIndex={0}
           onClick={() => handleKpiCardClick('MISSING_DOCS')}
           onKeyDown={(e) => e.key === 'Enter' && handleKpiCardClick('MISSING_DOCS')}
-          className={`bg-white dark:bg-slate-900 p-4 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#EA580C] hover:shadow-md transition-all group ${
+          className={`bg-white dark:bg-slate-900 px-3.5 py-2.5 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#EA580C] hover:shadow-md transition-all group ${
             filterMode === 'MISSING_DOCS' || filterMode === 'BLOCKERS' ? 'ring-2 ring-[#EA580C] border-[#EA580C]' : ''
           }`}
           title="Click to view tenders with missing documents and blockers"
         >
-          <div>
-            <span className="text-[11px] font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
+          <div className="min-w-0 pr-2">
+            <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
               Missing Docs &amp; Blockers
             </span>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="font-display text-2xl font-bold text-[#EA580C]">
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className="font-display text-xl font-bold text-[#EA580C]">
                 {totalMissingDocs}
               </span>
-              <span className="text-xs text-[#64748B] dark:text-slate-400">Pending Files</span>
+              <span className="text-[11px] text-[#64748B] dark:text-slate-400">Pending Files</span>
             </div>
-            <span className="text-[11px] text-[#64748B] dark:text-slate-400 font-medium mt-0.5 block">
+            <span className="text-[10px] text-[#64748B] dark:text-slate-400 font-medium block truncate">
               Solvency &amp; Statutory gates
             </span>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <AlertTriangle className="w-5 h-5" />
+          <div className="w-8 h-8 rounded-md bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <AlertTriangle className="w-4 h-4" />
           </div>
         </div>
 
@@ -336,38 +335,44 @@ export const DashboardPage: React.FC = () => {
           tabIndex={0}
           onClick={() => handleKpiCardClick('LOW_READINESS')}
           onKeyDown={(e) => e.key === 'Enter' && handleKpiCardClick('LOW_READINESS')}
-          className={`bg-white dark:bg-slate-900 p-4 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#2563EB] hover:shadow-md transition-all group ${
+          className={`bg-white dark:bg-slate-900 px-3.5 py-2.5 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#2563EB] hover:shadow-md transition-all group ${
             filterMode === 'LOW_READINESS' ? 'ring-2 ring-[#2563EB] border-[#2563EB]' : ''
           }`}
           title="Click to view tenders with low readiness in table"
         >
-          <div>
-            <span className="text-[11px] font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
+          <div className="min-w-0 pr-2 flex-1">
+            <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
               Submission Readiness
             </span>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="font-display text-2xl font-bold text-[#0F172A] dark:text-white">
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className="font-display text-xl font-bold text-[#0F172A] dark:text-white">
                 {avgReadiness}%
               </span>
               <span className="font-mono text-[10px] text-[#64748B] dark:text-slate-400 uppercase font-semibold">
                 Avg Health
               </span>
             </div>
-            <div className="w-24 mt-1.5">
+            <div className="w-20 mt-1">
               <ReadinessBar score={avgReadiness} showLabel={false} />
             </div>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-[#F1F5F9] text-[#0F172A] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <Activity className="w-5 h-5" />
+          <div className="w-8 h-8 rounded-md bg-[#F1F5F9] text-[#0F172A] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <Activity className="w-4 h-4" />
           </div>
         </div>
       </div>
 
-      {/* 6-Gate Tender Pipeline Breakdown (Zero Money) */}
-      <Card
-        title="6-Gate Tender Pipeline Breakdown"
-      >
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      {/* 6-Gate Tender Pipeline Breakdown (Compact Ribbon) */}
+      <div className="bg-white dark:bg-slate-900 rounded-lg border border-[#CBD5E1] dark:border-slate-700 px-3.5 py-2 shadow-sm">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">
+            6-Gate Tender Pipeline Breakdown
+          </span>
+          <span className="text-[10px] font-semibold text-[#64748B] dark:text-slate-400">
+            {tenders.length} Total Registered
+          </span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
           {stages.map((s) => {
             const count = tenders.filter((t) => t.stage === s.stage).length;
             const pct = tenders.length > 0 ? Math.round((count / tenders.length) * 100) : 0;
@@ -376,25 +381,25 @@ export const DashboardPage: React.FC = () => {
               <Link
                 key={s.stage}
                 to={`/tenders?stage=${s.stage}`}
-                className="p-3 rounded-lg bg-[#F8FAFC] border border-[#CBD5E1] space-y-1 hover:border-[#2563EB] hover:bg-[#EFF6FF]/50 transition-all block group"
+                className="px-2.5 py-1.5 rounded-md bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E2E8F0] dark:border-slate-700 hover:border-[#2563EB] hover:bg-[#EFF6FF]/50 transition-all flex items-center justify-between group"
                 title={`Click to show all ${s.label} tenders`}
               >
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-[#0F172A] group-hover:text-[#2563EB] transition-colors">
-                    {count} Bids
+                <span className="text-[11px] font-medium text-[#64748B] dark:text-slate-400 truncate pr-1 group-hover:text-[#0F172A] dark:group-hover:text-white transition-colors">
+                  {s.label}
+                </span>
+                <div className="flex items-center gap-1 shrink-0">
+                  <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white group-hover:text-[#2563EB] transition-colors">
+                    {count}
                   </span>
-                  <span className="font-mono text-[10px] text-[#2563EB] font-semibold">
+                  <span className="font-mono text-[9px] text-[#2563EB] font-semibold bg-[#EFF6FF] dark:bg-slate-700 px-1 py-0.2 rounded">
                     {pct}%
                   </span>
                 </div>
-                <span className="text-[11px] font-semibold text-[#64748B] block truncate group-hover:text-[#0F172A] transition-colors">
-                  {s.label}
-                </span>
               </Link>
             );
           })}
         </div>
-      </Card>
+      </div>
 
       {/* 10-Second Rule Attention Queue (Zero Money) */}
       <div id="intervention-queue-section" className="scroll-mt-6">

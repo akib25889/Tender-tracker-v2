@@ -535,44 +535,9 @@ export interface Tender {
   deletedFolders?: string[];
   folderLabels?: Record<string, string>;
   archivedFromStage?: TenderStage;
+  archivedAt?: string;
   importantClauses?: ImportantClause[];
   aiChatShareLink?: string;
-  languages?: string[];
-  language?: string;
-  amendments?: TenderAmendment[];
-}
-
-export interface TenderAmendment {
-  id: string;
-  amendmentNumber?: number | string;
-  corrigendumNumber?: string;
-  title: string;
-  issuedDate?: string;
-  issueDate?: string;
-  isDeadlineExtended?: boolean;
-  isDeadlineExtension?: boolean;
-  previousDeadline?: string;
-  oldDeadline?: string;
-  newDeadline?: string;
-  newRules?: string[];
-  ruleChangesDescription?: string;
-  rulesChanged?: string;
-  referenceNotice?: string;
-  referenceMemo?: string;
-  addToImportantClauses?: boolean;
-  notes?: string;
-  createdAt?: string;
-}
-
-export interface UserActivityItem {
-  id: string;
-  type: 'TASK' | 'DOCUMENT' | 'SUBMISSION' | 'COMMENT' | 'REVIEW' | 'PERMISSION' | 'AMENDMENT' | 'TENDER';
-  action: string;
-  tenderId?: string;
-  tenderTitle?: string;
-  timestamp: string;
-  details?: string;
-  status?: string;
 }
 
 export type ClauseCriticality = 'CRITICAL' | 'HIGH' | 'MEDIUM';

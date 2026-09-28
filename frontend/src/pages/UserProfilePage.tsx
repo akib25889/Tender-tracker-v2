@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
 import {
@@ -7,7 +7,6 @@ import {
   PastProjectAssignment,
   EmploymentType,
   UserRole,
-  UserActivityItem,
 } from '../types/tender';
 import {
   Mail,
@@ -26,15 +25,6 @@ import {
   FileSpreadsheet,
   Camera,
   Upload,
-  Activity,
-  CheckCircle2,
-  Clock,
-  FileText,
-  ShieldCheck,
-  Filter,
-  Search,
-  ArrowRight,
-  MessageSquare,
 } from 'lucide-react';
 import {
   exportPersonnelDossierAsExcel,
@@ -59,42 +49,7 @@ export const UserProfilePage: React.FC = () => {
     updateUserProfile,
     addPastAssignment,
     deletePastAssignment,
-    getUserActivities,
   } = useTenders();
-
-  const location = useLocation();
-  const [searchParams] = useSearchParams();
-
-  // Tab navigation detection (Req #31)
-  const activeTab: 'overview' | 'projects' | 'activities' = useMemo(() => {
-    if (location.pathname.endsWith('/projects') || searchParams.get('tab') === 'projects') {
-      return 'projects';
-    }
-    if (location.pathname.endsWith('/activities') || searchParams.get('tab') === 'activities') {
-      return 'activities';
-    }
-    return 'overview';
-  }, [location.pathname, searchParams]);
-
-  const handleTabChange = (tab: 'overview' | 'projects' | 'activities') => {
-    const basePrefix = userId ? `/profile/${userId}` : '/profile';
-    if (tab === 'projects') {
-      navigate(`${basePrefix}/projects`);
-    } else if (tab === 'activities') {
-      navigate(`${basePrefix}/activities`);
-    } else {
-      navigate(basePrefix);
-    }
-  };
-
-  // Activity Feed State
-  const [activities, setActivities] = useState<UserActivityItem[]>([]);
-  const [isLoadingActivities, setIsLoadingActivities] = useState(false);
-  const [activityFilter, setActivityFilter] = useState<string>('ALL');
-
-  // Dedicated Projects View Filters
-  const [projectSearch, setProjectSearch] = useState('');
-  const [projectRoleFilter, setProjectRoleFilter] = useState<'ALL' | 'LEAD' | 'REVIEWER' | 'CONTRIBUTOR'>('ALL');
 
   // Active profile being viewed
   const targetUser: UserProfile =
@@ -194,53 +149,6 @@ export const UserProfilePage: React.FC = () => {
       targetUser.activeTenderRoles && targetUser.activeTenderRoles[t.id];
     return isLead || hasTasks || hasRoleInMap;
   });
-
-  // Fetch activities from context / backend
-  useEffect(() => {
-    let isMounted = true;
-    setIsLoadingActivities(true);
-    getUserActivities(targetUser.id, targetUser.name).then((res) => {
-      if (isMounted) {
-        setActivities(res);
-        setIsLoadingActivities(false);
-      }
-    });
-    return () => {
-      isMounted = false;
-    };
-  }, [targetUser.id, targetUser.name, getUserActivities]);
-
-  // Filtered projects for dedicated Projects view
-  const filteredProjects = useMemo(() => {
-    return activeTenders.filter((t) => {
-      const roleInMap = targetUser.activeTenderRoles && targetUser.activeTenderRoles[t.id];
-      const isLead = (t.leadOwner?.name || '').toLowerCase().includes(memberName);
-      const isReviewer = roleInMap === 'REVIEWER';
-
-      if (projectRoleFilter === 'LEAD' && !(roleInMap === 'LEAD_MANAGER' || isLead)) return false;
-      if (projectRoleFilter === 'REVIEWER' && !isReviewer) return false;
-      if (projectRoleFilter === 'CONTRIBUTOR' && (isLead || roleInMap === 'LEAD_MANAGER' || isReviewer)) return false;
-
-      if (projectSearch.trim()) {
-        const q = projectSearch.toLowerCase();
-        const matches =
-          (t.title || '').toLowerCase().includes(q) ||
-          (t.id || '').toLowerCase().includes(q) ||
-          (t.referenceNo || '').toLowerCase().includes(q) ||
-          (t.organization || '').toLowerCase().includes(q);
-        if (!matches) return false;
-      }
-      return true;
-    });
-  }, [activeTenders, targetUser.activeTenderRoles, memberName, projectRoleFilter, projectSearch]);
-
-  // Filtered activities for dedicated Activities view
-  const filteredActivities = useMemo(() => {
-    return activities.filter((act) => {
-      if (activityFilter !== 'ALL' && act.type !== activityFilter) return false;
-      return true;
-    });
-  }, [activities, activityFilter]);
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -352,189 +260,118 @@ export const UserProfilePage: React.FC = () => {
       </div>
 
 
-      {/* PROFILE WORKSPACE NAVIGATION TABS (Req #31) */}
-      <div className="flex items-center gap-2 border-b border-[#E2E8F0] pb-2 overflow-x-auto">
-        <button
-          type="button"
-          onClick={() => handleTabChange('overview')}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg transition-colors cursor-pointer ${
-            activeTab === 'overview'
-              ? 'bg-[#0F172A] text-white shadow-xs'
-              : 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9]'
-          }`}
-        >
-          <UserCheck className="w-3.5 h-3.5" />
-          <span>Dossier &amp; Credentials</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleTabChange('projects')}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg transition-colors cursor-pointer ${
-            activeTab === 'projects'
-              ? 'bg-[#0F172A] text-white shadow-xs'
-              : 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9]'
-          }`}
-        >
-          <Briefcase className="w-3.5 h-3.5" />
-          <span>Projects I Work On</span>
-          <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded font-bold ${
-            activeTab === 'projects' ? 'bg-white/20 text-white' : 'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]'
-          }`}>
-            {activeTenders.length}
-          </span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleTabChange('activities')}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg transition-colors cursor-pointer ${
-            activeTab === 'activities'
-              ? 'bg-[#0F172A] text-white shadow-xs'
-              : 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9]'
-          }`}
-        >
-          <Activity className="w-3.5 h-3.5" />
-          <span>All My Activities</span>
-          <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded font-bold ${
-            activeTab === 'activities' ? 'bg-white/20 text-white' : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0]'
-          }`}>
-            {activities.length}
-          </span>
-        </button>
-      </div>
-
-      {activeTab === 'overview' && (
-        <div className="space-y-6 animate-fadeIn">
-          {/* PILLAR 1: User Identity & Core Profile Card */}
-          <Card className="p-6 bg-white border border-[#E2E8F0] shadow-sm rounded-xl">
-            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
-              {/* Identity & Core Badges */}
-              <div className="flex items-start gap-4">
-                <div className="relative group shrink-0">
-                  <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-md ring-4 ring-[#F1F5F9] bg-[#0F172A] flex items-center justify-center">
-                    {targetUser.profilePic ? (
-                      <img
-                        src={targetUser.profilePic}
-                        alt={targetUser.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-tr from-[#0F172A] to-[#334155] text-white flex items-center justify-center text-xl font-display font-bold">
-                        {targetUser.avatar || targetUser.name.slice(0, 2).toUpperCase()}
-                      </div>
-                    )}
+      {/* PILLAR 1: User Identity & Core Profile Card */}
+      <Card className="p-6 bg-white border border-[#E2E8F0] shadow-sm rounded-xl">
+        <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+          {/* Identity & Core Badges */}
+          <div className="flex items-start gap-4">
+            <div className="relative group shrink-0">
+              <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-md ring-4 ring-[#F1F5F9] bg-[#0F172A] flex items-center justify-center">
+                {targetUser.profilePic ? (
+                  <img
+                    src={targetUser.profilePic}
+                    alt={targetUser.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-tr from-[#0F172A] to-[#334155] text-white flex items-center justify-center text-xl font-display font-bold">
+                    {targetUser.avatar || targetUser.name.slice(0, 2).toUpperCase()}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditForm({
-                        name: targetUser.name || '',
-                        profilePic: targetUser.profilePic || '',
-                        title: targetUser.title || '',
-                        department: targetUser.department || 'Bid Operations & Strategy',
-                        phone: targetUser.phone || '',
-                        location: targetUser.location || 'Dhaka, Bangladesh',
-                        employmentType: (targetUser.employmentType || 'PERMANENT') as EmploymentType,
-                        proposedDesignation: targetUser.proposedDesignation || '',
-                        maxCapacity: targetUser.maxCapacity || 5,
-                      });
-                      setIsEditModalOpen(true);
-                    }}
-                    className="absolute inset-0 bg-black/50 rounded-2xl flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-[10px] font-medium"
-                    title="Change profile picture"
-                  >
-                    <Camera className="w-4 h-4 mb-0.5" />
-                    <span>Edit Photo</span>
-                  </button>
-                </div>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setEditForm({
+                    name: targetUser.name || '',
+                    profilePic: targetUser.profilePic || '',
+                    title: targetUser.title || '',
+                    department: targetUser.department || 'Bid Operations & Strategy',
+                    phone: targetUser.phone || '',
+                    location: targetUser.location || 'Dhaka, Bangladesh',
+                    employmentType: (targetUser.employmentType || 'PERMANENT') as EmploymentType,
+                    proposedDesignation: targetUser.proposedDesignation || '',
+                    maxCapacity: targetUser.maxCapacity || 5,
+                  });
+                  setIsEditModalOpen(true);
+                }}
+                className="absolute inset-0 bg-black/50 rounded-2xl flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-[10px] font-medium"
+                title="Change profile picture"
+              >
+                <Camera className="w-4 h-4 mb-0.5" />
+                <span>Edit Photo</span>
+              </button>
+            </div>
 
-                <div className="space-y-1.5">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-xl font-bold text-[#0F172A] tracking-tight">
-                      {targetUser.name}
-                    </h2>
-                    {/* System Role Badge */}
-                    <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-[#F1F5F9] text-[#334155] border border-[#E2E8F0]">
-                      {ROLE_DISPLAY[targetUser.role] || targetUser.role}
+            <div className="space-y-1.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-xl font-bold text-[#0F172A] tracking-tight">
+                  {targetUser.name}
+                </h2>
+                {/* System Role Badge */}
+                <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-[#F1F5F9] text-[#334155] border border-[#E2E8F0]">
+                  {ROLE_DISPLAY[targetUser.role] || targetUser.role}
+                </span>
+              </div>
+
+              <p className="text-sm font-medium text-[#475569]">
+                {targetUser.title}
+              </p>
+
+              <div className="flex flex-wrap items-center gap-4 text-xs text-[#64748B] pt-1">
+                <div className="flex items-center gap-1.5">
+                  <Briefcase className="w-3.5 h-3.5 text-[#2563EB]" />
+                  <span>{targetUser.department || 'Bid Operations & Strategy'}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Mail className="w-3.5 h-3.5 text-[#64748B]" />
+                  <a
+                    href={`mailto:${targetUser.email}`}
+                    className="hover:underline text-[#0F172A] font-medium"
+                  >
+                    {targetUser.email}
+                  </a>
+                </div>
+                {targetUser.phone && (
+                  <div className="flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-[#64748B]" />
+                    <span className="text-[#0F172A] font-medium">
+                      {targetUser.phone}
                     </span>
                   </div>
-
-                  <p className="text-sm font-medium text-[#475569]">
-                    {targetUser.title}
-                  </p>
-
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-[#64748B] pt-1">
-                    <div className="flex items-center gap-1.5">
-                      <Briefcase className="w-3.5 h-3.5 text-[#2563EB]" />
-                      <span>{targetUser.department || 'Bid Operations & Strategy'}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Mail className="w-3.5 h-3.5 text-[#64748B]" />
-                      <a
-                        href={`mailto:${targetUser.email}`}
-                        className="hover:underline text-[#0F172A] font-medium"
-                      >
-                        {targetUser.email}
-                      </a>
-                    </div>
-                    {targetUser.phone && (
-                      <div className="flex items-center gap-1.5">
-                        <Phone className="w-3.5 h-3.5 text-[#64748B]" />
-                        <span className="text-[#0F172A] font-medium">
-                          {targetUser.phone}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-[#64748B]" />
-                      <span>{targetUser.location || 'Dhaka, Bangladesh'}</span>
-                    </div>
-                  </div>
+                )}
+                <div className="flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-[#64748B]" />
+                  <span>{targetUser.location || 'Dhaka, Bangladesh'}</span>
                 </div>
               </div>
+            </div>
+          </div>
 
-              {/* Quick Metrics Summary */}
-              <div className="flex items-center gap-3 self-start lg:self-auto bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
-                <button
-                  type="button"
-                  onClick={() => handleTabChange('projects')}
-                  className="text-center px-3 border-r border-[#E2E8F0] hover:bg-white rounded-lg p-1 transition-colors cursor-pointer"
-                  title="View all projects I work on"
-                >
-                  <div className="text-xs text-[#64748B] font-medium">Live Tenders</div>
-                  <div className="text-lg font-bold font-mono text-[#0F172A] hover:text-[#2563EB]">
-                    {activeTenders.length}
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActivityFilter('TASK');
-                    handleTabChange('activities');
-                  }}
-                  className="text-center px-3 border-r border-[#E2E8F0] hover:bg-white rounded-lg p-1 transition-colors cursor-pointer"
-                  title="View my active tasks and activity log"
-                >
-                  <div className="text-xs text-[#64748B] font-medium">Active Tasks</div>
-                  <div className="text-lg font-bold font-mono text-[#2563EB]">
-                    {assignedTasks.length}
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleTabChange('overview')}
-                  className="text-center px-3 hover:bg-white rounded-lg p-1 transition-colors cursor-pointer"
-                  title="View verified track record"
-                >
-                  <div className="text-xs text-[#64748B] font-medium">Track Record</div>
-                  <div className="text-lg font-bold font-mono text-[#16A34A]">
-                    {(targetUser.pastAssignments || []).length} Bids
-                  </div>
-                </button>
+          {/* Quick Metrics Summary */}
+          <div className="flex items-center gap-3 self-start lg:self-auto bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
+            <div className="text-center px-3 border-r border-[#E2E8F0]">
+              <div className="text-xs text-[#64748B] font-medium">Live Tenders</div>
+              <div className="text-lg font-bold font-mono text-[#0F172A]">
+                {activeTenders.length}
               </div>
             </div>
-          </Card>
+            <div className="text-center px-3 border-r border-[#E2E8F0]">
+              <div className="text-xs text-[#64748B] font-medium">Active Tasks</div>
+              <div className="text-lg font-bold font-mono text-[#2563EB]">
+                {assignedTasks.length}
+              </div>
+            </div>
+            <div className="text-center px-3">
+              <div className="text-xs text-[#64748B] font-medium">Track Record</div>
+              <div className="text-lg font-bold font-mono text-[#16A34A]">
+                {(targetUser.pastAssignments || []).length} Bids
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </Card>
 
       {/* PILLAR 4: Active Assignments & Workspace Integration */}
       <Card
@@ -871,390 +708,6 @@ export const UserProfilePage: React.FC = () => {
           )}
         </Card>
       </div>
-      </div>
-      )}
-
-      {/* TAB 2: PROJECTS I WORK ON (Req #31) */}
-      {activeTab === 'projects' && (
-        <div className="space-y-6 animate-fadeIn">
-          {/* Summary Metric Ribbon */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs">
-              <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block mb-1">
-                Assigned Tender Projects
-              </span>
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-bold font-mono text-[#0F172A]">{activeTenders.length}</span>
-                <Briefcase className="w-5 h-5 text-[#2563EB]" />
-              </div>
-              <span className="text-[11px] text-[#64748B] mt-1 block">Live procurement workspaces</span>
-            </div>
-
-            <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs">
-              <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block mb-1">
-                Lead Proposal Manager
-              </span>
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-bold font-mono text-[#B45309]">
-                  {activeTenders.filter(t => (t.leadOwner?.name || '').toLowerCase().includes(memberName) || (targetUser.activeTenderRoles && targetUser.activeTenderRoles[t.id] === 'LEAD_MANAGER')).length}
-                </span>
-                <UserCheck className="w-5 h-5 text-amber-500" />
-              </div>
-              <span className="text-[11px] text-[#64748B] mt-1 block">Sole delivery ownership</span>
-            </div>
-
-            <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs">
-              <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block mb-1">
-                Compliance Reviewer
-              </span>
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-bold font-mono text-[#059669]">
-                  {activeTenders.filter(t => targetUser.activeTenderRoles && targetUser.activeTenderRoles[t.id] === 'REVIEWER').length}
-                </span>
-                <ShieldCheck className="w-5 h-5 text-emerald-500" />
-              </div>
-              <span className="text-[11px] text-[#64748B] mt-1 block">Quality gatekeeper</span>
-            </div>
-
-            <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs">
-              <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block mb-1">
-                Pending Assigned Tasks
-              </span>
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-bold font-mono text-[#DC2626]">
-                  {assignedTasks.length}
-                </span>
-                <Clock className="w-5 h-5 text-rose-500" />
-              </div>
-              <span className="text-[11px] text-[#64748B] mt-1 block">Awaiting completion</span>
-            </div>
-          </div>
-
-          {/* Filter & Search Toolbar */}
-          <div className="p-4 bg-white rounded-xl border border-[#E2E8F0] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div className="flex items-center gap-2 flex-1 max-w-md">
-              <div className="relative w-full">
-                <Search className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  placeholder="Search projects by ID, title, authority or ref..."
-                  value={projectSearch}
-                  onChange={(e) => setProjectSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-                />
-              </div>
-              {projectSearch && (
-                <button
-                  type="button"
-                  onClick={() => setProjectSearch('')}
-                  className="text-xs text-[#64748B] hover:text-[#0F172A] font-semibold cursor-pointer"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-xs text-[#64748B] font-medium mr-1 flex items-center gap-1">
-                <Filter className="w-3.5 h-3.5" />
-                <span>Role:</span>
-              </span>
-              {[
-                { key: 'ALL', label: 'All Roles' },
-                { key: 'LEAD', label: 'Lead Manager' },
-                { key: 'REVIEWER', label: 'Reviewer' },
-                { key: 'CONTRIBUTOR', label: 'Technical Contributor' },
-              ].map((rf) => (
-                <button
-                  key={rf.key}
-                  type="button"
-                  onClick={() => setProjectRoleFilter(rf.key as any)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
-                    projectRoleFilter === rf.key
-                      ? 'bg-[#0F172A] text-white shadow-2xs'
-                      : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A]'
-                  }`}
-                >
-                  {rf.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Project Cards Grid */}
-          {filteredProjects.length === 0 ? (
-            <Card className="py-12 text-center text-[#64748B] text-xs space-y-2">
-              <Briefcase className="w-8 h-8 text-[#94A3B8] mx-auto mb-2 opacity-50" />
-              <p className="font-semibold text-sm text-[#0F172A]">No projects match your current filter.</p>
-              <p>Try clearing your search query or switching role filters.</p>
-              {projectSearch && (
-                <button
-                  type="button"
-                  onClick={() => setProjectSearch('')}
-                  className="mt-2 px-3 py-1.5 bg-[#2563EB] text-white rounded-lg font-semibold text-xs inline-flex items-center gap-1 cursor-pointer"
-                >
-                  Reset Filter
-                </button>
-              )}
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredProjects.map((tender) => {
-                const roleInMap = targetUser.activeTenderRoles && targetUser.activeTenderRoles[tender.id];
-                const isLead = (tender.leadOwner?.name || '').toLowerCase().includes(memberName);
-                const isReviewer = roleInMap === 'REVIEWER';
-
-                const userTasks = (tender.tasks || []).filter((tsk) =>
-                  (tsk.assignee || '').toLowerCase().includes(memberName)
-                );
-                const doneTasks = userTasks.filter(t => t.status === 'DONE').length;
-
-                return (
-                  <div
-                    key={tender.id}
-                    className="bg-white border border-[#E2E8F0] hover:border-[#94A3B8] p-5 rounded-2xl flex flex-col justify-between transition-all shadow-xs hover:shadow-md group"
-                  >
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-mono text-xs font-bold text-[#2563EB] bg-[#EFF6FF] px-2 py-0.5 rounded border border-[#BFDBFE]">
-                          {tender.referenceNo || tender.id}
-                        </span>
-                        {isLead || roleInMap === 'LEAD_MANAGER' ? (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]">
-                            Lead Proposal Manager
-                          </span>
-                        ) : isReviewer ? (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0]">
-                            Quality Reviewer
-                          </span>
-                        ) : (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#F1F5F9] text-[#475569] border border-[#E2E8F0]">
-                            Core Contributor
-                          </span>
-                        )}
-                      </div>
-
-                      <Link
-                        to={`/tenders/${tender.id}`}
-                        className="text-sm font-bold text-[#0F172A] hover:text-[#2563EB] line-clamp-2 leading-snug transition-colors"
-                      >
-                        {tender.title}
-                      </Link>
-
-                      <div className="text-xs text-[#64748B] flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-[#94A3B8]" />
-                        <span>{tender.organization || 'Procuring Authority'}</span>
-                        {tender.country && <span>• {tender.country}</span>}
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#F1F5F9] text-xs">
-                        <div>
-                          <span className="text-[10px] uppercase font-bold text-[#94A3B8] block">Est. Value</span>
-                          <span className="font-mono font-bold text-[#0F172A]">
-                            {formatCurrency(tender.estimatedValue || 0)}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-[10px] uppercase font-bold text-[#94A3B8] block">Stage</span>
-                          <span className="font-semibold text-[#2563EB]">
-                            {tender.stage?.replace(/_/g, ' ') || 'ACTIVE'}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="pt-2 border-t border-[#F1F5F9] flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-1.5 text-[#64748B]">
-                          <Clock className="w-3.5 h-3.5 text-amber-500" />
-                          <span>Deadline:</span>
-                        </div>
-                        <span className="font-mono font-medium text-[#0F172A] text-[11px]">
-                          {tender.submissionDeadline || 'TBD'}
-                        </span>
-                      </div>
-
-                      {userTasks.length > 0 && (
-                        <div className="p-2.5 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] space-y-1.5 text-xs">
-                          <div className="flex items-center justify-between text-[11px]">
-                            <span className="font-semibold text-[#475569]">My Assigned Tasks</span>
-                            <span className="font-mono font-bold text-[#2563EB]">
-                              {doneTasks} / {userTasks.length} Done
-                            </span>
-                          </div>
-                          <div className="w-full bg-[#E2E8F0] rounded-full h-1.5 overflow-hidden">
-                            <div
-                              className="bg-[#2563EB] h-1.5 rounded-full transition-all"
-                              style={{ width: `${(doneTasks / userTasks.length) * 100}%` }}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="pt-4 mt-4 border-t border-[#E2E8F0]">
-                      <Link
-                        to={`/tenders/${tender.id}`}
-                        className="w-full flex items-center justify-center gap-1.5 py-2 bg-[#0F172A] hover:bg-[#1E293B] text-white rounded-xl text-xs font-bold transition-all shadow-xs"
-                      >
-                        <span>Open Proposal Workspace</span>
-                        <ArrowRight className="w-3.5 h-3.5 text-blue-400" />
-                      </Link>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* TAB 3: ALL MY ACTIVITIES (Req #31) */}
-      {activeTab === 'activities' && (
-        <div className="space-y-6 animate-fadeIn">
-          {/* Activities Summary Banner */}
-          <div className="p-5 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-blue-300 mb-1">
-                <Activity className="w-4 h-4" />
-                <span>Personnel Operational Audit Log</span>
-              </div>
-              <h2 className="text-xl font-bold tracking-tight">
-                Activity Stream &amp; Audit Ledger: {targetUser.name}
-              </h2>
-              <p className="text-xs text-slate-300 mt-1 max-w-xl">
-                Chronological record of task updates, tender submissions, document uploads, reviewer comments, and security role modifications.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-xs p-2.5 rounded-xl border border-white/10 shrink-0">
-              <div className="text-center px-3 border-r border-white/20">
-                <div className="text-[10px] text-slate-300 uppercase font-semibold">Total Actions</div>
-                <div className="text-xl font-bold font-mono text-white">{activities.length}</div>
-              </div>
-              <div className="text-center px-3">
-                <div className="text-[10px] text-slate-300 uppercase font-semibold">Submissions</div>
-                <div className="text-xl font-bold font-mono text-emerald-400">
-                  {activities.filter(a => a.type === 'SUBMISSION').length}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Filter Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <span className="text-xs text-[#64748B] font-medium mr-1 flex items-center gap-1">
-              <Filter className="w-3.5 h-3.5" />
-              <span>Category:</span>
-            </span>
-            {[
-              { key: 'ALL', label: `All Activities (${activities.length})` },
-              { key: 'TASK', label: `Tasks (${activities.filter(a => a.type === 'TASK').length})` },
-              { key: 'SUBMISSION', label: `Submissions (${activities.filter(a => a.type === 'SUBMISSION').length})` },
-              { key: 'DOCUMENT', label: `Vault & Files (${activities.filter(a => a.type === 'DOCUMENT').length})` },
-              { key: 'COMMENT', label: `Comments & Chat (${activities.filter(a => a.type === 'COMMENT').length})` },
-              { key: 'PERMISSION', label: `Permissions (${activities.filter(a => a.type === 'PERMISSION').length})` },
-            ].map((f) => (
-              <button
-                key={f.key}
-                type="button"
-                onClick={() => setActivityFilter(f.key)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
-                  activityFilter === f.key
-                    ? 'bg-[#0F172A] text-white shadow-2xs'
-                    : 'bg-white border border-[#CBD5E1] text-[#475569] hover:bg-[#F8FAFC]'
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Activity Timeline List */}
-          {isLoadingActivities ? (
-            <div className="py-12 text-center text-[#64748B] text-xs">
-              <Clock className="w-6 h-6 animate-spin mx-auto mb-2 text-[#2563EB]" />
-              <span>Compiling live chronological activity stream...</span>
-            </div>
-          ) : filteredActivities.length === 0 ? (
-            <Card className="py-12 text-center text-[#64748B] text-xs">
-              <Activity className="w-8 h-8 text-[#94A3B8] mx-auto mb-2 opacity-50" />
-              <p className="font-semibold text-sm text-[#0F172A]">No activity entries recorded for this filter.</p>
-              <p className="mt-1">Actions taken on tender tasks, proposal documents, submissions, or chat will automatically be indexed here.</p>
-            </Card>
-          ) : (
-            <div className="space-y-3">
-              {filteredActivities.map((act) => {
-                const isSubmission = act.type === 'SUBMISSION';
-                const isTask = act.type === 'TASK';
-                const isDoc = act.type === 'DOCUMENT';
-                const isComment = act.type === 'COMMENT';
-
-                const IconComponent = isSubmission
-                  ? CheckCircle2
-                  : isTask
-                  ? Clock
-                  : isDoc
-                  ? FileText
-                  : isComment
-                  ? MessageSquare
-                  : ShieldCheck;
-
-                const iconBg = isSubmission
-                  ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
-                  : isTask
-                  ? 'bg-blue-100 text-blue-700 border-blue-200'
-                  : isDoc
-                  ? 'bg-amber-100 text-amber-700 border-amber-200'
-                  : isComment
-                  ? 'bg-purple-100 text-purple-700 border-purple-200'
-                  : 'bg-slate-100 text-slate-700 border-slate-200';
-
-                return (
-                  <div
-                    key={act.id}
-                    className="p-4 bg-white rounded-xl border border-[#E2E8F0] hover:border-[#CBD5E1] transition-all shadow-xs flex items-start gap-4"
-                  >
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border ${iconBg}`}>
-                      <IconComponent className="w-4 h-4" />
-                    </div>
-
-                    <div className="flex-1 min-w-0 space-y-1">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-xs font-bold text-[#0F172A]">
-                            {act.action}
-                          </span>
-                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded font-bold uppercase bg-[#F1F5F9] text-[#475569] border border-[#E2E8F0]">
-                            {act.type}
-                          </span>
-                        </div>
-                        <span className="text-[11px] font-mono text-[#94A3B8] shrink-0">
-                          {act.timestamp ? new Date(act.timestamp).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recently'}
-                        </span>
-                      </div>
-
-                      {act.tenderId && (
-                        <div className="text-xs text-[#2563EB] font-medium flex items-center gap-1.5">
-                          <Link to={`/tenders/${act.tenderId}`} className="hover:underline flex items-center gap-1">
-                            <span className="font-mono font-bold">{act.tenderId}</span>
-                            {act.tenderTitle && <span>• {act.tenderTitle}</span>}
-                            <ArrowRight className="w-3 h-3 ml-0.5" />
-                          </Link>
-                        </div>
-                      )}
-
-                      {act.details && (
-                        <p className="text-xs text-[#64748B] pt-0.5 leading-relaxed">
-                          {act.details}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Edit Profile Details Modal */}
       {isEditModalOpen && (
