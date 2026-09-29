@@ -2,15 +2,24 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Pencil, ExternalLink, Printer } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
+import { useTenderQuery } from '../hooks/useTenderQueries';
 import { TenderSummaryDocument } from '../components/ui/TenderSummaryDocument';
 import { NotFoundPage } from './status/NotFoundPage';
 
 export const TenderSummaryPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { tenders } = useTenders();
-  const tender = tenders.find((t) => t.id === id);
+  const { data: queryTender, isLoading } = useTenderQuery(id);
+  const tender = tenders.find((t) => t.id === id) || queryTender;
 
   if (!tender) {
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+      );
+    }
     return <NotFoundPage resource="Tender Summary Record" resourceId={id} />;
   }
 

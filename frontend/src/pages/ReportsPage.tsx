@@ -1,7 +1,7 @@
-import { API_BASE_URL } from '../utils/apiConfig';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
+import { useReportsAnalyticsQuery } from '../hooks/useTenderQueries';
 import {
   TrendingUp,
   Award,
@@ -50,17 +50,8 @@ type ReportMode = 'BASIC' | 'GENERAL' | 'ADVANCE';
 
 export const ReportsPage: React.FC = () => {
   const { tenders, formatCurrency } = useTenders();
-  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const { data: analytics } = useReportsAnalyticsQuery<AnalyticsData>();
   const [reportMode, setReportMode] = useState<ReportMode>('GENERAL');
-
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/dashboard/reports/analytics`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data) setAnalytics(data);
-      })
-      .catch((err) => console.error('Failed to fetch analytics:', err));
-  }, []);
 
   const totalValue =
     analytics?.total_pipeline_value ??

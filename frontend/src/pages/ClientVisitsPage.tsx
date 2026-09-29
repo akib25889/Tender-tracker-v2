@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Users,
   Calendar,
@@ -32,6 +32,11 @@ import {
   VisitSentiment,
 } from '../types/clientVisit';
 import { API_BASE_URL } from '../utils/apiConfig';
+import {
+  useClientVisitsQuery,
+  usePatchClientVisitStatusMutation,
+} from '../hooks/useTenderQueries';
+import { queryClient, queryKeys } from '../api/queryClient';
 
 const STATUS_CONFIG: Record<
   VisitStatus,
@@ -94,8 +99,8 @@ const SENTIMENT_LABELS: Record<VisitSentiment, { label: string; color: string }>
 };
 
 export const ClientVisitsPage: React.FC = () => {
-  const [visits, setVisits] = useState<ClientVisit[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: visits = [], isLoading, refetch } = useClientVisitsQuery();
+  const patchStatusMutation = usePatchClientVisitStatusMutation();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'ALL' | 'UPCOMING' | 'TODAY' | 'COMPLETED' | 'PRE_BID' | 'VIRTUAL'>('ALL');
   const [viewMode, setViewMode] = useState<'CARDS' | 'TABLE'>('CARDS');
@@ -105,45 +110,23 @@ export const ClientVisitsPage: React.FC = () => {
   const [modalMode, setModalMode] = useState<'SCHEDULE' | 'LOG_PAST' | 'EDIT'>('SCHEDULE');
   const [selectedVisit, setSelectedVisit] = useState<ClientVisit | null>(null);
 
-  // Load visits from API
-  const fetchVisits = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch(`${API_BASE_URL}/client-visits`);
-      if (res.ok) {
-        const data = await res.json();
-        setVisits(data);
-      }
-    } catch (err) {
-      console.error('Failed to load client visits:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchVisits();
-  }, [fetchVisits]);
-
   // Fast Status Patch
   const handlePatchStatus = async (visitId: string, newStatus: VisitStatus) => {
+    let actualCheckIn: string | undefined;
+    let actualCheckOut: string | undefined;
+    if (newStatus === 'CHECKED_IN') {
+      actualCheckIn = new Date().toISOString().slice(0, 16);
+    } else if (newStatus === 'COMPLETED') {
+      actualCheckOut = new Date().toISOString().slice(0, 16);
+    }
+
     try {
-      const payload: any = { status: newStatus };
-      if (newStatus === 'CHECKED_IN') {
-        payload.actual_check_in = new Date().toISOString().slice(0, 16);
-      } else if (newStatus === 'COMPLETED') {
-        payload.actual_check_out = new Date().toISOString().slice(0, 16);
-      }
-
-      const res = await fetch(`${API_BASE_URL}/client-visits/${visitId}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+      await patchStatusMutation.mutateAsync({
+        visitId,
+        status: newStatus,
+        actualCheckIn,
+        actualCheckOut,
       });
-
-      if (res.ok) {
-        fetchVisits();
-      }
     } catch (err) {
       console.error('Failed to patch status:', err);
     }
@@ -169,9 +152,7 @@ export const ClientVisitsPage: React.FC = () => {
       });
 
       if (res.ok) {
-        setVisits((prev) =>
-          prev.map((v) => (v.id === visit.id ? { ...v, action_items: updatedItems } : v))
-        );
+        queryClient.invalidateQueries({ queryKey: queryKeys.clientVisits.all });
       }
     } catch (err) {
       console.error('Failed to update action item:', err);
@@ -186,7 +167,7 @@ export const ClientVisitsPage: React.FC = () => {
         method: 'DELETE',
       });
       if (res.ok) {
-        setVisits((prev) => prev.filter((v) => v.id !== visitId));
+        queryClient.invalidateQueries({ queryKey: queryKeys.clientVisits.all });
       }
     } catch (err) {
       console.error('Failed to delete visit:', err);
@@ -451,7 +432,7 @@ export const ClientVisitsPage: React.FC = () => {
             <TableIcon className="w-4 h-4" />
           </button>
           <button
-            onClick={fetchVisits}
+            onClick={() => refetch()}
             className="p-1.5 rounded-lg text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer"
             title="Refresh"
           >
@@ -866,7 +847,7 @@ export const ClientVisitsPage: React.FC = () => {
           setSelectedVisit(null);
         }}
         onSuccess={() => {
-          fetchVisits();
+          queryClient.invalidateQueries({ queryKey: queryKeys.clientVisits.all });
         }}
       />
     </div>

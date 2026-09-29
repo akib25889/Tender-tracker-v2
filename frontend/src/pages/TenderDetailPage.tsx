@@ -40,6 +40,7 @@ import {
   UploadCloud,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
+import { useTenderQuery } from '../hooks/useTenderQueries';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { ReadinessBar } from '../components/ui/ReadinessBar';
 import { ExportDropdown } from '../components/ui/ExportDropdown';
@@ -75,10 +76,18 @@ export const TenderDetailPage: React.FC = () => {
   const [isSavingAiLink, setIsSavingAiLink] = useState(false);
   const [copiedAiLink, setCopiedAiLink] = useState(false);
 
-  // Find the tender by route param ID
-  const tender = tenders.find((t) => t.id === id);
+  // Find the tender by route param ID or fetch via TanStack Query
+  const { data: remoteTender, isLoading: isTenderLoading } = useTenderQuery(id);
+  const tender = tenders.find((t) => t.id === id) || remoteTender;
 
   if (!tender) {
+    if (isTenderLoading) {
+      return (
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+      );
+    }
     return <NotFoundPage resource="Tender Proposal" resourceId={id} />;
   }
 
