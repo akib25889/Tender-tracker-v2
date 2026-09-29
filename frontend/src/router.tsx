@@ -29,6 +29,7 @@ import { PartnerPortalPage } from './pages/PartnerPortalPage';
 import { CompanyProfilesPage } from './pages/CompanyProfilesPage';
 import { UserProfilePage } from './pages/UserProfilePage';
 import { ClientVisitsPage } from './pages/ClientVisitsPage';
+import { CategoriesPage } from './pages/CategoriesPage';
 import { NotFoundPage } from './pages/status/NotFoundPage';
 import { AccessDeniedPage } from './pages/status/AccessDeniedPage';
 import { RootErrorBoundary } from './components/common/RootErrorBoundary';
@@ -195,6 +196,18 @@ export const router = createBrowserRouter([
       {
         path: 'organizations',
         element: <Navigate to="/tools/organizations" replace />,
+      },
+      {
+        path: 'tools/categories',
+        element: <CategoriesPage />,
+      },
+      {
+        path: 'categories',
+        element: <Navigate to="/tools/categories" replace />,
+      },
+      {
+        path: 'tools/sow-categories',
+        element: <Navigate to="/tools/categories" replace />,
       },
       {
         path: 'tools/archive',

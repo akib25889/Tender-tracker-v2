@@ -23,6 +23,7 @@ import {
   Award,
   UserCheck,
   Users,
+  Tags,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 
@@ -131,6 +132,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       label: 'Organizations',
       path: '/tools/organizations',
       icon: Landmark,
+      badge: undefined,
+    },
+    {
+      label: 'SOW Categories',
+      path: '/tools/categories',
+      icon: Tags,
       badge: undefined,
     },
     {
