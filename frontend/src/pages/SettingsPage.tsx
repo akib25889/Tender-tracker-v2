@@ -1,5 +1,6 @@
-import { API_BASE_URL } from '../utils/apiConfig';
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../utils/apiConfig';
 import { Card } from '../components/ui/Card';
 import {
   HardDrive,
@@ -19,6 +20,7 @@ import {
   Sparkles,
   Snowflake,
   Flame,
+  ExternalLink,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { useTheme } from '../hooks/useTheme';
@@ -519,16 +521,25 @@ export const SettingsPage: React.FC = () => {
               <div className="text-[#64748B]">
                 Total registered categories in database: <strong className="text-[#0F172A]">{categories.length}</strong>
               </div>
-              {!isAddingCat && (
-                <button
-                  type="button"
-                  onClick={() => setIsAddingCat(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg font-semibold shadow-xs transition-colors"
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/tools/categories"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#475569] rounded-lg font-semibold shadow-xs transition-colors"
                 >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add New Category</span>
-                </button>
-              )}
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Open in Tools &amp; Addons</span>
+                </Link>
+                {!isAddingCat && (
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingCat(true)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg font-semibold shadow-xs transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Add New Category</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Add New Category Drawer */}

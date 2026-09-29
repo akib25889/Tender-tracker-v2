@@ -80,8 +80,3 @@ ministry/
 *.md
 **/*.md
 
-# But keep the tender extraction tools
-!tools/tender-extraction-prompt.md
-!tools/tender_import.py
-
-
