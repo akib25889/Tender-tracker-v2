@@ -352,7 +352,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
                       id: doc.id,
                       name: doc.name,
                       folder: doc.folder,
-                      companyName: doc.company_name || 'NYK Advance Limited',
+                      companyName: doc.company_name || 'PrimeTech Ltd',
                       companyRole: doc.company_role || 'LEAD_BIDDER',
                       isJvPartner: Boolean(doc.is_jv_partner),
                       size: doc.size,
@@ -1559,7 +1559,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       id: uploadedDocId,
       name: doc.name,
       folder: doc.folder,
-      companyName: doc.companyName || 'NYK Advance Limited',
+      companyName: doc.companyName || 'PrimeTech Ltd',
       companyRole: doc.companyRole || (doc.isJvPartner ? 'JV_PARTNER' : 'LEAD_BIDDER'),
       isJvPartner: Boolean(doc.isJvPartner),
       revision: 'v1.0',
@@ -2332,7 +2332,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       id: `RUD-${Math.floor(100 + Math.random() * 900)}`,
       name: doc.name,
       category: doc.category,
-      companyName: doc.companyName || 'NYK Advance Limited',
+      companyName: doc.companyName || 'PrimeTech Ltd',
       companyRole: doc.companyRole || (doc.isJvPartner ? 'JV_PARTNER' : 'LEAD_BIDDER'),
       isJvPartner: Boolean(doc.isJvPartner),
       uploadedAt: new Date().toISOString().split('T')[0],
@@ -2350,7 +2350,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       body: JSON.stringify({
         name: doc.name,
         category: doc.category,
-        company_name: doc.companyName || 'NYK Advance Limited',
+        company_name: doc.companyName || 'PrimeTech Ltd',
         company_role: doc.companyRole || (doc.isJvPartner ? 'JV_PARTNER' : 'LEAD_BIDDER'),
         is_jv_partner: Boolean(doc.isJvPartner),
         size: doc.size || '2.5 MB',
@@ -2407,7 +2407,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     const masterDoc = reusableDocuments.find((d) => d.id === reusableDocId);
     if (!masterDoc) return;
 
-    const docCompanyName = masterDoc.companyName || 'NYK Advance Limited';
+    const docCompanyName = masterDoc.companyName || 'PrimeTech Ltd';
     const docIsJv = masterDoc.isJvPartner !== undefined ? masterDoc.isJvPartner : targetFolder.toLowerCase().includes('jv');
     const docCompanyRole = masterDoc.companyRole || (docIsJv ? 'JV_PARTNER' : 'LEAD_BIDDER');
 

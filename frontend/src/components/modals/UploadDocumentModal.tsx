@@ -85,9 +85,7 @@ export const UploadDocumentModal: React.FC = () => {
   const jvPartnerName =
     tender?.summary?.jv?.localPartner ||
     'DataCore Systems Ltd';
-  const leadCompanyName =
-    tender?.summary?.jv?.leadMember ||
-    'NYK Advance Limited';
+  const leadCompanyName = 'PrimeTech Ltd';
 
   // Folders definition with JV folders prioritized if JV is allowed
   const standardFolders = [
@@ -183,7 +181,7 @@ export const UploadDocumentModal: React.FC = () => {
     }
   };
 
-  const safeCompanySlug = companyName.replace(/[^a-zA-Z0-9_-]+/g, '_').trim() || 'NYK_Advance_Limited';
+  const safeCompanySlug = companyName.replace(/[^a-zA-Z0-9_-]+/g, '_').trim() || 'PrimeTech_Ltd';
   const effectiveFolder = uploadFolderTarget || (isJvTender ? '02A_jv_partner_credentials' : '02_company_statutory_documents');
 
   return (

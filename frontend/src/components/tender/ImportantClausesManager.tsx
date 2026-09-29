@@ -357,7 +357,7 @@ export const ImportantClausesManager: React.FC<ImportantClausesManagerProps> = (
           )}
         </Card>
       ) : (
-        <div className="grid grid-cols-1 gap-3">
+        <div className="space-y-3">
           {filteredClauses.map((clause) => {
             const catMeta = CATEGORIES.find((c) => c.value === clause.category) || CATEGORIES[5];
             const CatIcon = catMeta.icon;
@@ -365,125 +365,130 @@ export const ImportantClausesManager: React.FC<ImportantClausesManagerProps> = (
             const isCritical = clause.criticality === 'CRITICAL';
             const isHigh = clause.criticality === 'HIGH';
 
+            const accentColor = isCritical
+              ? 'border-l-rose-500'
+              : isHigh
+              ? 'border-l-amber-500'
+              : 'border-l-sky-400';
+
             return (
               <div
                 key={clause.id}
-                className="relative group bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 hover:border-blue-300 dark:hover:border-slate-700 rounded-xl p-4 transition-all shadow-xs"
+                className={`relative bg-white dark:bg-slate-900/70 border border-[#E2E8F0] dark:border-slate-800 border-l-4 ${accentColor} rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-shadow`}
               >
-                {/* Top Header Row with Action Toolbar */}
-                <div className="flex items-start justify-between gap-3 mb-2.5">
-                  <div className="flex flex-wrap items-center gap-2">
-                    {/* Criticality Badge */}
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold border ${
-                        isCritical
-                          ? 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/30'
-                          : isHigh
-                          ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/30'
-                          : 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-400 dark:border-sky-500/30'
-                      }`}
-                    >
-                      {isCritical ? (
-                        <AlertCircle className="w-3 h-3 text-rose-600 dark:text-rose-400" />
-                      ) : isHigh ? (
-                        <AlertTriangle className="w-3 h-3 text-amber-600 dark:text-amber-400" />
-                      ) : (
-                        <ShieldAlert className="w-3 h-3 text-sky-600 dark:text-sky-400" />
-                      )}
-                      {clause.criticality}
-                    </span>
-
-                    {/* Category Badge */}
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border ${catMeta.color}`}
-                    >
-                      <CatIcon className="w-3 h-3" />
-                      {catMeta.label}
-                    </span>
-                  </div>
-
-                  {/* Top-of-field Action Toolbar: Copy, Edit, Delete */}
-                  <div className="flex items-center gap-1 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg p-1 shadow-2xs">
-                    <button
-                      type="button"
-                      title="Copy citation and excerpt"
-                      onClick={() => handleCopyClause(clause)}
-                      className="p-1 text-[#64748B] hover:text-[#0F172A] dark:text-slate-300 dark:hover:text-white hover:bg-white dark:hover:bg-slate-700 rounded transition-colors"
-                    >
-                      {copiedId === clause.id ? (
-                        <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                      ) : (
-                        <Copy className="w-3.5 h-3.5" />
-                      )}
-                    </button>
-
-                    {!readOnly && (
-                      <>
-                        <button
-                          type="button"
-                          title="Edit clause details"
-                          onClick={() => openEditModal(clause)}
-                          className="p-1 text-[#64748B] hover:text-blue-600 dark:text-slate-300 dark:hover:text-white hover:bg-white dark:hover:bg-slate-700 rounded transition-colors"
-                        >
-                          <Edit2 className="w-3.5 h-3.5 text-blue-600 dark:text-sky-400" />
-                        </button>
-                        <button
-                          type="button"
-                          title="Delete clause"
-                          onClick={() => handleDeleteClause(clause.id)}
-                          className="p-1 text-[#64748B] hover:text-rose-600 dark:text-slate-300 dark:hover:text-rose-400 hover:bg-white dark:hover:bg-slate-700 rounded transition-colors"
-                        >
-                          <Trash2 className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                {/* Clause Title */}
-                <h4 className="text-sm font-bold text-[#0F172A] dark:text-white mb-2">
-                  {clause.clause_title}
-                </h4>
-
-                {/* Exact Document Reference Pill */}
-                <div className="flex flex-wrap items-center gap-2 mb-3 text-xs bg-[#F1F5F9] dark:bg-slate-950/60 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-800 text-[#475569] dark:text-slate-300">
-                  <span className="font-semibold text-blue-600 dark:text-indigo-400 flex items-center gap-1">
-                    <FileText className="w-3.5 h-3.5" />
-                    {clause.doc_file_name || 'Tender Document'}
-                  </span>
-                  <span className="text-[#94A3B8]">•</span>
-                  <span className="font-medium text-[#1E293B] dark:text-slate-200">
-                    Ref: {clause.doc_reference}
-                  </span>
-                  {clause.page_number && (
-                    <>
-                      <span className="text-[#94A3B8]">•</span>
-                      <span className="text-amber-700 dark:text-amber-300 font-medium">
-                        {clause.page_number}
+                {/* Card Body */}
+                <div className="p-4">
+                  {/* Row 1: Badges + Actions */}
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {/* Criticality Badge */}
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide border ${
+                          isCritical
+                            ? 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/30'
+                            : isHigh
+                            ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/30'
+                            : 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-400 dark:border-sky-500/30'
+                        }`}
+                      >
+                        {isCritical ? (
+                          <AlertCircle className="w-2.5 h-2.5" />
+                        ) : isHigh ? (
+                          <AlertTriangle className="w-2.5 h-2.5" />
+                        ) : (
+                          <ShieldAlert className="w-2.5 h-2.5" />
+                        )}
+                        {clause.criticality}
                       </span>
-                    </>
-                  )}
-                </div>
 
-                {/* Exact Clause Excerpt */}
-                {clause.clause_text && (
-                  <div className="relative pl-3 border-l-2 border-blue-500 bg-blue-50/50 dark:bg-slate-950/40 p-3 rounded-r-lg mb-2.5 text-xs text-[#1E293B] dark:text-slate-300 font-serif italic leading-relaxed">
-                    <span className="text-blue-600 font-bold mr-1">“</span>
-                    {clause.clause_text}
-                    <span className="text-blue-600 font-bold ml-1">”</span>
-                  </div>
-                )}
+                      {/* Category Badge */}
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${catMeta.color}`}
+                      >
+                        <CatIcon className="w-2.5 h-2.5" />
+                        {catMeta.label}
+                      </span>
+                    </div>
 
-                {/* Strategic Action Required / Implication */}
-                {clause.implication && (
-                  <div className="text-xs bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40 rounded-lg p-3 text-amber-900 dark:text-amber-200 flex items-start gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                    <div>
-                      <span className="font-bold text-amber-800 dark:text-amber-300">Strategic Compliance Action: </span>
-                      <span>{clause.implication}</span>
+                    {/* Action Toolbar */}
+                    <div className="flex items-center gap-0.5 shrink-0">
+                      <button
+                        type="button"
+                        title="Copy citation and excerpt"
+                        onClick={() => handleCopyClause(clause)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      >
+                        {copiedId === clause.id ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-500" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                      {!readOnly && (
+                        <>
+                          <button
+                            type="button"
+                            title="Edit clause"
+                            onClick={() => openEditModal(clause)}
+                            className="p-1.5 rounded-lg text-blue-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            title="Delete clause"
+                            onClick={() => handleDeleteClause(clause.id)}
+                            className="p-1.5 rounded-lg text-rose-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
-                )}
+
+                  {/* Row 2: Title */}
+                  <h4 className="text-sm font-bold text-[#0F172A] dark:text-white mb-2.5 leading-snug">
+                    {clause.clause_title}
+                  </h4>
+
+                  {/* Row 3: Document Reference Strip */}
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-3 text-[11px] text-[#64748B] dark:text-slate-400">
+                    {(clause.doc_file_name) && (
+                      <span className="flex items-center gap-1 font-medium text-blue-600 dark:text-indigo-400">
+                        <FileText className="w-3 h-3 shrink-0" />
+                        {clause.doc_file_name}
+                      </span>
+                    )}
+                    <span className="flex items-center gap-1">
+                      <span className="font-semibold text-[#334155] dark:text-slate-300">Ref:</span>
+                      {clause.doc_reference}
+                    </span>
+                    {clause.page_number && (
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-700/40 font-semibold">
+                        p. {clause.page_number}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Row 4: Clause Excerpt */}
+                  {clause.clause_text && (
+                    <blockquote className="border-l-2 border-blue-400 dark:border-blue-500/60 pl-3 pr-2 py-2 bg-slate-50 dark:bg-slate-950/50 rounded-r-lg mb-2.5 text-[11px] text-[#334155] dark:text-slate-300 font-serif italic leading-relaxed">
+                      {clause.clause_text}
+                    </blockquote>
+                  )}
+
+                  {/* Row 5: Strategic Action */}
+                  {clause.implication && (
+                    <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700/30 rounded-lg px-3 py-2 text-[11px] text-amber-900 dark:text-amber-200">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                      <p>
+                        <span className="font-bold text-amber-800 dark:text-amber-300">Action: </span>
+                        {clause.implication}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}

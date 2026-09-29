@@ -101,9 +101,7 @@ export const TenderDocumentsTab: React.FC = () => {
   const jvPartnerName =
     tender?.summary?.jv?.localPartner ||
     'DataCore Systems Ltd';
-  const leadCompanyName =
-    tender?.summary?.jv?.leadMember ||
-    'NYK Advance Limited';
+  const leadCompanyName = 'PrimeTech Ltd';
   const [previewDoc, setPreviewDoc] = useState<TenderDocument | null>(null);
 
   // Re-upload Request Modal State
@@ -560,18 +558,34 @@ export const TenderDocumentsTab: React.FC = () => {
           <button
             type="button"
             onClick={() => setCompanyFilter('ALL')}
-            className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
+            className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
               companyFilter === 'ALL'
                 ? 'bg-[#0F172A] text-white shadow-xs'
                 : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A]'
             }`}
           >
-            All ({tender.documents.length})
+            All Entities ({tender.documents.length})
           </button>
+          {isJvTender && (
+            <button
+              type="button"
+              onClick={() => setCompanyFilter('JV')}
+              className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 transition-colors ${
+                companyFilter === 'JV'
+                  ? 'bg-purple-700 text-white shadow-xs'
+                  : 'bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100'
+              }`}
+            >
+              <span>⭐ JV: {jvPartnerName}</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/25 font-bold">
+                {tender.documents.filter((d) => d.isJvPartner || d.companyRole === 'JV_PARTNER').length}
+              </span>
+            </button>
+          )}
           <button
             type="button"
             onClick={() => setCompanyFilter('LEAD')}
-            className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 transition-colors cursor-pointer ${
+            className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 transition-colors ${
               companyFilter === 'LEAD'
                 ? 'bg-blue-700 text-white shadow-xs'
                 : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'
@@ -580,20 +594,6 @@ export const TenderDocumentsTab: React.FC = () => {
             <span>🏛️ Lead: {leadCompanyName}</span>
             <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/25 font-bold">
               {tender.documents.filter((d) => !d.isJvPartner && d.companyRole !== 'JV_PARTNER').length}
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setCompanyFilter('JV')}
-            className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 transition-colors cursor-pointer ${
-              companyFilter === 'JV'
-                ? 'bg-purple-700 text-white shadow-xs'
-                : 'bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100'
-            }`}
-          >
-            <span>⭐ Partner: {jvPartnerName}</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/25 font-bold">
-              {tender.documents.filter((d) => d.isJvPartner || d.companyRole === 'JV_PARTNER').length}
             </span>
           </button>
         </div>
@@ -606,7 +606,7 @@ export const TenderDocumentsTab: React.FC = () => {
                 <th className="py-2.5 px-3 w-56">Target Folder (Move / Assign)</th>
                 <th className="py-2.5 px-3 w-44">Access Permission Scope</th>
                 <th className="py-2.5 px-3">Uploaded</th>
-                <th className="py-2.5 px-3 text-left">Action</th>
+                <th className="py-2.5 px-3 text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F1F5F9]">
@@ -650,10 +650,14 @@ export const TenderDocumentsTab: React.FC = () => {
                             </span>
                           ) : null}
 
-                          {/* Owning Entity Disambiguation Badge - only shown for non-lead / partner documents */}
-                          {isJvDoc && (
+                          {/* Owning Entity Disambiguation Badge */}
+                          {isJvDoc ? (
                             <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
-                              ⭐ Partner: {doc.companyName || jvPartnerName}
+                              ⭐ JV: {doc.companyName || jvPartnerName}
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                              🏛️ Lead: {doc.companyName || leadCompanyName}
                             </span>
                           )}
 
@@ -736,9 +740,9 @@ export const TenderDocumentsTab: React.FC = () => {
                         <div className="text-[10px] text-[#94A3B8] font-mono">{doc.revision} • {doc.size}</div>
                       </td>
 
-                      <td className="py-3 px-3 text-left">
+                      <td className="py-3 px-3 text-right">
                         {hasAccess ? (
-                          <div className="flex items-center justify-start gap-1.5">
+                          <div className="flex items-center justify-end gap-1.5">
                             {/* Request Re-Upload / Flag Action Button */}
                             <button
                               type="button"
