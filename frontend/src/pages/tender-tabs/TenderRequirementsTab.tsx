@@ -185,6 +185,10 @@ export const TenderRequirementsTab: React.FC = () => {
           updateTender(tender.id, { importantClauses: updatedClauses })
         }
         tenderDocuments={tender.documents}
+        tenderId={tender.id}
+        tenderTitle={tender.title}
+        amendments={tender.amendments}
+        tenderSubmissionDeadline={tender.submissionDeadline}
       />
     </div>
   );

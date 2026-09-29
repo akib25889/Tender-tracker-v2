@@ -2787,6 +2787,10 @@ export const TenderRegistryPage: React.FC = () => {
                   clauses={importantClauses}
                   onChange={setImportantClauses}
                   tenderDocuments={selectedTender?.documents}
+                  tenderId={selectedTender?.id}
+                  tenderTitle={selectedTender?.title}
+                  amendments={selectedTender?.amendments}
+                  tenderSubmissionDeadline={selectedTender?.submissionDeadline}
                 />
               </div>
             )}
