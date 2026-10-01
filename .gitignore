@@ -76,7 +76,19 @@ Project_Start_Point.md
 [Tt]ender [Dd]ocument/
 ministry/
 
+# Tender info folder and contents
+[Tt]ender [Ii]nfo/
+[Tt]ender [Ii]nfo/**
+tender-info/
+tender-info/**
+tender_info/
+tender_info/**
+*[Tt]ender*[Ii]nfo*
+*[Tt]ender*[Ii]nformation*
+
 # Ignore all Markdown files
 *.md
 **/*.md
+!tools/tender-extraction-prompt.md
+
 
