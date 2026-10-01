@@ -28,7 +28,6 @@ import {
   Clock,
   AlertTriangle,
   RotateCcw,
-  ShieldCheck,
   Upload,
   UploadCloud,
   Loader2,
