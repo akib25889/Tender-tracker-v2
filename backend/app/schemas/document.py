@@ -92,7 +92,7 @@ class ReusableDocCreate(BaseModel):
     company_name: Optional[str] = "PrimeTech Ltd"
     company_role: Optional[str] = "LEAD_BIDDER"
     is_jv_partner: bool = False
-    size: str = "2.5 MB"
+    size: str = "No file attached"
     expiry_date: Optional[str] = None
     access_level: str = "ALL_TEAM"
     description: Optional[str] = None

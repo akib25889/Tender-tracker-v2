@@ -386,6 +386,9 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
             id: d.id,
             name: d.name,
             category: d.category,
+            companyName: d.company_name || 'PrimeTech Ltd',
+            companyRole: d.company_role || (d.is_jv_partner ? 'JV_PARTNER' : 'LEAD_BIDDER'),
+            isJvPartner: Boolean(d.is_jv_partner),
             uploadedAt: d.uploaded_at,
             expiryDate: d.expiry_date,
             size: d.size,
@@ -393,6 +396,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
             accessLevel: d.access_level,
             sha256: d.sha256,
             description: d.description,
+            filePath: d.file_path,
           }));
           setReusableDocuments(docs);
           localStorage.setItem('tendertracker_reusable_docs', JSON.stringify(docs));
@@ -2160,15 +2164,17 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     }
 
-    const hex = '0123456789abcdef';
-    let hash = '';
-    for (let i = 0; i < 64; i++) hash += hex[Math.floor(Math.random() * 16)];
-
     const sizeFormatted = doc.file
       ? (doc.file.size >= 1024 * 1024
           ? `${(doc.file.size / (1024 * 1024)).toFixed(1)} MB`
           : `${Math.round(doc.file.size / 1024)} KB`)
-      : (doc.size || '2.5 MB');
+      : (doc.size || 'No file attached');
+
+    let hash = '';
+    if (doc.file) {
+      const hex = '0123456789abcdef';
+      for (let i = 0; i < 64; i++) hash += hex[Math.floor(Math.random() * 16)];
+    }
 
     const newDoc: ReusableDocument = {
       id: `RUD-${Math.floor(100 + Math.random() * 900)}`,
