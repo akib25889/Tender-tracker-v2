@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
-import { DocumentAccessLevel, ReusableDocument } from '../types/tender';
+import { DocumentAccessLevel, ReusableDocument, CompanyProfile } from '../types/tender';
 import { CompanyProjectCredentialsManager } from '../components/credentials/CompanyProjectCredentialsManager';
 import { fuzzyMatch } from '../utils/fuzzySearch';
 import {
@@ -35,6 +35,7 @@ import {
   Edit2,
   Trash2,
   Save,
+  Check,
 } from 'lucide-react';
 import { DocumentPreviewModal } from '../components/modals/DocumentPreviewModal';
 
@@ -138,6 +139,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
     setActiveDocForShare,
     companyProjects,
     companyProfiles,
+    addCompanyProfile,
   } = useTenders();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -169,6 +171,89 @@ export const MasterDocumentVaultPage: React.FC = () => {
   const [newAccess, setNewAccess] = useState<DocumentAccessLevel>('ALL_TEAM');
   const [newDesc, setNewDesc] = useState('');
 
+  // Company Profile selection & manual mode states for Upload Modal
+  const [selectedCompanyProfileId, setSelectedCompanyProfileId] = useState<string>('COMP-PRIMETECH');
+  const [isManualCompany, setIsManualCompany] = useState<boolean>(false);
+  const [isQuickCreatingCompany, setIsQuickCreatingCompany] = useState<boolean>(false);
+  const [quickLegalName, setQuickLegalName] = useState<string>('');
+  const [quickRole, setQuickRole] = useState<'LEAD_BIDDER' | 'JV_PARTNER' | 'SUBCONTRACTOR'>('JV_PARTNER');
+  const [isQuickSavingCompany, setIsQuickSavingCompany] = useState<boolean>(false);
+
+  // Company Profile selection & manual mode states for Edit Modal
+  const [editSelectedProfileId, setEditSelectedProfileId] = useState<string>('COMP-PRIMETECH');
+  const [editIsManualCompany, setEditIsManualCompany] = useState<boolean>(false);
+  const [isEditQuickCreating, setIsEditQuickCreating] = useState<boolean>(false);
+  const [editQuickLegalName, setEditQuickLegalName] = useState<string>('');
+  const [editQuickRole, setEditQuickRole] = useState<'LEAD_BIDDER' | 'JV_PARTNER' | 'SUBCONTRACTOR'>('JV_PARTNER');
+  const [isEditQuickSaving, setIsEditQuickSaving] = useState<boolean>(false);
+
+  const handleOpenAddModal = () => {
+    setIsAddModalOpen(true);
+    setIsManualCompany(false);
+    setIsQuickCreatingCompany(false);
+    const lead = companyProfiles.find((p) => p.company_role === 'LEAD_BIDDER') || companyProfiles[0];
+    if (lead) {
+      setSelectedCompanyProfileId(lead.id);
+      setNewCompanyName(lead.trade_name || lead.legal_name);
+      setNewCompanyRole(
+        lead.company_role === 'LEAD_BIDDER' || lead.company_role === 'JV_PARTNER' || lead.company_role === 'SUBCONTRACTOR'
+          ? (lead.company_role as any)
+          : 'LEAD_BIDDER'
+      );
+    } else {
+      setSelectedCompanyProfileId('__MANUAL__');
+      setIsManualCompany(true);
+    }
+  };
+
+  const handleQuickCreateCompany = async (target: 'UPLOAD' | 'EDIT') => {
+    const legalName = (target === 'UPLOAD' ? quickLegalName : editQuickLegalName).trim();
+    const role = target === 'UPLOAD' ? quickRole : editQuickRole;
+    if (!legalName) return;
+
+    if (target === 'UPLOAD') setIsQuickSavingCompany(true);
+    else setIsEditQuickSaving(true);
+
+    try {
+      const id = `COMP-${legalName.toUpperCase().replace(/[^A-Z0-9]/g, '') || Date.now()}`;
+      const payload: Partial<CompanyProfile> = {
+        id,
+        legal_name: legalName,
+        trade_name: legalName,
+        company_role: role,
+        entity_type: 'Private Limited Company',
+        country: 'Bangladesh',
+        status: 'ACTIVE',
+      };
+      const created = await addCompanyProfile(payload);
+      if (created) {
+        if (target === 'UPLOAD') {
+          setSelectedCompanyProfileId(created.id);
+          setNewCompanyName(created.trade_name || created.legal_name);
+          setNewCompanyRole(role);
+          setIsManualCompany(false);
+          setIsQuickCreatingCompany(false);
+          setQuickLegalName('');
+        } else {
+          setEditSelectedProfileId(created.id);
+          setEditFormData((prev) => ({
+            ...prev,
+            companyName: created.trade_name || created.legal_name,
+            companyRole: role,
+          }));
+          setEditIsManualCompany(false);
+          setIsEditQuickCreating(false);
+          setEditQuickLegalName('');
+        }
+      }
+    } catch (err) {
+      console.error('Failed to quick create company profile:', err);
+    } finally {
+      if (target === 'UPLOAD') setIsQuickSavingCompany(false);
+      else setIsEditQuickSaving(false);
+    }
+  };
+
   // Modal: Reference / Link Document to Tender
   const [docToLink, setDocToLink] = useState<ReusableDocument | null>(null);
   const [targetTenderId, setTargetTenderId] = useState<string>(tenders[0]?.id || '');
@@ -197,6 +282,23 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
   const handleOpenEditModal = (doc: ReusableDocument) => {
     setEditingDoc(doc);
+    setIsEditQuickCreating(false);
+
+    const docCo = (doc.companyName || '').trim().toLowerCase();
+    const matchingProfile = companyProfiles.find(
+      (p) =>
+        (p.trade_name && p.trade_name.trim().toLowerCase() === docCo) ||
+        (p.legal_name && p.legal_name.trim().toLowerCase() === docCo)
+    );
+
+    if (matchingProfile) {
+      setEditSelectedProfileId(matchingProfile.id);
+      setEditIsManualCompany(false);
+    } else {
+      setEditSelectedProfileId('__MANUAL__');
+      setEditIsManualCompany(true);
+    }
+
     setEditFormData({
       name: doc.name || '',
       category: doc.category || 'Company Statutory',
@@ -403,7 +505,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
         {activeLibraryTab === 'DOCUMENTS' && (
           <button
             type="button"
-            onClick={() => setIsAddModalOpen(true)}
+            onClick={handleOpenAddModal}
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold transition-all shadow-sm hover:shadow-md active:scale-98 shrink-0 self-start md:self-auto cursor-pointer"
           >
             <Plus className="w-4 h-4" />
@@ -1063,43 +1165,190 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 />
               </div>
 
-              {/* Owning Entity & Role for Multi-Company Disambiguation */}
-              <div className="grid grid-cols-2 gap-3 p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg">
-                <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
-                    Owning Entity Role *
-                  </label>
-                  <select
-                    value={newCompanyRole}
-                    onChange={(e) => {
-                      const role = e.target.value as 'LEAD_BIDDER' | 'JV_PARTNER' | 'SUBCONTRACTOR';
-                      setNewCompanyRole(role);
-                      if (role === 'LEAD_BIDDER' && newCompanyName === 'DataCore Systems Ltd') {
-                        setNewCompanyName('PrimeTech Ltd');
-                      } else if (role === 'JV_PARTNER' && newCompanyName === 'PrimeTech Ltd') {
-                        setNewCompanyName('DataCore Systems Ltd');
-                      }
-                    }}
-                    className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-                  >
-                    <option value="LEAD_BIDDER">🏛️ Lead Bidder</option>
-                    <option value="JV_PARTNER">⭐ JV Partner</option>
-                    <option value="SUBCONTRACTOR">🤝 Subcontractor</option>
-                  </select>
+              {/* Owning Entity & Profile Selection */}
+              <div className="p-3 bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E2E8F0] dark:border-slate-700 rounded-xl space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-xs text-[#0F172A] dark:text-slate-200 flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                    <span>Company / Owning Entity *</span>
+                  </span>
+
+                  <div className="flex items-center gap-2 text-[11px]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const nextManual = !isManualCompany;
+                        setIsManualCompany(nextManual);
+                        if (!nextManual) {
+                          const profile = companyProfiles.find((p) => p.id === selectedCompanyProfileId) || companyProfiles[0];
+                          if (profile) {
+                            setNewCompanyName(profile.trade_name || profile.legal_name);
+                            if (profile.company_role === 'LEAD_BIDDER' || profile.company_role === 'JV_PARTNER' || profile.company_role === 'SUBCONTRACTOR') {
+                              setNewCompanyRole(profile.company_role as any);
+                            }
+                          }
+                        }
+                      }}
+                      className="text-blue-600 dark:text-blue-400 hover:underline font-semibold cursor-pointer"
+                    >
+                      {isManualCompany ? '🏢 Select from Profiles' : '✏️ Add Manually'}
+                    </button>
+                    <span className="text-slate-300 dark:text-slate-600">•</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsQuickCreatingCompany(!isQuickCreatingCompany)}
+                      className="text-emerald-600 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
+                    >
+                      {isQuickCreatingCompany ? 'Close Creator' : '➕ New Profile'}
+                    </button>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
-                    Company / Entity Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. PrimeTech Ltd or JV Partner"
-                    value={newCompanyName}
-                    onChange={(e) => setNewCompanyName(e.target.value)}
-                    className="w-full px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-                  />
+                {/* Quick Add Company Profile Form (Inline Expander) */}
+                {isQuickCreatingCompany && (
+                  <div className="p-3 bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-xl space-y-2.5 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Create Company Profile</span>
+                      </span>
+                      <a
+                        href="/tools/company-profiles"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[10px] text-emerald-700 dark:text-emerald-400 hover:underline font-medium"
+                      >
+                        Open Full Profile Manager ↗
+                      </a>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <div>
+                        <label className="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                          Company Legal Name *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Apex Joint Venture Ltd"
+                          value={quickLegalName}
+                          onChange={(e) => setQuickLegalName(e.target.value)}
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 rounded-lg text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                          Entity Role *
+                        </label>
+                        <select
+                          value={quickRole}
+                          onChange={(e) => setQuickRole(e.target.value as any)}
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 rounded-lg text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        >
+                          <option value="LEAD_BIDDER">🏛️ Lead Bidder</option>
+                          <option value="JV_PARTNER">⭐ JV Partner</option>
+                          <option value="SUBCONTRACTOR">🤝 Subcontractor</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-end gap-2 pt-1 border-t border-emerald-200/60 dark:border-emerald-800/40">
+                      <button
+                        type="button"
+                        onClick={() => setIsQuickCreatingCompany(false)}
+                        className="px-2.5 py-1 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        disabled={isQuickSavingCompany || !quickLegalName.trim()}
+                        onClick={() => handleQuickCreateCompany('UPLOAD')}
+                        className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-2xs transition-colors disabled:opacity-50 cursor-pointer"
+                      >
+                        {isQuickSavingCompany ? (
+                          <>
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                            <span>Creating...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Check className="w-3 h-3" />
+                            <span>Save &amp; Select Profile</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Company Selection: Either Dropdown or Manual Input */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                      Owning Entity Role *
+                    </label>
+                    <select
+                      value={newCompanyRole}
+                      onChange={(e) => {
+                        const role = e.target.value as 'LEAD_BIDDER' | 'JV_PARTNER' | 'SUBCONTRACTOR';
+                        setNewCompanyRole(role);
+                      }}
+                      className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    >
+                      <option value="LEAD_BIDDER">🏛️ Lead Bidder</option>
+                      <option value="JV_PARTNER">⭐ JV Partner</option>
+                      <option value="SUBCONTRACTOR">🤝 Subcontractor</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                      {isManualCompany ? 'Company / Entity Name (Manual) *' : 'Select Company Profile *'}
+                    </label>
+                    {isManualCompany ? (
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Acme Joint Venture Ltd"
+                        value={newCompanyName}
+                        onChange={(e) => setNewCompanyName(e.target.value)}
+                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      />
+                    ) : (
+                      <select
+                        value={selectedCompanyProfileId}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === '__MANUAL__') {
+                            setIsManualCompany(true);
+                          } else if (val === '__NEW__') {
+                            setIsQuickCreatingCompany(true);
+                          } else {
+                            setSelectedCompanyProfileId(val);
+                            const found = companyProfiles.find((p) => p.id === val);
+                            if (found) {
+                              setNewCompanyName(found.trade_name || found.legal_name);
+                              if (found.company_role === 'LEAD_BIDDER' || found.company_role === 'JV_PARTNER' || found.company_role === 'SUBCONTRACTOR') {
+                                setNewCompanyRole(found.company_role as any);
+                              }
+                            }
+                          }
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      >
+                        <optgroup label="🏢 Registered Company Profiles">
+                          {companyProfiles.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.company_role === 'LEAD_BIDDER' ? '🏛️' : p.company_role === 'JV_PARTNER' ? '⭐' : '🤝'} {p.trade_name || p.legal_name}
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label="⚙️ Custom &amp; Manual Options">
+                          <option value="__MANUAL__">✏️ Enter Custom Name Manually...</option>
+                          <option value="__NEW__">➕ Create New Company Profile...</option>
+                        </optgroup>
+                      </select>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -1372,41 +1621,199 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 />
               </div>
 
-              {/* Owning Entity Role */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Owning Entity Role *
-                  </label>
-                  <select
-                    value={editFormData.companyRole}
-                    onChange={(e) => {
-                      const role = e.target.value as any;
-                      setEditFormData({
-                        ...editFormData,
-                        companyRole: role,
-                        companyName: role === 'LEAD_BIDDER' ? 'PrimeTech Ltd' : (editFormData.companyName === 'PrimeTech Ltd' ? '' : editFormData.companyName),
-                      });
-                    }}
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                  >
-                    <option value="LEAD_BIDDER">Lead Bidder (PrimeTech)</option>
-                    <option value="JV_PARTNER">JV / Consortium Partner</option>
-                    <option value="SUBCONTRACTOR">Nominated Subcontractor</option>
-                  </select>
+              {/* Owning Entity & Profile Selection */}
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-xs text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                    <span>Company / Owning Entity *</span>
+                  </span>
+
+                  <div className="flex items-center gap-2 text-[11px]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const nextManual = !editIsManualCompany;
+                        setEditIsManualCompany(nextManual);
+                        if (!nextManual) {
+                          const profile = companyProfiles.find((p) => p.id === editSelectedProfileId) || companyProfiles[0];
+                          if (profile) {
+                            setEditFormData((prev) => ({
+                              ...prev,
+                              companyName: profile.trade_name || profile.legal_name,
+                              companyRole: (profile.company_role === 'LEAD_BIDDER' || profile.company_role === 'JV_PARTNER' || profile.company_role === 'SUBCONTRACTOR')
+                                ? (profile.company_role as any)
+                                : prev.companyRole,
+                            }));
+                          }
+                        }
+                      }}
+                      className="text-amber-600 dark:text-amber-400 hover:underline font-semibold cursor-pointer"
+                    >
+                      {editIsManualCompany ? '🏢 Select from Profiles' : '✏️ Add Manually'}
+                    </button>
+                    <span className="text-slate-300 dark:text-slate-600">•</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsEditQuickCreating(!isEditQuickCreating)}
+                      className="text-emerald-600 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
+                    >
+                      {isEditQuickCreating ? 'Close Creator' : '➕ New Profile'}
+                    </button>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Company / Entity Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={editFormData.companyName}
-                    onChange={(e) => setEditFormData({ ...editFormData, companyName: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                  />
+                {/* Quick Add Company Profile Form (Inline Expander in Edit Modal) */}
+                {isEditQuickCreating && (
+                  <div className="p-3 bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-xl space-y-2.5 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Create Company Profile</span>
+                      </span>
+                      <a
+                        href="/tools/company-profiles"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[10px] text-emerald-700 dark:text-emerald-400 hover:underline font-medium"
+                      >
+                        Open Full Profile Manager ↗
+                      </a>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <div>
+                        <label className="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                          Company Legal Name *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Apex Joint Venture Ltd"
+                          value={editQuickLegalName}
+                          onChange={(e) => setEditQuickLegalName(e.target.value)}
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 rounded-lg text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                          Entity Role *
+                        </label>
+                        <select
+                          value={editQuickRole}
+                          onChange={(e) => setEditQuickRole(e.target.value as any)}
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 rounded-lg text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        >
+                          <option value="LEAD_BIDDER">🏛️ Lead Bidder</option>
+                          <option value="JV_PARTNER">⭐ JV Partner</option>
+                          <option value="SUBCONTRACTOR">🤝 Subcontractor</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-end gap-2 pt-1 border-t border-emerald-200/60 dark:border-emerald-800/40">
+                      <button
+                        type="button"
+                        onClick={() => setIsEditQuickCreating(false)}
+                        className="px-2.5 py-1 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        disabled={isEditQuickSaving || !editQuickLegalName.trim()}
+                        onClick={() => handleQuickCreateCompany('EDIT')}
+                        className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-2xs transition-colors disabled:opacity-50 cursor-pointer"
+                      >
+                        {isEditQuickSaving ? (
+                          <>
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                            <span>Creating...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Check className="w-3 h-3" />
+                            <span>Save &amp; Select Profile</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Company Selection: Either Dropdown or Manual Input */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Owning Entity Role *
+                    </label>
+                    <select
+                      value={editFormData.companyRole}
+                      onChange={(e) => {
+                        const role = e.target.value as any;
+                        setEditFormData({
+                          ...editFormData,
+                          companyRole: role,
+                        });
+                      }}
+                      className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    >
+                      <option value="LEAD_BIDDER">🏛️ Lead Bidder</option>
+                      <option value="JV_PARTNER">⭐ JV Partner</option>
+                      <option value="SUBCONTRACTOR">🤝 Subcontractor</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      {editIsManualCompany ? 'Company / Entity Name (Manual) *' : 'Select Company Profile *'}
+                    </label>
+                    {editIsManualCompany ? (
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Acme Joint Venture Ltd"
+                        value={editFormData.companyName}
+                        onChange={(e) => setEditFormData({ ...editFormData, companyName: e.target.value })}
+                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      />
+                    ) : (
+                      <select
+                        value={editSelectedProfileId}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === '__MANUAL__') {
+                            setEditIsManualCompany(true);
+                          } else if (val === '__NEW__') {
+                            setIsEditQuickCreating(true);
+                          } else {
+                            setEditSelectedProfileId(val);
+                            const found = companyProfiles.find((p) => p.id === val);
+                            if (found) {
+                              setEditFormData((prev) => ({
+                                ...prev,
+                                companyName: found.trade_name || found.legal_name,
+                                companyRole: (found.company_role === 'LEAD_BIDDER' || found.company_role === 'JV_PARTNER' || found.company_role === 'SUBCONTRACTOR')
+                                  ? (found.company_role as any)
+                                  : prev.companyRole,
+                              }));
+                            }
+                          }
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      >
+                        <optgroup label="🏢 Registered Company Profiles">
+                          {companyProfiles.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.company_role === 'LEAD_BIDDER' ? '🏛️' : p.company_role === 'JV_PARTNER' ? '⭐' : '🤝'} {p.trade_name || p.legal_name}
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label="⚙️ Custom &amp; Manual Options">
+                          <option value="__MANUAL__">✏️ Enter Custom Name Manually...</option>
+                          <option value="__NEW__">➕ Create New Company Profile...</option>
+                        </optgroup>
+                      </select>
+                    )}
+                  </div>
                 </div>
               </div>
 
