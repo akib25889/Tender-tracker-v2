@@ -565,7 +565,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
       ) : (
         <>
           {/* KPI Stats Summary */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Card 1: Total Master Files */}
             <Card className="p-4 relative overflow-hidden border-blue-100 dark:border-blue-900/30 bg-gradient-to-br from-white to-blue-50/20 dark:from-slate-900 dark:to-blue-950/10 shadow-xs hover:border-blue-200 transition-all">
               <div className="flex items-start justify-between">
@@ -624,29 +624,6 @@ export const MasterDocumentVaultPage: React.FC = () => {
               </div>
               <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-[#64748B] dark:text-slate-400">
                 <span>Audited Statements, Solvency &amp; POA</span>
-              </div>
-            </Card>
-
-            {/* Card 4: Current Identity Clearance */}
-            <Card className="p-4 relative overflow-hidden border-purple-100 dark:border-purple-900/30 bg-gradient-to-br from-white to-purple-50/20 dark:from-slate-900 dark:to-purple-950/10 shadow-xs hover:border-purple-200 transition-all">
-              <div className="flex items-start justify-between">
-                <div className="min-w-0 flex-1 pr-2">
-                  <span className="text-xs font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
-                    Your Clearance
-                  </span>
-                  <div className="font-bold text-sm text-[#0F172A] dark:text-slate-100 mt-1 truncate">
-                    {currentUser.name}
-                  </div>
-                </div>
-                <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 border border-purple-200/50 dark:border-purple-800/40">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/50">
-                  <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                  <span>{currentUser.role.replace(/_/g, ' ')}</span>
-                </span>
               </div>
             </Card>
           </div>
