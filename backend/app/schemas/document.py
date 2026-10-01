@@ -107,6 +107,7 @@ class ReusableDocOut(BaseModel):
     access_level: str
     sha256: str
     description: Optional[str] = None
+    file_path: Optional[str] = None
 
     class Config:
         from_attributes = True

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
@@ -29,6 +29,9 @@ import {
   AlertTriangle,
   RotateCcw,
   ShieldCheck,
+  Upload,
+  UploadCloud,
+  Loader2,
 } from 'lucide-react';
 import { DocumentPreviewModal } from '../components/modals/DocumentPreviewModal';
 
@@ -149,6 +152,10 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
   // Modal: Add New Reusable Document
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [newName, setNewName] = useState('');
   const [newCategory, setNewCategory] = useState('Company Statutory');
   const [newCompanyName, setNewCompanyName] = useState('PrimeTech Ltd');
@@ -202,28 +209,42 @@ export const MasterDocumentVaultPage: React.FC = () => {
     return matchesCategory && matchesAccess && matchesCompany && matchesSearch;
   });
 
-  const handleCreateDocument = (e: React.FormEvent) => {
+  const handleCreateDocument = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newName.trim()) return;
+    const finalDocName = newName.trim() || (selectedFile ? selectedFile.name : '');
+    if (!finalDocName && !selectedFile) return;
 
-    addReusableDocument({
-      name: newName.trim(),
-      category: newCategory,
-      companyName: newCompanyName.trim() || 'PrimeTech Ltd',
-      companyRole: newCompanyRole,
-      isJvPartner: newCompanyRole === 'JV_PARTNER',
-      expiryDate: newExpiry || undefined,
-      accessLevel: newAccess,
-      size: '2.8 MB',
-      description: newDesc.trim() || undefined,
-    });
+    setIsUploading(true);
+    try {
+      const calculatedSize = selectedFile
+        ? (selectedFile.size >= 1024 * 1024
+            ? `${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB`
+            : `${Math.round(selectedFile.size / 1024)} KB`)
+        : '2.5 MB';
 
-    setNewName('');
-    setNewCompanyName('PrimeTech Ltd');
-    setNewCompanyRole('LEAD_BIDDER');
-    setNewDesc('');
-    setNewExpiry('');
-    setIsAddModalOpen(false);
+      await addReusableDocument({
+        name: finalDocName,
+        category: newCategory,
+        companyName: newCompanyName.trim() || 'PrimeTech Ltd',
+        companyRole: newCompanyRole,
+        isJvPartner: newCompanyRole === 'JV_PARTNER',
+        expiryDate: newExpiry || undefined,
+        accessLevel: newAccess,
+        size: calculatedSize,
+        description: newDesc.trim() || undefined,
+        file: selectedFile || undefined,
+      });
+
+      setNewName('');
+      setSelectedFile(null);
+      setNewCompanyName('PrimeTech Ltd');
+      setNewCompanyRole('LEAD_BIDDER');
+      setNewDesc('');
+      setNewExpiry('');
+      setIsAddModalOpen(false);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleLinkToTender = (e: React.FormEvent) => {
@@ -804,7 +825,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
       {/* Modal: Upload Reusable Document */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-md w-full shadow-2xl space-y-4">
+          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9]">
               <div className="flex items-center gap-2">
                 <FileCheck className="w-5 h-5 text-[#2563EB]" />
@@ -814,7 +835,10 @@ export const MasterDocumentVaultPage: React.FC = () => {
               </div>
               <button
                 type="button"
-                onClick={() => setIsAddModalOpen(false)}
+                onClick={() => {
+                  setIsAddModalOpen(false);
+                  setSelectedFile(null);
+                }}
                 className="text-[#94A3B8] hover:text-[#0F172A]"
               >
                 <X className="w-4 h-4" />
@@ -822,6 +846,109 @@ export const MasterDocumentVaultPage: React.FC = () => {
             </div>
 
             <form onSubmit={handleCreateDocument} className="space-y-3.5 text-xs">
+              {/* Interactive File Dropzone */}
+              <div className="space-y-1.5">
+                <label className="block font-semibold text-[#0F172A]">
+                  Select Master Document File <span className="text-[#DC2626]">*</span>
+                </label>
+
+                {selectedFile ? (
+                  <div className="p-3 bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-9 h-9 rounded-lg bg-[#DCFCE7] text-[#16A34A] flex items-center justify-center shrink-0">
+                        <FileText className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-[#0F172A] truncate">
+                          {selectedFile.name}
+                        </p>
+                        <p className="text-[11px] text-[#15803D] font-mono">
+                          {selectedFile.size >= 1024 * 1024
+                            ? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`
+                            : `${Math.round(selectedFile.size / 1024)} KB`}{' '}
+                          • Ready for secure cataloging
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-2.5 py-1 text-[11px] font-semibold text-[#2563EB] hover:bg-[#DBEAFE] rounded-md transition-colors"
+                      >
+                        Replace
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedFile(null);
+                          if (fileInputRef.current) fileInputRef.current.value = '';
+                        }}
+                        className="p-1 text-[#94A3B8] hover:text-[#DC2626] rounded-md hover:bg-[#FEE2E2] transition-colors"
+                        title="Remove file"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsDragging(false);
+                      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                        const file = e.dataTransfer.files[0];
+                        setSelectedFile(file);
+                        if (!newName) {
+                          setNewName(file.name);
+                        }
+                      }
+                    }}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
+                      isDragging
+                        ? 'border-[#2563EB] bg-[#EFF6FF]'
+                        : 'border-[#CBD5E1] bg-[#F8FAFC] hover:border-[#2563EB] hover:bg-[#F1F5F9]'
+                    }`}
+                  >
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      className="hidden"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.jpg,.jpeg,.png,.zip"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          const file = e.target.files[0];
+                          setSelectedFile(file);
+                          if (!newName) {
+                            setNewName(file.name);
+                          }
+                        }
+                      }}
+                    />
+                    <div className="flex flex-col items-center gap-1.5 pointer-events-none">
+                      <div className="w-9 h-9 rounded-full bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
+                        <UploadCloud className="w-4 h-4" />
+                      </div>
+                      <div className="text-xs text-[#0F172A]">
+                        <span className="font-bold text-[#2563EB] hover:underline">
+                          Click to browse
+                        </span>{' '}
+                        or drag and drop document file
+                      </div>
+                      <p className="text-[11px] text-[#64748B]">
+                        PDF, Word, Excel, Images, or ZIP archives (max 50 MB)
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div>
                 <label className="block font-semibold text-[#0F172A] mb-1">
                   Document Title / File Name *
@@ -943,16 +1070,30 @@ export const MasterDocumentVaultPage: React.FC = () => {
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
                 <button
                   type="button"
-                  onClick={() => setIsAddModalOpen(false)}
+                  onClick={() => {
+                    setIsAddModalOpen(false);
+                    setSelectedFile(null);
+                  }}
                   className="px-3.5 py-1.5 rounded-lg border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#0F172A] text-white font-semibold hover:bg-[#1E293B] shadow-sm transition-colors"
+                  disabled={isUploading}
+                  className="px-4 py-2 rounded-lg bg-[#0F172A] text-white font-semibold hover:bg-[#1E293B] shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-60"
                 >
-                  Save to Master Library
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Uploading &amp; Hashing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>Save to Master Library</span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>

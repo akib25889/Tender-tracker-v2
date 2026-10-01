@@ -134,14 +134,15 @@ interface TenderContextType {
   addReusableDocument: (doc: {
     name: string;
     category: string;
-    size: string;
+    size?: string;
     companyName?: string;
     companyRole?: string;
     isJvPartner?: boolean;
     expiryDate?: string;
     accessLevel: DocumentAccessLevel;
     description?: string;
-  }) => void;
+    file?: File;
+  }) => Promise<ReusableDocument | void>;
   updateDocumentAccess: (docId: string, newAccess: DocumentAccessLevel) => void;
   updateTenderDocumentAccess: (tenderId: string, docId: string, newAccess: DocumentAccessLevel) => void;
   linkReusableDocumentToTender: (tenderId: string, reusableDocId: string, targetFolder: string) => void;
@@ -2097,31 +2098,82 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem('tendertracker_reusable_docs', JSON.stringify(reusableDocuments));
   }, [reusableDocuments]);
 
-  const addReusableDocument = (doc: {
+  const addReusableDocument = async (doc: {
     name: string;
     category: string;
-    size: string;
+    size?: string;
     companyName?: string;
     companyRole?: string;
     isJvPartner?: boolean;
     expiryDate?: string;
     accessLevel: DocumentAccessLevel;
     description?: string;
+    file?: File;
   }) => {
+    if (doc.file) {
+      try {
+        const formData = new FormData();
+        formData.append('file', doc.file);
+        if (doc.name) formData.append('name', doc.name);
+        formData.append('category', doc.category);
+        if (doc.companyName) formData.append('company_name', doc.companyName);
+        if (doc.companyRole) formData.append('company_role', doc.companyRole);
+        formData.append('is_jv_partner', String(Boolean(doc.isJvPartner)));
+        if (doc.expiryDate) formData.append('expiry_date', doc.expiryDate);
+        formData.append('access_level', doc.accessLevel || 'ALL_TEAM');
+        if (doc.description) formData.append('description', doc.description);
+
+        const res = await fetch(`${API_BASE_URL}/documents/reusable/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const createdDoc: ReusableDocument = {
+            id: data.id,
+            name: data.name,
+            category: data.category,
+            companyName: data.company_name || doc.companyName || 'PrimeTech Ltd',
+            companyRole: data.company_role || doc.companyRole || (doc.isJvPartner ? 'JV_PARTNER' : 'LEAD_BIDDER'),
+            isJvPartner: Boolean(data.is_jv_partner),
+            uploadedAt: data.uploaded_at || new Date().toISOString().split('T')[0],
+            expiryDate: data.expiry_date || doc.expiryDate,
+            size: data.size,
+            revision: data.revision || 'v1.0',
+            accessLevel: data.access_level || doc.accessLevel || 'ALL_TEAM',
+            sha256: data.sha256,
+            description: data.description || doc.description,
+            filePath: data.file_path,
+          };
+          setReusableDocuments((prev) => [createdDoc, ...prev]);
+          return createdDoc;
+        }
+      } catch (err) {
+        console.error('Master document file upload error:', err);
+      }
+    }
+
     const hex = '0123456789abcdef';
     let hash = '';
     for (let i = 0; i < 64; i++) hash += hex[Math.floor(Math.random() * 16)];
 
+    const sizeFormatted = doc.file
+      ? (doc.file.size >= 1024 * 1024
+          ? `${(doc.file.size / (1024 * 1024)).toFixed(1)} MB`
+          : `${Math.round(doc.file.size / 1024)} KB`)
+      : (doc.size || '2.5 MB');
+
     const newDoc: ReusableDocument = {
       id: `RUD-${Math.floor(100 + Math.random() * 900)}`,
-      name: doc.name,
+      name: doc.name || (doc.file ? doc.file.name : 'Master_Document.pdf'),
       category: doc.category,
       companyName: doc.companyName || 'PrimeTech Ltd',
       companyRole: doc.companyRole || (doc.isJvPartner ? 'JV_PARTNER' : 'LEAD_BIDDER'),
       isJvPartner: Boolean(doc.isJvPartner),
       uploadedAt: new Date().toISOString().split('T')[0],
       expiryDate: doc.expiryDate,
-      size: doc.size || '2.5 MB',
+      size: sizeFormatted,
       revision: 'v1.0',
       accessLevel: doc.accessLevel || 'ALL_TEAM',
       sha256: hash,
@@ -2132,19 +2184,20 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: doc.name,
-        category: doc.category,
-        company_name: doc.companyName || 'PrimeTech Ltd',
-        company_role: doc.companyRole || (doc.isJvPartner ? 'JV_PARTNER' : 'LEAD_BIDDER'),
-        is_jv_partner: Boolean(doc.isJvPartner),
-        size: doc.size || '2.5 MB',
-        expiry_date: doc.expiryDate,
-        access_level: doc.accessLevel || 'ALL_TEAM',
-        description: doc.description,
+        name: newDoc.name,
+        category: newDoc.category,
+        company_name: newDoc.companyName,
+        company_role: newDoc.companyRole,
+        is_jv_partner: newDoc.isJvPartner,
+        size: newDoc.size,
+        expiry_date: newDoc.expiryDate,
+        access_level: newDoc.accessLevel,
+        description: newDoc.description,
       }),
     }).catch(() => {});
 
     setReusableDocuments((prev) => [newDoc, ...prev]);
+    return newDoc;
   };
 
   const updateDocumentAccess = (docId: string, newAccess: DocumentAccessLevel) => {
