@@ -550,6 +550,8 @@ def get_reusable_documents(
 
 
 @router.get("/reusable-documents/{doc_id}/preview")
+@router.get("/documents/reusable/{doc_id}/preview")
+@router.get("/documents/reusable-documents/{doc_id}/preview")
 def preview_reusable_document(
     doc_id: str, request: Request, db: Session = Depends(get_db)
 ):
@@ -562,6 +564,8 @@ def preview_reusable_document(
 
 
 @router.get("/reusable-documents/{doc_id}/download")
+@router.get("/documents/reusable/{doc_id}/download")
+@router.get("/documents/reusable-documents/{doc_id}/download")
 def download_reusable_document(doc_id: str, db: Session = Depends(get_db)):
     doc = db.query(ReusableDocument).filter(ReusableDocument.id == doc_id).first()
     if not doc or not doc.file_path or not os.path.exists(doc.file_path):
@@ -606,6 +610,68 @@ def create_reusable_document(doc_in: ReusableDocCreate, db: Session = Depends(ge
         access_level=doc_in.access_level,
         sha256=mock_hash,
         description=doc_in.description,
+    )
+    db.add(new_doc)
+    db.commit()
+    db.refresh(new_doc)
+    return new_doc
+
+
+@router.post(
+    "/reusable-documents/upload",
+    response_model=ReusableDocOut,
+    status_code=status.HTTP_201_CREATED,
+)
+@router.post(
+    "/documents/reusable/upload",
+    response_model=ReusableDocOut,
+    status_code=status.HTTP_201_CREATED,
+)
+async def upload_reusable_document(
+    file: UploadFile = File(...),
+    name: Optional[str] = Form(None),
+    category: str = Form("Company Statutory"),
+    company_name: Optional[str] = Form("PrimeTech Ltd"),
+    company_role: Optional[str] = Form("LEAD_BIDDER"),
+    is_jv_partner: Optional[bool] = Form(False),
+    expiry_date: Optional[str] = Form(None),
+    access_level: str = Form("ALL_TEAM"),
+    description: Optional[str] = Form(None),
+    db: Session = Depends(get_db),
+):
+    safe_company = "".join(
+        c if c.isalnum() or c in ("-", "_") else "_"
+        for c in (company_name or "PrimeTech_Ltd")
+    ).strip("_") or "PrimeTech_Ltd"
+
+    target_dir = get_master_library_dir() / safe_company
+    filename, sha256_hash, size_bytes = await save_uploaded_file(file, target_dir)
+    file_path = str(target_dir / filename)
+
+    doc_id = f"RUD-{uuid.uuid4().hex[:8].upper()}"
+    size_str = (
+        f"{size_bytes / (1024 * 1024):.1f} MB"
+        if size_bytes >= 1024 * 1024
+        else f"{size_bytes / 1024:.0f} KB"
+    )
+
+    doc_name = name.strip() if name and name.strip() else filename
+
+    new_doc = ReusableDocument(
+        id=doc_id,
+        name=doc_name,
+        category=category,
+        company_name=company_name or "PrimeTech Ltd",
+        company_role=company_role or ("JV_PARTNER" if is_jv_partner else "LEAD_BIDDER"),
+        is_jv_partner=bool(is_jv_partner),
+        uploaded_at=datetime.now().strftime("%Y-%m-%d"),
+        expiry_date=expiry_date if expiry_date else None,
+        size=size_str,
+        revision="v1.0",
+        access_level=access_level,
+        sha256=sha256_hash,
+        description=description,
+        file_path=file_path,
     )
     db.add(new_doc)
     db.commit()
@@ -910,6 +976,8 @@ def delete_tender_document(doc_id: str, db: Session = Depends(get_db)):
 
 
 @router.patch("/reusable-documents/{doc_id}", response_model=ReusableDocOut)
+@router.patch("/documents/reusable/{doc_id}", response_model=ReusableDocOut)
+@router.patch("/documents/reusable-documents/{doc_id}", response_model=ReusableDocOut)
 def update_reusable_document(
     doc_id: str,
     payload: ReusableDocUpdate,
@@ -922,18 +990,82 @@ def update_reusable_document(
         doc.name = payload.name
     if payload.category is not None:
         doc.category = payload.category
+    if payload.company_name is not None:
+        doc.company_name = payload.company_name
+    if payload.company_role is not None:
+        doc.company_role = payload.company_role
+    if payload.is_jv_partner is not None:
+        doc.is_jv_partner = payload.is_jv_partner
     if payload.access_level is not None:
         doc.access_level = payload.access_level
     if payload.expiry_date is not None:
         doc.expiry_date = payload.expiry_date
     if payload.description is not None:
         doc.description = payload.description
+    if payload.size is not None:
+        doc.size = payload.size
+    if payload.revision is not None:
+        doc.revision = payload.revision
+    db.commit()
+    db.refresh(doc)
+    return doc
+
+
+@router.post("/reusable-documents/{doc_id}/replace-file", response_model=ReusableDocOut)
+@router.post("/documents/reusable/{doc_id}/replace-file", response_model=ReusableDocOut)
+@router.post("/documents/reusable-documents/{doc_id}/replace-file", response_model=ReusableDocOut)
+async def replace_reusable_document_file(
+    doc_id: str,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    doc = db.query(ReusableDocument).filter(ReusableDocument.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Reusable document not found")
+
+    safe_company = "".join(
+        c if c.isalnum() or c in ("-", "_") else "_"
+        for c in (doc.company_name or "PrimeTech_Ltd")
+    ).strip("_") or "PrimeTech_Ltd"
+
+    target_dir = get_master_library_dir() / safe_company
+    filename, sha256_hash, size_bytes = await save_uploaded_file(file, target_dir)
+    file_path = str(target_dir / filename)
+
+    if doc.file_path and os.path.exists(doc.file_path) and doc.file_path != file_path:
+        try:
+            os.remove(doc.file_path)
+        except OSError:
+            pass
+
+    size_str = (
+        f"{size_bytes / (1024 * 1024):.1f} MB"
+        if size_bytes >= 1024 * 1024
+        else f"{size_bytes / 1024:.0f} KB"
+    )
+
+    current_rev = doc.revision or "v1.0"
+    try:
+        ver_num = float(current_rev.lower().replace("v", ""))
+        new_rev = f"v{ver_num + 0.1:.1f}"
+    except Exception:
+        new_rev = f"{current_rev}.1"
+
+    doc.name = filename
+    doc.file_path = file_path
+    doc.sha256 = sha256_hash
+    doc.size = size_str
+    doc.revision = new_rev
+    doc.uploaded_at = datetime.now().strftime("%Y-%m-%d")
+
     db.commit()
     db.refresh(doc)
     return doc
 
 
 @router.delete("/reusable-documents/{doc_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/documents/reusable/{doc_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/documents/reusable-documents/{doc_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_reusable_document(doc_id: str, db: Session = Depends(get_db)):
     doc = db.query(ReusableDocument).filter(ReusableDocument.id == doc_id).first()
     if not doc:
