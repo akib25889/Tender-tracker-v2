@@ -76,9 +76,14 @@ class DocumentNewUploadRequest(BaseModel):
 class ReusableDocUpdate(BaseModel):
     name: Optional[str] = None
     category: Optional[str] = None
+    company_name: Optional[str] = None
+    company_role: Optional[str] = None
+    is_jv_partner: Optional[bool] = None
     access_level: Optional[str] = None
     expiry_date: Optional[str] = None
     description: Optional[str] = None
+    size: Optional[str] = None
+    revision: Optional[str] = None
 
 
 class ReusableDocCreate(BaseModel):

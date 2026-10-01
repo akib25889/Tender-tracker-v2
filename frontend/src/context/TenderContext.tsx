@@ -144,6 +144,12 @@ interface TenderContextType {
     file?: File;
   }) => Promise<ReusableDocument | void>;
   updateDocumentAccess: (docId: string, newAccess: DocumentAccessLevel) => void;
+  updateReusableDocument: (
+    docId: string,
+    updates: Partial<ReusableDocument>,
+    newFile?: File
+  ) => Promise<void>;
+  deleteReusableDocument: (docId: string) => Promise<void>;
   updateTenderDocumentAccess: (tenderId: string, docId: string, newAccess: DocumentAccessLevel) => void;
   linkReusableDocumentToTender: (tenderId: string, reusableDocId: string, targetFolder: string) => void;
   hasDocumentAccess: (accessLevel?: DocumentAccessLevel, role?: UserRole) => boolean;
@@ -2212,6 +2218,75 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
+  const updateReusableDocument = async (
+    docId: string,
+    updates: Partial<ReusableDocument>,
+    newFile?: File
+  ) => {
+    let updatedFields: Partial<ReusableDocument> = { ...updates };
+
+    if (newFile) {
+      try {
+        const formData = new FormData();
+        formData.append('file', newFile);
+        const replaceRes = await fetch(`${API_BASE_URL}/documents/reusable/${docId}/replace-file`, {
+          method: 'POST',
+          body: formData,
+        });
+        if (replaceRes.ok) {
+          const replaceData = await replaceRes.json();
+          updatedFields = {
+            ...updatedFields,
+            name: updates.name || replaceData.name,
+            size: replaceData.size,
+            revision: replaceData.revision,
+            sha256: replaceData.sha256,
+            filePath: replaceData.file_path,
+          };
+        }
+      } catch (err) {
+        console.error('Failed to replace file on backend:', err);
+      }
+    }
+
+    try {
+      await fetch(`${API_BASE_URL}/documents/reusable-documents/${docId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: updatedFields.name,
+          category: updatedFields.category,
+          company_name: updatedFields.companyName,
+          company_role: updatedFields.companyRole,
+          is_jv_partner: updatedFields.isJvPartner,
+          access_level: updatedFields.accessLevel,
+          expiry_date: updatedFields.expiryDate,
+          description: updatedFields.description,
+          size: updatedFields.size,
+          revision: updatedFields.revision,
+        }),
+      });
+    } catch (err) {
+      console.error('Failed to update reusable document on backend:', err);
+    }
+
+    setReusableDocuments((prev) =>
+      prev.map((d) => (d.id === docId ? { ...d, ...updatedFields } : d))
+    );
+  };
+
+  const deleteReusableDocument = async (docId: string) => {
+    try {
+      await fetch(`${API_BASE_URL}/documents/reusable-documents/${docId}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.error('Failed to delete reusable document on backend:', err);
+    }
+
+    setReusableDocuments((prev) => prev.filter((d) => d.id !== docId));
+  };
+
   const updateTenderDocumentAccess = (
     tenderId: string,
     docId: string,
@@ -2609,6 +2684,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         setActiveDocForShare,
         reusableDocuments,
         addReusableDocument,
+        updateReusableDocument,
+        deleteReusableDocument,
         updateDocumentAccess,
         updateTenderDocumentAccess,
         linkReusableDocumentToTender,

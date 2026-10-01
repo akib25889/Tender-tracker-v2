@@ -614,68 +614,6 @@ def create_reusable_document(doc_in: ReusableDocCreate, db: Session = Depends(ge
 
 
 @router.post(
-    "/reusable-documents/upload",
-    response_model=ReusableDocOut,
-    status_code=status.HTTP_201_CREATED,
-)
-@router.post(
-    "/documents/reusable/upload",
-    response_model=ReusableDocOut,
-    status_code=status.HTTP_201_CREATED,
-)
-async def upload_reusable_document(
-    file: UploadFile = File(...),
-    name: Optional[str] = Form(None),
-    category: str = Form("Company Statutory"),
-    company_name: Optional[str] = Form("PrimeTech Ltd"),
-    company_role: Optional[str] = Form("LEAD_BIDDER"),
-    is_jv_partner: Optional[bool] = Form(False),
-    expiry_date: Optional[str] = Form(None),
-    access_level: str = Form("ALL_TEAM"),
-    description: Optional[str] = Form(None),
-    db: Session = Depends(get_db),
-):
-    safe_company = "".join(
-        c if c.isalnum() or c in ("-", "_") else "_"
-        for c in (company_name or "PrimeTech_Ltd")
-    ).strip("_") or "PrimeTech_Ltd"
-
-    target_dir = get_master_library_dir() / safe_company
-    filename, sha256_hash, size_bytes = await save_uploaded_file(file, target_dir)
-    file_path = str(target_dir / filename)
-
-    doc_id = f"RUD-{uuid.uuid4().hex[:8].upper()}"
-    size_str = (
-        f"{size_bytes / (1024 * 1024):.1f} MB"
-        if size_bytes >= 1024 * 1024
-        else f"{size_bytes / 1024:.0f} KB"
-    )
-
-    doc_name = name.strip() if name and name.strip() else filename
-
-    new_doc = ReusableDocument(
-        id=doc_id,
-        name=doc_name,
-        category=category,
-        company_name=company_name or "PrimeTech Ltd",
-        company_role=company_role or ("JV_PARTNER" if is_jv_partner else "LEAD_BIDDER"),
-        is_jv_partner=bool(is_jv_partner),
-        uploaded_at=datetime.now().strftime("%Y-%m-%d"),
-        expiry_date=expiry_date if expiry_date else None,
-        size=size_str,
-        revision="v1.0",
-        access_level=access_level,
-        sha256=sha256_hash,
-        description=description,
-        file_path=file_path,
-    )
-    db.add(new_doc)
-    db.commit()
-    db.refresh(new_doc)
-    return new_doc
-
-
-@router.post(
     "/tenders/{tender_id}/link-reusable",
     response_model=DocumentOut,
     status_code=status.HTTP_201_CREATED,

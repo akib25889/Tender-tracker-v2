@@ -32,6 +32,9 @@ import {
   Upload,
   UploadCloud,
   Loader2,
+  Edit2,
+  Trash2,
+  Save,
 } from 'lucide-react';
 import { DocumentPreviewModal } from '../components/modals/DocumentPreviewModal';
 
@@ -125,6 +128,8 @@ export const MasterDocumentVaultPage: React.FC = () => {
   const {
     reusableDocuments,
     addReusableDocument,
+    updateReusableDocument,
+    deleteReusableDocument,
     updateDocumentAccess,
     linkReusableDocumentToTender,
     hasDocumentAccess,
@@ -163,6 +168,23 @@ export const MasterDocumentVaultPage: React.FC = () => {
   const [newExpiry, setNewExpiry] = useState('');
   const [newAccess, setNewAccess] = useState<DocumentAccessLevel>('ALL_TEAM');
   const [newDesc, setNewDesc] = useState('');
+
+  // Modal: Edit Master Document
+  const [docToEdit, setDocToEdit] = useState<ReusableDocument | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editCategory, setEditCategory] = useState('');
+  const [editCompanyName, setEditCompanyName] = useState('');
+  const [editCompanyRole, setEditCompanyRole] = useState<'LEAD_BIDDER' | 'JV_PARTNER' | 'SUBCONTRACTOR'>('LEAD_BIDDER');
+  const [editExpiry, setEditExpiry] = useState('');
+  const [editAccess, setEditAccess] = useState<DocumentAccessLevel>('ALL_TEAM');
+  const [editDesc, setEditDesc] = useState('');
+  const [editFile, setEditFile] = useState<File | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Modal: Delete confirmation
+  const [docToDelete, setDocToDelete] = useState<ReusableDocument | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Modal: Reference / Link Document to Tender
   const [docToLink, setDocToLink] = useState<ReusableDocument | null>(null);
@@ -244,6 +266,57 @@ export const MasterDocumentVaultPage: React.FC = () => {
       setIsAddModalOpen(false);
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const handleOpenEdit = (doc: ReusableDocument) => {
+    setDocToEdit(doc);
+    setEditName(doc.name);
+    setEditCategory(doc.category);
+    setEditCompanyName(doc.companyName || 'PrimeTech Ltd');
+    setEditCompanyRole((doc.companyRole as any) || (doc.isJvPartner ? 'JV_PARTNER' : 'LEAD_BIDDER'));
+    setEditExpiry(doc.expiryDate || '');
+    setEditAccess(doc.accessLevel);
+    setEditDesc(doc.description || '');
+    setEditFile(null);
+  };
+
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!docToEdit) return;
+
+    setIsUpdating(true);
+    try {
+      await updateReusableDocument(
+        docToEdit.id,
+        {
+          name: editName.trim() || docToEdit.name,
+          category: editCategory,
+          companyName: editCompanyName.trim(),
+          companyRole: editCompanyRole,
+          isJvPartner: editCompanyRole === 'JV_PARTNER',
+          expiryDate: editExpiry || undefined,
+          accessLevel: editAccess,
+          description: editDesc.trim() || undefined,
+        },
+        editFile || undefined
+      );
+
+      setDocToEdit(null);
+      setEditFile(null);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!docToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteReusableDocument(docToDelete.id);
+      setDocToDelete(null);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -620,7 +693,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                     <th className="py-3 px-3.5 whitespace-nowrap">Owning Entity</th>
                     <th className="py-3 px-3.5 whitespace-nowrap">Clearance Scope</th>
                     <th className="py-3 px-3.5 whitespace-nowrap">Validity / Expiry</th>
-                    <th className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-[#F8FAFC] dark:bg-slate-800 shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[145px] min-w-[145px]">
+                    <th className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-[#F8FAFC] dark:bg-slate-800 shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[210px] min-w-[210px]">
                       Actions
                     </th>
                   </tr>
@@ -745,7 +818,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                           </td>
 
                           {/* Actions Column - Clean Redesigned Unified Action Bar */}
-                          <td className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50/90 dark:group-hover:bg-slate-800/90 transition-colors shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[145px] min-w-[145px]">
+                          <td className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50/90 dark:group-hover:bg-slate-800/90 transition-colors shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[210px] min-w-[210px]">
                             <div className="flex items-center justify-end gap-1.5">
                               {/* 1. Preview Document */}
                               <button
@@ -781,7 +854,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                                 <Share2 className="w-3.5 h-3.5" />
                               </button>
 
-                              {/* 3. Download or Lock Indicator (Exact same 28px button footprint!) */}
+                              {/* 3. Download or Lock Indicator */}
                               {hasAccess ? (
                                 <button
                                   type="button"
@@ -800,7 +873,17 @@ export const MasterDocumentVaultPage: React.FC = () => {
                                 </div>
                               )}
 
-                              {/* 4. Primary Action: Reference into Active Tender (Icon Only) */}
+                              {/* 4. Edit Master Document */}
+                              <button
+                                type="button"
+                                onClick={() => handleOpenEdit(doc)}
+                                className="p-1.5 text-slate-500 hover:text-amber-600 dark:text-slate-400 dark:hover:text-amber-400 bg-slate-50 hover:bg-amber-50/80 dark:bg-slate-800/80 dark:hover:bg-amber-950/30 border border-slate-200/80 dark:border-slate-700 hover:border-amber-300 rounded-lg transition-colors cursor-pointer shrink-0"
+                                title="Edit master document info and replace file"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
+
+                              {/* 5. Primary Action: Reference into Active Tender */}
                               <button
                                 type="button"
                                 onClick={() => setDocToLink(doc)}
@@ -808,6 +891,16 @@ export const MasterDocumentVaultPage: React.FC = () => {
                                 title="Use in Tender (Reference into active tender)"
                               >
                                 <LinkIcon className="w-3.5 h-3.5" />
+                              </button>
+
+                              {/* 6. Delete Master Document */}
+                              <button
+                                type="button"
+                                onClick={() => setDocToDelete(doc)}
+                                className="p-1.5 text-slate-400 hover:text-rose-600 dark:text-slate-500 dark:hover:text-rose-400 bg-slate-50 hover:bg-rose-50/80 dark:bg-slate-800/80 dark:hover:bg-rose-950/30 border border-slate-200/80 dark:border-slate-700 hover:border-rose-300 rounded-lg transition-colors cursor-pointer shrink-0"
+                                title="Delete from master library"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
                               </button>
                             </div>
                           </td>
@@ -1223,6 +1316,277 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 </div>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Edit Master Document */}
+      {docToEdit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E2E8F0] dark:border-slate-800 p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9] dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <Edit2 className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <div>
+                  <h3 className="font-display text-sm font-bold text-[#0F172A] dark:text-white">
+                    Edit Master Document
+                  </h3>
+                  <span className="text-[10px] font-mono text-[#64748B] dark:text-slate-400">
+                    ID: {docToEdit.id} • Revision: {docToEdit.revision}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setDocToEdit(null);
+                  setEditFile(null);
+                }}
+                className="text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="space-y-3.5 text-xs">
+              {/* Optional: Replace Document File */}
+              <div className="space-y-1.5 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-semibold text-[#0F172A] dark:text-slate-200">
+                    Physical Document File
+                  </span>
+                  <span className="text-[11px] font-mono text-[#64748B] dark:text-slate-400">
+                    Current: {docToEdit.size} ({docToEdit.revision})
+                  </span>
+                </div>
+
+                {editFile ? (
+                  <div className="p-2.5 bg-[#F0FDF4] dark:bg-emerald-950/40 border border-[#BBF7D0] dark:border-emerald-800 rounded-lg flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <FileText className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <div className="min-w-0">
+                        <span className="font-bold text-xs text-[#0F172A] dark:text-emerald-300 truncate block">
+                          {editFile.name}
+                        </span>
+                        <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-mono">
+                          New Revision ({(editFile.size / (1024 * 1024)).toFixed(2)} MB)
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditFile(null);
+                        if (editFileInputRef.current) editFileInputRef.current.value = '';
+                      }}
+                      className="p-1 text-slate-400 hover:text-rose-600"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => editFileInputRef.current?.click()}
+                    className="p-3 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    <input
+                      ref={editFileInputRef}
+                      type="file"
+                      className="hidden"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.jpg,.jpeg,.png,.zip"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setEditFile(e.target.files[0]);
+                        }
+                      }}
+                    />
+                    <div className="flex items-center justify-center gap-2 text-slate-600 dark:text-slate-300 text-[11px]">
+                      <UploadCloud className="w-4 h-4 text-blue-600" />
+                      <span>Click to upload replacement file (auto-bumps revision)</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                  Document Title / File Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                />
+              </div>
+
+              {/* Owning Entity & Role */}
+              <div className="grid grid-cols-2 gap-3 p-3 bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-700 rounded-lg">
+                <div>
+                  <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                    Owning Entity Role *
+                  </label>
+                  <select
+                    value={editCompanyRole}
+                    onChange={(e) => setEditCompanyRole(e.target.value as any)}
+                    className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-white"
+                  >
+                    <option value="LEAD_BIDDER">🏛️ Lead Bidder</option>
+                    <option value="JV_PARTNER">⭐ JV Partner</option>
+                    <option value="SUBCONTRACTOR">🤝 Subcontractor</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                    Company / Entity Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editCompanyName}
+                    onChange={(e) => setEditCompanyName(e.target.value)}
+                    className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                    Document Category *
+                  </label>
+                  <select
+                    value={editCategory}
+                    onChange={(e) => setEditCategory(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-white"
+                  >
+                    {categories.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                    Validity / Expiration Date
+                  </label>
+                  <input
+                    type="date"
+                    value={editExpiry}
+                    onChange={(e) => setEditExpiry(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                  Access &amp; Security Permission Scope *
+                </label>
+                <select
+                  value={editAccess}
+                  onChange={(e) => setEditAccess(e.target.value as DocumentAccessLevel)}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-white"
+                >
+                  <option value="ALL_TEAM">🌐 All Team Members (Public to organization)</option>
+                  <option value="MANAGEMENT_ONLY">🛡️ Management Only (Directors &amp; Managers)</option>
+                  <option value="RESTRICTED_FINANCE">🔒 Finance &amp; Legal Only (Confidential Financials)</option>
+                  <option value="EXECUTIVE_ONLY">👑 Executive Board Only (C-Level Clearance)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                  Brief Description / Scope of Use
+                </label>
+                <textarea
+                  rows={2}
+                  value={editDesc}
+                  onChange={(e) => setEditDesc(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-white"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9] dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDocToEdit(null);
+                    setEditFile(null);
+                  }}
+                  className="px-3.5 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 dark:hover:text-white font-semibold transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUpdating}
+                  className="px-4 py-2 rounded-lg bg-[#2563EB] text-white font-semibold hover:bg-[#1D4ED8] shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-60"
+                >
+                  {isUpdating ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Saving Changes...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-3.5 h-3.5" />
+                      <span>Save Changes</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Delete Confirmation */}
+      {docToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-rose-200 dark:border-rose-900/50 p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-600 flex items-center justify-center shrink-0">
+                <Trash2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-display text-sm font-bold text-[#0F172A] dark:text-white">
+                  Delete Master Document?
+                </h3>
+                <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">
+                  Are you sure you want to delete <span className="font-semibold text-rose-600">"{docToDelete.name}"</span>? This will remove the document and its file from the master library.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9] dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setDocToDelete(null)}
+                className="px-3.5 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 dark:hover:text-white font-semibold transition-colors text-xs"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+                className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-semibold shadow-sm transition-colors text-xs flex items-center gap-1.5 disabled:opacity-60"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  <span>Confirm Delete</span>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}
