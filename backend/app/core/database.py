@@ -522,27 +522,6 @@ def run_migrations():
                             conn.commit()
                         except Exception:
                             pass
-
-                    # Modify existing column sizes if necessary for MySQL
-                    for mod_sql in [
-                        "ALTER TABLE tenders MODIFY COLUMN title TEXT NULL",
-                        "ALTER TABLE tenders MODIFY COLUMN organization TEXT NULL",
-                        "ALTER TABLE tenders MODIFY COLUMN category TEXT NULL",
-                        "ALTER TABLE tenders MODIFY COLUMN country VARCHAR(255) NULL",
-                        "ALTER TABLE tenders MODIFY COLUMN tender_type TEXT NULL",
-                        "ALTER TABLE tenders MODIFY COLUMN budget_type TEXT NULL",
-                        "ALTER TABLE tenders MODIFY COLUMN source_of_fund TEXT NULL",
-                        "ALTER TABLE tenders MODIFY COLUMN procurement_method TEXT NULL",
-                        "ALTER TABLE tenders MODIFY COLUMN evaluation_method TEXT NULL",
-                        "ALTER TABLE tenders MODIFY COLUMN possible_period TEXT NULL",
-                        "ALTER TABLE tenders MODIFY COLUMN maintenance_period TEXT NULL",
-                        "ALTER TABLE tenders MODIFY COLUMN schedule_purchase_deadline TEXT NULL",
-                    ]:
-                        try:
-                            conn.execute(text(mod_sql))
-                            conn.commit()
-                        except Exception:
-                            pass
     except Exception as e:
         print(f"Warning during migration check: {e}")
 

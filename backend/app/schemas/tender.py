@@ -51,7 +51,7 @@ class DecisionMatrixOut(BaseModel):
 
 
 class ImportantClauseSchema(BaseModel):
-    id: Optional[str] = None
+    id: str
     clause_title: str
     category: str = "FINANCIAL"
     criticality: str = "CRITICAL"

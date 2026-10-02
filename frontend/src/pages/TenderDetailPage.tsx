@@ -469,14 +469,19 @@ export const TenderDetailPage: React.FC = () => {
           </div>
 
           {/* Right SOW Category & Readiness Gauge */}
-          <div className="flex flex-wrap items-center gap-6 lg:border-l lg:border-[#F1F5F9] lg:pl-8 shrink-0">
-            <div className="space-y-1">
+          <div className="flex flex-wrap items-center gap-6 lg:border-l lg:border-[#F1F5F9] lg:pl-8 shrink-0 max-w-full lg:max-w-md">
+            <div className="space-y-1 min-w-0 max-w-[220px]">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
                 Scope of Work (SOW)
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#EFF6FF] text-[#1D4ED8] font-semibold text-xs border border-[#BFDBFE]">
-                <Building className="w-3.5 h-3.5 text-[#2563EB]" />
-                {tender.category || 'IT & Cloud Infrastructure'}
+              <span
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#EFF6FF] text-[#1D4ED8] font-semibold text-xs border border-[#BFDBFE] max-w-full truncate"
+                title={tender.category || 'IT & Cloud Infrastructure'}
+              >
+                <Building className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
+                <span className="truncate">
+                  {tender.category ? tender.category.split(';')[0].trim() : 'IT & Cloud Infrastructure'}
+                </span>
               </span>
             </div>
 
@@ -721,13 +726,16 @@ export const TenderDetailPage: React.FC = () => {
               <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-xs overflow-hidden">
                 {/* Header bar */}
                 <div className="px-6 py-4 border-b border-[#F1F5F9] flex items-center justify-between bg-[#F8FAFC]">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#2563EB]" />
-                    <h3 className="text-sm font-bold text-[#0F172A] tracking-tight">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#2563EB] shrink-0" />
+                    <h3 className="text-sm font-bold text-[#0F172A] tracking-tight shrink-0">
                       Tender Specification Matrix &amp; Identity
                     </h3>
-                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#0F172A] text-white uppercase tracking-wider">
-                      {tender.category || 'Software / IT Related'}
+                    <span
+                      className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#0F172A] text-white uppercase tracking-wider max-w-xs sm:max-w-sm truncate"
+                      title={tender.category || 'Software / IT Related'}
+                    >
+                      {tender.category ? tender.category.split(';')[0].trim() : 'Software / IT Related'}
                     </span>
                   </div>
 
