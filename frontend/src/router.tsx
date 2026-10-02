@@ -1,4 +1,18 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate, useParams } from 'react-router-dom';
+
+function TenderLegacySlashRedirect() {
+  const { p1, p2, p3, tab } = useParams();
+  const tenderId = `${p1}-${p2}-${p3}`;
+  const suffix = tab ? `/${tab}` : '';
+  return <Navigate to={`/tenders/${tenderId}${suffix}`} replace />;
+}
+
+function RegistryLegacySlashRedirect() {
+  const { p1, p2, p3 } = useParams();
+  const tenderId = `${p1}-${p2}-${p3}`;
+  return <Navigate to={`/registry/summary/${tenderId}`} replace />;
+}
+
 import { AppLayout } from './components/layout/AppLayout';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
@@ -80,6 +94,10 @@ export const router = createBrowserRouter([
         element: <TenderSummaryPage />,
       },
       {
+        path: 'registry/summary/:p1/:p2/:p3',
+        element: <RegistryLegacySlashRedirect />,
+      },
+      {
         path: 'archive',
         element: <Navigate to="/tools/archive" replace />,
       },
@@ -120,6 +138,14 @@ export const router = createBrowserRouter([
             element: <TenderResultTab />,
           },
         ],
+      },
+      {
+        path: 'tenders/:p1/:p2/:p3',
+        element: <TenderLegacySlashRedirect />,
+      },
+      {
+        path: 'tenders/:p1/:p2/:p3/:tab',
+        element: <TenderLegacySlashRedirect />,
       },
       {
         path: 'tasks/my-tasks',

@@ -53,15 +53,18 @@ def parse_markdown_tender(file_path: Path):
     parsed_yaml = yaml.safe_load(yaml_text)
     t_data = parsed_yaml.get('tender_tracker_data', {})
     
-    tender_id = str(t_data.get('id', '')).strip()
-    if not tender_id:
+    raw_id = str(t_data.get('id', '')).strip()
+    if not raw_id:
         raise ValueError(f"No tender ID in {file_path}")
+    tender_id = raw_id.replace('/', '-')
         
     title = clean_citations(t_data.get('title', ''))
     organization = clean_citations(t_data.get('organization', ''))
-    ref_no = clean_citations(t_data.get('reference_no', ''))
+    ref_no = clean_citations(t_data.get('reference_no', '')) or raw_id
     country = clean_citations(t_data.get('country', ''))
     category = clean_citations(t_data.get('category', ''))
+    if category.startswith("Telecommunications") and len(category) > 60:
+        category = "Telecommunications & Call Center Services"
     classification = clean_citations(t_data.get('classification', 'SOFTWARE / IT RELATED'))
     
     main_idea_match = re.search(r'### Main Idea\s*\n(.*?)(?=\n###|\n##|\n---)', md_content, re.DOTALL)
@@ -159,7 +162,7 @@ def parse_markdown_tender(file_path: Path):
     summary_payload = {
         "classification": classification,
         "projectName": project_name,
-        "tenderIdDisplay": tender_id,
+        "tenderIdDisplay": raw_id,
         "shortTitle": title[:100],
         "portal": portal,
         "publishedDate": str(t_data.get('published_date', '') or ''),
@@ -336,6 +339,20 @@ def import_all_tenders(tender_info_dir: Path, storage_root: Path):
                     db.commit()
                 except Exception as ex:
                     print(f"Note on MySQL column alter: {ex}")
+
+        # Clean up any legacy slash-containing tender IDs from the database
+        try:
+            slash_tenders = db.execute(text("SELECT id FROM tenders WHERE id LIKE '%/%'")).fetchall()
+            for row in slash_tenders:
+                st_id = row[0]
+                print(f"Purging legacy slash tender: {st_id}")
+                db.execute(text("DELETE FROM tender_requirements WHERE tender_id = :tid"), {"tid": st_id})
+                db.execute(text("DELETE FROM tender_documents WHERE tender_id = :tid"), {"tid": st_id})
+                db.execute(text("DELETE FROM tenders WHERE id = :tid"), {"tid": st_id})
+            db.commit()
+        except Exception as ex:
+            print(f"Note on legacy slash cleanup: {ex}")
+            db.rollback()
 
         success_count = 0
         for tid, data in unique_tenders.items():
