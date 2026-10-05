@@ -17,6 +17,8 @@ import {
   FileText,
   Upload,
   Languages,
+  Table,
+  LayoutGrid,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -37,6 +39,7 @@ export const TenderListPage: React.FC = () => {
     stageFromUrl ? stageFromUrl.toUpperCase() : 'ALL'
   );
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+  const [viewMode, setViewMode] = useState<'list' | 'cards'>('list');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [tenderToDelete, setTenderToDelete] = useState<{ id: string; title: string } | null>(null);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
@@ -174,19 +177,51 @@ export const TenderListPage: React.FC = () => {
             />
           </div>
 
-          <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto">
-            <span className="text-xs text-[#64748B] font-medium whitespace-nowrap">Category:</span>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-2.5 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
-            >
-              {categories.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto justify-between md:justify-end">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-[#64748B] font-medium whitespace-nowrap">Category:</span>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-2.5 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
+              >
+                {categories.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* View Mode Toggle: Columns List vs Cards */}
+            <div className="flex items-center bg-[#F1F5F9] dark:bg-slate-800 p-0.5 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shrink-0">
+              <button
+                type="button"
+                onClick={() => setViewMode('list')}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                  viewMode === 'list'
+                    ? 'bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white shadow-2xs'
+                    : 'text-[#64748B] hover:text-[#0F172A]'
+                }`}
+                title="List View with Columns"
+              >
+                <Table className="w-3.5 h-3.5 text-[#2563EB]" />
+                <span>Columns</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('cards')}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                  viewMode === 'cards'
+                    ? 'bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white shadow-2xs'
+                    : 'text-[#64748B] hover:text-[#0F172A]'
+                }`}
+                title="Cards View"
+              >
+                <LayoutGrid className="w-3.5 h-3.5 text-[#64748B]" />
+                <span>Cards</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -283,25 +318,258 @@ export const TenderListPage: React.FC = () => {
         </div>
       )}
 
-      {/* Bid Discovery View: 3-line format per tender */}
-      {selectedStage === 'DISCOVERED' ? (
+      {/* Pipeline View: Columns List (Default) or Expanded Cards */}
+      {viewMode === 'list' ? (
+        /* Unified Column-Based Table List */
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#CBD5E1] dark:border-slate-800 shadow-xs overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-[#F8FAFC] dark:bg-slate-900/80 border-b border-[#CBD5E1] dark:border-slate-800 text-[11px] font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">
+                  <th className="py-3 px-3.5 w-10 text-center">
+                    <button type="button" onClick={toggleSelectAll} title="Select All">
+                      {selectedIds.length === filteredTenders.length && filteredTenders.length > 0 ? (
+                        <CheckSquare className="w-4 h-4 text-[#2563EB]" />
+                      ) : (
+                        <Square className="w-4 h-4 text-[#94A3B8]" />
+                      )}
+                    </button>
+                  </th>
+                  <th className="py-3 px-3 whitespace-nowrap">Tender ID &amp; Ref</th>
+                  <th className="py-3 px-4 min-w-[280px]">Scope of Work (SOW) / Title</th>
+                  <th className="py-3 px-3 min-w-[170px]">Issuing Authority</th>
+                  <th className="py-3 px-3 whitespace-nowrap">Type / Modality</th>
+                  <th className="py-3 px-3 whitespace-nowrap">Estimated Value</th>
+                  <th className="py-3 px-3 whitespace-nowrap">Urgency / Deadline</th>
+                  <th className="py-3 px-3 whitespace-nowrap">Stage &amp; Decision</th>
+                  <th className="py-3 px-3 whitespace-nowrap min-w-[120px]">Readiness</th>
+                  <th className="py-3 px-4 text-right whitespace-nowrap">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E2E8F0] dark:divide-slate-800 text-xs">
+                {paginatedTenders.length === 0 ? (
+                  <tr>
+                    <td colSpan={10} className="py-12 text-center text-[#64748B] dark:text-slate-400">
+                      <Compass className="w-8 h-8 mx-auto text-[#94A3B8] mb-2" />
+                      <p className="font-semibold text-sm text-[#0F172A] dark:text-white">No tenders match criteria</p>
+                      <p className="text-xs text-[#64748B] mt-1">Try resetting the stage filter or search query.</p>
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedTenders.map((tender, idx) => {
+                    const isSelected = selectedIds.includes(tender.id);
+                    const tenderDisplayId = tender.summary?.tenderIdDisplay || tender.referenceNo || tender.id;
+                    return (
+                      <tr
+                        key={`${tender.id}-${idx}`}
+                        className={`hover:bg-[#F8FAFC] dark:hover:bg-slate-800/50 transition-colors group ${
+                          isSelected ? 'bg-[#EFF6FF]/60 dark:bg-blue-950/40' : ''
+                        }`}
+                      >
+                        {/* 1. Checkbox */}
+                        <td className="py-3.5 px-3.5 text-center">
+                          <button type="button" onClick={() => toggleSelect(tender.id)}>
+                            {isSelected ? (
+                              <CheckSquare className="w-4 h-4 text-[#2563EB]" />
+                            ) : (
+                              <Square className="w-4 h-4 text-[#94A3B8]" />
+                            )}
+                          </button>
+                        </td>
+
+                        {/* 2. Tender ID & Ref */}
+                        <td className="py-3.5 px-3 whitespace-nowrap align-top">
+                          <div className="flex flex-col gap-1 items-start">
+                            <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white bg-[#F1F5F9] dark:bg-slate-800 px-2 py-0.5 rounded border border-[#CBD5E1] dark:border-slate-700">
+                              {tenderDisplayId}
+                            </span>
+                            {tender.referenceNo &&
+                              tender.referenceNo !== tender.id &&
+                              tender.referenceNo !== tenderDisplayId && (
+                                <span className="text-[10px] font-mono font-medium text-[#64748B] dark:text-slate-400 bg-[#F8FAFC] dark:bg-slate-800/80 px-1.5 py-0.5 rounded border border-[#E2E8F0] dark:border-slate-700">
+                                  Ref: {tender.referenceNo}
+                                </span>
+                              )}
+                            {tender.amendments && tender.amendments.length > 0 && (
+                              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-800">
+                                Corrigendum ({tender.amendments.length})
+                              </span>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* 3. Title / SOW & Category & Languages */}
+                        <td className="py-3.5 px-4 align-top">
+                          <div className="space-y-1.5">
+                            <Link
+                              to={`/tenders/${tender.id}`}
+                              className="font-bold text-xs sm:text-sm text-[#0F172A] dark:text-white group-hover:text-[#2563EB] transition-colors line-clamp-2 block leading-snug"
+                              title={tender.title}
+                            >
+                              {tender.title}
+                            </Link>
+
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              {tender.category && (
+                                <span className="text-[10px] font-semibold text-[#475569] dark:text-slate-300 bg-[#F1F5F9] dark:bg-slate-800 px-1.5 py-0.5 rounded border border-[#E2E8F0] dark:border-slate-700">
+                                  {tender.category}
+                                </span>
+                              )}
+                              {((tender.languages && tender.languages.length > 0) || tender.language) && (
+                                <span className="inline-flex items-center gap-1 text-[10px] text-[#2563EB] dark:text-blue-400 bg-[#EFF6FF] dark:bg-blue-950/60 px-1.5 py-0.5 rounded border border-[#BFDBFE] dark:border-blue-800 font-medium">
+                                  <Languages className="w-2.5 h-2.5" />
+                                  {(tender.languages && tender.languages.length > 0 ? tender.languages : [tender.language]).join(', ')}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* 4. Authority & Country */}
+                        <td className="py-3.5 px-3 align-top">
+                          <div className="font-semibold text-xs text-[#0F172A] dark:text-white line-clamp-1">
+                            {tender.organization || 'Not specified'}
+                          </div>
+                          <div className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5">
+                            {tender.country || 'Global'}
+                          </div>
+                        </td>
+
+                        {/* 5. Modality / Type */}
+                        <td className="py-3.5 px-3 align-top whitespace-nowrap">
+                          <span className="inline-flex items-center font-semibold text-[#4338CA] dark:text-indigo-300 bg-[#EEF2FF] dark:bg-indigo-950/60 px-2 py-0.5 rounded border border-[#C7D2FE] dark:border-indigo-800 text-[11px]">
+                            {tender.tenderType || tender.summary?.tenderType || 'RFP'}
+                          </span>
+                        </td>
+
+                        {/* 6. Estimated Value */}
+                        <td className="py-3.5 px-3 align-top whitespace-nowrap">
+                          <span className="font-mono font-bold text-xs text-[#0F172A] dark:text-white">
+                            {tender.estimatedValue && tender.estimatedValue > 0
+                              ? formatCurrency(tender.estimatedValue)
+                              : '— (Not stated)'}
+                          </span>
+                        </td>
+
+                        {/* 7. Urgency / Deadline */}
+                        <td className="py-3.5 px-3 align-top whitespace-nowrap">
+                          <UrgencyBadge
+                            daysRemaining={tender.daysRemaining}
+                            hoursRemaining={tender.hoursRemaining}
+                          />
+                        </td>
+
+                        {/* 8. Stage & Decision */}
+                        <td className="py-3.5 px-3 align-top whitespace-nowrap">
+                          <div className="flex flex-col gap-1 items-start">
+                            <StatusBadge stage={tender.stage} />
+                            {tender.decision && <StatusBadge decision={tender.decision} />}
+                          </div>
+                        </td>
+
+                        {/* 9. Readiness */}
+                        <td className="py-3.5 px-3 align-top whitespace-nowrap">
+                          <div className="w-28 space-y-1">
+                            <ReadinessBar score={tender.readinessScore} />
+                          </div>
+                        </td>
+
+                        {/* 10. Actions */}
+                        <td className="py-3.5 px-4 align-top text-right whitespace-nowrap">
+                          <div className="flex items-center justify-end gap-1.5 flex-wrap">
+                            <Link
+                              to={`/registry/summary/${tender.id}`}
+                              className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-[#475569] dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-[#F8FAFC] dark:hover:bg-slate-700 rounded-lg border border-[#CBD5E1] dark:border-slate-700 transition-colors shadow-2xs"
+                              title="View Document Summary"
+                            >
+                              <FileText className="w-3 h-3 text-[#2563EB]" />
+                              <span>Summary</span>
+                            </Link>
+
+                            <Link
+                              to={`/registry?id=${tender.id}`}
+                              className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-[#0F172A] dark:text-white bg-white dark:bg-slate-800 hover:bg-[#F8FAFC] dark:hover:bg-slate-700 rounded-lg border border-[#CBD5E1] dark:border-slate-700 transition-colors shadow-2xs"
+                              title="Edit Tender Specifications"
+                            >
+                              <Edit3 className="w-3 h-3 text-[#64748B]" />
+                              <span>Edit</span>
+                            </Link>
+
+                            {tender.stage !== 'SUBMITTED' && tender.stage !== 'ARCHIVED' && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (window.confirm(`Send tender "${tender.title}" (${tender.id}) to Archive for record-keeping?`)) {
+                                    archiveTender(tender.id);
+                                  }
+                                }}
+                                className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-[#475569] dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-[#F1F5F9] dark:hover:bg-slate-700 rounded-lg border border-[#CBD5E1] dark:border-slate-700 transition-colors shadow-2xs cursor-pointer"
+                                title="Archive Tender"
+                              >
+                                <Archive className="w-3 h-3 text-[#64748B]" />
+                                <span>Archive</span>
+                              </button>
+                            )}
+
+                            {tender.stage === 'ARCHIVED' && (
+                              <button
+                                type="button"
+                                onClick={() => restoreTender(tender.id)}
+                                className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-[#2563EB] bg-white dark:bg-slate-800 hover:bg-[#EFF6FF] dark:hover:bg-blue-950/40 rounded-lg border border-[#BFDBFE] dark:border-blue-900/60 transition-colors shadow-2xs cursor-pointer"
+                                title="Restore Tender"
+                              >
+                                <RotateCcw className="w-3 h-3" />
+                                <span>Restore</span>
+                              </button>
+                            )}
+
+                            <button
+                              type="button"
+                              onClick={() => setTenderToDelete({ id: tender.id, title: tender.title })}
+                              className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-[#DC2626] bg-white dark:bg-slate-800 hover:bg-[#FEF2F2] dark:hover:bg-rose-950/40 rounded-lg border border-[#FECACA] dark:border-rose-900/60 hover:border-[#F87171] transition-colors shadow-2xs cursor-pointer"
+                              title="Delete Tender"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              <span>Delete</span>
+                            </button>
+
+                            <Link
+                              to={`/tenders/${tender.id}`}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold text-white bg-[#0F172A] hover:bg-[#1E293B] dark:bg-blue-600 dark:hover:bg-blue-700 rounded-lg transition-colors shadow-2xs"
+                              title="Open Tender Workspace"
+                            >
+                              <span>Workspace</span>
+                              <ChevronRight className="w-3 h-3" />
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        /* Cards View */
         <div className="space-y-3">
-          {filteredTenders.length === 0 ? (
-            <div className="bg-white rounded-lg border border-[#CBD5E1] p-12 text-center text-[#64748B]">
+          {paginatedTenders.length === 0 ? (
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#CBD5E1] dark:border-slate-800 p-12 text-center text-[#64748B] dark:text-slate-400">
               <Compass className="w-8 h-8 mx-auto text-[#94A3B8] mb-2" />
-              <p className="font-semibold text-sm text-[#0F172A]">No tenders in Bid Discovery</p>
-              <p className="text-xs text-[#64748B] mt-1">All discovered opportunities have been advanced or screened.</p>
+              <p className="font-semibold text-sm text-[#0F172A] dark:text-white">No tenders match criteria</p>
+              <p className="text-xs text-[#64748B] mt-1">Try resetting the stage filter or search query.</p>
             </div>
           ) : (
-            filteredTenders.map((tender, idx) => (
+            paginatedTenders.map((tender, idx) => (
               <div
                 key={`${tender.id}-${idx}`}
-                className={`bg-white rounded-xl border border-[#CBD5E1] p-4 shadow-xs hover:border-[#94A3B8] transition-all space-y-3 ${
-                  selectedIds.includes(tender.id) ? 'bg-[#EFF6FF]/40 border-[#93C5FD]' : ''
+                className={`bg-white dark:bg-slate-900 rounded-xl border border-[#CBD5E1] dark:border-slate-800 p-4 shadow-xs hover:border-[#94A3B8] transition-all space-y-3 ${
+                  selectedIds.includes(tender.id) ? 'bg-[#EFF6FF]/40 dark:bg-blue-950/30 border-[#93C5FD]' : ''
                 }`}
               >
                 {/* Upper Line: Tender ID & Title */}
-                <div className="flex items-start sm:items-center justify-between gap-3 pb-2.5 border-b border-[#E2E8F0]">
+                <div className="flex items-start sm:items-center justify-between gap-3 pb-2.5 border-b border-[#E2E8F0] dark:border-slate-800">
                   <div className="flex items-center gap-2.5 flex-wrap flex-1">
                     <button type="button" onClick={() => toggleSelect(tender.id)}>
                       {selectedIds.includes(tender.id) ? (
@@ -310,21 +578,21 @@ export const TenderListPage: React.FC = () => {
                         <Square className="w-4 h-4 text-[#94A3B8]" />
                       )}
                     </button>
-                    <span className="font-mono text-xs font-bold text-[#0F172A] bg-[#F1F5F9] px-2 py-0.5 rounded border border-[#CBD5E1]">
-                      {tender.id}
+                    <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white bg-[#F1F5F9] dark:bg-slate-800 px-2 py-0.5 rounded border border-[#CBD5E1] dark:border-slate-700">
+                      {tender.summary?.tenderIdDisplay || tender.referenceNo || tender.id}
                     </span>
                     {tender.referenceNo &&
                       tender.referenceNo !== tender.id &&
                       tender.referenceNo !== `REF/${tender.id}` &&
                       !tender.referenceNo.endsWith(tender.id) && (
-                        <span className="text-[11px] font-mono font-medium text-[#475569] bg-[#F8FAFC] px-1.5 py-0.5 rounded border border-[#CBD5E1]">
+                        <span className="text-[11px] font-mono font-medium text-[#475569] dark:text-slate-400 bg-[#F8FAFC] dark:bg-slate-800 px-1.5 py-0.5 rounded border border-[#CBD5E1] dark:border-slate-700">
                           <span className="text-[10px] text-[#64748B] font-sans font-medium mr-1">Ref:</span>
                           {tender.referenceNo}
                         </span>
                       )}
                     <Link
                       to={`/tenders/${tender.id}`}
-                      className="font-bold text-sm text-[#0F172A] hover:text-[#2563EB] transition-colors"
+                      className="font-bold text-sm text-[#0F172A] dark:text-white hover:text-[#2563EB] transition-colors"
                     >
                       {tender.title}
                     </Link>
@@ -339,7 +607,7 @@ export const TenderListPage: React.FC = () => {
                 <div className="flex items-center justify-between gap-4 py-1 flex-wrap text-xs">
                   <div className="flex items-center gap-2">
                     <span className="text-[#64748B] font-medium">Authority:</span>
-                    <span className="font-semibold text-[#0F172A]">
+                    <span className="font-semibold text-[#0F172A] dark:text-white">
                       {tender.organization || 'Not specified'}
                     </span>
                     {tender.country && (
@@ -351,14 +619,14 @@ export const TenderListPage: React.FC = () => {
 
                   <div className="flex items-center gap-1.5">
                     <span className="text-[#64748B] font-medium">Type:</span>
-                    <span className="inline-flex items-center font-semibold text-[#4338CA] bg-[#EEF2FF] px-1.5 py-0.5 rounded border border-[#C7D2FE] text-[11px]">
+                    <span className="inline-flex items-center font-semibold text-[#4338CA] dark:text-indigo-300 bg-[#EEF2FF] dark:bg-indigo-950/60 px-1.5 py-0.5 rounded border border-[#C7D2FE] dark:border-indigo-800 text-[11px]">
                       {tender.tenderType || tender.summary?.tenderType || 'Request for Proposals (RFP)'}
                     </span>
                   </div>
 
-                  {/* Languages (Req #29) */}
+                  {/* Languages */}
                   {((tender.languages && tender.languages.length > 0) || tender.language) && (
-                    <div className="flex items-center gap-1 text-[11px] text-[#475569] bg-[#F8FAFC] px-1.5 py-0.5 rounded border border-[#E2E8F0]">
+                    <div className="flex items-center gap-1 text-[11px] text-[#475569] dark:text-slate-300 bg-[#F8FAFC] dark:bg-slate-800 px-1.5 py-0.5 rounded border border-[#E2E8F0] dark:border-slate-700">
                       <Languages className="w-3 h-3 text-[#2563EB]" />
                       <span>
                         {(tender.languages && tender.languages.length > 0 ? tender.languages : [tender.language]).join(', ')}
@@ -366,16 +634,16 @@ export const TenderListPage: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Corrigendum Indicator (Req #30) */}
+                  {/* Corrigendum Indicator */}
                   {tender.amendments && tender.amendments.length > 0 && (
-                    <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                    <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-800">
                       Corrigendum ({tender.amendments.length})
                     </span>
                   )}
 
                   <div className="flex items-center gap-1.5 font-mono">
                     <span className="text-[#64748B] font-sans font-medium text-xs">Value:</span>
-                    <span className="font-bold text-[#0F172A]">
+                    <span className="font-bold text-[#0F172A] dark:text-white">
                       {tender.estimatedValue && tender.estimatedValue > 0 ? formatCurrency(tender.estimatedValue) : '— (Not stated)'}
                     </span>
                   </div>
@@ -387,8 +655,8 @@ export const TenderListPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Third Line: Readiness and all the button */}
-                <div className="flex items-center justify-between gap-4 pt-2.5 border-t border-[#E2E8F0] flex-wrap">
+                {/* Third Line: Readiness and action buttons */}
+                <div className="flex items-center justify-between gap-4 pt-2.5 border-t border-[#E2E8F0] dark:border-slate-800 flex-wrap">
                   <div className="flex items-center gap-3 w-64 max-w-full">
                     <span className="text-xs text-[#64748B] font-medium shrink-0">Readiness:</span>
                     <div className="w-full">
@@ -399,7 +667,7 @@ export const TenderListPage: React.FC = () => {
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <Link
                       to={`/registry/summary/${tender.id}`}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#475569] bg-white hover:bg-[#F8FAFC] rounded-lg border border-[#CBD5E1] transition-colors shadow-2xs"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#475569] dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-[#F8FAFC] rounded-lg border border-[#CBD5E1] dark:border-slate-700 transition-colors shadow-2xs"
                       title="View Document Summary"
                     >
                       <FileText className="w-3.5 h-3.5 text-[#2563EB]" />
@@ -408,7 +676,7 @@ export const TenderListPage: React.FC = () => {
 
                     <Link
                       to={`/registry?id=${tender.id}`}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] bg-white hover:bg-[#F8FAFC] rounded-lg border border-[#CBD5E1] transition-colors shadow-2xs"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] dark:text-white bg-white dark:bg-slate-800 hover:bg-[#F8FAFC] rounded-lg border border-[#CBD5E1] dark:border-slate-700 transition-colors shadow-2xs"
                       title="Edit Tender Specifications"
                     >
                       <Edit3 className="w-3.5 h-3.5 text-[#64748B]" />
@@ -423,7 +691,7 @@ export const TenderListPage: React.FC = () => {
                             archiveTender(tender.id);
                           }
                         }}
-                        className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#475569] bg-white hover:bg-[#F1F5F9] rounded-lg border border-[#CBD5E1] transition-colors shadow-2xs"
+                        className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#475569] dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-[#F1F5F9] rounded-lg border border-[#CBD5E1] dark:border-slate-700 transition-colors shadow-2xs cursor-pointer"
                         title="Send to Archive for records"
                       >
                         <Archive className="w-3.5 h-3.5 text-[#64748B]" />
@@ -434,7 +702,7 @@ export const TenderListPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setTenderToDelete({ id: tender.id, title: tender.title })}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#DC2626] bg-white hover:bg-[#FEF2F2] rounded-lg border border-[#FECACA] hover:border-[#F87171] transition-colors shadow-2xs"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#DC2626] bg-white dark:bg-slate-800 hover:bg-[#FEF2F2] rounded-lg border border-[#FECACA] dark:border-rose-900/60 hover:border-[#F87171] transition-colors shadow-2xs cursor-pointer"
                       title="Delete Tender"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -455,237 +723,75 @@ export const TenderListPage: React.FC = () => {
             ))
           )}
         </div>
-      ) : (
-        /* Standard Tenders Table for other stages */
-        <div className="bg-white rounded-lg border border-[#CBD5E1] shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-[#F8FAFC] border-b border-[#CBD5E1] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
-                  <th className="py-3 px-4 w-10">
-                    <button onClick={toggleSelectAll}>
-                      {selectedIds.length === filteredTenders.length && filteredTenders.length > 0 ? (
-                        <CheckSquare className="w-4 h-4 text-[#2563EB]" />
-                      ) : (
-                        <Square className="w-4 h-4 text-[#94A3B8]" />
-                      )}
-                    </button>
-                  </th>
-                  <th className="py-3 px-4">Tender ID &amp; Scope of Work (SOW)</th>
-                  <th className="py-3 px-4">Issuing Authority</th>
-                  <th className="py-3 px-4 whitespace-nowrap">Value</th>
-                  <th className="py-3 px-4 whitespace-nowrap">Stage</th>
-                  <th className="py-3 px-4 whitespace-nowrap">Decision</th>
-                  <th className="py-3 px-4 whitespace-nowrap">Urgency</th>
-                  <th className="py-3 px-4 whitespace-nowrap">Readiness</th>
-                  <th className="py-3 px-4 text-right whitespace-nowrap">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#E2E8F0] dark:divide-slate-700 text-xs">
-                {paginatedTenders.map((tender, idx) => (
-                  <tr
-                    key={`${tender.id}-${idx}`}
-                    className={`hover:bg-[#F8FAFC] dark:hover:bg-slate-800/50 transition-colors group ${
-                      selectedIds.includes(tender.id) ? 'bg-[#EFF6FF]/40 dark:bg-blue-950/30' : ''
-                    }`}
-                  >
-                    <td className="py-3.5 px-4">
-                      <button onClick={() => toggleSelect(tender.id)}>
-                        {selectedIds.includes(tender.id) ? (
-                          <CheckSquare className="w-4 h-4 text-[#2563EB]" />
-                        ) : (
-                          <Square className="w-4 h-4 text-[#94A3B8]" />
-                        )}
-                      </button>
-                    </td>
+      )}
 
-                    <td className="py-3.5 px-4 max-w-xs">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white">
-                          {tender.id}
-                        </span>
-                        {tender.referenceNo &&
-                          tender.referenceNo !== tender.id &&
-                          tender.referenceNo !== `REF/${tender.id}` &&
-                          !tender.referenceNo.endsWith(tender.id) && (
-                            <span className="text-[10px] text-[#64748B] dark:text-slate-400 font-mono bg-[#F8FAFC] dark:bg-slate-800 px-1.5 py-0.5 rounded border border-[#E2E8F0] dark:border-slate-700">
-                              Ref: {tender.referenceNo}
-                            </span>
-                          )}
-                      </div>
-                      <Link
-                        to={`/tenders/${tender.id}`}
-                        className="font-medium text-[#0F172A] dark:text-white group-hover:text-[#2563EB] line-clamp-1"
-                      >
-                        {tender.title}
-                      </Link>
-                    </td>
+      {/* Unified Pagination Controls for All Views */}
+      {filteredTenders.length > 0 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 bg-white dark:bg-[#0F172A] rounded-xl border border-[#CBD5E1] dark:border-slate-800 text-xs shadow-2xs">
+          <div className="flex items-center gap-3 text-[#64748B] dark:text-slate-400">
+            <span>
+              Showing <strong className="text-[#0F172A] dark:text-white">{Math.min((currentPage - 1) * pageSize + 1, filteredTenders.length)}</strong> to{' '}
+              <strong className="text-[#0F172A] dark:text-white">
+                {pageSize === -1 ? filteredTenders.length : Math.min(currentPage * pageSize, filteredTenders.length)}
+              </strong> of <strong className="text-[#0F172A] dark:text-white">{filteredTenders.length}</strong> tenders
+            </span>
 
-                    <td className="py-3.5 px-4 text-[#475569] dark:text-slate-300">
-                      <div className="font-medium text-[#0F172A] dark:text-white">
-                        {tender.organization}
-                      </div>
-                      <div className="text-[11px] text-[#94A3B8]">
-                        {tender.country}
-                      </div>
-                    </td>
-
-                    <td className="py-3.5 px-4 font-mono font-bold text-[#0F172A] dark:text-white">
-                      {formatCurrency(tender.estimatedValue)}
-                    </td>
-
-                    <td className="py-3.5 px-4 whitespace-nowrap">
-                      <StatusBadge stage={tender.stage} />
-                    </td>
-
-                    <td className="py-3.5 px-4 whitespace-nowrap">
-                      <StatusBadge decision={tender.decision} />
-                    </td>
-
-                    <td className="py-3.5 px-4 whitespace-nowrap">
-                      <UrgencyBadge
-                        daysRemaining={tender.daysRemaining}
-                        hoursRemaining={tender.hoursRemaining}
-                      />
-                    </td>
-
-                    <td className="py-3.5 px-4 w-36">
-                      <ReadinessBar score={tender.readinessScore} />
-                    </td>
-
-                    <td className="py-3.5 px-4 text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <Link
-                          to={`/registry?id=${tender.id}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#0F172A] dark:text-white bg-white dark:bg-slate-800 hover:bg-[#F8FAFC] rounded-lg border border-[#CBD5E1] dark:border-slate-700 hover:border-[#94A3B8] transition-colors shadow-2xs"
-                          title="Edit Tender Specifications"
-                        >
-                          <Edit3 className="w-3.5 h-3.5 text-[#64748B]" />
-                          <span>Edit</span>
-                        </Link>
-
-                        {tender.stage !== 'SUBMITTED' && tender.stage !== 'ARCHIVED' && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (window.confirm(`Send tender "${tender.title}" (${tender.id}) to Archive for record-keeping?`)) {
-                                archiveTender(tender.id);
-                              }
-                            }}
-                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#475569] dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-[#F1F5F9] rounded-lg border border-[#CBD5E1] dark:border-slate-700 transition-colors shadow-2xs"
-                            title="Send to Archive for records"
-                          >
-                            <Archive className="w-3.5 h-3.5 text-[#64748B]" />
-                            <span>Archive</span>
-                          </button>
-                        )}
-
-                        {tender.stage === 'ARCHIVED' && (
-                          <button
-                            type="button"
-                            onClick={() => restoreTender(tender.id)}
-                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#2563EB] bg-white dark:bg-slate-800 hover:bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] transition-colors shadow-2xs"
-                            title="Restore tender from archive"
-                          >
-                            <RotateCcw className="w-3.5 h-3.5" />
-                            <span>Restore</span>
-                          </button>
-                        )}
-
-                        <button
-                          onClick={() => setTenderToDelete({ id: tender.id, title: tender.title })}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#DC2626] bg-white dark:bg-slate-800 hover:bg-[#FEF2F2] rounded-lg border border-[#FECACA] dark:border-rose-900/60 hover:border-[#F87171] transition-colors shadow-2xs"
-                          title="Delete Tender"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                          <span>Delete</span>
-                        </button>
-
-                        <Link
-                          to={`/tenders/${tender.id}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#2563EB] dark:text-blue-400 hover:bg-[#EFF6FF] dark:hover:bg-blue-950/40 rounded-lg border border-[#BFDBFE] dark:border-blue-900/60 transition-colors shadow-2xs"
-                          title="Open Tender Workspace"
-                        >
-                          <span>Workspace</span>
-                          <ChevronRight className="w-3 h-3" />
-                        </Link>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="flex items-center gap-1.5 pl-3 border-l border-[#CBD5E1] dark:border-slate-700">
+              <span className="text-[11px]">Show:</span>
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                className="px-2 py-0.5 text-xs rounded border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+              >
+                <option value={10}>10 per page</option>
+                <option value={25}>25 per page</option>
+                <option value={50}>50 per page</option>
+                <option value={-1}>All ({filteredTenders.length})</option>
+              </select>
+            </div>
           </div>
 
-          {/* Table Pagination Controls */}
-          {filteredTenders.length > 0 && (
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 bg-white dark:bg-[#0F172A] border-t border-[#CBD5E1] dark:border-slate-700 text-xs">
-              <div className="flex items-center gap-3 text-[#64748B] dark:text-slate-400">
-                <span>
-                  Showing <strong className="text-[#0F172A] dark:text-white">{Math.min((currentPage - 1) * pageSize + 1, filteredTenders.length)}</strong> to{' '}
-                  <strong className="text-[#0F172A] dark:text-white">
-                    {pageSize === -1 ? filteredTenders.length : Math.min(currentPage * pageSize, filteredTenders.length)}
-                  </strong> of <strong className="text-[#0F172A] dark:text-white">{filteredTenders.length}</strong> tenders
-                </span>
+          {pageSize !== -1 && totalPages > 1 && (
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#CBD5E1] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Previous</span>
+              </button>
 
-                <div className="flex items-center gap-1.5 pl-3 border-l border-[#CBD5E1] dark:border-slate-700">
-                  <span className="text-[11px]">Show:</span>
-                  <select
-                    value={pageSize}
-                    onChange={(e) => {
-                      setPageSize(Number(e.target.value));
-                      setCurrentPage(1);
-                    }}
-                    className="px-2 py-0.5 text-xs rounded border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                      currentPage === pageNum
+                        ? 'bg-[#2563EB] text-white shadow-xs'
+                        : 'border border-[#E2E8F0] dark:border-slate-700 text-[#64748B] dark:text-slate-400 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white'
+                    }`}
                   >
-                    <option value={10}>10 per page</option>
-                    <option value={25}>25 per page</option>
-                    <option value={50}>50 per page</option>
-                    <option value={-1}>All ({filteredTenders.length})</option>
-                  </select>
-                </div>
+                    {pageNum}
+                  </button>
+                ))}
               </div>
 
-              {pageSize !== -1 && totalPages > 1 && (
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#CBD5E1] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
-                  >
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                    <span>Previous</span>
-                  </button>
-
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                      <button
-                        key={pageNum}
-                        type="button"
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
-                          currentPage === pageNum
-                            ? 'bg-[#2563EB] text-white shadow-xs'
-                            : 'border border-[#E2E8F0] dark:border-slate-700 text-[#64748B] dark:text-slate-400 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white'
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    ))}
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                    disabled={currentPage === totalPages}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#CBD5E1] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
-                  >
-                    <span>Next</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              )}
+              <button
+                type="button"
+                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#CBD5E1] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+              >
+                <span>Next</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           )}
         </div>
