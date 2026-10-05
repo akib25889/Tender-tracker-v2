@@ -23,7 +23,6 @@ import {
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { UrgencyBadge } from '../components/ui/UrgencyBadge';
-import { ReadinessBar } from '../components/ui/ReadinessBar';
 import { ExportDropdown } from '../components/ui/ExportDropdown';
 import { ImportTenderModal } from '../components/modals/ImportTenderModal';
 import { TenderStage } from '../types/tender';
@@ -335,14 +334,14 @@ export const TenderListPage: React.FC = () => {
                       )}
                     </button>
                   </th>
-                  <th className="py-3 px-3 whitespace-nowrap">Tender ID &amp; Ref</th>
                   <th className="py-3 px-4 min-w-[280px]">Scope of Work (SOW) / Title</th>
-                  <th className="py-3 px-3 min-w-[170px]">Issuing Authority</th>
+                  <th className="py-3 px-3 whitespace-nowrap">Tender ID &amp; Ref</th>
+                  <th className="py-3 px-3 min-w-[170px]">Portal</th>
                   <th className="py-3 px-3 whitespace-nowrap">Type / Modality</th>
                   <th className="py-3 px-3 whitespace-nowrap">Estimated Value</th>
                   <th className="py-3 px-3 whitespace-nowrap">Urgency / Deadline</th>
                   <th className="py-3 px-3 whitespace-nowrap">Stage &amp; Decision</th>
-                  <th className="py-3 px-3 whitespace-nowrap min-w-[120px]">Readiness</th>
+                  <th className="py-3 px-3 whitespace-nowrap text-center">Readiness</th>
                   <th className="py-3 px-4 text-right whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
@@ -377,7 +376,29 @@ export const TenderListPage: React.FC = () => {
                           </button>
                         </td>
 
-                        {/* 2. Tender ID & Ref */}
+                        {/* 2. Scope of Work (SOW) / Title (Swapped to 2nd column, no category below) */}
+                        <td className="py-3.5 px-4 align-top">
+                          <div className="space-y-1">
+                            <Link
+                              to={`/tenders/${tender.id}`}
+                              className="font-bold text-xs sm:text-sm text-[#0F172A] dark:text-white group-hover:text-[#2563EB] transition-colors line-clamp-2 block leading-snug"
+                              title={tender.title}
+                            >
+                              {tender.title}
+                            </Link>
+
+                            {((tender.languages && tender.languages.length > 0) || tender.language) && (
+                              <div className="flex items-center gap-1">
+                                <span className="inline-flex items-center gap-1 text-[10px] text-[#2563EB] dark:text-blue-400 bg-[#EFF6FF] dark:bg-blue-950/60 px-1.5 py-0.5 rounded border border-[#BFDBFE] dark:border-blue-800 font-medium">
+                                  <Languages className="w-2.5 h-2.5" />
+                                  {(tender.languages && tender.languages.length > 0 ? tender.languages : [tender.language]).join(', ')}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* 3. Tender ID & Ref (Swapped to 3rd column) */}
                         <td className="py-3.5 px-3 whitespace-nowrap align-top">
                           <div className="flex flex-col gap-1 items-start">
                             <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white bg-[#F1F5F9] dark:bg-slate-800 px-2 py-0.5 rounded border border-[#CBD5E1] dark:border-slate-700">
@@ -398,41 +419,16 @@ export const TenderListPage: React.FC = () => {
                           </div>
                         </td>
 
-                        {/* 3. Title / SOW & Category & Languages */}
-                        <td className="py-3.5 px-4 align-top">
-                          <div className="space-y-1.5">
-                            <Link
-                              to={`/tenders/${tender.id}`}
-                              className="font-bold text-xs sm:text-sm text-[#0F172A] dark:text-white group-hover:text-[#2563EB] transition-colors line-clamp-2 block leading-snug"
-                              title={tender.title}
-                            >
-                              {tender.title}
-                            </Link>
-
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              {tender.category && (
-                                <span className="text-[10px] font-semibold text-[#475569] dark:text-slate-300 bg-[#F1F5F9] dark:bg-slate-800 px-1.5 py-0.5 rounded border border-[#E2E8F0] dark:border-slate-700">
-                                  {tender.category}
-                                </span>
-                              )}
-                              {((tender.languages && tender.languages.length > 0) || tender.language) && (
-                                <span className="inline-flex items-center gap-1 text-[10px] text-[#2563EB] dark:text-blue-400 bg-[#EFF6FF] dark:bg-blue-950/60 px-1.5 py-0.5 rounded border border-[#BFDBFE] dark:border-blue-800 font-medium">
-                                  <Languages className="w-2.5 h-2.5" />
-                                  {(tender.languages && tender.languages.length > 0 ? tender.languages : [tender.language]).join(', ')}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </td>
-
-                        {/* 4. Authority & Country */}
+                        {/* 4. Portal (Replaces Issuing Authority) */}
                         <td className="py-3.5 px-3 align-top">
-                          <div className="font-semibold text-xs text-[#0F172A] dark:text-white line-clamp-1">
-                            {tender.organization || 'Not specified'}
+                          <div className="font-semibold text-xs text-[#0F172A] dark:text-white line-clamp-2" title={tender.summary?.portal || tender.portalUrl || tender.organization}>
+                            {tender.summary?.portal || tender.portalUrl || tender.organization || 'Direct Portal'}
                           </div>
-                          <div className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5">
-                            {tender.country || 'Global'}
-                          </div>
+                          {tender.country && (
+                            <div className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5">
+                              {tender.country}
+                            </div>
+                          )}
                         </td>
 
                         {/* 5. Modality / Type */}
@@ -467,11 +463,11 @@ export const TenderListPage: React.FC = () => {
                           </div>
                         </td>
 
-                        {/* 9. Readiness */}
-                        <td className="py-3.5 px-3 align-top whitespace-nowrap">
-                          <div className="w-28 space-y-1">
-                            <ReadinessBar score={tender.readinessScore} />
-                          </div>
+                        {/* 9. Readiness (Number Only, No Bar) */}
+                        <td className="py-3.5 px-3 align-top whitespace-nowrap text-center">
+                          <span className="font-mono font-bold text-xs text-[#0F172A] dark:text-white bg-[#F1F5F9] dark:bg-slate-800 px-2 py-0.5 rounded border border-[#CBD5E1] dark:border-slate-700">
+                            {tender.readinessScore ?? 0}%
+                          </span>
                         </td>
 
                         {/* 10. Actions */}
@@ -603,12 +599,12 @@ export const TenderListPage: React.FC = () => {
                   />
                 </div>
 
-                {/* Second Line: Authority, Value, Stage */}
+                {/* Second Line: Portal, Value, Stage */}
                 <div className="flex items-center justify-between gap-4 py-1 flex-wrap text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="text-[#64748B] font-medium">Authority:</span>
-                    <span className="font-semibold text-[#0F172A] dark:text-white">
-                      {tender.organization || 'Not specified'}
+                    <span className="text-[#64748B] font-medium">Portal:</span>
+                    <span className="font-semibold text-[#0F172A] dark:text-white" title={tender.summary?.portal || tender.portalUrl || tender.organization}>
+                      {tender.summary?.portal || tender.portalUrl || tender.organization || 'Direct Portal'}
                     </span>
                     {tender.country && (
                       <span className="text-[#64748B]">
@@ -657,11 +653,11 @@ export const TenderListPage: React.FC = () => {
 
                 {/* Third Line: Readiness and action buttons */}
                 <div className="flex items-center justify-between gap-4 pt-2.5 border-t border-[#E2E8F0] dark:border-slate-800 flex-wrap">
-                  <div className="flex items-center gap-3 w-64 max-w-full">
+                  <div className="flex items-center gap-2">
                     <span className="text-xs text-[#64748B] font-medium shrink-0">Readiness:</span>
-                    <div className="w-full">
-                      <ReadinessBar score={tender.readinessScore} />
-                    </div>
+                    <span className="font-mono font-bold text-xs text-[#0F172A] dark:text-white bg-[#F1F5F9] dark:bg-slate-800 px-2 py-0.5 rounded border border-[#CBD5E1] dark:border-slate-700">
+                      {tender.readinessScore ?? 0}%
+                    </span>
                   </div>
 
                   <div className="flex items-center gap-1.5 flex-wrap">
