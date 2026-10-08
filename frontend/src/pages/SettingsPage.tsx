@@ -11,8 +11,6 @@ import {
   Sun,
   Moon,
   Sparkles,
-  Snowflake,
-  Flame,
 } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 
@@ -89,21 +87,21 @@ export const SettingsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
+          <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] mb-1">
             <span>System</span>
             <span>•</span>
-            <span className="font-semibold text-[#0F172A]">Infrastructure &amp; Alert Configuration</span>
+            <span className="font-semibold text-[var(--text-primary)]">Infrastructure &amp; Alert Configuration</span>
           </div>
-          <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
+          <h1 className="font-display text-2xl font-bold text-[var(--text-primary)] tracking-tight">
             System, Storage &amp; Alert Settings
           </h1>
-          <p className="text-xs text-[#64748B] mt-0.5">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             Local SSD storage vault directory paths, SHA-256 verification flags, SMTP email notifications, and SLA alert thresholds.
           </p>
         </div>
 
         {saved && (
-          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F0FDF4] border border-[#BBF7D0] text-[#15803D] text-xs font-semibold rounded-lg shadow-sm animate-fadeIn">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--ok-soft)] border border-[var(--ok-line)] text-[var(--ok)] text-xs font-semibold rounded-lg shadow-sm animate-fadeIn">
             <Check className="w-4 h-4" />
             <span>Settings Saved Successfully</span>
           </div>
@@ -113,205 +111,78 @@ export const SettingsPage: React.FC = () => {
       <form onSubmit={handleSave} className="space-y-6">
         {/* Appearance & Workspace Theme */}
         <Card
-          title="Appearance & Interface Theme"
-          subtitle="Toggle workspace visual mode between Light Workspace, Dark Command Center, Winter Frost, and Warm Earth"
+          title="Appearance"
+          subtitle="Both themes come from one token set, so contrast and meaning stay identical"
         >
           <div className="space-y-4 text-xs">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-              {/* Light Theme Card Option */}
-              <button
-                type="button"
-                onClick={() => setTheme('light')}
-                className={`flex items-start gap-3.5 p-4 rounded-xl border text-left transition-all ${
-                  theme === 'light'
-                    ? 'bg-amber-50/70 border-amber-400 ring-2 ring-amber-400/30 shadow-xs'
-                    : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#CBD5E1] hover:bg-white'
-                }`}
-              >
-                <div
-                  className={`p-2.5 rounded-lg shrink-0 transition-colors ${
-                    theme === 'light'
-                      ? 'bg-amber-500 text-white shadow-xs'
-                      : 'bg-[#E2E8F0] text-[#64748B]'
-                  }`}
-                >
-                  <Sun className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-bold text-[#0F172A]">
-                      Light Workspace
-                    </span>
-                    {theme === 'light' && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
-                        Active
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-[#64748B] mt-1">
-                    Clean, bright slate theme tailored for daytime reading, high-key ambient light, and standard document readability.
-                  </p>
-                </div>
-              </button>
-
-              {/* Dark Theme Card Option */}
-              <button
-                type="button"
-                onClick={() => setTheme('dark')}
-                className={`flex items-start gap-3.5 p-4 rounded-xl border text-left transition-all ${
-                  theme === 'dark'
-                    ? 'bg-indigo-950/40 border-indigo-500 ring-2 ring-indigo-500/30 shadow-xs'
-                    : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#CBD5E1] hover:bg-white'
-                }`}
-              >
-                <div
-                  className={`p-2.5 rounded-lg shrink-0 transition-colors ${
-                    theme === 'dark'
-                      ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'bg-[#E2E8F0] text-[#64748B]'
-                  }`}
-                >
-                  <Moon className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-bold text-[#0F172A]">
-                      Dark Command Center
-                    </span>
-                    {theme === 'dark' && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-900/60 text-indigo-300 border border-indigo-700">
-                        Active
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-[#64748B] mt-1">
-                    High-contrast dark theme (WCAG AA compliant) with deep elevation surfaces and luminous status badges to reduce eye fatigue.
-                  </p>
-                </div>
-              </button>
-
-              {/* Winter Theme Card Option */}
-              <button
-                type="button"
-                onClick={() => setTheme('winter')}
-                className={`flex items-start gap-3.5 p-4 rounded-xl border text-left transition-all ${
-                  theme === 'winter'
-                    ? 'bg-[#EEF5FF] border-[#176B87] ring-2 ring-[#86B6F6]/60 shadow-xs'
-                    : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#B4D4FF] hover:bg-[#EEF5FF]/40'
-                }`}
-              >
-                <div
-                  className={`p-2.5 rounded-lg shrink-0 transition-colors ${
-                    theme === 'winter'
-                      ? 'bg-[#176B87] text-white shadow-xs'
-                      : 'bg-[#E2E8F0] text-[#64748B]'
-                  }`}
-                >
-                  <Snowflake className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-bold text-[#0F172A]">
-                      Winter Frost
-                    </span>
-                    {theme === 'winter' && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#B4D4FF] text-[#176B87] border border-[#86B6F6]">
-                        Active
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-[#64748B] mt-1">
-                    Arctic winter palette with ice white base, frost borders, glacier blue accents, and deep ocean teal contrast.
-                  </p>
-                  {/* Swatches */}
-                  <div className="flex items-center gap-1.5 mt-2.5">
-                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#EEF5FF' }} title="Ice White: #EEF5FF" />
-                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#B4D4FF' }} title="Frost Blue: #B4D4FF" />
-                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#86B6F6' }} title="Glacier Blue: #86B6F6" />
-                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#176B87' }} title="Ocean Teal: #176B87" />
-                  </div>
-                </div>
-              </button>
-
-              {/* Warm (Worm) Theme Card Option */}
-              <button
-                type="button"
-                onClick={() => setTheme('warm')}
-                className={`flex items-start gap-3.5 p-4 rounded-xl border text-left transition-all ${
-                  theme === 'warm'
-                    ? 'bg-[#F5F0E8] border-[#1B3254] ring-2 ring-[#4E719D]/60 shadow-xs'
-                    : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-[#D9C5B7] hover:bg-[#F5F0E8]/50'
-                }`}
-              >
-                <div
-                  className={`p-2.5 rounded-lg shrink-0 transition-colors ${
-                    theme === 'warm'
-                      ? 'bg-[#1B3254] text-white shadow-xs'
-                      : 'bg-[#E2E8F0] text-[#64748B]'
-                  }`}
-                >
-                  <Flame className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-bold text-[#0F172A]">
-                      Warm Earth
-                    </span>
-                    {theme === 'warm' && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D9C5B7] text-[#1B3254] border border-[#4E719D]">
-                        Active
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-[#64748B] mt-1">
-                    Warm earth & coastal palette with linen cream base, sand beige borders, coastal slate blue accents, and deep indigo navy.
-                  </p>
-                  {/* Swatches */}
-                  <div className="flex items-center gap-1.5 mt-2.5">
-                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#F5F0E8' }} title="Warm Cream: #F5F0E8" />
-                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#D9C5B7' }} title="Warm Sand: #D9C5B7" />
-                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#4E719D' }} title="Slate Blue: #4E719D" />
-                    <span className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs" style={{ backgroundColor: '#1B3254' }} title="Midnight Navy: #1B3254" />
-                  </div>
-                </div>
-              </button>
+            {/* Two themes, one token set. Accent marks the chosen one — the
+                same rule the rest of the app follows. */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {([
+                { id: 'light', name: 'Light', Icon: Sun,
+                  blurb: 'Near-white canvas with hairline borders. Best in a bright room or on a projector.' },
+                { id: 'dark', name: 'Dark', Icon: Moon,
+                  blurb: 'Deep neutral canvas at the same contrast ratios. Easier for long sessions and late portal cutoffs.' },
+              ] as const).map(({ id, name, Icon, blurb }) => {
+                const active = theme === id;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setTheme(id)}
+                    aria-pressed={active}
+                    className={`tt-focus flex items-start gap-3.5 p-4 rounded-lg border text-left transition-colors ${
+ active
+                        ? 'bg-[var(--accent-soft)] border-[var(--accent)]'
+                        : 'bg-[var(--bg-subtle)] border-[var(--border-default)] hover:border-[var(--border-strong)]'
+                    }`}
+                  >
+                    <div
+                      className={`p-2.5 rounded-lg shrink-0 ${
+ active
+                          ? 'bg-[var(--accent)] text-[var(--accent-on)]'
+                          : 'bg-[var(--bg-muted)] text-[var(--text-secondary)]'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-[var(--text-primary)]">{name}</span>
+                        {active && <span className="tt-tag tt-tag-accent">Active</span>}
+                      </div>
+                      <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">{blurb}</p>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Quick Toggle Action Strip */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-[var(--bg-subtle)] rounded-lg border border-[var(--border-default)]">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#2563EB]" />
-                <span className="text-[#64748B]">
+                <Sparkles className="w-4 h-4 text-[var(--accent)]" />
+                <span className="text-[var(--text-secondary)]">
                   Currently active:{' '}
-                  <strong className="text-[#0F172A] capitalize">
-                    {theme === 'dark' ? 'Dark Command Center' : theme === 'winter' ? 'Winter Frost' : theme === 'warm' ? 'Warm Earth' : 'Light Workspace'}
+                  <strong className="text-[var(--text-primary)] capitalize">
+                    {theme === 'dark' ? 'Dark' : 'Light'}
                   </strong>
                 </span>
               </div>
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="flex items-center justify-center gap-2 px-3.5 py-1.5 bg-white hover:bg-[#F1F5F9] border border-[#CBD5E1] text-[#0F172A] rounded-lg text-xs font-bold shadow-xs transition-colors shrink-0"
+                className="flex items-center justify-center gap-2 px-3.5 py-1.5 bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)] border border-[var(--border-strong)] text-[var(--text-primary)] rounded-lg text-xs font-bold shadow-xs transition-colors shrink-0"
               >
                 {theme === 'light' ? (
                   <>
-                    <Moon className="w-3.5 h-3.5 text-indigo-600" />
-                    <span>Switch to Dark Mode</span>
-                  </>
-                ) : theme === 'dark' ? (
-                  <>
-                    <Snowflake className="w-3.5 h-3.5 text-[#176B87]" />
-                    <span>Switch to Winter Frost</span>
-                  </>
-                ) : theme === 'winter' ? (
-                  <>
-                    <Flame className="w-3.5 h-3.5 text-amber-600" />
-                    <span>Switch to Warm Mode</span>
+                    <Moon className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                    <span>Switch to dark</span>
                   </>
                 ) : (
                   <>
-                    <Sun className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Switch to Light Mode</span>
+                    <Sun className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                    <span>Switch to light</span>
                   </>
                 )}
               </button>
@@ -326,7 +197,7 @@ export const SettingsPage: React.FC = () => {
         >
           <div className="space-y-4 text-xs">
             <div>
-              <label className="block font-semibold text-[#0F172A] mb-1">
+              <label className="block font-semibold text-[var(--text-primary)] mb-1">
                 Local Root Filesystem Vault Path:
               </label>
               <div className="flex items-center gap-2">
@@ -334,38 +205,38 @@ export const SettingsPage: React.FC = () => {
                   type="text"
                   value={vaultPath}
                   onChange={(e) => setVaultPath(e.target.value)}
-                  className="flex-1 px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono text-xs text-[#0F172A]"
+                  className="flex-1 px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-mono text-xs text-[var(--text-primary)]"
                 />
                 <button
                   type="button"
                   onClick={() => alert('Directory verified: storage/tenders/ exists with read/write permissions.')}
-                  className="px-3 py-2 bg-[#F1F5F9] hover:bg-[#E2E8F0] border border-[#E2E8F0] text-[#0F172A] rounded-lg font-semibold transition-colors"
+                  className="px-3 py-2 bg-[var(--bg-subtle)] hover:bg-[var(--bg-muted)] border border-[var(--border-default)] text-[var(--text-primary)] rounded-lg font-semibold transition-colors"
                 >
                   Verify Path
                 </button>
               </div>
             </div>
 
-            <div className="p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] flex items-center justify-between">
+            <div className="p-3 bg-[var(--bg-subtle)] rounded-lg border border-[var(--border-default)] flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <HardDrive className="w-5 h-5 text-[#2563EB]" />
+                <HardDrive className="w-5 h-5 text-[var(--accent)]" />
                 <div>
-                  <span className="font-semibold text-[#0F172A] block">Local Volume Free Capacity</span>
-                  <span className="text-[11px] text-[#64748B]">NVMe SSD partition H:\</span>
+                  <span className="font-semibold text-[var(--text-primary)] block">Local Volume Free Capacity</span>
+                  <span className="text-[11px] text-[var(--text-secondary)]">NVMe SSD partition H:\</span>
                 </div>
               </div>
               <div className="text-right font-mono">
-                <span className="font-bold text-[#0F172A] block">428.4 GB Free</span>
-                <span className="text-[10px] text-[#16A34A]">Optimal Write Performance</span>
+                <span className="font-bold text-[var(--text-primary)] block">428.4 GB Free</span>
+                <span className="text-[10px] text-[var(--ok)]">Optimal Write Performance</span>
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0]">
+            <div className="flex items-center justify-between p-3 bg-[var(--bg-subtle)] rounded-lg border border-[var(--border-default)]">
               <div>
-                <span className="font-semibold text-[#0F172A] block">
+                <span className="font-semibold text-[var(--text-primary)] block">
                   Enforce Immutable SHA-256 Checksum Verification
                 </span>
-                <span className="text-[11px] text-[#64748B]">
+                <span className="text-[11px] text-[var(--text-secondary)]">
                   Recalculates cryptographic digest on upload and before statutory sign-off.
                 </span>
               </div>
@@ -373,7 +244,7 @@ export const SettingsPage: React.FC = () => {
                 type="checkbox"
                 checked={enableShaVerification}
                 onChange={(e) => setEnableShaVerification(e.target.checked)}
-                className="w-4 h-4 accent-[#2563EB]"
+                className="w-4 h-4 accent-[var(--accent)]"
               />
             </div>
           </div>
@@ -389,58 +260,58 @@ export const SettingsPage: React.FC = () => {
           <div className="space-y-4 text-xs">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="sm:col-span-2">
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   SMTP Host / Relay Server:
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+                  <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
                   <input
                     type="text"
                     value={smtpServer}
                     onChange={(e) => setSmtpServer(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono text-[#0F172A]"
+                    className="w-full pl-9 pr-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-mono text-[var(--text-primary)]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Port:
                 </label>
                 <input
                   type="number"
                   value={smtpPort}
                   onChange={(e) => setSmtpPort(Number(e.target.value))}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono text-[#0F172A]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-mono text-[var(--text-primary)]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block font-semibold text-[#0F172A] mb-1">
+              <label className="block font-semibold text-[var(--text-primary)] mb-1">
                 Authorized System Sender Address:
               </label>
               <input
                 type="email"
                 value={senderEmail}
                 onChange={(e) => setSenderEmail(e.target.value)}
-                className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono text-[#0F172A]"
+                className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-mono text-[var(--text-primary)]"
               />
             </div>
 
-            <div className="pt-2 border-t border-[#F1F5F9] space-y-2.5">
-              <span className="font-semibold text-[#0F172A] block">Subscribed Email Trigger Events:</span>
+            <div className="pt-2 border-t border-[var(--border-subtle)] space-y-2.5">
+              <span className="font-semibold text-[var(--text-primary)] block">Subscribed Email Trigger Events:</span>
               
               <label className="flex items-center gap-2.5 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={notifyDeadlines}
                   onChange={(e) => setNotifyDeadlines(e.target.checked)}
-                  className="w-4 h-4 accent-[#2563EB] rounded"
+                  className="w-4 h-4 accent-[var(--accent)] rounded"
                 />
                 <div>
-                  <span className="font-medium text-[#0F172A] block">Critical Submission Deadline Escalation</span>
-                  <span className="text-[11px] text-[#64748B]">Immediate dispatch to lead bid director when deadline &le; 48 hours</span>
+                  <span className="font-medium text-[var(--text-primary)] block">Critical Submission Deadline Escalation</span>
+                  <span className="text-[11px] text-[var(--text-secondary)]">Immediate dispatch to lead bid director when deadline &le; 48 hours</span>
                 </div>
               </label>
 
@@ -449,11 +320,11 @@ export const SettingsPage: React.FC = () => {
                   type="checkbox"
                   checked={notifySignOffs}
                   onChange={(e) => setNotifySignOffs(e.target.checked)}
-                  className="w-4 h-4 accent-[#2563EB] rounded"
+                  className="w-4 h-4 accent-[var(--accent)] rounded"
                 />
                 <div>
-                  <span className="font-medium text-[#0F172A] block">Tier 3 / Tier 4 Gatekeeper Sign-Off Requests</span>
-                  <span className="text-[11px] text-[#64748B]">Alert assigned Legal Counsel or Business Head when prior tiers are cleared</span>
+                  <span className="font-medium text-[var(--text-primary)] block">Tier 3 / Tier 4 Gatekeeper Sign-Off Requests</span>
+                  <span className="text-[11px] text-[var(--text-secondary)]">Alert assigned Legal Counsel or Business Head when prior tiers are cleared</span>
                 </div>
               </label>
 
@@ -462,32 +333,32 @@ export const SettingsPage: React.FC = () => {
                   type="checkbox"
                   checked={notifyBlockers}
                   onChange={(e) => setNotifyBlockers(e.target.checked)}
-                  className="w-4 h-4 accent-[#2563EB] rounded"
+                  className="w-4 h-4 accent-[var(--accent)] rounded"
                 />
                 <div>
-                  <span className="font-medium text-[#0F172A] block">Requirement Checklist Blockers</span>
-                  <span className="text-[11px] text-[#64748B]">Notify whole bid team whenever a mandatory clause is flagged BLOCKER</span>
+                  <span className="font-medium text-[var(--text-primary)] block">Requirement Checklist Blockers</span>
+                  <span className="text-[11px] text-[var(--text-secondary)]">Notify whole bid team whenever a mandatory clause is flagged BLOCKER</span>
                 </div>
               </label>
             </div>
 
             {/* Test Email Dispatch Panel */}
-            <div className="p-3.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-3">
+            <div className="p-3.5 bg-[var(--bg-subtle)] rounded-lg border border-[var(--border-default)] flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-3">
               <div className="flex items-center gap-2">
-                <Bell className="w-4 h-4 text-[#2563EB]" />
-                <span className="font-medium text-[#0F172A]">Send Test Alert:</span>
+                <Bell className="w-4 h-4 text-[var(--accent)]" />
+                <span className="font-medium text-[var(--text-primary)]">Send Test Alert:</span>
                 <input
                   type="email"
                   value={testEmailAddress}
                   onChange={(e) => setTestEmailAddress(e.target.value)}
-                  className="px-2.5 py-1 bg-white border border-[#CBD5E1] rounded text-xs font-mono text-[#0F172A] w-64"
+                  className="px-2.5 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs font-mono text-[var(--text-primary)] w-64"
                 />
               </div>
 
               <button
                 type="button"
                 onClick={handleSendTestEmail}
-                className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg font-semibold shadow-xs transition-colors shrink-0"
+                className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg font-semibold shadow-xs transition-colors shrink-0"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>{testEmailSent ? 'Test Alert Dispatched!' : 'Send Test Notification'}</span>
@@ -495,8 +366,8 @@ export const SettingsPage: React.FC = () => {
             </div>
 
             {testEmailSent && (
-              <div className="p-3 bg-[#EFF6FF] border border-[#BFDBFE] text-[#1D4ED8] rounded-lg flex items-center gap-2 text-xs animate-fadeIn">
-                <Check className="w-4 h-4 shrink-0 text-[#16A34A]" />
+              <div className="p-3 bg-[var(--accent-soft)] border border-[var(--accent-line)] text-[var(--accent)] rounded-lg flex items-center gap-2 text-xs animate-fadeIn">
+                <Check className="w-4 h-4 shrink-0 text-[var(--ok)]" />
                 <span>
                   Simulated SMTP alert delivered to <strong>{testEmailAddress}</strong>: "CRITICAL: TDR-2026-EU-089 Submission window closing in 48 hours".
                 </span>
@@ -512,39 +383,39 @@ export const SettingsPage: React.FC = () => {
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
-              <label className="block font-semibold text-[#0F172A] mb-1">
+              <label className="block font-semibold text-[var(--text-primary)] mb-1">
                 Critical Urgency Window (Hours):
               </label>
               <input
                 type="number"
                 value={alertThresholdHours}
                 onChange={(e) => setAlertThresholdHours(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono text-[#0F172A]"
+                className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-mono text-[var(--text-primary)]"
               />
-              <span className="text-[11px] text-[#64748B] mt-1 block">
+              <span className="text-[11px] text-[var(--text-secondary)] mt-1 block">
                 Triggers red pulsing urgency badge on dashboard when remaining time &le; {alertThresholdHours}h.
               </span>
             </div>
 
             <div>
-              <label className="block font-semibold text-[#0F172A] mb-1">
+              <label className="block font-semibold text-[var(--text-primary)] mb-1">
                 Gatekeeper Review SLA Limit:
               </label>
-              <select className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]">
+              <select className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]">
                 <option value="24">24 Hours per Review Tier</option>
                 <option value="48">48 Hours per Review Tier</option>
                 <option value="72">72 Hours per Review Tier</option>
               </select>
-              <span className="text-[11px] text-[#64748B] mt-1 block">
+              <span className="text-[11px] text-[var(--text-secondary)] mt-1 block">
                 Escalates to Operations Director if gate review remains pending past SLA.
               </span>
             </div>
           </div>
 
-          <div className="pt-4 mt-4 border-t border-[#F1F5F9] flex justify-end">
+          <div className="pt-4 mt-4 border-t border-[var(--border-subtle)] flex justify-end">
             <button
               type="submit"
-              className="flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white rounded-lg font-semibold hover:bg-[#1E293B] shadow-sm transition-colors text-xs"
+              className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg font-semibold hover:bg-[var(--accent-hover)] shadow-sm transition-colors text-xs"
             >
               <Save className="w-3.5 h-3.5" />
               <span>Save Configuration</span>

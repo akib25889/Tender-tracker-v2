@@ -165,26 +165,26 @@ export const TeamAllocationPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
+          <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] mb-1">
             <span>Operations</span>
             <span>•</span>
-            <span className="font-semibold text-[#0F172A]">Resource Matrix</span>
+            <span className="font-semibold text-[var(--text-primary)]">Resource Matrix</span>
           </div>
-          <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
+          <h1 className="font-display text-2xl font-bold text-[var(--text-primary)] tracking-tight">
             Team Capacity &amp; Access Control
           </h1>
-          <p className="text-xs text-[#64748B] mt-0.5">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             Manage team member profiles, live workload allocations, and role-based access limitations.
           </p>
           <div className="mt-2.5">
             {isSuperAdmin ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#ECFDF5] border border-[#A7F3D0] rounded-md text-[11px] font-semibold text-[#065F46]">
-                <Shield className="w-3.5 h-3.5 text-[#059669]" />
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[var(--ok-soft)] border border-[var(--ok-line)] rounded-md text-[11px] font-semibold text-[var(--ok)]">
+                <Shield className="w-3.5 h-3.5 text-[var(--ok)]" />
                 <span>Super Admin Active: Authorized to create accounts, assign roles, and dispatch credentials</span>
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#FEF2F2] border border-[#FECACA] rounded-md text-[11px] font-semibold text-[#DC2626]">
-                <Lock className="w-3.5 h-3.5 text-[#DC2626]" />
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[var(--crit-soft)] border border-[var(--crit-line)] rounded-md text-[11px] font-semibold text-[var(--crit)]">
+                <Lock className="w-3.5 h-3.5 text-[var(--crit)]" />
                 <span>Standard Access ({currentUser.role.replace('_', ' ')}): User provisioning restricted to Super Admin</span>
               </span>
             )}
@@ -195,14 +195,14 @@ export const TeamAllocationPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm self-start sm:self-auto cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg text-xs font-semibold hover:bg-[var(--accent-hover)] transition-colors shadow-sm self-start sm:self-auto cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Add Team Member Profile</span>
           </button>
         ) : (
-          <div className="flex items-center gap-2 px-3.5 py-2 bg-[#FEF2F2] border border-[#FECACA] rounded-lg text-xs font-semibold text-[#DC2626] self-start sm:self-auto">
-            <Lock className="w-4 h-4 text-[#DC2626]" />
+          <div className="flex items-center gap-2 px-3.5 py-2 bg-[var(--crit-soft)] border border-[var(--crit-line)] rounded-lg text-xs font-semibold text-[var(--crit)] self-start sm:self-auto">
+            <Lock className="w-4 h-4 text-[var(--crit)]" />
             <span>Super Admin Authorization Required</span>
           </div>
         )}
@@ -211,54 +211,54 @@ export const TeamAllocationPage: React.FC = () => {
       {/* Member Capacity Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {memberStats.map((member) => (
-          <Card key={member.id} className="hover:border-[#CBD5E1] transition-colors space-y-3">
+          <Card key={member.id} className="hover:border-[var(--border-strong)] transition-colors space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-bold text-xs">
+                <div className="w-9 h-9 rounded-full bg-[var(--accent)] text-[var(--accent-on)] flex items-center justify-center font-bold text-xs">
                   {member.avatar}
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-xs font-bold text-[#0F172A] truncate">{member.name}</h4>
-                  <span className="text-[11px] text-[#64748B] block truncate">{member.title}</span>
+                  <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{member.name}</h4>
+                  <span className="text-[11px] text-[var(--text-secondary)] block truncate">{member.title}</span>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-1.5 pt-2 border-t border-[#F1F5F9]">
+            <div className="space-y-1.5 pt-2 border-t border-[var(--border-subtle)]">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[#64748B]">Capacity Load</span>
+                <span className="text-[var(--text-secondary)]">Capacity Load</span>
                 <span
                   className={`font-mono font-bold ${
-                    member.isOverloaded ? 'text-[#DC2626]' : 'text-[#0F172A]'
-                  }`}
+ member.isOverloaded ? 'text-[var(--crit)]' : 'text-[var(--text-primary)]'
+ }`}
                 >
                   {member.loadPercent}%
                 </span>
               </div>
-              <div className="w-full h-1.5 bg-[#F1F5F9] rounded-full overflow-hidden">
+              <div className="w-full h-1.5 bg-[var(--bg-subtle)] rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all ${
-                    member.isOverloaded
-                      ? 'bg-[#DC2626]'
+ member.isOverloaded
+ ? 'bg-[var(--crit)]'
                       : member.loadPercent >= 60
-                      ? 'bg-[#D97706]'
-                      : 'bg-[#16A34A]'
+                      ? 'bg-[var(--warn)]'
+                      : 'bg-[var(--ok)]'
                   }`}
                   style={{ width: `${member.loadPercent}%` }}
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-[#64748B] pt-1">
+            <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)] pt-1">
               <span>{member.activeTasksCount} Active Tasks</span>
               <span>{member.ledTendersCount} Lead Bids</span>
             </div>
 
-            <div className="pt-2 border-t border-[#F1F5F9]">
+            <div className="pt-2 border-t border-[var(--border-subtle)]">
               <button
                 type="button"
                 onClick={() => navigate(`/profile/${member.id}`)}
-                className="w-full flex items-center justify-center gap-1.5 py-1 px-2 bg-[#F8FAFC] border border-[#E2E8F0] hover:bg-[#0F172A] hover:text-white hover:border-[#0F172A] rounded-md text-[11px] font-semibold text-[#0F172A] transition-all shadow-xs"
+                className="w-full flex items-center justify-center gap-1.5 py-1 px-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] hover:bg-[var(--accent)] hover:text-[var(--accent-on)] hover:border-[var(--accent)] rounded-md text-[11px] font-semibold text-[var(--text-primary)] transition-all shadow-xs"
               >
                 <span>View Personnel Dossier &amp; CV →</span>
               </button>
@@ -275,7 +275,7 @@ export const TeamAllocationPage: React.FC = () => {
         <div className="overflow-x-auto -mx-5 -my-5">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B]">
+              <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[var(--text-secondary)]">
                 <th className="py-3 px-4 font-semibold">System Action / Gate</th>
                 <th className="py-3 px-4 font-semibold text-center w-28">Business Head</th>
                 <th className="py-3 px-4 font-semibold text-center w-28">Executive Mgr</th>
@@ -284,58 +284,58 @@ export const TeamAllocationPage: React.FC = () => {
                 <th className="py-3 px-4 font-semibold">Limitation Rule & Scope</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F1F5F9]">
+            <tbody className="divide-y divide-[var(--border-subtle)]">
               {PERMISSION_MATRIX.map((row, idx) => (
-                <tr key={idx} className="hover:bg-[#F8FAFC] transition-colors">
-                  <td className="py-3 px-4 font-semibold text-[#0F172A] flex items-center gap-2">
-                    <Shield className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
+                <tr key={idx} className="hover:bg-[var(--bg-subtle)] transition-colors">
+                  <td className="py-3 px-4 font-semibold text-[var(--text-primary)] flex items-center gap-2">
+                    <Shield className="w-3.5 h-3.5 text-[var(--accent)] shrink-0" />
                     <span>{row.feature}</span>
                   </td>
                   <td className="py-3 px-4 text-center">
                     {row.businessHead ? (
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#ECFDF5] text-[#047857]">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[var(--ok-soft)] text-[var(--ok)]">
                         <Check className="w-3.5 h-3.5" />
                       </span>
                     ) : (
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#FEF2F2] text-[#DC2626]">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[var(--crit-soft)] text-[var(--crit)]">
                         <X className="w-3.5 h-3.5" />
                       </span>
                     )}
                   </td>
                   <td className="py-3 px-4 text-center">
                     {row.execManager ? (
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#ECFDF5] text-[#047857]">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[var(--ok-soft)] text-[var(--ok)]">
                         <Check className="w-3.5 h-3.5" />
                       </span>
                     ) : (
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#FEF2F2] text-[#DC2626]">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[var(--crit-soft)] text-[var(--crit)]">
                         <X className="w-3.5 h-3.5" />
                       </span>
                     )}
                   </td>
                   <td className="py-3 px-4 text-center">
                     {row.seniorManager ? (
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#ECFDF5] text-[#047857]">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[var(--ok-soft)] text-[var(--ok)]">
                         <Check className="w-3.5 h-3.5" />
                       </span>
                     ) : (
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#FEF2F2] text-[#DC2626]">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[var(--crit-soft)] text-[var(--crit)]">
                         <X className="w-3.5 h-3.5" />
                       </span>
                     )}
                   </td>
                   <td className="py-3 px-4 text-center">
                     {row.analyst ? (
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#ECFDF5] text-[#047857]">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[var(--ok-soft)] text-[var(--ok)]">
                         <Check className="w-3.5 h-3.5" />
                       </span>
                     ) : (
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#FEF2F2] text-[#DC2626]">
-                        <Lock className="w-3 h-3 text-[#DC2626]" />
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[var(--crit-soft)] text-[var(--crit)]">
+                        <Lock className="w-3 h-3 text-[var(--crit)]" />
                       </span>
                     )}
                   </td>
-                  <td className="py-3 px-4 text-[#64748B] text-[11px] leading-relaxed">
+                  <td className="py-3 px-4 text-[var(--text-secondary)] text-[11px] leading-relaxed">
                     {row.note}
                   </td>
                 </tr>
@@ -350,7 +350,7 @@ export const TeamAllocationPage: React.FC = () => {
         title="Departmental Task Distribution Matrix"
         subtitle="Live cross-tender task assignments grouped by operational unit"
       >
-        <div className="divide-y divide-[#F1F5F9] -mx-5 -my-5">
+        <div className="divide-y divide-[var(--border-subtle)] -mx-5 -my-5">
           {memberStats.map((member) => {
             const memberTasks = tenders.flatMap((t) =>
               t.tasks
@@ -362,10 +362,10 @@ export const TeamAllocationPage: React.FC = () => {
               <div key={member.id} className="p-4 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs text-[#0F172A]">{member.name}</span>
-                    <span className="text-[11px] text-[#64748B]">({member.title})</span>
+                    <span className="font-bold text-xs text-[var(--text-primary)]">{member.name}</span>
+                    <span className="text-[11px] text-[var(--text-secondary)]">({member.title})</span>
                   </div>
-                  <span className="font-mono text-[11px] font-bold text-[#2563EB] bg-[#EFF6FF] px-2 py-0.5 rounded">
+                  <span className="font-mono text-[11px] font-bold text-[var(--accent)] bg-[var(--accent-soft)] px-2 py-0.5 rounded">
                     {memberTasks.length} Total Deliverables
                   </span>
                 </div>
@@ -374,21 +374,21 @@ export const TeamAllocationPage: React.FC = () => {
                   {memberTasks.slice(0, 4).map((task) => (
                     <div
                       key={`${task.tenderId}-${task.id}`}
-                      className="p-2.5 bg-[#F8FAFC] rounded border border-[#E2E8F0] text-xs flex items-center justify-between gap-2"
+                      className="p-2.5 bg-[var(--bg-subtle)] rounded border border-[var(--border-default)] text-xs flex items-center justify-between gap-2"
                     >
                       <div className="min-w-0 flex-1">
-                        <span className="font-semibold text-[#0F172A] block truncate">
+                        <span className="font-semibold text-[var(--text-primary)] block truncate">
                           {task.title}
                         </span>
-                        <span className="font-mono text-[10px] text-[#64748B] block">
+                        <span className="font-mono text-[10px] text-[var(--text-secondary)] block">
                           {task.tenderId} • Due {task.deadline}
                         </span>
                       </div>
                       <span
                         className={`text-[9px] font-bold px-1.5 py-0.5 rounded font-mono shrink-0 ${
-                          task.status === 'DONE'
-                            ? 'bg-[#F0FDF4] text-[#15803D]'
-                            : 'bg-[#EFF6FF] text-[#1D4ED8]'
+ task.status === 'DONE'
+ ? 'bg-[var(--ok-soft)] text-[var(--ok)]'
+                            : 'bg-[var(--accent-soft)] text-[var(--accent)]'
                         }`}
                       >
                         {task.status}
@@ -396,7 +396,7 @@ export const TeamAllocationPage: React.FC = () => {
                     </div>
                   ))}
                   {memberTasks.length === 0 && (
-                    <span className="text-xs text-[#94A3B8] italic">No active tasks assigned yet.</span>
+                    <span className="text-xs text-[var(--text-muted)] italic">No active tasks assigned yet.</span>
                   )}
                 </div>
               </div>
@@ -407,19 +407,19 @@ export const TeamAllocationPage: React.FC = () => {
 
       {/* Modal: Create Team Member Profile */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9]">
+        <div className="tt-overlay items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-[#2563EB]" />
-                <h3 className="font-display text-sm font-bold text-[#0F172A]">
+                <Users className="w-5 h-5 text-[var(--accent)]" />
+                <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
                   Create Team Member Profile
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-[#94A3B8] hover:text-[#0F172A]"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -427,35 +427,35 @@ export const TeamAllocationPage: React.FC = () => {
 
             <form onSubmit={handleCreateMember} className="space-y-3.5 text-xs">
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">Full Name *</label>
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">Full Name *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Rachel Adams"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">Corporate Email</label>
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">Corporate Email</label>
                 <input
                   type="email"
                   placeholder="rachel.adams@company.com"
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">Access Role *</label>
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">Access Role *</label>
                   <select
                     value={newRole}
                     onChange={(e) => setNewRole(e.target.value as UserRole)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     <option value="SUPER_ADMIN">Super Admin (System Authority & Account Creation)</option>
                     <option value="BUSINESS_HEAD">Business Head (Executive Leadership & Sign-Off)</option>
@@ -466,24 +466,24 @@ export const TeamAllocationPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">Job Designation</label>
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">Job Designation</label>
                   <input
                     type="text"
                     placeholder="e.g. Solutions Lead"
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block font-semibold text-[#0F172A]">Initial Login Password *</label>
+                  <label className="block font-semibold text-[var(--text-primary)]">Initial Login Password *</label>
                   <button
                     type="button"
                     onClick={generateRandomPassword}
-                    className="text-[10px] text-[#2563EB] hover:underline font-semibold cursor-pointer"
+                    className="text-[10px] text-[var(--accent)] hover:underline font-semibold cursor-pointer"
                   >
                     Generate Strong Password
                   </button>
@@ -495,62 +495,62 @@ export const TeamAllocationPage: React.FC = () => {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="e.g. Password123!"
-                    className="w-full pl-3 pr-9 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-mono focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full pl-3 pr-9 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] font-mono focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A] cursor-pointer"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-                <p className="text-[10px] text-[#64748B] mt-1">
+                <p className="text-[10px] text-[var(--text-secondary)] mt-1">
                   The designated user will use this password to authenticate at http://localhost:5173/
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">Department</label>
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">Department</label>
                   <input
                     type="text"
                     placeholder="Solutions Architecture"
                     value={newDept}
                     onChange={(e) => setNewDept(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">Max Concurrent Tasks</label>
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">Max Concurrent Tasks</label>
                   <input
                     type="number"
                     min="1"
                     max="20"
                     value={newCapacity}
                     onChange={(e) => setNewCapacity(Number(e.target.value))}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
 
-              <div className="p-3 bg-[#EFF6FF] border border-[#BFDBFE] rounded-lg text-[11px] text-[#1D4ED8]">
+              <div className="p-3 bg-[var(--accent-soft)] border border-[var(--accent-line)] rounded-lg text-[11px] text-[var(--accent)]">
                 <span className="font-bold block mb-0.5">Role Access Note:</span>
                 Assigning this profile will immediately make them available across Task Boards, Review Sign-Off Tiers, and Tender Ownership dropdowns.
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-3.5 py-1.5 rounded-lg border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] font-semibold transition-colors cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] font-semibold transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#0F172A] text-white font-semibold hover:bg-[#1E293B] shadow-sm transition-colors cursor-pointer"
+                  className="px-4 py-1.5 rounded-lg bg-[var(--accent)] text-[var(--accent-on)] font-semibold hover:bg-[var(--accent-hover)] shadow-sm transition-colors cursor-pointer"
                 >
                   Create Member Profile
                 </button>
@@ -562,62 +562,62 @@ export const TeamAllocationPage: React.FC = () => {
 
       {/* Credentials Dispatch Modal for Super Admin */}
       {createdCredentials && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full border border-[#E2E8F0] overflow-hidden">
-            <div className="p-5 bg-[#0F172A] text-white flex items-center justify-between">
+        <div className="fixed inset-0 bg-[var(--text-primary)]/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-[var(--bg-surface)] rounded-xl shadow-2xl max-w-md w-full border border-[var(--border-default)] overflow-hidden">
+            <div className="p-5 bg-[var(--accent)] text-[var(--accent-on)] flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white shadow-sm">
+                <div className="w-8 h-8 rounded-lg bg-[var(--ok)] flex items-center justify-center text-[var(--accent-on)] shadow-sm">
                   <KeyRound className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="font-display font-bold text-sm">Account Provisioned Successfully</h3>
-                  <p className="text-[11px] text-[#94A3B8]">Credentials generated for designated user</p>
+                  <p className="text-[11px] text-[var(--text-muted)]">Credentials generated for designated user</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setCreatedCredentials(null)}
-                className="text-[#94A3B8] hover:text-white cursor-pointer"
+                className="text-[var(--text-muted)] hover:text-[var(--accent-on)] cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="p-5 space-y-4 text-xs">
-              <div className="p-3 bg-[#ECFDF5] border border-[#A7F3D0] rounded-lg text-[#065F46] space-y-1">
+              <div className="p-3 bg-[var(--ok-soft)] border border-[var(--ok-line)] rounded-lg text-[var(--ok)] space-y-1">
                 <div className="flex items-center gap-1.5 font-bold">
-                  <CheckCircle2 className="w-4 h-4 text-[#059669]" />
+                  <CheckCircle2 className="w-4 h-4 text-[var(--ok)]" />
                   <span>Ready for Delegated Login</span>
                 </div>
-                <p className="text-[11px] text-[#065F46] leading-relaxed">
+                <p className="text-[11px] text-[var(--ok)] leading-relaxed">
                   Share these credentials with the designated person so they can sign in to the TenderTracker Command Center.
                 </p>
               </div>
 
-              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg p-3 space-y-2">
-                <div className="flex justify-between items-center py-1 border-b border-[#E2E8F0]">
-                  <span className="text-[#64748B]">Designated Name:</span>
-                  <span className="font-bold text-[#0F172A]">{createdCredentials.name}</span>
+              <div className="bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg p-3 space-y-2">
+                <div className="flex justify-between items-center py-1 border-b border-[var(--border-default)]">
+                  <span className="text-[var(--text-secondary)]">Designated Name:</span>
+                  <span className="font-bold text-[var(--text-primary)]">{createdCredentials.name}</span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-[#E2E8F0]">
-                  <span className="text-[#64748B]">Assigned Role:</span>
-                  <span className="font-mono font-semibold px-2 py-0.5 rounded bg-white text-[#2563EB] border border-[#BFDBFE] text-[10px]">
+                <div className="flex justify-between items-center py-1 border-b border-[var(--border-default)]">
+                  <span className="text-[var(--text-secondary)]">Assigned Role:</span>
+                  <span className="font-mono font-semibold px-2 py-0.5 rounded bg-[var(--bg-surface)] text-[var(--accent)] border border-[var(--accent-line)] text-[10px]">
                     {createdCredentials.role.replace('_', ' ')}
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-[#E2E8F0]">
-                  <span className="text-[#64748B]">Login Email:</span>
-                  <span className="font-mono font-bold text-[#0F172A]">{createdCredentials.email}</span>
+                <div className="flex justify-between items-center py-1 border-b border-[var(--border-default)]">
+                  <span className="text-[var(--text-secondary)]">Login Email:</span>
+                  <span className="font-mono font-bold text-[var(--text-primary)]">{createdCredentials.email}</span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-[#E2E8F0]">
-                  <span className="text-[#64748B]">Initial Password:</span>
-                  <span className="font-mono font-bold text-[#DC2626] bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FECACA]">
+                <div className="flex justify-between items-center py-1 border-b border-[var(--border-default)]">
+                  <span className="text-[var(--text-secondary)]">Initial Password:</span>
+                  <span className="font-mono font-bold text-[var(--crit)] bg-[var(--crit-soft)] px-2 py-0.5 rounded border border-[var(--crit-line)]">
                     {createdCredentials.password}
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-1">
-                  <span className="text-[#64748B]">Login Portal:</span>
-                  <span className="font-mono text-[11px] text-[#2563EB]">http://localhost:5173/</span>
+                  <span className="text-[var(--text-secondary)]">Login Portal:</span>
+                  <span className="font-mono text-[11px] text-[var(--accent)]">http://localhost:5173/</span>
                 </div>
               </div>
 
@@ -630,16 +630,16 @@ export const TeamAllocationPage: React.FC = () => {
                     setHasCopied(true);
                     setTimeout(() => setHasCopied(false), 2500);
                   }}
-                  className="flex-1 py-2 px-3 bg-white border border-[#CBD5E1] hover:bg-[#F1F5F9] rounded-lg font-semibold text-[#0F172A] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  className="flex-1 py-2 px-3 bg-[var(--bg-surface)] border border-[var(--border-strong)] hover:bg-[var(--bg-subtle)] rounded-lg font-semibold text-[var(--text-primary)] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                 >
                   {hasCopied ? (
                     <>
-                      <Check className="w-4 h-4 text-[#059669]" />
-                      <span className="text-[#059669]">Copied!</span>
+                      <Check className="w-4 h-4 text-[var(--ok)]" />
+                      <span className="text-[var(--ok)]">Copied!</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="w-4 h-4 text-[#64748B]" />
+                      <Copy className="w-4 h-4 text-[var(--text-secondary)]" />
                       <span>Copy Credentials</span>
                     </>
                   )}
@@ -667,7 +667,7 @@ export const TeamAllocationPage: React.FC = () => {
                     }
                     setCreatedCredentials(null);
                   }}
-                  className="flex-1 py-2 px-3 bg-[#0F172A] hover:bg-[#1E293B] text-white rounded-lg font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-sm"
+                  className="flex-1 py-2 px-3 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-sm"
                 >
                   <span>Test Login Now</span>
                   <ArrowRight className="w-4 h-4" />

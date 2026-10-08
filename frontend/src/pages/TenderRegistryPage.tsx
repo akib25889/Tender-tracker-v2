@@ -844,17 +844,17 @@ export const TenderRegistryPage: React.FC = () => {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
+          <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] mb-1">
             <span>Procurement Core</span>
             <span>•</span>
-            <span className="font-semibold text-[#0F172A]">
+            <span className="font-semibold text-[var(--text-primary)]">
               Tender Registry Console
             </span>
           </div>
-          <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
+          <h1 className="font-display text-2xl font-bold text-[var(--text-primary)] tracking-tight">
             Tender Registry &amp; Data Entry
           </h1>
-          <p className="text-xs text-[#64748B] mt-0.5">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             Full data entry workspace matching the official Tender Summary
             template — manage all technical, statutory, and commercial parameters.
           </p>
@@ -862,13 +862,13 @@ export const TenderRegistryPage: React.FC = () => {
 
         <div className="flex flex-wrap items-center gap-2">
           {saveSuccess && (
-            <div className="flex items-center gap-1 px-3 py-1.5 bg-[#F0FDF4] border border-[#BBF7D0] text-[#15803D] text-xs font-semibold rounded-lg shadow-sm">
+            <div className="flex items-center gap-1 px-3 py-1.5 bg-[var(--ok-soft)] border border-[var(--ok-line)] text-[var(--ok)] text-xs font-semibold rounded-lg shadow-sm">
               <Check className="w-3.5 h-3.5" />
               <span>Entry Saved Successfully!</span>
             </div>
           )}
           <div className="flex items-center gap-1.5">
-            <span className="text-xs text-[#64748B] font-medium hidden sm:inline">Active Record:</span>
+            <span className="text-xs text-[var(--text-secondary)] font-medium hidden sm:inline">Active Record:</span>
             <select
               value={selectedTenderId || ''}
               onChange={(e) => {
@@ -880,7 +880,7 @@ export const TenderRegistryPage: React.FC = () => {
                   setSearchParams({});
                 }
               }}
-              className="px-2.5 py-1.5 bg-white border border-[#CBD5E1] text-[#0F172A] rounded-lg text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#2563EB] max-w-[220px] truncate"
+              className="px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] text-[var(--text-primary)] rounded-lg text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--accent)] max-w-[220px] truncate"
             >
               <option value="">+ New Blank Tender Entry</option>
               {tenders.map((t) => (
@@ -895,7 +895,7 @@ export const TenderRegistryPage: React.FC = () => {
           )}
           <button
             onClick={handleCreateNewBlank}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg text-xs font-semibold hover:bg-[var(--accent-hover)] transition-colors shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>New Tender Entry</span>
@@ -904,11 +904,11 @@ export const TenderRegistryPage: React.FC = () => {
       </div>
 
       {/* Full-Width Editor Panel */}
-      <div className="w-full bg-white rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col overflow-hidden">
+      <div className="w-full bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] shadow-sm flex flex-col overflow-hidden">
         {/* Editor Header Bar */}
-        <div className="px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+        <div className="px-6 py-4 border-b border-[var(--border-default)] bg-[var(--bg-subtle)] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
           <div className="flex items-center gap-3">
-            <h2 className="font-display text-base font-bold text-[#0F172A] line-clamp-1">
+            <h2 className="font-display text-base font-bold text-[var(--text-primary)] line-clamp-1">
               {tenderTitle || 'Untitled Tender Entry'}
             </h2>
           </div>
@@ -917,7 +917,7 @@ export const TenderRegistryPage: React.FC = () => {
             {selectedTender && (
               <Link
                 to={`/registry/summary/${selectedTender.id}`}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#475569] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors shadow-2xs"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] rounded-lg text-xs font-semibold transition-colors shadow-2xs"
               >
                 <FileText className="w-3.5 h-3.5" />
                 <span>View Summary</span>
@@ -927,7 +927,7 @@ export const TenderRegistryPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleDeleteCurrent}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#FECACA] text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--crit-line)] text-[var(--crit)] hover:bg-[var(--crit-soft)] rounded-lg text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
                 title="Delete this tender"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -937,7 +937,7 @@ export const TenderRegistryPage: React.FC = () => {
             {selectedTender && (
               <Link
                 to={`/tenders/${selectedTender.id}`}
-                className="flex items-center gap-1 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors"
+                className="flex items-center gap-1 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] rounded-lg text-xs font-semibold transition-colors"
               >
                 <span>Workspace</span>
                 <ExternalLink className="w-3 h-3" />
@@ -946,7 +946,7 @@ export const TenderRegistryPage: React.FC = () => {
             <button
               type="button"
               onClick={handleSaveEntry}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] shadow-sm transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg text-xs font-semibold hover:bg-[var(--accent-hover)] shadow-sm transition-colors cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" />
               <span>Save Entry</span>
@@ -955,14 +955,14 @@ export const TenderRegistryPage: React.FC = () => {
         </div>
 
           {/* Section Navigation Tabs */}
-          <div className="flex items-center border-b border-[#E2E8F0] bg-white px-6 overflow-x-auto shrink-0">
+          <div className="flex items-center border-b border-[var(--border-default)] bg-[var(--bg-surface)] px-6 overflow-x-auto shrink-0">
             <button
               type="button"
               onClick={() => setActiveEditorTab('BASIC')}
               className={`flex items-center gap-1.5 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-                activeEditorTab === 'BASIC'
-                  ? 'border-[#2563EB] text-[#2563EB]'
-                  : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeEditorTab === 'BASIC'
+ ? 'border-[var(--accent)] text-[var(--accent)]'
+                  : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
@@ -973,9 +973,9 @@ export const TenderRegistryPage: React.FC = () => {
               type="button"
               onClick={() => setActiveEditorTab('SCOPE')}
               className={`flex items-center gap-1.5 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-                activeEditorTab === 'SCOPE'
-                  ? 'border-[#2563EB] text-[#2563EB]'
-                  : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeEditorTab === 'SCOPE'
+ ? 'border-[var(--accent)] text-[var(--accent)]'
+                  : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               <FileCheck2 className="w-3.5 h-3.5" />
@@ -986,9 +986,9 @@ export const TenderRegistryPage: React.FC = () => {
               type="button"
               onClick={() => setActiveEditorTab('FINANCIAL')}
               className={`flex items-center gap-1.5 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-                activeEditorTab === 'FINANCIAL'
-                  ? 'border-[#2563EB] text-[#2563EB]'
-                  : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeEditorTab === 'FINANCIAL'
+ ? 'border-[var(--accent)] text-[var(--accent)]'
+                  : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               <CreditCard className="w-3.5 h-3.5" />
@@ -999,9 +999,9 @@ export const TenderRegistryPage: React.FC = () => {
               type="button"
               onClick={() => setActiveEditorTab('ELIGIBILITY')}
               className={`flex items-center gap-1.5 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-                activeEditorTab === 'ELIGIBILITY'
-                  ? 'border-[#2563EB] text-[#2563EB]'
-                  : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeEditorTab === 'ELIGIBILITY'
+ ? 'border-[var(--accent)] text-[var(--accent)]'
+                  : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               <Briefcase className="w-3.5 h-3.5" />
@@ -1012,9 +1012,9 @@ export const TenderRegistryPage: React.FC = () => {
               type="button"
               onClick={() => setActiveEditorTab('STAFFING')}
               className={`flex items-center gap-1.5 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-                activeEditorTab === 'STAFFING'
-                  ? 'border-[#2563EB] text-[#2563EB]'
-                  : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeEditorTab === 'STAFFING'
+ ? 'border-[var(--accent)] text-[var(--accent)]'
+                  : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
@@ -1025,9 +1025,9 @@ export const TenderRegistryPage: React.FC = () => {
               type="button"
               onClick={() => setActiveEditorTab('RISKS')}
               className={`flex items-center gap-1.5 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-                activeEditorTab === 'RISKS'
-                  ? 'border-[#2563EB] text-[#2563EB]'
-                  : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeEditorTab === 'RISKS'
+ ? 'border-[var(--accent)] text-[var(--accent)]'
+                  : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               <AlertTriangle className="w-3.5 h-3.5" />
@@ -1038,9 +1038,9 @@ export const TenderRegistryPage: React.FC = () => {
               type="button"
               onClick={() => setActiveEditorTab('CLAUSES')}
               className={`flex items-center gap-1.5 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-                activeEditorTab === 'CLAUSES'
-                  ? 'border-[#2563EB] text-[#2563EB]'
-                  : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeEditorTab === 'CLAUSES'
+ ? 'border-[var(--accent)] text-[var(--accent)]'
+                  : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               <BookOpen className="w-3.5 h-3.5" />
@@ -1057,7 +1057,7 @@ export const TenderRegistryPage: React.FC = () => {
             {activeEditorTab === 'BASIC' && (
               <div className="space-y-5 animate-fadeIn">
                 <div>
-                  <label className="block font-bold text-[#0F172A] mb-1.5">
+                  <label className="block font-bold text-[var(--text-primary)] mb-1.5">
                     Tender Domain Classification
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -1067,9 +1067,9 @@ export const TenderRegistryPage: React.FC = () => {
                         type="button"
                         onClick={() => setClassification(c)}
                         className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                          classification === c
-                            ? 'bg-[#0F172A] text-white shadow-sm ring-2 ring-[#0F172A]/20'
-                            : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A] hover:bg-[#E2E8F0]'
+ classification === c
+ ? 'bg-[var(--accent)] text-[var(--accent-on)] shadow-sm ring-2 ring-[var(--accent)]/20'
+                            : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-muted)]'
                         }`}
                       >
                         {c}
@@ -1080,96 +1080,96 @@ export const TenderRegistryPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-semibold text-[#0F172A] mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       Tender Title
                     </label>
                     <input
                       type="text"
                       value={tenderTitle}
                       onChange={(e) => setTenderTitle(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#0F172A] mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       Project Name
                     </label>
                     <input
                       type="text"
                       value={projectName}
                       onChange={(e) => setProjectName(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
-                    <label className="block font-semibold text-[#0F172A] mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       Tender ID
                     </label>
                     <input
                       type="text"
                       value={tenderId}
                       onChange={(e) => setTenderId(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-mono text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#0F172A] mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       Reference No.
                     </label>
                     <input
                       type="text"
                       value={referenceNo}
                       onChange={(e) => setReferenceNo(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-mono text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#0F172A] mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       Procurement Portal
                     </label>
                     <input
                       type="text"
                       value={portal}
                       onChange={(e) => setPortal(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#0F172A] mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       Country / Jurisdiction
                     </label>
                     <input
                       type="text"
                       value={country}
                       onChange={(e) => setCountry(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-semibold text-[#0F172A] mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       Client / Issuing Authority
                     </label>
                     <input
                       type="text"
                       value={client}
                       onChange={(e) => setClient(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="block font-semibold text-[#0F172A]">
+                      <label className="block font-semibold text-[var(--text-primary)]">
                         Scope of Work (SOW) Category
                       </label>
                       <button
@@ -1183,7 +1183,7 @@ export const TenderRegistryPage: React.FC = () => {
                             setCategory('');
                           }
                         }}
-                        className="text-[11px] font-semibold text-[#2563EB] hover:underline"
+                        className="text-[11px] font-semibold text-[var(--accent)] hover:underline"
                       >
                         {isCustomCategory ? '← Choose Existing' : '+ New Category'}
                       </button>
@@ -1197,7 +1197,7 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. Industrial IoT & SCADA, Renewable Energy..."
                           value={category}
                           onChange={(e) => setCategory(e.target.value)}
-                          className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#2563EB] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--accent)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       </div>
                     ) : (
@@ -1211,7 +1211,7 @@ export const TenderRegistryPage: React.FC = () => {
                             setCategory(e.target.value);
                           }
                         }}
-                        className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       >
                         <option value="">-- Select Category --</option>
                         {availableCategories.map((cat) => (
@@ -1222,7 +1222,7 @@ export const TenderRegistryPage: React.FC = () => {
                         {!availableCategories.includes(category) && category && (
                           <option value={category}>{category}</option>
                         )}
-                        <option value="__CUSTOM__" className="font-bold text-[#2563EB]">
+                        <option value="__CUSTOM__" className="font-bold text-[var(--accent)]">
                           + Add New Custom Category...
                         </option>
                       </select>
@@ -1231,18 +1231,18 @@ export const TenderRegistryPage: React.FC = () => {
                 </div>
 
                 {/* Multi-Language Selection (Req #29) */}
-                <div className="p-3.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-2.5">
+                <div className="p-3.5 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-default)] space-y-2.5">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                     <div>
-                      <label className="font-bold text-[#0F172A] flex items-center gap-1.5 text-xs">
-                        <Languages className="w-4 h-4 text-[#2563EB]" />
+                      <label className="font-bold text-[var(--text-primary)] flex items-center gap-1.5 text-xs">
+                        <Languages className="w-4 h-4 text-[var(--accent)]" />
                         <span>Project Official Languages (Multiple Allowed)</span>
                       </label>
-                      <p className="text-[11px] text-[#64748B]">
+                      <p className="text-[11px] text-[var(--text-secondary)]">
                         Specify all official languages required for bidding documents, RFPs, technical proposals, or client communication.
                       </p>
                     </div>
-                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] self-start sm:self-auto">
+                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)] self-start sm:self-auto">
                       {languages.length} Language{languages.length === 1 ? '' : 's'} Selected
                     </span>
                   </div>
@@ -1277,12 +1277,12 @@ export const TenderRegistryPage: React.FC = () => {
                             }
                           }}
                           className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all flex items-center gap-1 ${
-                            isSelected
-                              ? 'bg-[#0F172A] text-white shadow-2xs font-bold'
-                              : 'bg-white border border-[#CBD5E1] text-[#475569] hover:border-[#94A3B8] hover:bg-[#F1F5F9]'
+ isSelected
+ ? 'bg-[var(--accent)] text-[var(--accent-on)] shadow-2xs font-bold'
+                              : 'bg-[var(--bg-surface)] border border-[var(--border-strong)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:bg-[var(--bg-subtle)]'
                           }`}
                         >
-                          {isSelected && <Check className="w-3 h-3 text-emerald-400" />}
+                          {isSelected && <Check className="w-3 h-3 text-[var(--ok)]" />}
                           <span>{lang}</span>
                         </button>
                       );
@@ -1290,7 +1290,7 @@ export const TenderRegistryPage: React.FC = () => {
                   </div>
 
                   {/* Custom language input & selected pills */}
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-1 border-t border-[#E2E8F0]/70">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-1 border-t border-[var(--border-default)]/70">
                     <div className="flex items-center gap-1.5 flex-1">
                       <input
                         type="text"
@@ -1307,7 +1307,7 @@ export const TenderRegistryPage: React.FC = () => {
                             }
                           }
                         }}
-                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                       <button
                         type="button"
@@ -1318,7 +1318,7 @@ export const TenderRegistryPage: React.FC = () => {
                             setCustomLanguageInput('');
                           }
                         }}
-                        className="px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-lg text-xs transition-colors shrink-0"
+                        className="px-3 py-1.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] font-semibold rounded-lg text-xs transition-colors shrink-0"
                       >
                         + Add
                       </button>
@@ -1329,14 +1329,14 @@ export const TenderRegistryPage: React.FC = () => {
                       {languages.map((lang) => (
                         <span
                           key={lang}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white text-[#0F172A] border border-[#CBD5E1] font-medium text-[11px] shadow-2xs"
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-strong)] font-medium text-[11px] shadow-2xs"
                         >
                           <span>{lang}</span>
                           {languages.length > 1 && (
                             <button
                               type="button"
                               onClick={() => setLanguages(languages.filter((l) => l !== lang))}
-                              className="text-[#94A3B8] hover:text-[#DC2626] ml-0.5 font-bold"
+                              className="text-[var(--text-muted)] hover:text-[var(--crit)] ml-0.5 font-bold"
                               title={`Remove ${lang}`}
                             >
                               ×
@@ -1349,7 +1349,7 @@ export const TenderRegistryPage: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-3 bg-slate-50/50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-800">
+                  <div className="p-3 bg-[var(--bg-subtle)]/50 rounded-xl border border-[var(--border-default)]">
                     <DateTimePicker
                       label="Notice / Published Date & Time"
                       sublabel="Official issue date, time, and timezone of tender announcement"
@@ -1367,7 +1367,7 @@ export const TenderRegistryPage: React.FC = () => {
                     />
                   </div>
 
-                  <div className="p-3 bg-slate-50/50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-800">
+                  <div className="p-3 bg-[var(--bg-subtle)]/50 rounded-xl border border-[var(--border-default)]">
                     <DateTimePicker
                       label="Last Date (Submission Deadline) & Cutoff Time"
                       sublabel="Official submission closing deadline and local cutoff time"
@@ -1393,10 +1393,10 @@ export const TenderRegistryPage: React.FC = () => {
                 </div>
 
                 {/* AI Chat & Document Knowledge Share Link */}
-                <div className="p-3.5 bg-violet-50/70 dark:bg-violet-950/25 rounded-xl border border-violet-200 dark:border-violet-800/40 space-y-1.5 transition-colors">
+                <div className="p-3.5 bg-[var(--bg-subtle)]/70 rounded-xl border border-[var(--border-default)] space-y-1.5 transition-colors">
                   <div className="flex items-center justify-between gap-2">
-                    <label className="block text-xs font-bold text-violet-950 dark:text-violet-200 flex items-center gap-1.5">
-                      <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0" />
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
                       <span>AI Chat &amp; Document Knowledge Link (ChatGPT / Claude / NotebookLM / Gemini)</span>
                     </label>
                     {aiChatShareLink && (
@@ -1404,7 +1404,7 @@ export const TenderRegistryPage: React.FC = () => {
                         href={aiChatShareLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[11px] font-bold text-violet-700 dark:text-violet-400 hover:text-violet-900 dark:hover:text-violet-200 flex items-center gap-1 shrink-0 transition-colors"
+                        className="text-[11px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-secondary)] flex items-center gap-1 shrink-0 transition-colors"
                       >
                         <span>Test Link</span>
                         <ExternalLink className="w-3 h-3" />
@@ -1416,33 +1416,33 @@ export const TenderRegistryPage: React.FC = () => {
                     placeholder="e.g. https://chatgpt.com/share/67a213ff... or https://notebooklm.google.com/notebook/..."
                     value={aiChatShareLink}
                     onChange={(e) => setAiChatShareLink(e.target.value)}
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-900/90 border border-violet-200 dark:border-violet-800/60 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-hidden focus:ring-1 focus:ring-violet-500 focus:border-violet-500 font-mono transition-colors"
+                    className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-hidden focus:ring-1 focus:ring-[var(--border-default)] focus:border-[var(--border-default)] font-mono transition-colors"
                   />
-                  <p className="text-[11px] text-[#64748B] dark:text-slate-400">
+                  <p className="text-[11px] text-[var(--text-secondary)]">
                     Share link to an external AI conversation or notebook with tender RFPs pre-loaded so your team doesn&apos;t have to re-upload files to inquire.
                   </p>
                 </div>
 
                 {/* Currency & Financial Valuation */}
-                <div className="p-3.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
+                <div className="p-3.5 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-default)] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Currency &amp; Financial Valuation
                     </span>
-                    <span className="text-[11px] font-mono font-bold text-[#2563EB] bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100 shadow-sm">
+                    <span className="text-[11px] font-mono font-bold text-[var(--accent)] bg-[var(--accent-soft)] px-2.5 py-0.5 rounded-full border border-[var(--accent-line)] shadow-sm">
                       {formatBdtPreview(liveBdtValue)}
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Tender Currency
                       </label>
                       <select
                         value={tenderCurrency}
                         onChange={(e) => handleCurrencyChange(e.target.value)}
-                        className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg font-bold text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg font-bold text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       >
                         <option value="USD">USD ($)</option>
                         <option value="BDT">BDT (৳)</option>
@@ -1454,7 +1454,7 @@ export const TenderRegistryPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Net Value ({tenderCurrency})
                       </label>
                       <input
@@ -1464,12 +1464,12 @@ export const TenderRegistryPage: React.FC = () => {
                         placeholder="Leave blank if unannounced"
                         value={estimatedValue}
                         onChange={(e) => setEstimatedValue(e.target.value)}
-                        className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg font-mono font-bold text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] placeholder:font-normal placeholder:text-[#94A3B8]"
+                        className="w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg font-mono font-bold text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] placeholder:font-normal placeholder:text-[var(--text-muted)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Rate vs BDT (At that time)
                       </label>
                       <input
@@ -1479,34 +1479,34 @@ export const TenderRegistryPage: React.FC = () => {
                         value={tenderCurrency === 'BDT' ? '1.0' : exchangeRateToBdt}
                         onChange={(e) => setExchangeRateToBdt(e.target.value)}
                         placeholder="e.g. 122.00"
-                        className={`w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg font-mono text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] ${
-                          tenderCurrency === 'BDT' ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''
-                        }`}
+                        className={`w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg font-mono text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] ${
+ tenderCurrency === 'BDT' ? 'opacity-60 cursor-not-allowed bg-[var(--bg-subtle)]' : ''
+ }`}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Rate Fixation Date
                       </label>
                       <input
                         type="date"
                         value={exchangeRateDate}
                         onChange={(e) => setExchangeRateDate(e.target.value)}
-                        className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center justify-between text-[11px] text-[#64748B] pt-1.5 border-t border-[#E2E8F0]">
+                  <div className="flex flex-wrap items-center justify-between text-[11px] text-[var(--text-secondary)] pt-1.5 border-t border-[var(--border-default)]">
                     <span>
                       {tenderCurrency === 'BDT'
                         ? 'Local currency tender (1.0 conversion factor to BDT).'
                         : `Historical conversion rate of that time: 1 ${tenderCurrency} = ৳${exchangeRateToBdt || '122.00'} BDT`}
                     </span>
-                    <span className="font-semibold text-slate-700">
+                    <span className="font-semibold text-[var(--text-primary)]">
                       Total Equivalent:{' '}
-                      <span className="text-[#2563EB] font-mono">
+                      <span className="text-[var(--accent)] font-mono">
                         ৳{Math.round(liveBdtValue).toLocaleString()} BDT
                       </span>
                     </span>
@@ -1514,15 +1514,15 @@ export const TenderRegistryPage: React.FC = () => {
                 </div>
 
                 {/* Procurement Governance & Sourcing Attributes (Req #21) */}
-                <div className="p-4 bg-[#F8FAFC] dark:bg-slate-800/40 rounded-xl border border-[#E2E8F0] dark:border-slate-700/60 space-y-3">
-                  <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-slate-700/60 pb-2">
+                <div className="p-4 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-default)] space-y-3">
+                  <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
                     <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-[#2563EB] dark:text-blue-400" />
-                      <span className="text-xs font-bold text-[#0F172A] dark:text-slate-100 uppercase tracking-wider">
+                      <ShieldCheck className="w-4 h-4 text-[var(--accent)]" />
+                      <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                         Procurement Governance &amp; Sourcing Framework
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono font-bold text-[#2563EB] dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800/60">
+                    <span className="text-[10px] font-mono font-bold text-[var(--accent)] bg-[var(--accent-soft)] px-2 py-0.5 rounded border border-[var(--accent-line)]">
                       Statutory Governance
                     </span>
                   </div>
@@ -1531,7 +1531,7 @@ export const TenderRegistryPage: React.FC = () => {
                     {/* Tender Type */}
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
+                        <label className="block text-[11px] font-semibold text-[var(--text-primary)]">
                           Tender Type
                         </label>
                         <button
@@ -1540,7 +1540,7 @@ export const TenderRegistryPage: React.FC = () => {
                             setIsCustomTenderType(!isCustomTenderType);
                             if (isCustomTenderType && !tenderType) setTenderType(STANDARD_TENDER_TYPES[0]);
                           }}
-                          className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
+                          className="text-[10px] font-semibold text-[var(--accent)] hover:underline"
                         >
                           {isCustomTenderType ? '← Select Preset' : '+ Custom Type'}
                         </button>
@@ -1551,7 +1551,7 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. Turnkey EPC, Framework Call-off..."
                           value={tenderType}
                           onChange={(e) => setTenderType(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--accent)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       ) : (
                         <select
@@ -1564,7 +1564,7 @@ export const TenderRegistryPage: React.FC = () => {
                               setTenderType(e.target.value);
                             }
                           }}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         >
                           <option value="">-- Select Tender Type --</option>
                           {STANDARD_TENDER_TYPES.map((t) => (
@@ -1575,7 +1575,7 @@ export const TenderRegistryPage: React.FC = () => {
                           {!STANDARD_TENDER_TYPES.includes(tenderType as any) && tenderType && (
                             <option value={tenderType}>{tenderType}</option>
                           )}
-                          <option value="__CUSTOM__" className="font-bold text-[#2563EB]">
+                          <option value="__CUSTOM__" className="font-bold text-[var(--accent)]">
                             + Add Custom Tender Type...
                           </option>
                         </select>
@@ -1584,12 +1584,12 @@ export const TenderRegistryPage: React.FC = () => {
 
                     {/* Originating EOI Selector (Rendered when RFP mode is active) */}
                     {tenderType === 'Request for Proposals (RFP)' && (
-                      <div className="sm:col-span-2 p-3 bg-blue-50/70 border border-blue-200 rounded-xl space-y-2">
+                      <div className="sm:col-span-2 p-3 bg-[var(--accent-soft)]/70 border border-[var(--accent-line)] rounded-xl space-y-2">
                         <div className="flex items-center justify-between">
-                          <label className="block text-[11px] font-bold text-[#1E40AF] flex items-center gap-1.5">
+                          <label className="block text-[11px] font-bold text-[var(--accent)] flex items-center gap-1.5">
                             <span>🔗 Originating EOI (Optional — 2-Stage Procurement Flow)</span>
                           </label>
-                          <span className="text-[10px] font-semibold text-[#2563EB] bg-blue-100/80 px-2 py-0.5 rounded">
+                          <span className="text-[10px] font-semibold text-[var(--accent)] bg-[var(--accent-soft)]/80 px-2 py-0.5 rounded">
                             {parentEoiId ? 'EOI-Linked RFP' : 'Direct RFP Modality'}
                           </span>
                         </div>
@@ -1616,7 +1616,7 @@ export const TenderRegistryPage: React.FC = () => {
                               }
                             }
                           }}
-                          className="w-full px-2.5 py-1.5 bg-white border border-blue-300 rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--accent-line)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         >
                           <option value="">-- Direct RFP (Open Tender / No EOI Required) --</option>
                           {eligibleParentEois.map((eoi) => (
@@ -1625,7 +1625,7 @@ export const TenderRegistryPage: React.FC = () => {
                             </option>
                           ))}
                         </select>
-                        <p className="text-[10px] text-[#3B82F6]">
+                        <p className="text-[10px] text-[var(--accent)]">
                           {parentEoiId
                             ? `Linked to Parent EOI #${parentEoiId}. Organization, country, and statutory references are synchronized.`
                             : 'Direct RFP: Organizations can publish RFPs directly without any prior EOI stage required.'}
@@ -1636,7 +1636,7 @@ export const TenderRegistryPage: React.FC = () => {
                     {/* Budget Type */}
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
+                        <label className="block text-[11px] font-semibold text-[var(--text-primary)]">
                           Budget Type
                         </label>
                         <button
@@ -1645,7 +1645,7 @@ export const TenderRegistryPage: React.FC = () => {
                             setIsCustomBudgetType(!isCustomBudgetType);
                             if (isCustomBudgetType && !budgetType) setBudgetType(STANDARD_BUDGET_TYPES[0]);
                           }}
-                          className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
+                          className="text-[10px] font-semibold text-[var(--accent)] hover:underline"
                         >
                           {isCustomBudgetType ? '← Select Preset' : '+ Custom Budget'}
                         </button>
@@ -1656,7 +1656,7 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. Special Trust Fund, Sovereign Loan..."
                           value={budgetType}
                           onChange={(e) => setBudgetType(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--accent)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       ) : (
                         <select
@@ -1669,7 +1669,7 @@ export const TenderRegistryPage: React.FC = () => {
                               setBudgetType(e.target.value);
                             }
                           }}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         >
                           <option value="">-- Select Budget Type --</option>
                           {STANDARD_BUDGET_TYPES.map((b) => (
@@ -1680,7 +1680,7 @@ export const TenderRegistryPage: React.FC = () => {
                           {!STANDARD_BUDGET_TYPES.includes(budgetType as any) && budgetType && (
                             <option value={budgetType}>{budgetType}</option>
                           )}
-                          <option value="__CUSTOM__" className="font-bold text-[#2563EB] dark:text-blue-400">
+                          <option value="__CUSTOM__" className="font-bold text-[var(--accent)]">
                             + Add Custom Budget Type...
                           </option>
                         </select>
@@ -1690,7 +1690,7 @@ export const TenderRegistryPage: React.FC = () => {
                     {/* Source of Fund */}
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
+                        <label className="block text-[11px] font-semibold text-[var(--text-primary)]">
                           Source of Fund (Financier)
                         </label>
                         <button
@@ -1699,7 +1699,7 @@ export const TenderRegistryPage: React.FC = () => {
                             setIsCustomSourceOfFund(!isCustomSourceOfFund);
                             if (isCustomSourceOfFund && !sourceOfFund) setSourceOfFund(STANDARD_SOURCE_OF_FUNDS[0]);
                           }}
-                          className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
+                          className="text-[10px] font-semibold text-[var(--accent)] hover:underline"
                         >
                           {isCustomSourceOfFund ? '← Select Preset' : '+ Custom Source'}
                         </button>
@@ -1710,7 +1710,7 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. Islamic Development Bank (IsDB)..."
                           value={sourceOfFund}
                           onChange={(e) => setSourceOfFund(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--accent)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       ) : (
                         <select
@@ -1723,7 +1723,7 @@ export const TenderRegistryPage: React.FC = () => {
                               setSourceOfFund(e.target.value);
                             }
                           }}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         >
                           <option value="">-- Select Source of Fund --</option>
                           {STANDARD_SOURCE_OF_FUNDS.map((s) => (
@@ -1734,7 +1734,7 @@ export const TenderRegistryPage: React.FC = () => {
                           {!STANDARD_SOURCE_OF_FUNDS.includes(sourceOfFund as any) && sourceOfFund && (
                             <option value={sourceOfFund}>{sourceOfFund}</option>
                           )}
-                          <option value="__CUSTOM__" className="font-bold text-[#2563EB] dark:text-blue-400">
+                          <option value="__CUSTOM__" className="font-bold text-[var(--accent)]">
                             + Add Custom Source of Fund...
                           </option>
                         </select>
@@ -1744,7 +1744,7 @@ export const TenderRegistryPage: React.FC = () => {
                     {/* Procurement Method */}
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
+                        <label className="block text-[11px] font-semibold text-[var(--text-primary)]">
                           Procurement Method
                         </label>
                         <button
@@ -1753,7 +1753,7 @@ export const TenderRegistryPage: React.FC = () => {
                             setIsCustomProcurementMethod(!isCustomProcurementMethod);
                             if (isCustomProcurementMethod && !procurementMethod) setProcurementMethod(STANDARD_PROCUREMENT_METHODS[0]);
                           }}
-                          className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
+                          className="text-[10px] font-semibold text-[var(--accent)] hover:underline"
                         >
                           {isCustomProcurementMethod ? '← Select Preset' : '+ Custom Method'}
                         </button>
@@ -1764,7 +1764,7 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. Two-Envelope with Reverse Auction..."
                           value={procurementMethod}
                           onChange={(e) => setProcurementMethod(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--accent)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       ) : (
                         <select
@@ -1777,7 +1777,7 @@ export const TenderRegistryPage: React.FC = () => {
                               setProcurementMethod(e.target.value);
                             }
                           }}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         >
                           <option value="">-- Select Procurement Method --</option>
                           {STANDARD_PROCUREMENT_METHODS.map((m) => (
@@ -1788,7 +1788,7 @@ export const TenderRegistryPage: React.FC = () => {
                           {!STANDARD_PROCUREMENT_METHODS.includes(procurementMethod as any) && procurementMethod && (
                             <option value={procurementMethod}>{procurementMethod}</option>
                           )}
-                          <option value="__CUSTOM__" className="font-bold text-[#2563EB] dark:text-blue-400">
+                          <option value="__CUSTOM__" className="font-bold text-[var(--accent)]">
                             + Add Custom Method...
                           </option>
                         </select>
@@ -1798,7 +1798,7 @@ export const TenderRegistryPage: React.FC = () => {
                     {/* Evaluation Method */}
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
+                        <label className="block text-[11px] font-semibold text-[var(--text-primary)]">
                           Evaluation Method
                         </label>
                         <button
@@ -1807,7 +1807,7 @@ export const TenderRegistryPage: React.FC = () => {
                             setIsCustomEvaluationMethod(!isCustomEvaluationMethod);
                             if (isCustomEvaluationMethod && !evaluationMethod) setEvaluationMethod(STANDARD_EVALUATION_METHODS[0]);
                           }}
-                          className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
+                          className="text-[10px] font-semibold text-[var(--accent)] hover:underline"
                         >
                           {isCustomEvaluationMethod ? '← Select Preset' : '+ Custom Method'}
                         </button>
@@ -1818,7 +1818,7 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. Quality & Cost Based Selection (QCBS)..."
                           value={evaluationMethod}
                           onChange={(e) => setEvaluationMethod(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--accent)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       ) : (
                         <select
@@ -1831,7 +1831,7 @@ export const TenderRegistryPage: React.FC = () => {
                               setEvaluationMethod(e.target.value);
                             }
                           }}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         >
                           <option value="">-- Select Evaluation Method --</option>
                           {STANDARD_EVALUATION_METHODS.map((m) => (
@@ -1842,7 +1842,7 @@ export const TenderRegistryPage: React.FC = () => {
                           {!STANDARD_EVALUATION_METHODS.includes(evaluationMethod as any) && evaluationMethod && (
                             <option value={evaluationMethod}>{evaluationMethod}</option>
                           )}
-                          <option value="__CUSTOM__" className="font-bold text-[#2563EB] dark:text-blue-400">
+                          <option value="__CUSTOM__" className="font-bold text-[var(--accent)]">
                             + Add Custom Method...
                           </option>
                         </select>
@@ -1852,27 +1852,27 @@ export const TenderRegistryPage: React.FC = () => {
                 </div>
 
                 {/* Procuring Authority Officer & Helpline Details */}
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
-                  <div className="flex items-center gap-2 border-b border-[#E2E8F0] pb-2">
-                    <UserCheck className="w-4 h-4 text-[#2563EB]" />
-                    <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                <div className="p-4 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-default)] space-y-3">
+                  <div className="flex items-center gap-2 border-b border-[var(--border-default)] pb-2">
+                    <UserCheck className="w-4 h-4 text-[var(--accent)]" />
+                    <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Procuring Authority Contact &amp; Helpdesk Information
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Procurement Officer / Manager */}
-                    <div className="p-3.5 bg-white rounded-xl border border-[#E2E8F0] shadow-2xs space-y-2.5">
+                    <div className="p-3.5 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] shadow-2xs space-y-2.5">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
-                          <UserCheck className="w-3.5 h-3.5 text-[#2563EB]" />
+                        <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                          <UserCheck className="w-3.5 h-3.5 text-[var(--accent)]" />
                           Procurement Manager / Officer
                         </span>
-                        <span className="text-[10px] text-[#64748B] font-mono">Official Contact</span>
+                        <span className="text-[10px] text-[var(--text-secondary)] font-mono">Official Contact</span>
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                           Officer Full Name
                         </label>
                         <input
@@ -1880,12 +1880,12 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. Engr. Rafiqul Islam"
                           value={procurementManagerName}
                           onChange={(e) => setProcurementManagerName(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                           Official Designation / Title
                         </label>
                         <input
@@ -1893,13 +1893,13 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. Superintending Engineer (Procurement)"
                           value={procurementManagerDesignation}
                           onChange={(e) => setProcurementManagerDesignation(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <div>
-                          <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                          <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                             Direct Phone / Mobile
                           </label>
                           <input
@@ -1907,12 +1907,12 @@ export const TenderRegistryPage: React.FC = () => {
                             placeholder="e.g. +880 1711-234567"
                             value={procurementManagerPhone}
                             onChange={(e) => setProcurementManagerPhone(e.target.value)}
-                            className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                            className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                          <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                             Official Email
                           </label>
                           <input
@@ -1920,24 +1920,24 @@ export const TenderRegistryPage: React.FC = () => {
                             placeholder="e.g. rafiqul@dtca.gov.bd"
                             value={procurementManagerEmail}
                             onChange={(e) => setProcurementManagerEmail(e.target.value)}
-                            className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                            className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                           />
                         </div>
                       </div>
                     </div>
 
                     {/* Tender Helpline & Support Desk */}
-                    <div className="p-3.5 bg-white rounded-xl border border-[#E2E8F0] shadow-2xs space-y-2.5">
+                    <div className="p-3.5 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] shadow-2xs space-y-2.5">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
-                          <Headphones className="w-3.5 h-3.5 text-[#2563EB]" />
+                        <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                          <Headphones className="w-3.5 h-3.5 text-[var(--accent)]" />
                           Tender Helpline &amp; Support Desk
                         </span>
-                        <span className="text-[10px] text-[#64748B] font-mono">Portal Support</span>
+                        <span className="text-[10px] text-[var(--text-secondary)] font-mono">Portal Support</span>
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                           Helpline Number / Hotline
                         </label>
                         <input
@@ -1945,12 +1945,12 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. +880 2 9568741 or 16123"
                           value={helplinePhone}
                           onChange={(e) => setHelplinePhone(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                           Support Desk Email
                         </label>
                         <input
@@ -1958,12 +1958,12 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. helpdesk@eprocure.gov.bd"
                           value={helplineEmail}
                           onChange={(e) => setHelplineEmail(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                           Desk Operating Hours
                         </label>
                         <input
@@ -1971,7 +1971,7 @@ export const TenderRegistryPage: React.FC = () => {
                           placeholder="e.g. 09:00 AM - 05:00 PM BST (Sun-Thu)"
                           value={helplineHours}
                           onChange={(e) => setHelplineHours(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       </div>
                     </div>
@@ -1980,13 +1980,13 @@ export const TenderRegistryPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       Lifecycle Stage / Status
                     </label>
                     <select
                       value={stage}
                       onChange={(e) => setStage(e.target.value as TenderStage)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100 text-xs font-semibold focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] text-xs font-semibold focus:ring-1 focus:ring-[var(--accent)]"
                     >
                       {STAGE_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>
@@ -1997,7 +1997,7 @@ export const TenderRegistryPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       Operational Priority
                     </label>
                     <select
@@ -2005,7 +2005,7 @@ export const TenderRegistryPage: React.FC = () => {
                       onChange={(e) =>
                         setPriority(e.target.value as TenderPriority)
                       }
-                      className="w-full px-3 py-2 bg-[#F8FAFC] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100 text-xs font-semibold focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] text-xs font-semibold focus:ring-1 focus:ring-[var(--accent)]"
                     >
                       <option value="CRITICAL">
                         CRITICAL (Window &lt; 48h / Urgent Gate)
@@ -2023,42 +2023,42 @@ export const TenderRegistryPage: React.FC = () => {
             {activeEditorTab === 'SCOPE' && (
               <div className="space-y-5 animate-fadeIn">
                 <div>
-                  <label className="block font-bold text-[#0F172A] mb-1">
+                  <label className="block font-bold text-[var(--text-primary)] mb-1">
                     Main Idea &amp; Scope Objectives
                   </label>
                   <textarea
                     rows={3}
                     value={mainIdea}
                     onChange={(e) => setMainIdea(e.target.value)}
-                    className="w-full p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                    className="w-full p-3 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                   />
                 </div>
 
                 {/* Tender Schedule / Form Buy Panel */}
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
-                  <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2">
-                    <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider flex items-center gap-1.5">
-                      <FileText className="w-3.5 h-3.5 text-[#2563EB]" />
+                <div className="p-4 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-default)] space-y-3">
+                  <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
+                    <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5 text-[var(--accent)]" />
                       Tender Schedule / Form Purchase Terms
                     </span>
-                    <span className="text-[10px] text-[#64748B] font-mono">Form Buy &amp; Procurement Fee</span>
+                    <span className="text-[10px] text-[var(--text-secondary)] font-mono">Form Buy &amp; Procurement Fee</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Schedule Buy Deadline
                       </label>
                       <input
                         type="date"
                         value={schedulePurchaseDeadline}
                         onChange={(e) => setSchedulePurchaseDeadline(e.target.value)}
-                        className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-[var(--text-primary)] text-xs focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Tender Document / Form Fee
                       </label>
                       <input
@@ -2066,18 +2066,18 @@ export const TenderRegistryPage: React.FC = () => {
                         placeholder="e.g. ৳2,000 or Free on e-GP"
                         value={tenderDocPrice}
                         onChange={(e) => setTenderDocPrice(e.target.value)}
-                        className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-[var(--text-primary)] text-xs focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Schedule Payment Method
                       </label>
                       <select
                         value={schedulePurchaseMethod}
                         onChange={(e) => setSchedulePurchaseMethod(e.target.value)}
-                        className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-[var(--text-primary)] text-xs focus:ring-1 focus:ring-[var(--accent)]"
                       >
                         <option value="">-- Select Payment Method --</option>
                         <option value="ONLINE_EGP">Online e-GP Payment Gateway</option>
@@ -2090,22 +2090,22 @@ export const TenderRegistryPage: React.FC = () => {
                 </div>
 
                 {/* Tender Security Deposit & Smart 2.5% Reverse Budget Calculator */}
-                <div className="p-4 bg-gradient-to-br from-[#EFF6FF]/60 to-[#F8FAFC] dark:from-slate-800/60 dark:to-slate-900 rounded-xl border border-[#BFDBFE] dark:border-slate-700 space-y-4">
-                  <div className="flex flex-wrap items-center justify-between border-b border-[#BFDBFE] dark:border-slate-700 pb-2.5 gap-2">
+                <div className="p-4 bg-gradient-to-br from-[var(--accent-soft)]/60 to-[var(--bg-subtle)] rounded-xl border border-[var(--accent-line)] space-y-4">
+                  <div className="flex flex-wrap items-center justify-between border-b border-[var(--accent-line)] pb-2.5 gap-2">
                     <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-[#2563EB] dark:text-blue-400" />
-                      <span className="text-xs font-bold text-[#0F172A] dark:text-slate-100 uppercase tracking-wider">
+                      <ShieldCheck className="w-4 h-4 text-[var(--accent)]" />
+                      <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                         Tender Security / Earnest Money Deposit (EMD)
                       </span>
                     </div>
-                    <span className="text-[10px] font-semibold bg-[#DBEAFE] dark:bg-blue-900/40 text-[#1D4ED8] dark:text-blue-300 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-semibold bg-[var(--accent-soft)] text-[var(--accent)] px-2 py-0.5 rounded-full">
                       Standard Guideline: ~2.5% of Budget
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Security Deposit Amount ({tenderCurrency})
                       </label>
                       <input
@@ -2115,18 +2115,18 @@ export const TenderRegistryPage: React.FC = () => {
                         placeholder="e.g. 355000"
                         value={tenderSecurityAmount}
                         onChange={(e) => setTenderSecurityAmount(e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg font-mono font-bold text-[#0F172A] text-sm focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg font-mono font-bold text-[var(--text-primary)] text-sm focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Security Instrument / Method
                       </label>
                       <select
                         value={tenderSecurityMethod}
                         onChange={(e) => setTenderSecurityMethod(e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-[var(--text-primary)] text-xs focus:ring-1 focus:ring-[var(--accent)]"
                       >
                         <option value="">-- Select Security Method --</option>
                         <option value="BANK_GUARANTEE">Bank Guarantee (BG)</option>
@@ -2137,7 +2137,7 @@ export const TenderRegistryPage: React.FC = () => {
                     </div>
 
                     <div className="sm:col-span-2">
-                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Security Description / Specific Bank Requirements
                       </label>
                       <input
@@ -2145,16 +2145,16 @@ export const TenderRegistryPage: React.FC = () => {
                         placeholder="e.g. Irrevocable unconditional Bank Guarantee valid for 148 days from scheduled opening"
                         value={tenderSecurity}
                         onChange={(e) => setTenderSecurity(e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-[var(--text-primary)] text-xs focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
                   </div>
 
                   {/* Interactive % Estimator & Reverse Budget Calculator */}
-                  <div className="p-3.5 bg-white rounded-xl border border-[#93C5FD] shadow-xs space-y-3">
+                  <div className="p-3.5 bg-[var(--bg-surface)] rounded-xl border border-[var(--accent-line)] shadow-xs space-y-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#1E40AF]">
-                        <Calculator className="w-4 h-4 text-[#2563EB]" />
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--accent)]">
+                        <Calculator className="w-4 h-4 text-[var(--accent)]" />
                         <span>Security Deposit % &amp; Reverse Budget Estimator</span>
                       </div>
                       <div className="flex items-center gap-1">
@@ -2164,9 +2164,9 @@ export const TenderRegistryPage: React.FC = () => {
                             type="button"
                             onClick={() => setSecurityPercent(pct)}
                             className={`px-2 py-1 rounded text-[11px] font-semibold transition-colors ${
-                              securityPercent === pct
-                                ? 'bg-[#2563EB] text-white'
-                                : 'bg-[#F1F5F9] text-[#475569] hover:bg-[#E2E8F0]'
+ securityPercent === pct
+ ? 'bg-[var(--accent)] text-[var(--accent-on)]'
+                                : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-muted)]'
                             }`}
                           >
                             {pct}%
@@ -2175,21 +2175,21 @@ export const TenderRegistryPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <p className="text-[11px] text-[#64748B] leading-relaxed">
+                    <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
                       In many public tenders, procuring entities state the exact <strong>Security Deposit</strong> amount but keep the total budget unstated. 
                       Since tender security is typically set at <strong>{securityPercent}%</strong>, you can instantly estimate the official procurement budget from the security deposit, or vice versa.
                     </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       {/* Reverse Estimator: From Security to Budget */}
-                      <div className="p-2.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-1.5">
-                        <div className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">
+                      <div className="p-2.5 bg-[var(--bg-subtle)] rounded-lg border border-[var(--border-default)] space-y-1.5">
+                        <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
                           Reverse Mode: Implied Budget from Security
                         </div>
-                        <div className="text-xs text-[#0F172A]">
+                        <div className="text-xs text-[var(--text-primary)]">
                           Security ({tenderSecurityAmount ? Number(tenderSecurityAmount).toLocaleString() : '0'} {tenderCurrency}) ÷ {securityPercent}% =
                         </div>
-                        <div className="font-mono text-sm font-extrabold text-[#2563EB]">
+                        <div className="font-mono text-sm font-extrabold text-[var(--accent)]">
                           {impliedBudgetFromSecurity > 0
                             ? `≈ ${tenderCurrency === 'BDT' ? '৳' : '$'}${Math.round(impliedBudgetFromSecurity).toLocaleString()} ${tenderCurrency}`
                             : 'Enter security deposit above'}
@@ -2198,7 +2198,7 @@ export const TenderRegistryPage: React.FC = () => {
                           <button
                             type="button"
                             onClick={handleApplyCalculatedBudget}
-                            className="mt-1 w-full py-1.5 px-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-[11px] font-bold rounded flex items-center justify-center gap-1 transition-colors"
+                            className="mt-1 w-full py-1.5 px-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] text-[11px] font-bold rounded flex items-center justify-center gap-1 transition-colors"
                           >
                             <span>⚡ Set Estimated Budget to {tenderCurrency === 'BDT' ? '৳' : '$'}{Math.round(impliedBudgetFromSecurity).toLocaleString()}</span>
                             <ArrowRight className="w-3 h-3" />
@@ -2207,14 +2207,14 @@ export const TenderRegistryPage: React.FC = () => {
                       </div>
 
                       {/* Forward Mode: From Budget to Security */}
-                      <div className="p-2.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-1.5">
-                        <div className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">
+                      <div className="p-2.5 bg-[var(--bg-subtle)] rounded-lg border border-[var(--border-default)] space-y-1.5">
+                        <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
                           Forward Mode: Security from Estimated Budget
                         </div>
-                        <div className="text-xs text-[#0F172A]">
+                        <div className="text-xs text-[var(--text-primary)]">
                           Budget ({estimatedValue ? Number(estimatedValue).toLocaleString() : '0'} {tenderCurrency}) × {securityPercent}% =
                         </div>
-                        <div className="font-mono text-sm font-extrabold text-[#16A34A]">
+                        <div className="font-mono text-sm font-extrabold text-[var(--ok)]">
                           {impliedSecurityFromBudget > 0
                             ? `≈ ${tenderCurrency === 'BDT' ? '৳' : '$'}${Math.round(impliedSecurityFromBudget).toLocaleString()} ${tenderCurrency}`
                             : 'Enter estimated budget below'}
@@ -2223,7 +2223,7 @@ export const TenderRegistryPage: React.FC = () => {
                           <button
                             type="button"
                             onClick={handleApplyCalculatedSecurity}
-                            className="mt-1 w-full py-1.5 px-2 bg-[#16A34A] hover:bg-[#15803D] text-white text-[11px] font-bold rounded flex items-center justify-center gap-1 transition-colors"
+                            className="mt-1 w-full py-1.5 px-2 bg-[var(--ok)] hover:bg-[var(--ok)] text-[var(--accent-on)] text-[11px] font-bold rounded flex items-center justify-center gap-1 transition-colors"
                           >
                             <span>Set Security Amount ({tenderCurrency === 'BDT' ? '৳' : '$'}{Math.round(impliedSecurityFromBudget).toLocaleString()})</span>
                             <Check className="w-3 h-3" />
@@ -2237,7 +2237,7 @@ export const TenderRegistryPage: React.FC = () => {
                 {/* Contract, Maintenance & Performance Security */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Execution / Contract Period
                     </label>
                     <input
@@ -2248,12 +2248,12 @@ export const TenderRegistryPage: React.FC = () => {
                         setPossiblePeriod(e.target.value);
                         setContractPeriod(e.target.value);
                       }}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Support &amp; Maintenance Period
                     </label>
                     <input
@@ -2261,12 +2261,12 @@ export const TenderRegistryPage: React.FC = () => {
                       placeholder="e.g. 36 Months 24/7 SLA & Warranty"
                       value={maintenancePeriod}
                       onChange={(e) => setMaintenancePeriod(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Performance Security
                     </label>
                     <input
@@ -2274,12 +2274,12 @@ export const TenderRegistryPage: React.FC = () => {
                       placeholder="e.g. 10% of Contract Value"
                       value={performanceSecurity}
                       onChange={(e) => setPerformanceSecurity(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div className="sm:col-span-3">
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Estimated Net Value ({tenderCurrency})
                     </label>
                     <input
@@ -2289,20 +2289,20 @@ export const TenderRegistryPage: React.FC = () => {
                       placeholder="Leave blank if not specified / entry"
                       value={estimatedValue}
                       onChange={(e) => setEstimatedValue(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono font-bold text-[#0F172A] placeholder:text-[#94A3B8]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-mono font-bold text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
                     />
                   </div>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="font-bold text-[#0F172A]">
+                    <label className="font-bold text-[var(--text-primary)]">
                       Technical Requirements
                     </label>
                     <button
                       type="button"
                       onClick={() => setTechnicalReqs([...technicalReqs, ''])}
-                      className="text-[#2563EB] font-semibold text-xs flex items-center gap-1"
+                      className="text-[var(--accent)] font-semibold text-xs flex items-center gap-1"
                     >
                       <Plus className="w-3 h-3" />
                       <span>Add line</span>
@@ -2319,7 +2319,7 @@ export const TenderRegistryPage: React.FC = () => {
                             updated[idx] = e.target.value;
                             setTechnicalReqs(updated);
                           }}
-                          className="flex-1 px-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                          className="flex-1 px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                         />
                         <button
                           type="button"
@@ -2328,7 +2328,7 @@ export const TenderRegistryPage: React.FC = () => {
                               technicalReqs.filter((_, i) => i !== idx)
                             )
                           }
-                          className="p-1 text-[#94A3B8] hover:text-[#DC2626]"
+                          className="p-1 text-[var(--text-muted)] hover:text-[var(--crit)]"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -2356,87 +2356,87 @@ export const TenderRegistryPage: React.FC = () => {
               <div className="space-y-5 animate-fadeIn">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       General Experience
                     </label>
                     <input
                       type="text"
                       value={generalExperience}
                       onChange={(e) => setGeneralExperience(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Similar Experience
                     </label>
                     <input
                       type="text"
                       value={similarExperience}
                       onChange={(e) => setSimilarExperience(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Similar Project Minimum Value
                     </label>
                     <input
                       type="text"
                       value={similarProjectValue}
                       onChange={(e) => setSimilarProjectValue(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Average Annual Turnover
                     </label>
                     <input
                       type="text"
                       value={avgTurnover}
                       onChange={(e) => setAvgTurnover(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Financial Resources / Liquid Assets
                     </label>
                     <input
                       type="text"
                       value={financialResources}
                       onChange={(e) => setFinancialResources(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Required Quality Certifications
                     </label>
                     <input
                       type="text"
                       value={certification}
                       onChange={(e) => setCertification(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#475569] mb-1">
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                     Local Presence Requirements
                   </label>
                   <input
                     type="text"
                     value={localPresence}
                     onChange={(e) => setLocalPresence(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                   />
                 </div>
               </div>
@@ -2448,13 +2448,13 @@ export const TenderRegistryPage: React.FC = () => {
                 {/* Submission Documents Checklist */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="font-bold text-[#0F172A]">
+                    <label className="font-bold text-[var(--text-primary)]">
                       Documents Required in Submission
                     </label>
                     <button
                       type="button"
                       onClick={() => setDocuments([...documents, ''])}
-                      className="text-[#2563EB] font-semibold text-xs flex items-center gap-1"
+                      className="text-[var(--accent)] font-semibold text-xs flex items-center gap-1"
                     >
                       <Plus className="w-3 h-3" />
                       <span>Add Document</span>
@@ -2471,14 +2471,14 @@ export const TenderRegistryPage: React.FC = () => {
                             updated[idx] = e.target.value;
                             setDocuments(updated);
                           }}
-                          className="flex-1 px-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                          className="flex-1 px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                         />
                         <button
                           type="button"
                           onClick={() =>
                             setDocuments(documents.filter((_, i) => i !== idx))
                           }
-                          className="p-1 text-[#94A3B8] hover:text-[#DC2626]"
+                          className="p-1 text-[var(--text-muted)] hover:text-[var(--crit)]"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -2490,7 +2490,7 @@ export const TenderRegistryPage: React.FC = () => {
                 {/* Personnel Table */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="font-bold text-[#0F172A]">
+                    <label className="font-bold text-[var(--text-primary)]">
                       CV &amp; Key Personnel Requirements
                     </label>
                     <button
@@ -2506,15 +2506,15 @@ export const TenderRegistryPage: React.FC = () => {
                           },
                         ])
                       }
-                      className="text-[#2563EB] font-semibold text-xs flex items-center gap-1"
+                      className="text-[var(--accent)] font-semibold text-xs flex items-center gap-1"
                     >
                       <Plus className="w-3 h-3" />
                       <span>Add Position</span>
                     </button>
                   </div>
-                  <div className="overflow-x-auto border border-[#E2E8F0] rounded-lg">
+                  <div className="overflow-x-auto border border-[var(--border-default)] rounded-lg">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] text-[#64748B]">
+                      <thead className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[11px] text-[var(--text-secondary)]">
                         <tr>
                           <th className="p-2">Position Title</th>
                           <th className="p-2">Min. Qualification</th>
@@ -2523,7 +2523,7 @@ export const TenderRegistryPage: React.FC = () => {
                           <th className="p-2 w-10"></th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-[#F1F5F9]">
+                      <tbody className="divide-y divide-[var(--border-subtle)]">
                         {personnel.map((p, idx) => (
                           <tr key={idx}>
                             <td className="p-1.5">
@@ -2535,7 +2535,7 @@ export const TenderRegistryPage: React.FC = () => {
                                   updated[idx].position = e.target.value;
                                   setPersonnel(updated);
                                 }}
-                                className="w-full px-2 py-1 bg-white border border-[#E2E8F0] rounded text-xs"
+                                className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded text-xs"
                               />
                             </td>
                             <td className="p-1.5">
@@ -2547,7 +2547,7 @@ export const TenderRegistryPage: React.FC = () => {
                                   updated[idx].qualification = e.target.value;
                                   setPersonnel(updated);
                                 }}
-                                className="w-full px-2 py-1 bg-white border border-[#E2E8F0] rounded text-xs"
+                                className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded text-xs"
                               />
                             </td>
                             <td className="p-1.5">
@@ -2559,7 +2559,7 @@ export const TenderRegistryPage: React.FC = () => {
                                   updated[idx].experience = e.target.value;
                                   setPersonnel(updated);
                                 }}
-                                className="w-full px-2 py-1 bg-white border border-[#E2E8F0] rounded text-xs"
+                                className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded text-xs"
                               />
                             </td>
                             <td className="p-1.5 text-center font-mono">
@@ -2571,7 +2571,7 @@ export const TenderRegistryPage: React.FC = () => {
                                   updated[idx].qty = e.target.value;
                                   setPersonnel(updated);
                                 }}
-                                className="w-full px-2 py-1 bg-white border border-[#E2E8F0] rounded text-xs text-center"
+                                className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded text-xs text-center"
                               />
                             </td>
                             <td className="p-1.5 text-center">
@@ -2582,7 +2582,7 @@ export const TenderRegistryPage: React.FC = () => {
                                     personnel.filter((_, i) => i !== idx)
                                   )
                                 }
-                                className="text-[#94A3B8] hover:text-[#DC2626]"
+                                className="text-[var(--text-muted)] hover:text-[var(--crit)]"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
@@ -2600,54 +2600,54 @@ export const TenderRegistryPage: React.FC = () => {
             {activeEditorTab === 'RISKS' && (
               <div className="space-y-6 animate-fadeIn">
                 {/* Comprehensive Procurement & Project Milestones Schedule (Req #20) */}
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
-                  <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2">
-                    <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-[#2563EB]" />
+                <div className="p-4 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-default)] space-y-3">
+                  <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
+                    <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-[var(--accent)]" />
                       Key Procurement &amp; Project Milestones Schedule
                     </span>
-                    <span className="text-[10px] text-[#64748B] font-mono">Full Lifecycle Dates (Req #20)</span>
+                    <span className="text-[10px] text-[var(--text-secondary)] font-mono">Full Lifecycle Dates (Req #20)</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Clarification Deadline
                       </label>
                       <input
                         type="date"
                         value={clarificationDeadline}
                         onChange={(e) => setClarificationDeadline(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Tender Document / Bid Opening Date
                       </label>
                       <input
                         type="date"
                         value={openingDate}
                         onChange={(e) => setOpeningDate(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs font-bold text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs font-bold text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Contract Signing Date
                       </label>
                       <input
                         type="date"
                         value={contractSigningDate}
                         onChange={(e) => setContractSigningDate(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Work / Project Start Date (W.O.)
                       </label>
                       <input
@@ -2657,12 +2657,12 @@ export const TenderRegistryPage: React.FC = () => {
                           setWorkStartDate(e.target.value);
                           setContractStart(e.target.value);
                         }}
-                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Possible / Execution Period
                       </label>
                       <input
@@ -2670,24 +2670,24 @@ export const TenderRegistryPage: React.FC = () => {
                         placeholder="e.g. 180 Days / 6 Months"
                         value={possiblePeriod}
                         onChange={(e) => setPossiblePeriod(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Product / System Handover Date
                       </label>
                       <input
                         type="date"
                         value={productHandoverDate}
                         onChange={(e) => setProductHandoverDate(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs font-bold text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs font-bold text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div className="sm:col-span-3">
-                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Support and Maintenance / Warranty Period
                       </label>
                       <input
@@ -2695,7 +2695,7 @@ export const TenderRegistryPage: React.FC = () => {
                         placeholder="e.g. 36 Months 24/7 SLA &amp; Comprehensive Warranty (O&amp;M)"
                         value={maintenancePeriod}
                         onChange={(e) => setMaintenancePeriod(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
                   </div>
@@ -2703,7 +2703,7 @@ export const TenderRegistryPage: React.FC = () => {
 
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="font-bold text-[#0F172A]">
+                    <label className="font-bold text-[var(--text-primary)]">
                       Key Risks / Important Points
                     </label>
                     <button
@@ -2714,7 +2714,7 @@ export const TenderRegistryPage: React.FC = () => {
                           { type: 'Tender Requirement', text: '' },
                         ])
                       }
-                      className="text-[#2563EB] font-semibold text-xs flex items-center gap-1"
+                      className="text-[var(--accent)] font-semibold text-xs flex items-center gap-1"
                     >
                       <Plus className="w-3 h-3" />
                       <span>Add Risk Point</span>
@@ -2732,7 +2732,7 @@ export const TenderRegistryPage: React.FC = () => {
                               | 'Analyst Observation';
                             setRisks(updated);
                           }}
-                          className="px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs font-semibold text-[#0F172A] shrink-0"
+                          className="px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs font-semibold text-[var(--text-primary)] shrink-0"
                         >
                           <option value="Tender Requirement">
                             Tender Requirement
@@ -2750,14 +2750,14 @@ export const TenderRegistryPage: React.FC = () => {
                             updated[idx].text = e.target.value;
                             setRisks(updated);
                           }}
-                          className="flex-1 px-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                          className="flex-1 px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                         />
                         <button
                           type="button"
                           onClick={() =>
                             setRisks(risks.filter((_, i) => i !== idx))
                           }
-                          className="p-1 text-[#94A3B8] hover:text-[#DC2626]"
+                          className="p-1 text-[var(--text-muted)] hover:text-[var(--crit)]"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -2767,14 +2767,14 @@ export const TenderRegistryPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-[#0F172A] mb-1">
+                  <label className="block font-bold text-[var(--text-primary)] mb-1">
                     Internal Remarks &amp; Debrief Notes
                   </label>
                   <textarea
                     rows={3}
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                    className="w-full p-3 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                   />
                 </div>
               </div>
@@ -2796,36 +2796,36 @@ export const TenderRegistryPage: React.FC = () => {
             )}
 
             {/* Bottom Save & Action Row */}
-            <div className="pt-4 border-t border-[#E2E8F0] dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
-              <div className="flex items-center gap-2 text-xs text-[#64748B] dark:text-slate-400">
+            <div className="pt-4 border-t border-[var(--border-default)] flex items-center justify-between bg-[var(--bg-surface)] shrink-0">
+              <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
                 <span>Status:</span>
                 <span className={`font-bold px-2.5 py-1 rounded-md text-xs border transition-colors ${
-                  stage === 'AWARDED'
-                    ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+ stage === 'AWARDED'
+ ? 'bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)]'
                     : stage === 'LOST' || stage === 'DECLINED'
-                    ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800'
+                    ? 'bg-[var(--crit-soft)] text-[var(--crit)] border-[var(--crit-line)]'
                     : stage === 'SUBMITTED'
-                    ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800'
+                    ? 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] border-[var(--border-default)]'
                     : stage === 'PREPARATION'
-                    ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+                    ? 'bg-[var(--warn-soft)] text-[var(--warn)] border-[var(--warn-line)]'
                     : stage === 'UNDER_ANALYSIS'
-                    ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
+                    ? 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] border-[var(--border-default)]'
                     : stage === 'SCREENING'
-                    ? 'bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-800'
-                    : 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+                    ? 'bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)]'
+                    : 'bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--accent-line)]'
                 }`}>
                   {stage || selectedTender?.stage || 'DISCOVERED'}
                 </span>
                 <span>•</span>
                 <span>Priority:</span>
                 <span className={`font-bold px-2.5 py-1 rounded-md text-xs border transition-colors ${
-                  priority === 'CRITICAL'
-                    ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800'
+ priority === 'CRITICAL'
+ ? 'bg-[var(--crit-soft)] text-[var(--crit)] border-[var(--crit-line)]'
                     : priority === 'HIGH'
-                    ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+                    ? 'bg-[var(--warn-soft)] text-[var(--warn)] border-[var(--warn-line)]'
                     : priority === 'LOW'
-                    ? 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
-                    : 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+                    ? 'bg-[var(--bg-subtle)] text-[var(--text-primary)] border-[var(--border-default)]'
+                    : 'bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--accent-line)]'
                 }`}>
                   {priority || 'MEDIUM'}
                 </span>
@@ -2834,7 +2834,7 @@ export const TenderRegistryPage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   type="submit"
-                  className="flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] hover:bg-[#1E293B] dark:bg-blue-600 dark:hover:bg-blue-500 text-white rounded-lg font-semibold shadow-sm transition-colors text-xs cursor-pointer"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg font-semibold shadow-sm transition-colors text-xs cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Save All Changes</span>

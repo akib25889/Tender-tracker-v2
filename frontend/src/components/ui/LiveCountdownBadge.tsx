@@ -81,7 +81,7 @@ export const LiveCountdownBadge: React.FC<LiveCountdownBadgeProps> = ({
   if (timeLeft === 'No Deadline') {
     return (
       <span
-        className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap shrink-0 text-[#94A3B8] bg-[#F8FAFC] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 ${className}`}
+        className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap shrink-0 text-[var(--text-muted)] bg-[var(--bg-subtle)] border border-[var(--border-default)] ${className}`}
       >
         No Deadline
       </span>
@@ -93,9 +93,9 @@ export const LiveCountdownBadge: React.FC<LiveCountdownBadgeProps> = ({
   return (
     <span
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-bold whitespace-nowrap shrink-0 ${
-        isExpired
-          ? 'bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300 border border-red-200 dark:border-red-800'
-          : 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+ isExpired
+          ? 'bg-[var(--crit-soft)] text-[var(--crit)] border border-[var(--crit-line)]'
+          : 'bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)]'
       } shadow-2xs ${className}`}
       title={
         dualInfo
@@ -105,13 +105,13 @@ export const LiveCountdownBadge: React.FC<LiveCountdownBadgeProps> = ({
     >
       <Clock
         className={`w-3.5 h-3.5 ${
-          isExpired ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400 animate-pulse'
+ isExpired ? 'text-[var(--crit)]' : 'text-[var(--accent)] animate-pulse'
         } shrink-0`}
       />
       <span>{timeLeft}</span>
       {!isExpired && (
         <span
-          className="text-[10px] font-sans font-semibold text-blue-600/80 dark:text-blue-400/80 uppercase tracking-wider ml-0.5"
+          className="text-[10px] font-sans font-semibold text-[var(--accent)]/80 uppercase tracking-wider ml-0.5"
           title="Countdown synchronised with BD Time & International Time"
         >
           {dualInfo && !dualInfo.isPrimaryBd ? "Int'l / BD" : 'BD Time'}

@@ -10,33 +10,33 @@ const ROLE_BADGES: Record<
 > = {
   SUPER_ADMIN: {
     label: 'Super Admin',
-    bg: 'bg-[#FEF2F2]',
-    text: 'text-[#DC2626]',
-    border: 'border-[#FECACA]',
+    bg: 'bg-[var(--crit-soft)]',
+    text: 'text-[var(--crit)]',
+    border: 'border-[var(--crit-line)]',
   },
   BUSINESS_HEAD: {
     label: 'Business Head',
-    bg: 'bg-[#F3E8FF]',
-    text: 'text-[#7E22CE]',
-    border: 'border-[#D8B4FE]',
+    bg: 'bg-[var(--bg-subtle)]',
+    text: 'text-[var(--text-secondary)]',
+    border: 'border-[var(--border-default)]',
   },
   EXECUTIVE_MANAGER: {
     label: 'Executive Manager',
-    bg: 'bg-[#EFF6FF]',
-    text: 'text-[#1D4ED8]',
-    border: 'border-[#BFDBFE]',
+    bg: 'bg-[var(--accent-soft)]',
+    text: 'text-[var(--accent)]',
+    border: 'border-[var(--accent-line)]',
   },
   SENIOR_MANAGER: {
     label: 'Senior Manager',
-    bg: 'bg-[#FFFBEB]',
-    text: 'text-[#B45309]',
-    border: 'border-[#FDE68A]',
+    bg: 'bg-[var(--warn-soft)]',
+    text: 'text-[var(--warn)]',
+    border: 'border-[var(--warn-line)]',
   },
   TENDER_ANALYST: {
     label: 'Tender Analyst',
-    bg: 'bg-[#F0FDF4]',
-    text: 'text-[#15803D]',
-    border: 'border-[#BBF7D0]',
+    bg: 'bg-[var(--ok-soft)]',
+    text: 'text-[var(--ok)]',
+    border: 'border-[var(--ok-line)]',
   },
 };
 
@@ -63,10 +63,10 @@ export const UserRoleSwitcher: React.FC = () => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] hover:bg-[#F8FAFC] transition-colors shadow-xs"
+        className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-[var(--border-default)] hover:bg-[var(--bg-subtle)] transition-colors shadow-xs"
         title="Switch user profile and role"
       >
-        <div className="w-6 h-6 rounded-full bg-[#0F172A] text-white flex items-center justify-center text-[10px] font-bold shrink-0 overflow-hidden">
+        <div className="w-6 h-6 rounded-full bg-[var(--accent)] text-[var(--accent-on)] flex items-center justify-center text-[10px] font-bold shrink-0 overflow-hidden">
           {currentUser.profilePic ? (
             <img src={currentUser.profilePic} alt={currentUser.name} className="w-full h-full object-cover" />
           ) : (
@@ -75,7 +75,7 @@ export const UserRoleSwitcher: React.FC = () => {
         </div>
 
         <div className="hidden lg:flex flex-col text-left">
-          <span className="text-xs font-semibold text-[#0F172A] leading-tight">
+          <span className="text-xs font-semibold text-[var(--text-primary)] leading-tight">
             {currentUser.name}
           </span>
           <span
@@ -85,17 +85,17 @@ export const UserRoleSwitcher: React.FC = () => {
           </span>
         </div>
 
-        <ChevronDown className="w-3.5 h-3.5 text-[#94A3B8]" />
+        <ChevronDown className="w-3.5 h-3.5 text-[var(--text-muted)]" />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 rounded-xl bg-white shadow-xl border border-[#E2E8F0] z-50 py-1 divide-y divide-[#F1F5F9] animate-fadeIn text-xs">
-          <div className="p-3 bg-[#F8FAFC]">
-            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1">
-              <Shield className="w-3 h-3 text-[#2563EB]" />
+        <div className="absolute right-0 mt-2 w-64 rounded-xl bg-[var(--bg-surface)] shadow-xl border border-[var(--border-default)] z-50 py-1 divide-y divide-[var(--border-subtle)] animate-fadeIn text-xs">
+          <div className="p-3 bg-[var(--bg-subtle)]">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">
+              <Shield className="w-3 h-3 text-[var(--accent)]" />
               <span>Active Team Identity</span>
             </div>
-            <p className="text-[11px] text-[#64748B]">
+            <p className="text-[11px] text-[var(--text-secondary)]">
               Switch team profile for authorship &amp; assignment. All members enjoy full permissions.
             </p>
           </div>
@@ -112,15 +112,15 @@ export const UserRoleSwitcher: React.FC = () => {
                     setIsOpen(false);
                   }}
                   className={`w-full text-left p-2 rounded-lg flex items-center justify-between transition-colors ${
-                    isSelected
-                      ? 'bg-[#EFF6FF] text-[#1D4ED8]'
-                      : 'hover:bg-[#F8FAFC] text-[#0F172A]'
+ isSelected
+                      ? 'bg-[var(--accent-soft)] text-[var(--accent)]'
+                      : 'hover:bg-[var(--bg-subtle)] text-[var(--text-primary)]'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
                     <div
-                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 overflow-hidden ${
-                        isSelected ? 'bg-[#2563EB]' : 'bg-[#0F172A]'
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-[var(--accent-on)] shrink-0 overflow-hidden ${
+ isSelected ? 'bg-[var(--accent)]' : 'bg-[var(--accent)]'
                       }`}
                     >
                       {member.profilePic ? (
@@ -141,20 +141,20 @@ export const UserRoleSwitcher: React.FC = () => {
                     </div>
                   </div>
 
-                  {isSelected && <Check className="w-4 h-4 text-[#2563EB]" />}
+                  {isSelected && <Check className="w-4 h-4 text-[var(--accent)]" />}
                 </button>
               );
             })}
           </div>
 
-          <div className="p-2 bg-[#F8FAFC]">
+          <div className="p-2 bg-[var(--bg-subtle)]">
             <button
               type="button"
               onClick={() => {
                 setIsOpen(false);
                 navigate(`/profile/${currentUser.id}`);
               }}
-              className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 bg-white border border-[#CBD5E1] hover:bg-[#0F172A] hover:text-white hover:border-[#0F172A] rounded-lg text-xs font-semibold text-[#0F172A] transition-all shadow-xs cursor-pointer"
+              className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 bg-[var(--bg-surface)] border border-[var(--border-strong)] hover:bg-[var(--accent)] hover:text-[var(--accent-on)] hover:border-[var(--accent)] rounded-lg text-xs font-semibold text-[var(--text-primary)] transition-all shadow-xs cursor-pointer"
             >
               <User className="w-3.5 h-3.5" />
               <span>View Profile &amp; Dossier</span>

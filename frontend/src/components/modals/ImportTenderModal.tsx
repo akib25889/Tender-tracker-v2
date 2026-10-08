@@ -137,20 +137,20 @@ export const ImportTenderModal: React.FC<ImportTenderModalProps> = ({ isOpen, on
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
-      <div className="bg-white rounded-xl shadow-2xl border border-[#E2E8F0] max-w-2xl w-full overflow-hidden max-h-[90vh] flex flex-col">
+    <div className="tt-overlay items-center justify-center p-4 animate-fadeIn">
+      <div className="bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-default)] max-w-2xl w-full overflow-hidden max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
+        <div className="px-6 py-4 border-b border-[var(--border-default)] flex items-center justify-between bg-[var(--bg-subtle)]">
           <div className="flex items-center gap-2">
-            <Upload className="w-4 h-4 text-[#2563EB]" />
-            <h2 className="font-display font-bold text-sm text-[#0F172A]">
+            <Upload className="w-4 h-4 text-[var(--accent)]" />
+            <h2 className="font-display font-bold text-sm text-[var(--text-primary)]">
               Batch Tender Intake &amp; Dataset Import
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors"
+            className="p-1 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -161,7 +161,7 @@ export const ImportTenderModal: React.FC<ImportTenderModalProps> = ({ isOpen, on
           {/* File Upload / Drag Area */}
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-[#CBD5E1] hover:border-[#2563EB] bg-[#F8FAFC] hover:bg-[#EFF6FF]/50 p-6 rounded-xl text-center cursor-pointer transition-colors space-y-2"
+            className="border-2 border-dashed border-[var(--border-strong)] hover:border-[var(--accent)] bg-[var(--bg-subtle)] hover:bg-[var(--accent-soft)]/50 p-6 rounded-xl text-center cursor-pointer transition-colors space-y-2"
           >
             <input
               ref={fileInputRef}
@@ -170,25 +170,25 @@ export const ImportTenderModal: React.FC<ImportTenderModalProps> = ({ isOpen, on
               onChange={handleFileUpload}
               className="hidden"
             />
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#2563EB] flex items-center justify-center mx-auto shadow-2xs">
+            <div className="w-10 h-10 rounded-xl bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center mx-auto shadow-2xs">
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <span className="font-bold text-xs text-[#0F172A] block">
+              <span className="font-bold text-xs text-[var(--text-primary)] block">
                 {fileName ? fileName : 'Click to select CSV or JSON file'}
               </span>
-              <span className="text-[11px] text-[#64748B]">Supports formatted RFP datasets, export dumps, and partner lead sheets</span>
+              <span className="text-[11px] text-[var(--text-secondary)]">Supports formatted RFP datasets, export dumps, and partner lead sheets</span>
             </div>
           </div>
 
           {/* Quick Samples */}
-          <div className="flex items-center justify-between text-[11px] text-[#64748B] pt-1">
+          <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)] pt-1">
             <span>Or test with a sample template:</span>
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => loadSampleData('JSON')}
-                className="text-[#2563EB] hover:underline font-semibold"
+                className="text-[var(--accent)] hover:underline font-semibold"
               >
                 Sample JSON
               </button>
@@ -196,7 +196,7 @@ export const ImportTenderModal: React.FC<ImportTenderModalProps> = ({ isOpen, on
               <button
                 type="button"
                 onClick={() => loadSampleData('CSV')}
-                className="text-[#2563EB] hover:underline font-semibold"
+                className="text-[var(--accent)] hover:underline font-semibold"
               >
                 Sample CSV
               </button>
@@ -205,7 +205,7 @@ export const ImportTenderModal: React.FC<ImportTenderModalProps> = ({ isOpen, on
 
           {/* Error Banner */}
           {errorMessage && (
-            <div className="p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-lg text-[#B91C1C] flex items-start gap-2">
+            <div className="p-3 bg-[var(--crit-soft)] border border-[var(--crit-line)] rounded-lg text-[var(--crit)] flex items-start gap-2">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{errorMessage}</span>
             </div>
@@ -213,7 +213,7 @@ export const ImportTenderModal: React.FC<ImportTenderModalProps> = ({ isOpen, on
 
           {/* Success Banner */}
           {successCount !== null && (
-            <div className="p-3 bg-[#F0FDF4] border border-[#BBF7D0] rounded-lg text-[#15803D] flex items-center gap-2 font-bold animate-fadeIn">
+            <div className="p-3 bg-[var(--ok-soft)] border border-[var(--ok-line)] rounded-lg text-[var(--ok)] flex items-center gap-2 font-bold animate-fadeIn">
               <Check className="w-4 h-4" />
               <span>Successfully imported {successCount} opportunity(s) into pipeline!</span>
             </div>
@@ -223,17 +223,17 @@ export const ImportTenderModal: React.FC<ImportTenderModalProps> = ({ isOpen, on
           {parsedPreview.length > 0 && (
             <div className="space-y-2 pt-2">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-xs text-[#0F172A]">
+                <span className="font-bold text-xs text-[var(--text-primary)]">
                   Verified Records Ready for Ingestion ({parsedPreview.length})
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#F1F5F9] text-[#64748B]">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--bg-subtle)] text-[var(--text-secondary)]">
                   Format: {format}
                 </span>
               </div>
 
-              <div className="border border-[#E2E8F0] rounded-lg overflow-hidden max-h-48 overflow-y-auto">
+              <div className="border border-[var(--border-default)] rounded-lg overflow-hidden max-h-48 overflow-y-auto">
                 <table className="w-full text-left text-[11px]">
-                  <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B] font-semibold sticky top-0">
+                  <thead className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[var(--text-secondary)] font-semibold sticky top-0">
                     <tr>
                       <th className="p-2">ID / Ref</th>
                       <th className="p-2">Title</th>
@@ -242,14 +242,14 @@ export const ImportTenderModal: React.FC<ImportTenderModalProps> = ({ isOpen, on
                       <th className="p-2 text-right">Estimated Value</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#F1F5F9]">
+                  <tbody className="divide-y divide-[var(--border-subtle)]">
                     {parsedPreview.map((item, idx) => (
-                      <tr key={idx} className="hover:bg-[#F8FAFC]">
-                        <td className="p-2 font-mono font-bold text-[#0F172A]">{item.id}</td>
-                        <td className="p-2 font-medium text-[#0F172A] truncate max-w-xs">{item.title}</td>
-                        <td className="p-2 text-[#64748B]">{item.organization}</td>
-                        <td className="p-2 text-[#64748B]">{item.country}</td>
-                        <td className="p-2 text-right font-mono font-bold text-[#0F172A]">
+                      <tr key={idx} className="hover:bg-[var(--bg-subtle)]">
+                        <td className="p-2 font-mono font-bold text-[var(--text-primary)]">{item.id}</td>
+                        <td className="p-2 font-medium text-[var(--text-primary)] truncate max-w-xs">{item.title}</td>
+                        <td className="p-2 text-[var(--text-secondary)]">{item.organization}</td>
+                        <td className="p-2 text-[var(--text-secondary)]">{item.country}</td>
+                        <td className="p-2 text-right font-mono font-bold text-[var(--text-primary)]">
                           {item.estimatedValue ? `$${item.estimatedValue.toLocaleString()}` : '—'}
                         </td>
                       </tr>
@@ -262,11 +262,11 @@ export const ImportTenderModal: React.FC<ImportTenderModalProps> = ({ isOpen, on
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
+        <div className="px-6 py-3 border-t border-[var(--border-default)] bg-[var(--bg-subtle)] flex items-center justify-between">
           <button
             type="button"
             onClick={onClose}
-            className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:bg-white text-xs font-semibold text-[#64748B] transition-colors"
+            className="px-3 py-1.5 rounded-lg border border-[var(--border-default)] hover:bg-[var(--bg-surface)] text-xs font-semibold text-[var(--text-secondary)] transition-colors"
           >
             Cancel
           </button>
@@ -275,9 +275,9 @@ export const ImportTenderModal: React.FC<ImportTenderModalProps> = ({ isOpen, on
             disabled={parsedPreview.length === 0}
             onClick={handleImport}
             className={`px-4 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors ${
-              parsedPreview.length > 0
-                ? 'bg-[#0F172A] hover:bg-[#1E293B] text-white'
-                : 'bg-[#E2E8F0] text-[#94A3B8] cursor-not-allowed'
+ parsedPreview.length > 0
+                ? 'bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)]'
+                : 'bg-[var(--bg-muted)] text-[var(--text-muted)] cursor-not-allowed'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />

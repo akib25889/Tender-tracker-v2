@@ -198,36 +198,36 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
   return (
     <div className="space-y-6">
       {/* 1. PAYMENT SCENARIO & WORKING CAPITAL RISK HEADER */}
-      <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[#F1F5F9]">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-xl p-5 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-[var(--border-subtle)]">
           <div>
-            <h3 className="text-sm font-bold text-[#0F172A] flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-[#2563EB]" />
+            <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-[var(--accent)]" />
               <span>Payment Scenario &amp; Capital Risk Profile</span>
             </h3>
-            <p className="text-xs text-[#64748B] mt-0.5">
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
               Select the primary contract disbursement structure to model expected cash flow, payment timing, and exposure.
             </p>
           </div>
 
           {/* Working Capital Risk Tag */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-[#475569]">Working Capital Risk:</span>
+            <span className="text-xs font-semibold text-[var(--text-secondary)]">Working Capital Risk:</span>
             <div className="flex items-center gap-1">
               {(['LOW', 'MEDIUM', 'HIGH'] as const).map((r) => {
                 const isSelected = value.workingCapitalRisk === r;
                 const colors =
                   r === 'LOW'
                     ? isSelected
-                      ? 'bg-emerald-600 text-white border-emerald-600'
-                      : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                      ? 'bg-[var(--ok)] text-[var(--accent-on)] border-[var(--ok)]'
+                      : 'bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)] hover:bg-[var(--ok-soft)]'
                     : r === 'MEDIUM'
                     ? isSelected
-                      ? 'bg-amber-600 text-white border-amber-600'
-                      : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                      ? 'bg-[var(--warn)] text-[var(--accent-on)] border-[var(--warn)]'
+                      : 'bg-[var(--warn-soft)] text-[var(--warn)] border-[var(--warn-line)] hover:bg-[var(--warn-soft)]'
                     : isSelected
-                    ? 'bg-rose-600 text-white border-rose-600'
-                    : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100';
+                    ? 'bg-[var(--crit)] text-[var(--accent-on)] border-[var(--crit)]'
+                    : 'bg-[var(--crit-soft)] text-[var(--crit)] border-[var(--crit-line)] hover:bg-[var(--crit-soft)]';
 
                 return (
                   <button
@@ -253,28 +253,28 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
               title: 'Milestone-Based',
               desc: 'Payment released in phased tranches upon client approval of specified deliverables.',
               riskText: 'Medium Risk: Dependent on client approval speed.',
-              badgeColor: 'border-blue-200 bg-blue-50/50',
+              badgeColor: 'border-[var(--accent-line)] bg-[var(--accent-soft)]/50',
             },
             {
               id: 'ADVANCE_AND_MILESTONES' as PaymentScenarioType,
               title: 'Advance + Milestones',
               desc: '10–20% mobilization advance against Bank Guarantee, with pro-rata invoice recovery.',
               riskText: 'Low Risk: Upfront working capital minimizes financing costs.',
-              badgeColor: 'border-emerald-200 bg-emerald-50/50',
+              badgeColor: 'border-[var(--ok-line)] bg-[var(--ok-soft)]/50',
             },
             {
               id: 'ACCEPTANCE_BASED' as PaymentScenarioType,
               title: 'Acceptance-Based',
               desc: 'Payments tied strictly to formal UAT or Final Acceptance Certificate (FAC) review periods.',
               riskText: 'Medium-High Risk: Potential review delays & escrow holds.',
-              badgeColor: 'border-amber-200 bg-amber-50/50',
+              badgeColor: 'border-[var(--warn-line)] bg-[var(--warn-soft)]/50',
             },
             {
               id: 'LUMP_SUM_FINAL' as PaymentScenarioType,
               title: 'Final Lump-Sum Only',
               desc: '100% payment deferred until full completion and client signoff of the entire contract.',
               riskText: 'High Risk: Contractor fully finances working capital throughout.',
-              badgeColor: 'border-rose-200 bg-rose-50/50',
+              badgeColor: 'border-[var(--crit-line)] bg-[var(--crit-soft)]/50',
             },
           ].map((sc) => {
             const isSelected = value.paymentScenario === sc.id;
@@ -283,21 +283,21 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                 key={sc.id}
                 onClick={() => !readOnly && updateModel('paymentScenario', sc.id)}
                 className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all ${
-                  isSelected
-                    ? 'border-[#2563EB] bg-[#EFF6FF] shadow-xs'
-                    : 'border-[#E2E8F0] hover:border-[#CBD5E1] bg-white'
+ isSelected
+                    ? 'border-[var(--accent)] bg-[var(--accent-soft)] shadow-xs'
+                    : 'border-[var(--border-default)] hover:border-[var(--border-strong)] bg-[var(--bg-surface)]'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className={`font-bold text-xs ${isSelected ? 'text-[#1D4ED8]' : 'text-[#0F172A]'}`}>
+                  <span className={`font-bold text-xs ${isSelected ? 'text-[var(--accent)]' : 'text-[var(--text-primary)]'}`}>
                     {sc.title}
                   </span>
-                  {isSelected && <CheckCircle2 className="w-4 h-4 text-[#2563EB]" />}
+                  {isSelected && <CheckCircle2 className="w-4 h-4 text-[var(--accent)]" />}
                 </div>
-                <p className="text-[11px] text-[#64748B] leading-relaxed mb-2">
+                <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed mb-2">
                   {sc.desc}
                 </p>
-                <div className="text-[10px] font-medium text-[#475569] bg-white/70 p-1.5 rounded border border-[#E2E8F0]">
+                <div className="text-[10px] font-medium text-[var(--text-secondary)] bg-[var(--bg-surface)]/70 p-1.5 rounded border border-[var(--border-default)]">
                   {sc.riskText}
                 </div>
               </div>
@@ -307,11 +307,11 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
       </div>
 
       {/* 2. ADVANCE PAYMENT TERMS & RECOVERY */}
-      <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#F1F5F9]">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-xl p-5 shadow-xs">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-subtle)]">
           <div className="flex items-center gap-2">
-            <Coins className="w-4 h-4 text-emerald-600" />
-            <h3 className="text-sm font-bold text-[#0F172A]">
+            <Coins className="w-4 h-4 text-[var(--ok)]" />
+            <h3 className="text-sm font-bold text-[var(--text-primary)]">
               Advance Payment &amp; Amortization Terms
             </h3>
           </div>
@@ -329,9 +329,9 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                     : value.advancePayment?.amount || 0,
                 })
               }
-              className="w-4 h-4 rounded text-[#2563EB] focus:ring-[#2563EB] border-[#CBD5E1]"
+              className="w-4 h-4 rounded text-[var(--accent)] focus:ring-[var(--accent)] border-[var(--border-strong)]"
             />
-            <span className="text-xs font-semibold text-[#0F172A]">
+            <span className="text-xs font-semibold text-[var(--text-primary)]">
               Enable Mobilization Advance
             </span>
           </label>
@@ -340,7 +340,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
         {value.advancePayment?.enabled ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 animate-fadeIn">
             <div>
-              <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+              <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                 Advance Percentage (%) *
               </label>
               <div className="relative">
@@ -360,14 +360,14 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                       amount: amt,
                     });
                   }}
-                  className="w-full px-3 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-bold text-[#0F172A]"
+                  className="w-full px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-bold text-[var(--text-primary)]"
                 />
-                <span className="absolute right-3 top-1.5 text-xs text-[#94A3B8] font-bold">%</span>
+                <span className="absolute right-3 top-1.5 text-xs text-[var(--text-muted)] font-bold">%</span>
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+              <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                 Advance Amount ({curSymbol})
               </label>
               <input
@@ -380,12 +380,12 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                     amount: Number(e.target.value) || 0,
                   })
                 }
-                className="w-full px-3 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-bold text-emerald-700"
+                className="w-full px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-bold text-[var(--ok)]"
               />
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+              <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                 Advance Recovery Method
               </label>
               <select
@@ -397,7 +397,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                     recoveryType: e.target.value as any,
                   })
                 }
-                className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-semibold text-[#0F172A]"
+                className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-semibold text-[var(--text-primary)]"
               >
                 <option value="PRO_RATA_INVOICE">Pro-Rata Invoice Deduction</option>
                 <option value="INTERIM_CERTIFICATES">Interim Milestone Deduction</option>
@@ -406,7 +406,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+              <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                 Recovery % per Invoice
               </label>
               <div className="relative">
@@ -423,14 +423,14 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                       recoveryPercentagePerInvoice: Number(e.target.value) || 0,
                     })
                   }
-                  className="w-full px-3 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
+                  className="w-full px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)]"
                 />
-                <span className="absolute right-3 top-1.5 text-xs text-[#94A3B8] font-bold">%</span>
+                <span className="absolute right-3 top-1.5 text-xs text-[var(--text-muted)] font-bold">%</span>
               </div>
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+              <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                 Bank Guarantee Requirement for Advance
               </label>
               <div className="flex items-center gap-3 mt-1.5">
@@ -445,9 +445,9 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                         bankGuaranteeRequired: e.target.checked,
                       })
                     }
-                    className="w-4 h-4 rounded text-[#2563EB] border-[#CBD5E1]"
+                    className="w-4 h-4 rounded text-[var(--accent)] border-[var(--border-strong)]"
                   />
-                  <span className="text-xs text-[#0F172A]">
+                  <span className="text-xs text-[var(--text-primary)]">
                     Mandatory Advance Bank Guarantee (BG)
                   </span>
                 </label>
@@ -455,7 +455,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+              <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                 Guarantee Instrument Format / Specifics
               </label>
               <input
@@ -469,13 +469,13 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                     bankGuaranteeType: e.target.value,
                   })
                 }
-                className="w-full px-3 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
+                className="w-full px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)]"
               />
             </div>
           </div>
         ) : (
-          <div className="p-3 bg-[#F8FAFC] rounded-lg border border-dashed border-[#CBD5E1] text-xs text-[#64748B] flex items-center gap-2">
-            <Info className="w-4 h-4 text-[#94A3B8] shrink-0" />
+          <div className="p-3 bg-[var(--bg-subtle)] rounded-lg border border-dashed border-[var(--border-strong)] text-xs text-[var(--text-secondary)] flex items-center gap-2">
+            <Info className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
             <span>
               No advance payment is specified in this tender. 100% of contract value will be disbursed via deliverable milestones or final completion.
             </span>
@@ -484,28 +484,28 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
       </div>
 
       {/* 3. MILESTONE SCHEDULE BUILDER */}
-      <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-[#F1F5F9]">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-xl p-5 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-[var(--border-subtle)]">
           <div className="flex items-center gap-2.5">
-            <Layers className="w-4 h-4 text-[#2563EB]" />
-            <h3 className="text-sm font-bold text-[#0F172A]">
+            <Layers className="w-4 h-4 text-[var(--accent)]" />
+            <h3 className="text-sm font-bold text-[var(--text-primary)]">
               Milestone Payment Schedule Builder
             </h3>
             <span
               className={`px-2 py-0.5 text-[11px] font-bold rounded-full border flex items-center gap-1 ${
-                milestoneStats.isBalanced
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                  : 'bg-amber-50 text-amber-700 border-amber-200'
+ milestoneStats.isBalanced
+                  ? 'bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)]'
+                  : 'bg-[var(--warn-soft)] text-[var(--warn)] border-[var(--warn-line)]'
               }`}
             >
               {milestoneStats.isBalanced ? (
                 <>
-                  <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                  <CheckCircle2 className="w-3 h-3 text-[var(--ok)]" />
                   <span>100% Balanced</span>
                 </>
               ) : (
                 <>
-                  <AlertTriangle className="w-3 h-3 text-amber-600" />
+                  <AlertTriangle className="w-3 h-3 text-[var(--warn)]" />
                   <span>Sum: {milestoneStats.totalPercent}% (Needs 100%)</span>
                 </>
               )}
@@ -517,10 +517,10 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
               <button
                 type="button"
                 onClick={handleAutoCalculateAmounts}
-                className="px-2.5 py-1 text-xs font-semibold bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#334155] rounded-lg transition-colors flex items-center gap-1"
+                className="px-2.5 py-1 text-xs font-semibold bg-[var(--bg-subtle)] hover:bg-[var(--bg-muted)] text-[var(--text-secondary)] rounded-lg transition-colors flex items-center gap-1"
                 title="Calculate milestone amounts from current tender estimated value"
               >
-                <Sparkles className="w-3 h-3 text-[#2563EB]" />
+                <Sparkles className="w-3 h-3 text-[var(--accent)]" />
                 <span>Sync Amounts</span>
               </button>
             )}
@@ -528,10 +528,10 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
               <button
                 type="button"
                 onClick={handleAutoBalancePercentages}
-                className="px-2.5 py-1 text-xs font-semibold bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#334155] rounded-lg transition-colors flex items-center gap-1"
+                className="px-2.5 py-1 text-xs font-semibold bg-[var(--bg-subtle)] hover:bg-[var(--bg-muted)] text-[var(--text-secondary)] rounded-lg transition-colors flex items-center gap-1"
                 title="Balance percentages evenly to exactly 100%"
               >
-                <Percent className="w-3 h-3 text-[#2563EB]" />
+                <Percent className="w-3 h-3 text-[var(--accent)]" />
                 <span>Auto-Balance</span>
               </button>
             )}
@@ -539,7 +539,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
               <button
                 type="button"
                 onClick={handleAddMilestone}
-                className="px-3 py-1 text-xs font-semibold bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg transition-colors flex items-center gap-1 shadow-2xs"
+                className="px-3 py-1 text-xs font-semibold bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg transition-colors flex items-center gap-1 shadow-2xs"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add Milestone</span>
@@ -553,12 +553,12 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
           {(value.milestones || []).map((m, idx) => (
             <div
               key={idx}
-              className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl hover:border-[#CBD5E1] transition-all"
+              className="p-3.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl hover:border-[var(--border-strong)] transition-all"
             >
               <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-start">
                 <div className="md:col-span-4">
                   <div className="flex items-center gap-1.5 mb-1">
-                    <span className="w-5 h-5 rounded-full bg-[#2563EB] text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                    <span className="w-5 h-5 rounded-full bg-[var(--accent)] text-[var(--accent-on)] text-[10px] font-bold flex items-center justify-center shrink-0">
                       {m.milestoneNumber || idx + 1}
                     </span>
                     <input
@@ -567,7 +567,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                       placeholder="Milestone Name / Phase"
                       value={m.name || ''}
                       onChange={(e) => handleUpdateMilestone(idx, { name: e.target.value })}
-                      className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-xs font-bold text-[#0F172A]"
+                      className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs font-bold text-[var(--text-primary)]"
                     />
                   </div>
                   <input
@@ -576,13 +576,13 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                     placeholder="Linked Deliverable / Work Product"
                     value={m.deliverable || ''}
                     onChange={(e) => handleUpdateMilestone(idx, { deliverable: e.target.value })}
-                    className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-[11px] text-[#475569]"
+                    className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-[11px] text-[var(--text-secondary)]"
                   />
                 </div>
 
                 <div className="md:col-span-3 grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] font-bold text-[#64748B] mb-0.5">Share %</label>
+                    <label className="block text-[10px] font-bold text-[var(--text-secondary)] mb-0.5">Share %</label>
                     <div className="relative">
                       <input
                         type="number"
@@ -592,26 +592,26 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                         disabled={readOnly}
                         value={m.percentage ?? ''}
                         onChange={(e) => handleUpdateMilestone(idx, { percentage: Number(e.target.value) || 0 })}
-                        className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-xs font-bold text-[#0F172A]"
+                        className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs font-bold text-[var(--text-primary)]"
                       />
-                      <span className="absolute right-2 top-1 text-[11px] text-[#94A3B8] font-bold">%</span>
+                      <span className="absolute right-2 top-1 text-[11px] text-[var(--text-muted)] font-bold">%</span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-[#64748B] mb-0.5">Amount ({curSymbol})</label>
+                    <label className="block text-[10px] font-bold text-[var(--text-secondary)] mb-0.5">Amount ({curSymbol})</label>
                     <input
                       type="number"
                       disabled={readOnly}
                       value={m.amount ?? ''}
                       onChange={(e) => handleUpdateMilestone(idx, { amount: Number(e.target.value) || 0 })}
-                      className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-xs font-bold text-emerald-700"
+                      className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs font-bold text-[var(--ok)]"
                     />
                   </div>
                 </div>
 
                 <div className="md:col-span-4 grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] font-semibold text-[#64748B] mb-0.5">Review Window</label>
+                    <label className="block text-[10px] font-semibold text-[var(--text-secondary)] mb-0.5">Review Window</label>
                     <div className="relative">
                       <input
                         type="number"
@@ -619,18 +619,18 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                         disabled={readOnly}
                         value={m.clientReviewDays ?? 14}
                         onChange={(e) => handleUpdateMilestone(idx, { clientReviewDays: Number(e.target.value) || 0 })}
-                        className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-xs text-[#0F172A]"
+                        className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs text-[var(--text-primary)]"
                       />
-                      <span className="absolute right-2 top-1 text-[10px] text-[#94A3B8]">days</span>
+                      <span className="absolute right-2 top-1 text-[10px] text-[var(--text-muted)]">days</span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-semibold text-[#64748B] mb-0.5">Payment Term</label>
+                    <label className="block text-[10px] font-semibold text-[var(--text-secondary)] mb-0.5">Payment Term</label>
                     <select
                       disabled={readOnly}
                       value={m.paymentProcessingDays ?? 30}
                       onChange={(e) => handleUpdateMilestone(idx, { paymentProcessingDays: Number(e.target.value) || 30 })}
-                      className="w-full px-1.5 py-1 bg-white border border-[#CBD5E1] rounded text-xs text-[#0F172A]"
+                      className="w-full px-1.5 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs text-[var(--text-primary)]"
                     >
                       <option value={15}>Net 15 Days</option>
                       <option value={30}>Net 30 Days</option>
@@ -646,7 +646,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                     <button
                       type="button"
                       onClick={() => handleRemoveMilestone(idx)}
-                      className="p-1 text-[#94A3B8] hover:text-[#DC2626] rounded transition-colors"
+                      className="p-1 text-[var(--text-muted)] hover:text-[var(--crit)] rounded transition-colors"
                       title="Delete milestone"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -654,7 +654,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                   )}
                 </div>
 
-                <div className="md:col-span-12 flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 border-t border-[#E2E8F0]/70 text-[11px] text-[#64748B]">
+                <div className="md:col-span-12 flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 border-t border-[var(--border-default)]/70 text-[11px] text-[var(--text-secondary)]">
                   <div className="flex items-center gap-3">
                     <label className="flex items-center gap-1.5 cursor-pointer">
                       <input
@@ -662,18 +662,18 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                         disabled={readOnly}
                         checked={m.approvalRequired ?? true}
                         onChange={(e) => handleUpdateMilestone(idx, { approvalRequired: e.target.checked })}
-                        className="w-3.5 h-3.5 rounded text-[#2563EB] border-[#CBD5E1]"
+                        className="w-3.5 h-3.5 rounded text-[var(--accent)] border-[var(--border-strong)]"
                       />
-                      <span className="font-medium text-[#334155]">Client Sign-Off Required</span>
+                      <span className="font-medium text-[var(--text-secondary)]">Client Sign-Off Required</span>
                     </label>
 
                     <div className="flex items-center gap-1">
-                      <span className="text-[#94A3B8]">Trigger:</span>
+                      <span className="text-[var(--text-muted)]">Trigger:</span>
                       <select
                         disabled={readOnly}
                         value={m.paymentTrigger || 'UPON_ACCEPTANCE'}
                         onChange={(e) => handleUpdateMilestone(idx, { paymentTrigger: e.target.value })}
-                        className="bg-transparent font-medium text-[#2563EB] border-none text-[11px] p-0 cursor-pointer focus:ring-0"
+                        className="bg-transparent font-medium text-[var(--accent)] border-none text-[11px] p-0 cursor-pointer focus:ring-0"
                       >
                         <option value="UPON_SRS_APPROVAL">Upon SRS Approval</option>
                         <option value="UPON_ACCEPTANCE">Upon Client Acceptance</option>
@@ -686,14 +686,14 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                   </div>
 
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[#94A3B8]">Docs:</span>
+                    <span className="text-[var(--text-muted)]">Docs:</span>
                     <input
                       type="text"
                       disabled={readOnly}
                       placeholder="e.g. Inception Report, Signed Certificate, Tax Invoice"
                       value={m.invoiceRequirements || ''}
                       onChange={(e) => handleUpdateMilestone(idx, { invoiceRequirements: e.target.value })}
-                      className="px-1.5 py-0.5 bg-white border border-[#CBD5E1] rounded text-[11px] text-[#334155] w-64"
+                      className="px-1.5 py-0.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-[11px] text-[var(--text-secondary)] w-64"
                     />
                   </div>
                 </div>
@@ -702,7 +702,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
           ))}
 
           {(!value.milestones || value.milestones.length === 0) && (
-            <div className="p-6 text-center text-xs text-[#94A3B8] border border-dashed border-[#CBD5E1] rounded-xl">
+            <div className="p-6 text-center text-xs text-[var(--text-muted)] border border-dashed border-[var(--border-strong)] rounded-xl">
               No milestone tranches created yet. Click "Add Milestone" to define the payment schedule.
             </div>
           )}
@@ -710,22 +710,22 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
       </div>
 
       {/* 4. SAAS & RECURRING REVENUE MODELER */}
-      <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#F1F5F9]">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-xl p-5 shadow-xs">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-subtle)]">
           <div className="flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-indigo-600" />
-            <h3 className="text-sm font-bold text-[#0F172A]">
+            <TrendingUp className="w-4 h-4 text-[var(--text-secondary)]" />
+            <h3 className="text-sm font-bold text-[var(--text-primary)]">
               SaaS &amp; Recurring Revenue Modeler (TCV / ACV)
             </h3>
           </div>
-          <span className="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100">
+          <span className="text-xs font-semibold text-[var(--text-secondary)] bg-[var(--bg-subtle)] px-2.5 py-0.5 rounded-full border border-[var(--border-default)]">
             Multi-Year Recurring
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
           <div>
-            <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+            <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
               Pricing Structure Model
             </label>
             <select
@@ -737,7 +737,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                   pricingModel: e.target.value as any,
                 })
               }
-              className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-semibold text-[#0F172A]"
+              className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-semibold text-[var(--text-primary)]"
             >
               <option value="MULTI_YEAR_ESCALATION">Multi-Year with Escalation</option>
               <option value="FIXED_RECURRING">Fixed Periodic Subscription</option>
@@ -747,7 +747,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+            <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
               Billing Frequency
             </label>
             <select
@@ -759,7 +759,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                   billingFrequency: e.target.value as any,
                 })
               }
-              className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
+              className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)]"
             >
               <option value="ANNUAL">Annual In Advance</option>
               <option value="QUARTERLY">Quarterly In Advance</option>
@@ -768,7 +768,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+            <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
               Contract Duration (Years)
             </label>
             <input
@@ -783,12 +783,12 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                   durationYears: Number(e.target.value) || 1,
                 })
               }
-              className="w-full px-3 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-bold text-[#0F172A]"
+              className="w-full px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-bold text-[var(--text-primary)]"
             />
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+            <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
               Annual Escalation Rate (%)
             </label>
             <div className="relative">
@@ -805,16 +805,16 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                     annualEscalationRate: Number(e.target.value) || 0,
                   })
                 }
-                className="w-full px-3 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-bold text-indigo-700"
+                className="w-full px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-bold text-[var(--text-secondary)]"
               />
-              <span className="absolute right-3 top-1.5 text-xs text-[#94A3B8] font-bold">%</span>
+              <span className="absolute right-3 top-1.5 text-xs text-[var(--text-muted)] font-bold">%</span>
             </div>
           </div>
 
           {value.subscriptionModel?.pricingModel === 'PER_USER_LICENSE' ? (
             <>
               <div>
-                <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                   Expected User Count
                 </label>
                 <input
@@ -828,12 +828,12 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                       userCount: Number(e.target.value) || 0,
                     })
                   }
-                  className="w-full px-3 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
+                  className="w-full px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)]"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                   Fee per User / Month ({curSymbol})
                 </label>
                 <input
@@ -846,13 +846,13 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                       feePerUserMonthly: Number(e.target.value) || 0,
                     })
                   }
-                  className="w-full px-3 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
+                  className="w-full px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)]"
                 />
               </div>
             </>
           ) : (
             <div className="sm:col-span-2">
-              <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+              <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                 Base Annual Fee (Year 1) ({curSymbol})
               </label>
               <input
@@ -865,47 +865,47 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                     annualBaseFee: Number(e.target.value) || 0,
                   })
                 }
-                className="w-full px-3 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-bold text-[#0F172A]"
+                className="w-full px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-bold text-[var(--text-primary)]"
               />
             </div>
           )}
         </div>
 
         {/* Computed TCV / ACV Output Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-3.5 bg-gradient-to-r from-indigo-50/50 to-blue-50/50 dark:from-slate-800/80 dark:to-slate-900/80 rounded-xl border border-indigo-100 dark:border-slate-700">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-3.5 bg-gradient-to-r from-[var(--bg-subtle)]/50 to-[var(--accent-soft)]/50 rounded-xl border border-[var(--border-default)]">
           <div>
-            <span className="block text-[10px] uppercase font-bold text-indigo-900 dark:text-indigo-300 tracking-wider">
+            <span className="block text-[10px] uppercase font-bold text-[var(--text-secondary)] tracking-wider">
               Total Contract Value (TCV)
             </span>
-            <span className="text-base font-extrabold text-indigo-700 dark:text-indigo-400">
+            <span className="text-base font-extrabold text-[var(--text-secondary)]">
               {curSymbol} {saasStats.tcv.toLocaleString()}
             </span>
-            <span className="block text-[10px] text-indigo-600 dark:text-indigo-400 mt-0.5">
+            <span className="block text-[10px] text-[var(--text-secondary)] mt-0.5">
               Over {value.subscriptionModel?.durationYears || 1} Years full lifecycle
             </span>
           </div>
 
           <div>
-            <span className="block text-[10px] uppercase font-bold text-blue-900 dark:text-blue-300 tracking-wider">
+            <span className="block text-[10px] uppercase font-bold text-[var(--accent)] tracking-wider">
               Annual Contract Value (ACV)
             </span>
-            <span className="text-base font-extrabold text-blue-700 dark:text-blue-400">
+            <span className="text-base font-extrabold text-[var(--accent)]">
               {curSymbol} {saasStats.acv.toLocaleString()}
             </span>
-            <span className="block text-[10px] text-blue-600 dark:text-blue-400 mt-0.5">
+            <span className="block text-[10px] text-[var(--accent)] mt-0.5">
               Average annualized recurring revenue
             </span>
           </div>
 
           <div>
-            <span className="block text-[10px] uppercase font-bold text-slate-700 dark:text-slate-300 tracking-wider">
+            <span className="block text-[10px] uppercase font-bold text-[var(--text-primary)] tracking-wider">
               Year-by-Year Schedule
             </span>
             <div className="flex items-center gap-1.5 mt-1 overflow-x-auto text-[10px]">
               {saasStats.tiers.map((t) => (
                 <span
                   key={t.year}
-                  className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 rounded text-slate-800 dark:text-slate-200 font-mono font-semibold shrink-0"
+                  className="px-1.5 py-0.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded text-[var(--text-primary)] font-mono font-semibold shrink-0"
                 >
                   Y{t.year}: {curSymbol}{Math.round(t.escalated / 1000).toLocaleString()}k
                 </span>
@@ -916,11 +916,11 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
       </div>
 
       {/* 5. PENALTIES, DEDUCTIONS & RETENTION MONEY */}
-      <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#F1F5F9]">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-xl p-5 shadow-xs">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-subtle)]">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-rose-600" />
-            <h3 className="text-sm font-bold text-[#0F172A]">
+            <AlertTriangle className="w-4 h-4 text-[var(--crit)]" />
+            <h3 className="text-sm font-bold text-[var(--text-primary)]">
               Liquidated Damages, Retention &amp; Tax Deductions
             </h3>
           </div>
@@ -928,10 +928,10 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Late Delivery Liquidated Damages */}
-          <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl space-y-3">
+          <div className="p-4 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-rose-600" />
+              <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-[var(--crit)]" />
                 <span>Liquidated Damages (Delay Penalty)</span>
               </span>
               <label className="flex items-center gap-1.5 cursor-pointer">
@@ -948,16 +948,16 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                       },
                     })
                   }
-                  className="w-3.5 h-3.5 rounded text-rose-600 border-[#CBD5E1]"
+                  className="w-3.5 h-3.5 rounded text-[var(--crit)] border-[var(--border-strong)]"
                 />
-                <span className="text-xs text-[#475569]">Applicable</span>
+                <span className="text-xs text-[var(--text-secondary)]">Applicable</span>
               </label>
             </div>
 
             {value.penaltiesAndDeductions?.liquidatedDamages?.enabled && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2 border-t border-[#E2E8F0]">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2 border-t border-[var(--border-default)]">
                 <div>
-                  <label className="block text-[10px] font-bold text-[#64748B] mb-0.5">Penalty Rate</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-secondary)] mb-0.5">Penalty Rate</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -973,14 +973,14 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                           },
                         })
                       }
-                      className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-xs text-[#0F172A]"
+                      className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs text-[var(--text-primary)]"
                     />
-                    <span className="absolute right-2 top-1 text-[10px] text-[#94A3B8] font-bold">%</span>
+                    <span className="absolute right-2 top-1 text-[10px] text-[var(--text-muted)] font-bold">%</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-[#64748B] mb-0.5">Frequency</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-secondary)] mb-0.5">Frequency</label>
                   <select
                     disabled={readOnly}
                     value={value.penaltiesAndDeductions?.liquidatedDamages?.frequency || 'PER_WEEK'}
@@ -993,7 +993,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                         },
                       })
                     }
-                    className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-xs text-[#0F172A]"
+                    className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs text-[var(--text-primary)]"
                   >
                     <option value="PER_WEEK">Per Week of Delay</option>
                     <option value="PER_DAY">Per Calendar Day</option>
@@ -1001,7 +1001,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-[#64748B] mb-0.5">Max Cap (%)</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-secondary)] mb-0.5">Max Cap (%)</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -1017,14 +1017,14 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                           },
                         })
                       }
-                      className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-xs font-bold text-rose-700"
+                      className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs font-bold text-[var(--crit)]"
                     />
-                    <span className="absolute right-2 top-1 text-[10px] text-[#94A3B8] font-bold">%</span>
+                    <span className="absolute right-2 top-1 text-[10px] text-[var(--text-muted)] font-bold">%</span>
                   </div>
                 </div>
 
                 <div className="col-span-2 sm:col-span-3">
-                  <label className="block text-[10px] font-bold text-[#64748B] mb-0.5">Calculation Basis</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-secondary)] mb-0.5">Calculation Basis</label>
                   <select
                     disabled={readOnly}
                     value={value.penaltiesAndDeductions?.liquidatedDamages?.calculationBasis || 'DELAYED_MILESTONE_VALUE'}
@@ -1037,7 +1037,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                         },
                       })
                     }
-                    className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-xs text-[#0F172A]"
+                    className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs text-[var(--text-primary)]"
                   >
                     <option value="DELAYED_MILESTONE_VALUE">Delayed Deliverable Value Only (Recommended)</option>
                     <option value="TOTAL_CONTRACT_VALUE">Total Full Contract Value (High Risk)</option>
@@ -1048,10 +1048,10 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
           </div>
 
           {/* Retention Money & DLP */}
-          <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl space-y-3">
+          <div className="p-4 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
+              <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-[var(--warn)]" />
                 <span>Retention Money &amp; Warranty (DLP)</span>
               </span>
               <label className="flex items-center gap-1.5 cursor-pointer">
@@ -1068,16 +1068,16 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                       },
                     })
                   }
-                  className="w-3.5 h-3.5 rounded text-amber-600 border-[#CBD5E1]"
+                  className="w-3.5 h-3.5 rounded text-[var(--warn)] border-[var(--border-strong)]"
                 />
-                <span className="text-xs text-[#475569]">Withholding Active</span>
+                <span className="text-xs text-[var(--text-secondary)]">Withholding Active</span>
               </label>
             </div>
 
             {value.penaltiesAndDeductions?.retentionMoney?.enabled && (
-              <div className="grid grid-cols-2 gap-2.5 pt-2 border-t border-[#E2E8F0]">
+              <div className="grid grid-cols-2 gap-2.5 pt-2 border-t border-[var(--border-default)]">
                 <div>
-                  <label className="block text-[10px] font-bold text-[#64748B] mb-0.5">Retention Rate</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-secondary)] mb-0.5">Retention Rate</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -1093,14 +1093,14 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                           },
                         })
                       }
-                      className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-xs font-bold text-amber-700"
+                      className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs font-bold text-[var(--warn)]"
                     />
-                    <span className="absolute right-2 top-1 text-[10px] text-[#94A3B8] font-bold">%</span>
+                    <span className="absolute right-2 top-1 text-[10px] text-[var(--text-muted)] font-bold">%</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-[#64748B] mb-0.5">DLP Period</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-secondary)] mb-0.5">DLP Period</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -1115,14 +1115,14 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                           },
                         })
                       }
-                      className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-xs text-[#0F172A]"
+                      className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs text-[var(--text-primary)]"
                     />
-                    <span className="absolute right-2 top-1 text-[10px] text-[#94A3B8]">months</span>
+                    <span className="absolute right-2 top-1 text-[10px] text-[var(--text-muted)]">months</span>
                   </div>
                 </div>
 
                 <div className="col-span-2">
-                  <label className="block text-[10px] font-bold text-[#64748B] mb-0.5">Release Condition</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-secondary)] mb-0.5">Release Condition</label>
                   <select
                     disabled={readOnly}
                     value={value.penaltiesAndDeductions?.retentionMoney?.releaseCondition || 'DLP_EXPIRY'}
@@ -1135,7 +1135,7 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                         },
                       })
                     }
-                    className="w-full px-2 py-1 bg-white border border-[#CBD5E1] rounded text-xs text-[#0F172A]"
+                    className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded text-xs text-[var(--text-primary)]"
                   >
                     <option value="DLP_EXPIRY">100% Release upon Expiry of Defect Liability Period</option>
                     <option value="FINAL_ACCEPTANCE_50_DLP_50">50% upon FAC + 50% upon DLP Expiry</option>
@@ -1148,9 +1148,9 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
         </div>
 
         {/* Statutory Tax Deductions Row */}
-        <div className="mt-4 pt-3 border-t border-[#F1F5F9] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           <div>
-            <label className="block text-[10px] font-bold text-[#64748B] mb-0.5">
+            <label className="block text-[10px] font-bold text-[var(--text-secondary)] mb-0.5">
               Tax Deducted at Source (TDS %)
             </label>
             <div className="relative">
@@ -1165,14 +1165,14 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                     taxDeductionAtSourcePercent: Number(e.target.value) || 0,
                   })
                 }
-                className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
+                className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)]"
               />
-              <span className="absolute right-3 top-1.5 text-xs text-[#94A3B8] font-bold">%</span>
+              <span className="absolute right-3 top-1.5 text-xs text-[var(--text-muted)] font-bold">%</span>
             </div>
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-[#64748B] mb-0.5">
+            <label className="block text-[10px] font-bold text-[var(--text-secondary)] mb-0.5">
               VAT Deducted at Source (VDS %)
             </label>
             <div className="relative">
@@ -1187,14 +1187,14 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                     vatDeductionAtSourcePercent: Number(e.target.value) || 0,
                   })
                 }
-                className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
+                className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)]"
               />
-              <span className="absolute right-3 top-1.5 text-xs text-[#94A3B8] font-bold">%</span>
+              <span className="absolute right-3 top-1.5 text-xs text-[var(--text-muted)] font-bold">%</span>
             </div>
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-[#64748B] mb-0.5">
+            <label className="block text-[10px] font-bold text-[var(--text-secondary)] mb-0.5">
               SLA Breach Deduction Max Rate (%)
             </label>
             <div className="relative">
@@ -1209,84 +1209,84 @@ export const FinancialScenariosEditor: React.FC<FinancialScenariosEditorProps> =
                     slaDeductionRate: Number(e.target.value) || 0,
                   })
                 }
-                className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
+                className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)]"
               />
-              <span className="absolute right-3 top-1.5 text-xs text-[#94A3B8] font-bold">%</span>
+              <span className="absolute right-3 top-1.5 text-xs text-[var(--text-muted)] font-bold">%</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* 6. EXPECTED NET CASH FLOW WATERFALL LEDGER */}
-      <div className="bg-[#0F172A] text-white rounded-xl p-5 shadow-sm">
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-700">
+      <div className="bg-[var(--accent)] text-[var(--accent-on)] rounded-xl p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-strong)]">
           <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-sm font-bold text-[var(--accent-on)] flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-[var(--ok)]" />
               <span>Expected Net Cash Flow Realization Waterfall</span>
             </h3>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
               Real-time projection of gross contract value, interim withholdings, statutory taxes, and net realized liquidity.
             </p>
           </div>
-          <span className="font-mono text-xs font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-lg border border-emerald-800">
+          <span className="font-mono text-xs font-bold text-[var(--ok)] bg-[var(--ok)]/60 px-2.5 py-1 rounded-lg border border-[var(--ok)]">
             {curSymbol} {cashFlowStats.totalContract.toLocaleString()}
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs mb-4">
-          <div className="p-3 bg-slate-800/80 rounded-lg border border-slate-700">
-            <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold block">
+          <div className="p-3 bg-[var(--bg-muted)]/80 rounded-lg border border-[var(--border-strong)]">
+            <span className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold block">
               Gross Contract Base
             </span>
-            <span className="text-sm font-extrabold text-white mt-1 block">
+            <span className="text-sm font-extrabold text-[var(--accent-on)] mt-1 block">
               {curSymbol} {cashFlowStats.totalContract.toLocaleString()}
             </span>
-            <span className="text-[10px] text-slate-400 mt-0.5 block">100% Total Billed</span>
+            <span className="text-[10px] text-[var(--text-muted)] mt-0.5 block">100% Total Billed</span>
           </div>
 
-          <div className="p-3 bg-slate-800/80 rounded-lg border border-slate-700">
-            <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-semibold block">
+          <div className="p-3 bg-[var(--bg-muted)]/80 rounded-lg border border-[var(--border-strong)]">
+            <span className="text-[10px] uppercase tracking-wider text-[var(--ok)] font-semibold block">
               Mobilization Advance
             </span>
-            <span className="text-sm font-extrabold text-emerald-400 mt-1 block">
+            <span className="text-sm font-extrabold text-[var(--ok)] mt-1 block">
               + {curSymbol} {cashFlowStats.advanceInflow.toLocaleString()}
             </span>
-            <span className="text-[10px] text-slate-400 mt-0.5 block">
+            <span className="text-[10px] text-[var(--text-muted)] mt-0.5 block">
               {value.advancePayment?.enabled ? `${value.advancePayment.percentage}% upfront capital` : 'No advance'}
             </span>
           </div>
 
-          <div className="p-3 bg-slate-800/80 rounded-lg border border-slate-700">
-            <span className="text-[10px] uppercase tracking-wider text-amber-400 font-semibold block">
+          <div className="p-3 bg-[var(--bg-muted)]/80 rounded-lg border border-[var(--border-strong)]">
+            <span className="text-[10px] uppercase tracking-wider text-[var(--warn)] font-semibold block">
               Retention &amp; Statutory Withheld
             </span>
-            <span className="text-sm font-extrabold text-amber-400 mt-1 block">
+            <span className="text-sm font-extrabold text-[var(--warn)] mt-1 block">
               - {curSymbol} {Math.round(cashFlowStats.retentionWithheld + cashFlowStats.totalTaxWithholding).toLocaleString()}
             </span>
-            <span className="text-[10px] text-slate-400 mt-0.5 block">
+            <span className="text-[10px] text-[var(--text-muted)] mt-0.5 block">
               Retention ({value.penaltiesAndDeductions?.retentionMoney?.percentage || 0}%) + Taxes
             </span>
           </div>
 
-          <div className="p-3 bg-emerald-950/40 rounded-lg border border-emerald-600/40">
-            <span className="text-[10px] uppercase tracking-wider text-emerald-300 font-semibold block">
+          <div className="p-3 bg-[var(--ok)]/40 rounded-lg border border-[var(--ok)]/40">
+            <span className="text-[10px] uppercase tracking-wider text-[var(--ok)] font-semibold block">
               Net Operating Realization
             </span>
-            <span className="text-base font-extrabold text-emerald-400 mt-0.5 block">
+            <span className="text-base font-extrabold text-[var(--ok)] mt-0.5 block">
               {curSymbol} {Math.round(cashFlowStats.netOperatingRealization).toLocaleString()}
             </span>
-            <span className="text-[10px] text-emerald-200 mt-0.5 block">
+            <span className="text-[10px] text-[var(--ok)] mt-0.5 block">
               During execution phases
             </span>
           </div>
         </div>
 
-        <div className="text-[11px] text-slate-400 flex items-center justify-between pt-2 border-t border-slate-800">
+        <div className="text-[11px] text-[var(--text-muted)] flex items-center justify-between pt-2 border-t border-[var(--border-strong)]">
           <span>
             * Retention money ({curSymbol} {Math.round(cashFlowStats.retentionWithheld).toLocaleString()}) released at completion of {value.penaltiesAndDeductions?.retentionMoney?.dlpMonths || 12}-month Defect Liability Period (DLP).
           </span>
-          <span className="text-slate-300 font-semibold">
+          <span className="text-[var(--text-muted)] font-semibold">
             Final Realized: {curSymbol} {Math.round(cashFlowStats.netTotalWithRetention).toLocaleString()} (after DLP)
           </span>
         </div>

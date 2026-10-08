@@ -4,7 +4,6 @@ import { Search, Plus, Bell, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { Link } from 'react-router-dom';
 import { UserMenu } from './UserMenu';
 import { useTenders } from '../../context/TenderContext';
-
 import { HeaderClock } from './HeaderClock';
 
 interface HeaderProps {
@@ -12,10 +11,7 @@ interface HeaderProps {
   onToggleSidebar?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({
-  sidebarCollapsed,
-  onToggleSidebar,
-}) => {
+export const Header: React.FC<HeaderProps> = ({ sidebarCollapsed, onToggleSidebar }) => {
   const { setIsCommandPaletteOpen } = useTenders();
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -27,24 +23,25 @@ export const Header: React.FC<HeaderProps> = ({
         .catch(() => {});
     };
     fetchUnread();
-    // Refresh badge every 60 seconds
     const interval = setInterval(fetchUnread, 60_000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <header
-      className={`fixed top-0 right-0 h-14 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-[#E2E8F0] dark:border-slate-800 z-40 flex items-center justify-between px-4 sm:px-6 transition-all duration-300 ${
+      className={`fixed top-0 right-0 h-14 tt-topbar z-40 flex items-center gap-3 px-3 sm:px-5 transition-all duration-300 ${
         sidebarCollapsed ? 'left-20' : 'left-64'
       }`}
     >
-      {/* Sidebar Minimizer & Search */}
-      <div className="flex items-center gap-3 flex-1 max-w-2xl">
+      {/* min-w-0 lets this column shrink below its content width, which is what
+          kept the page scrolling sideways by a few pixels on narrow screens. */}
+      <div className="flex items-center gap-2 flex-1 min-w-0 max-w-2xl">
         {onToggleSidebar && (
           <button
             onClick={onToggleSidebar}
-            className="p-1.5 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors shrink-0"
+            className="tt-icon-btn"
             title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {sidebarCollapsed ? (
               <PanelLeftOpen className="w-4 h-4" />
@@ -57,53 +54,31 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           type="button"
           onClick={() => setIsCommandPaletteOpen(true)}
-          className="relative w-full max-w-lg text-left group cursor-pointer"
+          className="tt-searchbar tt-focus"
+          title="Search (⌘K)"
         >
-          <div className="flex items-center w-full pl-9 pr-14 py-1.5 bg-[#F1F5F9] group-hover:bg-[#E2E8F0]/80 rounded-lg text-xs text-[#94A3B8] border border-transparent group-hover:border-[#CBD5E1] transition-all">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] group-hover:text-[#2563EB] w-4 h-4 transition-colors" />
-            <span className="truncate">Search RFP, Tender ID, Authority, or Task...</span>
-          </div>
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-[#64748B] font-mono text-[10px] bg-white border border-[#CBD5E1] px-1.5 py-0.5 rounded shadow-2xs">
-            <span>⌘K</span>
-          </div>
+          <Search className="w-4 h-4 shrink-0" />
+          <span className="tt-truncate flex-1">Search tenders, IDs, authorities</span>
+          <span className="tt-kbd hidden sm:inline">⌘K</span>
         </button>
       </div>
 
-      {/* Right Controls */}
-      <div className="flex items-center gap-2 sm:gap-3">
-        {/* Multi-Timezone Header Clock */}
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <HeaderClock />
 
-        <Link
-          to="/registry"
-          className="flex items-center gap-1 px-3 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
-        >
+        <Link to="/registry" className="tt-btn tt-btn-primary">
           <Plus className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">New Opportunity</span>
+          <span className="hidden sm:inline">New tender</span>
         </Link>
 
-        {/* System Alert Bell — live unread badge */}
-        <Link
-          to="/notifications"
-          className="relative p-2 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors"
-          title="Audit alerts"
-        >
+        <Link to="/notifications" className="tt-icon-btn" title="Alerts" aria-label="Alerts">
           <Bell className="w-4 h-4" />
           {unreadCount > 0 && (
-            unreadCount <= 9 ? (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 rounded-full bg-[#DC2626] text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-white">
-                {unreadCount}
-              </span>
-            ) : (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 rounded-full bg-[#DC2626] text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-white">
-                9+
-              </span>
-            )
+            <span className="tt-badge-dot">{unreadCount <= 9 ? unreadCount : '9+'}</span>
           )}
         </Link>
 
-        {/* User Identity & Account Menu */}
-        <div className="pl-2 border-l border-[#E2E8F0] dark:border-slate-700">
+        <div className="pl-1.5 sm:pl-2" style={{ borderLeft: '1px solid var(--border-default)' }}>
           <UserMenu />
         </div>
       </div>

@@ -44,11 +44,11 @@ const VISIT_TYPES: { label: string; value: VisitType; icon: any }[] = [
 ];
 
 const SENTIMENTS: { label: string; value: VisitSentiment; color: string }[] = [
-  { label: 'Very Positive', value: 'VERY_POSITIVE', color: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800' },
-  { label: 'Positive', value: 'POSITIVE', color: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800' },
-  { label: 'Neutral', value: 'NEUTRAL', color: 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800/40 dark:text-slate-300 dark:border-slate-700' },
-  { label: 'Concerned', value: 'CONCERNED', color: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800' },
-  { label: 'Critical Issues', value: 'CRITICAL', color: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800' },
+  { label: 'Very Positive', value: 'VERY_POSITIVE', color: 'bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)]' },
+  { label: 'Positive', value: 'POSITIVE', color: 'bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--accent-line)]' },
+  { label: 'Neutral', value: 'NEUTRAL', color: 'bg-[var(--bg-subtle)] text-[var(--text-primary)] border-[var(--border-default)]' },
+  { label: 'Concerned', value: 'CONCERNED', color: 'bg-[var(--warn-soft)] text-[var(--warn)] border-[var(--warn-line)]' },
+  { label: 'Critical Issues', value: 'CRITICAL', color: 'bg-[var(--crit-soft)] text-[var(--crit)] border-[var(--crit-line)]' },
 ];
 
 export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
@@ -249,26 +249,26 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn overflow-y-auto">
-      <div className="w-full max-w-3xl bg-white dark:bg-[#0F172A] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-6 flex flex-col max-h-[92vh]">
+    <div className="tt-overlay items-center justify-center p-3 sm:p-4 animate-fadeIn overflow-y-auto">
+      <div className="w-full max-w-3xl bg-[var(--bg-surface)] rounded-2xl shadow-2xl border border-[var(--border-default)] overflow-hidden my-6 flex flex-col max-h-[92vh]">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-default)] bg-[var(--bg-subtle)]/80 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center font-bold">
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-display text-base font-bold text-slate-900 dark:text-white">
+              <h3 className="font-display text-base font-bold text-[var(--text-primary)]">
                 {initialVisit ? 'Edit Client Visit & Meeting' : 'Schedule or Log Client Visit'}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-[var(--text-secondary)]">
                 Manage visitor registries, stakeholder alignments, and meeting deliverables
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]/60 transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -276,7 +276,7 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
 
         {/* Mode Selector Tabs (only if creating new) */}
         {!initialVisit && (
-          <div className="px-6 pt-3 pb-0 bg-slate-50/40 dark:bg-slate-900/40 border-b border-slate-100 dark:border-slate-800 shrink-0">
+          <div className="px-6 pt-3 pb-0 bg-[var(--bg-subtle)]/40 border-b border-[var(--border-default)] shrink-0">
             <div className="flex gap-2">
               <button
                 type="button"
@@ -285,9 +285,9 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                   setStatus('SCHEDULED');
                 }}
                 className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-all cursor-pointer ${
-                  activeTab === 'SCHEDULE'
-                    ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-white dark:bg-[#0F172A]'
-                    : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50'
+ activeTab === 'SCHEDULE'
+                    ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--bg-surface)]'
+                    : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'
                 }`}
               >
                 <Calendar className="w-3.5 h-3.5" />
@@ -300,9 +300,9 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                   setStatus('COMPLETED');
                 }}
                 className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-all cursor-pointer ${
-                  activeTab === 'LOG_PAST'
-                    ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-white dark:bg-[#0F172A]'
-                    : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50'
+ activeTab === 'LOG_PAST'
+                    ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--bg-surface)]'
+                    : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'
                 }`}
               >
                 <FileText className="w-3.5 h-3.5" />
@@ -314,7 +314,7 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="mx-6 mt-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-2">
+          <div className="mx-6 mt-4 p-3 rounded-xl bg-[var(--crit-soft)] border border-[var(--crit-line)] text-[var(--crit)] text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{errorMsg}</span>
           </div>
@@ -324,11 +324,11 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6 space-y-5 text-xs overflow-y-auto flex-1">
           {/* Section: Visit Purpose & Client */}
           <div className="space-y-3">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
               1. Meeting / Visit Details
             </div>
             <div>
-              <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+              <label className="block font-semibold text-[var(--text-primary)] mb-1">
                 Meeting Title / Subject
               </label>
               <input
@@ -336,13 +336,13 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                 placeholder="e.g. Technical Clarification & Architectural Briefing for ADB Project"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="w-full px-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Client / Procuring Entity
                 </label>
                 <div className="relative">
@@ -352,7 +352,7 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                     placeholder="e.g. United Nations Development Programme"
                     value={clientOrganization}
                     onChange={(e) => setClientOrganization(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full px-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   />
                   <datalist id="organizations-list">
                     {organizations.map((org) => (
@@ -368,13 +368,13 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Associated Tender (Optional)
                 </label>
                 <select
                   value={tenderId}
                   onChange={(e) => setTenderId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 >
                   <option value="">-- Standalone / General Meeting --</option>
                   {tenders.map((t) => (
@@ -388,20 +388,20 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
           </div>
 
           {/* Section: Visit Type, Schedule & Location */}
-          <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800/80">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          <div className="space-y-3 pt-2 border-t border-[var(--border-default)]">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
               2. Logistics &amp; Timing
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Visit Format
                 </label>
                 <select
                   value={visitType}
                   onChange={(e) => setVisitType(e.target.value as VisitType)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 >
                   {VISIT_TYPES.map((vt) => (
                     <option key={vt.value} value={vt.value}>
@@ -412,59 +412,59 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Start Date &amp; Time
                 </label>
                 <input
                   type="datetime-local"
                   value={scheduledStart}
                   onChange={(e) => setScheduledStart(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-mono text-xs"
+                  className="w-full px-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] font-mono text-xs"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Estimated End Time
                 </label>
                 <input
                   type="datetime-local"
                   value={scheduledEnd}
                   onChange={(e) => setScheduledEnd(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-mono text-xs"
+                  className="w-full px-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] font-mono text-xs"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Physical Location / Meeting Room
                 </label>
                 <div className="relative">
-                  <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <MapPin className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3" />
                   <input
                     type="text"
                     placeholder="e.g. Executive Boardroom 4A, Headquarters"
                     value={locationOrRoom}
                     onChange={(e) => setLocationOrRoom(e.target.value)}
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Virtual Meeting Link (Zoom / Teams / Meet)
                 </label>
                 <div className="relative">
-                  <Video className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <Video className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3" />
                   <input
                     type="url"
                     placeholder="https://teams.microsoft.com/l/meetup-join/..."
                     value={meetingLink}
                     onChange={(e) => setMeetingLink(e.target.value)}
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
@@ -472,30 +472,30 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
           </div>
 
           {/* Section: Visitor & Host Contacts */}
-          <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800/80">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          <div className="space-y-3 pt-2 border-t border-[var(--border-default)]">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
               3. Principal Visitor &amp; Internal Host
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Primary Visitor Full Name
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <User className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3" />
                   <input
                     type="text"
                     placeholder="e.g. Dr. Arthur Pendelton"
                     value={visitorName}
                     onChange={(e) => setVisitorName(e.target.value)}
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Visitor Designation / Role
                 </label>
                 <input
@@ -503,40 +503,40 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                   placeholder="e.g. Director General, Procurement Board"
                   value={visitorDesignation}
                   onChange={(e) => setVisitorDesignation(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Visitor Phone
                 </label>
                 <div className="relative">
-                  <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <Phone className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3" />
                   <input
                     type="text"
                     placeholder="+1 (555) 019-2834"
                     value={visitorPhone}
                     onChange={(e) => setVisitorPhone(e.target.value)}
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Visitor Email
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <Mail className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3" />
                   <input
                     type="email"
                     placeholder="arthur.pendelton@undp.org"
                     value={visitorEmail}
                     onChange={(e) => setVisitorEmail(e.target.value)}
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
@@ -545,13 +545,13 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
             {/* Accompanying Delegation Table */}
             <div className="pt-2">
               <div className="flex items-center justify-between mb-2">
-                <span className="font-semibold text-slate-800 dark:text-slate-200">
+                <span className="font-semibold text-[var(--text-primary)]">
                   Accompanying Delegation / Attendees ({accompanyingPersons.length})
                 </span>
                 <button
                   type="button"
                   onClick={handleAddAccompanying}
-                  className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                  className="flex items-center gap-1 text-[11px] font-semibold text-[var(--accent)] hover:underline cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Accompanying Person</span>
@@ -559,7 +559,7 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
               </div>
 
               {accompanyingPersons.length > 0 && (
-                <div className="space-y-2 bg-slate-50/60 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                <div className="space-y-2 bg-[var(--bg-subtle)]/60 p-3 rounded-xl border border-[var(--border-default)]">
                   {accompanyingPersons.map((person, idx) => (
                     <div key={idx} className="flex items-center gap-2">
                       <input
@@ -567,26 +567,26 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                         placeholder="Full Name"
                         value={person.name}
                         onChange={(e) => handleUpdateAccompanying(idx, 'name', e.target.value)}
-                        className="flex-1 px-3 py-1.5 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                        className="flex-1 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                       />
                       <input
                         type="text"
                         placeholder="Designation"
                         value={person.designation || ''}
                         onChange={(e) => handleUpdateAccompanying(idx, 'designation', e.target.value)}
-                        className="flex-1 px-3 py-1.5 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                        className="flex-1 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                       />
                       <input
                         type="text"
                         placeholder="Email / Phone"
                         value={person.email || ''}
                         onChange={(e) => handleUpdateAccompanying(idx, 'email', e.target.value)}
-                        className="flex-1 px-3 py-1.5 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                        className="flex-1 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                       />
                       <button
                         type="button"
                         onClick={() => handleRemoveAccompanying(idx)}
-                        className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors"
+                        className="p-1.5 text-[var(--crit)] hover:text-[var(--crit)] hover:bg-[var(--crit-soft)] rounded-lg transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -599,7 +599,7 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
             {/* Internal Host Selection */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Internal Host
                 </label>
                 <select
@@ -609,7 +609,7 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                     setInternalHostName(e.target.value);
                     if (host?.role) setInternalHostRole(host.role.replace('_', ' '));
                   }}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 >
                   {teamMembers.map((m) => (
                     <option key={m.id} value={m.name}>
@@ -623,7 +623,7 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Internal Host Role / Title
                 </label>
                 <input
@@ -631,20 +631,20 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                   value={internalHostRole}
                   onChange={(e) => setInternalHostRole(e.target.value)}
                   placeholder="e.g. Business Head"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
               </div>
             </div>
           </div>
 
           {/* Section: Agenda, Minutes & Outcomes */}
-          <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800/80">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          <div className="space-y-3 pt-2 border-t border-[var(--border-default)]">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
               4. Agenda &amp; Meeting Minutes
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+              <label className="block font-semibold text-[var(--text-primary)] mb-1">
                 Agenda &amp; Discussion Objectives
               </label>
               <textarea
@@ -652,14 +652,14 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                 placeholder="Key talking points, evaluation criteria questions, scope clarification..."
                 value={agenda}
                 onChange={(e) => setAgenda(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none"
+                className="w-full px-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] resize-none"
               />
             </div>
 
             {(activeTab === 'LOG_PAST' || status === 'COMPLETED' || initialVisit) && (
               <>
                 <div>
-                  <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Discussion Summary / Meeting Minutes (MoM)
                   </label>
                   <textarea
@@ -667,20 +667,20 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                     placeholder="Summarize client feedback, requirements discussed, agreed timeline commitments..."
                     value={discussionNotes}
                     onChange={(e) => setDiscussionNotes(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full px-3.5 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 {/* Action Items Builder */}
                 <div className="pt-2">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-semibold text-slate-800 dark:text-slate-200">
+                    <span className="font-semibold text-[var(--text-primary)]">
                       Follow-up Action Items ({actionItems.length})
                     </span>
                     <button
                       type="button"
                       onClick={handleAddActionItem}
-                      className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                      className="flex items-center gap-1 text-[11px] font-semibold text-[var(--accent)] hover:underline cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add Action Item</span>
@@ -688,40 +688,40 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                   </div>
 
                   {actionItems.length > 0 && (
-                    <div className="space-y-2 bg-slate-50/60 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <div className="space-y-2 bg-[var(--bg-subtle)]/60 p-3 rounded-xl border border-[var(--border-default)]">
                       {actionItems.map((item, idx) => (
                         <div key={idx} className="flex items-center gap-2">
                           <input
                             type="checkbox"
                             checked={item.is_done}
                             onChange={(e) => handleUpdateActionItem(idx, 'is_done', e.target.checked)}
-                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                            className="rounded border-[var(--border-strong)] text-[var(--accent)] focus:ring-[var(--accent)]"
                           />
                           <input
                             type="text"
                             placeholder="Deliverable description"
                             value={item.task}
                             onChange={(e) => handleUpdateActionItem(idx, 'task', e.target.value)}
-                            className="flex-2 px-3 py-1.5 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                            className="flex-2 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                           />
                           <input
                             type="text"
                             placeholder="Owner"
                             value={item.owner || ''}
                             onChange={(e) => handleUpdateActionItem(idx, 'owner', e.target.value)}
-                            className="flex-1 px-3 py-1.5 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                            className="flex-1 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                           />
                           <input
                             type="text"
                             placeholder="Deadline (e.g. Sep 15)"
                             value={item.deadline || ''}
                             onChange={(e) => handleUpdateActionItem(idx, 'deadline', e.target.value)}
-                            className="flex-1 px-3 py-1.5 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                            className="flex-1 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                           />
                           <button
                             type="button"
                             onClick={() => handleRemoveActionItem(idx)}
-                            className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors"
+                            className="p-1.5 text-[var(--crit)] hover:text-[var(--crit)] hover:bg-[var(--crit-soft)] rounded-lg transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -733,7 +733,7 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
 
                 {/* Sentiment Outcome */}
                 <div className="pt-2">
-                  <label className="block font-semibold text-slate-800 dark:text-slate-200 mb-2">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-2">
                     Client Relationship &amp; Opportunity Sentiment
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -743,9 +743,9 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                         type="button"
                         onClick={() => setSentimentOutcome(s.value)}
                         className={`py-2 px-2.5 rounded-xl border text-center font-semibold text-xs transition-all cursor-pointer ${
-                          sentimentOutcome === s.value
-                            ? `${s.color} ring-2 ring-blue-500/50 shadow-sm font-bold`
-                            : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'
+ sentimentOutcome === s.value
+                            ? `${s.color} ring-2 ring-[var(--accent)]/50 shadow-sm font-bold`
+                            : 'border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)]'
                         }`}
                       >
                         {s.label}
@@ -758,13 +758,13 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
           </div>
 
           {/* Modal Footer Actions */}
-          <div className="pt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 shrink-0">
+          <div className="pt-4 flex items-center justify-between border-t border-[var(--border-default)] shrink-0">
             <div className="flex items-center gap-2">
-              <span className="text-slate-500 dark:text-slate-400 text-xs">Record Status:</span>
+              <span className="text-[var(--text-secondary)] text-xs">Record Status:</span>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as VisitStatus)}
-                className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-800 dark:text-slate-200"
+                className="px-2.5 py-1 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs font-medium text-[var(--text-primary)]"
               >
                 <option value="SCHEDULED">Scheduled</option>
                 <option value="CHECKED_IN">Checked-In (Active)</option>
@@ -780,14 +780,14 @@ export const ClientVisitModal: React.FC<ClientVisitModalProps> = ({
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="px-4 py-2 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-xl font-semibold transition-colors cursor-pointer"
+                className="px-4 py-2 border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-xl font-semibold transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+                className="flex items-center gap-2 px-5 py-2 bg-[var(--accent)] hover:bg-[var(--accent)] text-[var(--accent-on)] rounded-xl font-semibold transition-colors shadow-sm cursor-pointer disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <span>Saving...</span>

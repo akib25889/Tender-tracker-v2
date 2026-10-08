@@ -1,5 +1,13 @@
 import { Tender, UserProfile } from '../types/tender';
 
+/**
+ * NOTE ON COLOUR
+ * The hex values below are deliberate. They style generated Word/HTML export
+ * documents, which are opened outside the app in Word, a browser print view or
+ * Excel — none of which can resolve the app's CSS custom properties. A themed
+ * var() here would render as no colour at all. These are print colours, fixed
+ * on purpose, and they are the only literals left in src/ outside index.css.
+ */
 const downloadFile = (content: string, filename: string, mimeType: string) => {
   const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);

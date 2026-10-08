@@ -40,18 +40,18 @@ const CATEGORY_ICON: Record<string, React.ReactNode> = {
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  DEADLINE: 'bg-[#FEF2F2] text-[#DC2626]',
-  BLOCKER: 'bg-[#FFF7ED] text-[#EA580C]',
-  APPROVAL: 'bg-[#F0FDF4] text-[#16A34A]',
-  VAULT: 'bg-[#EFF6FF] text-[#2563EB]',
-  OPENING_REMINDER: 'bg-[#FAF5FF] text-[#7E22CE]',
-  MILESTONE_REMINDER: 'bg-[#FEFCE8] text-[#A16207]',
+  DEADLINE: 'bg-[var(--crit-soft)] text-[var(--crit)]',
+  BLOCKER: 'bg-[var(--warn-soft)] text-[var(--warn)]',
+  APPROVAL: 'bg-[var(--ok-soft)] text-[var(--ok)]',
+  VAULT: 'bg-[var(--accent-soft)] text-[var(--accent)]',
+  OPENING_REMINDER: 'bg-[var(--bg-subtle)] text-[var(--text-secondary)]',
+  MILESTONE_REMINDER: 'bg-[var(--warn-soft)] text-[var(--warn)]',
 };
 
 const SEVERITY_DOT: Record<string, string> = {
-  CRITICAL: 'bg-[#DC2626]',
-  WARNING: 'bg-[#F59E0B]',
-  INFO: 'bg-[#2563EB]',
+  CRITICAL: 'bg-[var(--crit)]',
+  WARNING: 'bg-[var(--warn)]',
+  INFO: 'bg-[var(--accent)]',
 };
 
 export const NotificationsPage: React.FC = () => {
@@ -165,15 +165,15 @@ export const NotificationsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
+          <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] mb-1">
             <span>Alerts</span>
             <span>•</span>
-            <span className="font-semibold text-[#0F172A]">Real-Time Notifications</span>
+            <span className="font-semibold text-[var(--text-primary)]">Real-Time Notifications</span>
           </div>
-          <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
+          <h1 className="font-display text-2xl font-bold text-[var(--text-primary)] tracking-tight">
             Operational Alert Center
           </h1>
-          <p className="text-xs text-[#64748B] mt-0.5">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             SLA breach warnings, missing statutory file flags, and executive gatekeeper sign-off notifications.
           </p>
         </div>
@@ -181,7 +181,7 @@ export const NotificationsPage: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={fetchAlerts}
-            className="p-2 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors"
+            className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] transition-colors"
             title="Refresh alerts"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -189,9 +189,9 @@ export const NotificationsPage: React.FC = () => {
           {unreadCount > 0 && (
             <button
               onClick={markAllRead}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] text-xs font-semibold text-[#0F172A] rounded-lg shadow-sm transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] hover:bg-[var(--bg-subtle)] text-xs font-semibold text-[var(--text-primary)] rounded-lg shadow-sm transition-colors"
             >
-              <Check className="w-3.5 h-3.5 text-[#16A34A]" />
+              <Check className="w-3.5 h-3.5 text-[var(--ok)]" />
               <span>Mark All as Read ({unreadCount})</span>
             </button>
           )}
@@ -199,15 +199,15 @@ export const NotificationsPage: React.FC = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-1.5 p-1 bg-white border border-[#E2E8F0] rounded-lg text-xs w-fit shadow-sm">
+      <div className="flex flex-wrap items-center gap-1.5 p-1 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-xs shadow-sm">
         {['ALL', 'OPENING_REMINDER', 'DEADLINE', 'BLOCKER', 'APPROVAL', 'VAULT'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveFilter(tab)}
             className={`px-3 py-1 rounded-md font-medium transition-colors ${
-              activeFilter === tab
-                ? 'bg-[#0F172A] text-white font-semibold'
-                : 'text-[#64748B] hover:text-[#0F172A]'
+ activeFilter === tab
+ ? 'bg-[var(--accent)] text-[var(--accent-on)] font-semibold'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             {tab}
@@ -217,15 +217,15 @@ export const NotificationsPage: React.FC = () => {
 
       {/* Alerts List */}
       <Card title="Incoming Alerts" subtitle="Prioritized by severity and arrival time">
-        <div className="divide-y divide-[#F1F5F9] -mx-5 -my-5">
+        <div className="divide-y divide-[var(--border-subtle)] -mx-5 -my-5">
           {loading && (
-            <div className="p-8 text-center text-xs text-[#94A3B8]">Loading live alerts…</div>
+            <div className="p-8 text-center text-xs text-[var(--text-muted)]">Loading live alerts…</div>
           )}
           {!loading && filtered.length === 0 && (
             <div className="p-8 text-center">
-              <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto mb-2" />
-              <p className="text-xs font-semibold text-[#0F172A]">All clear</p>
-              <p className="text-xs text-[#64748B] mt-0.5">No active alerts in this category.</p>
+              <CheckCircle2 className="w-8 h-8 text-[var(--ok)] mx-auto mb-2" />
+              <p className="text-xs font-semibold text-[var(--text-primary)]">All clear</p>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">No active alerts in this category.</p>
             </div>
           )}
           {!loading &&
@@ -234,14 +234,14 @@ export const NotificationsPage: React.FC = () => {
                 key={item.id}
                 onClick={() => markRead(item.id)}
                 className={`p-4 transition-colors flex items-start justify-between gap-4 cursor-pointer ${
-                  !isRead(item) ? 'bg-[#EFF6FF]/30 hover:bg-[#EFF6FF]/60' : 'hover:bg-[#F8FAFC]'
-                }`}
+ !isRead(item) ? 'bg-[var(--accent-soft)]/30 hover:bg-[var(--accent-soft)]/60' : 'hover:bg-[var(--bg-subtle)]'
+ }`}
               >
                 <div className="flex items-start gap-3">
                   <div
                     className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-                      CATEGORY_COLORS[item.category] ?? 'bg-[#F1F5F9] text-[#64748B]'
-                    }`}
+ CATEGORY_COLORS[item.category] ?? 'bg-[var(--bg-subtle)] text-[var(--text-secondary)]'
+ }`}
                   >
                     {CATEGORY_ICON[item.category]}
                   </div>
@@ -250,27 +250,27 @@ export const NotificationsPage: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <h4
                         className={`text-xs ${
-                          !isRead(item) ? 'font-bold text-[#0F172A]' : 'font-medium text-[#475569]'
-                        }`}
+ !isRead(item) ? 'font-bold text-[var(--text-primary)]' : 'font-medium text-[var(--text-secondary)]'
+ }`}
                       >
                         {item.title}
                       </h4>
                       {!isRead(item) && (
                         <span
                           className={`w-2 h-2 rounded-full shrink-0 ${
-                            SEVERITY_DOT[item.severity] ?? 'bg-[#64748B]'
-                          }`}
+ SEVERITY_DOT[item.severity] ?? 'bg-[var(--bg-muted)]'
+ }`}
                         />
                       )}
                     </div>
-                    <p className="text-xs text-[#64748B] leading-relaxed">{item.description}</p>
+                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{item.description}</p>
                     {item.tender_id && (
-                      <span className="font-mono text-[10px] text-[#94A3B8]">{item.tender_id}</span>
+                      <span className="font-mono text-[10px] text-[var(--text-muted)]">{item.tender_id}</span>
                     )}
                   </div>
                 </div>
 
-                <span className="font-mono text-[11px] text-[#94A3B8] whitespace-nowrap shrink-0 capitalize">
+                <span className="font-mono text-[11px] text-[var(--text-muted)] whitespace-nowrap shrink-0 capitalize">
                   {item.severity.toLowerCase()}
                 </span>
               </div>

@@ -7,6 +7,11 @@ interface UrgencyBadgeProps {
   className?: string;
 }
 
+/**
+ * Red is reserved for a deadline inside 48 hours and amber for one inside
+ * five days. Anything further out is plain text, so a list of twenty tenders
+ * shows colour only on the handful that need action today.
+ */
 export const UrgencyBadge: React.FC<UrgencyBadgeProps> = ({
   daysRemaining,
   hoursRemaining,
@@ -32,51 +37,28 @@ export const UrgencyBadge: React.FC<UrgencyBadgeProps> = ({
 
   if (effectiveDays <= 0 && (!effectiveHours || effectiveHours <= 0)) {
     return (
-      <span
-        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap shrink-0 text-[#94A3B8] bg-[#F8FAFC] border border-[#E2E8F0] ${className}`}
-      >
-        No Deadline
+      <span className={`inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 text-xs tt-text-3 ${className}`}>
+        No deadline
       </span>
     );
   }
 
-  const isCritical = effectiveDays <= 2;
-  const isUrgent = effectiveDays > 2 && effectiveDays <= 5;
+  const text =
+    effectiveHours !== undefined && effectiveHours < 48
+      ? `${effectiveHours}h left`
+      : `${effectiveDays}d left`;
 
-  let text = `${effectiveDays}d left`;
-  if (effectiveHours !== undefined && effectiveHours < 48) {
-    text = `${effectiveHours}h left`;
+  if (effectiveDays <= 2) {
+    return <span className={`tt-tag tt-tag-crit ${className}`}>{text}</span>;
   }
 
-  if (isCritical) {
-    return (
-      <span
-        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] shadow-2xs ${className}`}
-      >
-        <span className="relative flex h-2 w-2 shrink-0">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#DC2626] opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-[#DC2626]"></span>
-        </span>
-        <span>{text}</span>
-      </span>
-    );
-  }
-
-  if (isUrgent) {
-    return (
-      <span
-        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A] ${className}`}
-      >
-        <span className="h-1.5 w-1.5 rounded-full bg-[#D97706] shrink-0"></span>
-        <span>{text}</span>
-      </span>
-    );
+  if (effectiveDays <= 5) {
+    return <span className={`tt-tag tt-tag-warn ${className}`}>{text}</span>;
   }
 
   return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap shrink-0 text-[#64748B] bg-[#F1F5F9] border border-[#E2E8F0] ${className}`}
-    >
+    <span className={`inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 text-xs tt-text-2 ${className}`}>
+      <i className="tt-dot" aria-hidden="true" />
       {text}
     </span>
   );

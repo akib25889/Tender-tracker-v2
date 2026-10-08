@@ -16,7 +16,7 @@ export const TenderSummaryPage: React.FC = () => {
     if (isLoading) {
       return (
         <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--accent)]"></div>
         </div>
       );
     }
@@ -24,12 +24,12 @@ export const TenderSummaryPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-full bg-[#F8FAFC]">
+    <div className="min-h-full bg-[var(--bg-subtle)]">
       {/* Top action bar */}
-      <div className="sticky top-0 z-10 bg-white border-b border-[#E2E8F0] px-6 py-3 flex items-center justify-between shadow-xs print:hidden">
+      <div className="sticky top-0 z-10 bg-[var(--bg-surface)] border-b border-[var(--border-default)] px-6 py-3 flex items-center justify-between shadow-xs print:hidden">
         <Link
           to={`/tenders/${tender.id}`}
-          className="flex items-center gap-1.5 text-xs text-[#64748B] hover:text-[#0F172A] font-semibold transition-colors"
+          className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           Back to Overview
@@ -38,21 +38,21 @@ export const TenderSummaryPage: React.FC = () => {
           <button
             type="button"
             onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#475569] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] rounded-lg text-xs font-semibold transition-colors"
           >
             <Printer className="w-3.5 h-3.5" />
             Print / Save PDF
           </button>
           <Link
             to={`/registry?id=${tender.id}`}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] text-[#475569] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] rounded-lg text-xs font-semibold transition-colors"
           >
             <Pencil className="w-3.5 h-3.5" />
             Edit Entry
           </Link>
           <Link
             to={`/tenders/${tender.id}`}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0F172A] text-white hover:bg-[#1E293B] rounded-lg text-xs font-semibold transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent)] text-[var(--accent-on)] hover:bg-[var(--accent-hover)] rounded-lg text-xs font-semibold transition-colors"
           >
             <ExternalLink className="w-3.5 h-3.5" />
             Open Workspace

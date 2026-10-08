@@ -44,44 +44,44 @@ const CATEGORY_CONFIG: Record<
 > = {
   'Company Statutory': {
     icon: Building2,
-    color: 'text-blue-600 dark:text-blue-400',
-    bg: 'bg-blue-50 dark:bg-blue-950/40',
-    border: 'border-blue-200 dark:border-blue-800/40',
+    color: 'text-[var(--accent)]',
+    bg: 'bg-[var(--accent-soft)]',
+    border: 'border-[var(--accent-line)]',
     label: 'Statutory & Corporate',
   },
   'Financial & Tax': {
     icon: DollarSign,
-    color: 'text-emerald-600 dark:text-emerald-400',
-    bg: 'bg-emerald-50 dark:bg-emerald-950/40',
-    border: 'border-emerald-200 dark:border-emerald-800/40',
+    color: 'text-[var(--ok)]',
+    bg: 'bg-[var(--ok-soft)]',
+    border: 'border-[var(--ok-line)]',
     label: 'Financial Audits & Tax',
   },
   'Certifications & ISO': {
     icon: Award,
-    color: 'text-purple-600 dark:text-purple-400',
-    bg: 'bg-purple-50 dark:bg-purple-950/40',
-    border: 'border-purple-200 dark:border-purple-800/40',
+    color: 'text-[var(--text-secondary)]',
+    bg: 'bg-[var(--bg-subtle)]',
+    border: 'border-[var(--border-default)]',
     label: 'Certifications & ISO',
   },
   'Key Personnel CV': {
     icon: Users,
-    color: 'text-cyan-600 dark:text-cyan-400',
-    bg: 'bg-cyan-50 dark:bg-cyan-950/40',
-    border: 'border-cyan-200 dark:border-cyan-800/40',
+    color: 'text-[var(--accent)]',
+    bg: 'bg-[var(--accent-soft)]',
+    border: 'border-[var(--accent-line)]',
     label: 'Personnel & CVs',
   },
   'Past Credentials': {
     icon: CheckCircle2,
-    color: 'text-indigo-600 dark:text-indigo-400',
-    bg: 'bg-indigo-50 dark:bg-indigo-950/40',
-    border: 'border-indigo-200 dark:border-indigo-800/40',
+    color: 'text-[var(--text-secondary)]',
+    bg: 'bg-[var(--bg-subtle)]',
+    border: 'border-[var(--border-default)]',
     label: 'Past Experience & CC',
   },
   'Legal & Governance': {
     icon: Scale,
-    color: 'text-amber-600 dark:text-amber-400',
-    bg: 'bg-amber-50 dark:bg-amber-950/40',
-    border: 'border-amber-200 dark:border-amber-800/40',
+    color: 'text-[var(--warn)]',
+    bg: 'bg-[var(--warn-soft)]',
+    border: 'border-[var(--warn-line)]',
     label: 'Legal & Governance',
   },
 };
@@ -92,34 +92,34 @@ const ACCESS_CONFIG: Record<
 > = {
   ALL_TEAM: {
     label: 'All Team Members',
-    bg: 'bg-emerald-50 dark:bg-emerald-950/40',
-    text: 'text-emerald-700 dark:text-emerald-300',
-    border: 'border-emerald-200 dark:border-emerald-800/50',
-    dot: 'bg-emerald-500',
+    bg: 'bg-[var(--ok-soft)]',
+    text: 'text-[var(--ok)]',
+    border: 'border-[var(--ok-line)]',
+    dot: 'bg-[var(--ok)]',
     desc: 'Accessible by all staff and analysts',
   },
   MANAGEMENT_ONLY: {
     label: 'Management Only',
-    bg: 'bg-blue-50 dark:bg-blue-950/40',
-    text: 'text-blue-700 dark:text-blue-300',
-    border: 'border-blue-200 dark:border-blue-800/50',
-    dot: 'bg-blue-500',
+    bg: 'bg-[var(--accent-soft)]',
+    text: 'text-[var(--accent)]',
+    border: 'border-[var(--accent-line)]',
+    dot: 'bg-[var(--accent)]',
     desc: 'Directors and Managers only',
   },
   RESTRICTED_FINANCE: {
     label: 'Finance & Legal Only',
-    bg: 'bg-amber-50 dark:bg-amber-950/40',
-    text: 'text-amber-700 dark:text-amber-300',
-    border: 'border-amber-200 dark:border-amber-800/50',
-    dot: 'bg-amber-500',
+    bg: 'bg-[var(--warn-soft)]',
+    text: 'text-[var(--warn)]',
+    border: 'border-[var(--warn-line)]',
+    dot: 'bg-[var(--warn)]',
     desc: 'Commercial Finance and Executive Board',
   },
   EXECUTIVE_ONLY: {
     label: 'Executive Board Only',
-    bg: 'bg-rose-50 dark:bg-rose-950/40',
-    text: 'text-rose-700 dark:text-rose-300',
-    border: 'border-rose-200 dark:border-rose-800/50',
-    dot: 'bg-rose-500',
+    bg: 'bg-[var(--crit-soft)]',
+    text: 'text-[var(--crit)]',
+    border: 'border-[var(--crit-line)]',
+    dot: 'bg-[var(--crit)]',
     desc: 'Strictly restricted to Business Head',
   },
 };
@@ -446,8 +446,8 @@ export const MasterDocumentVaultPage: React.FC = () => {
   const renderValidityBadge = (expiryDate?: string) => {
     if (!expiryDate) {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 whitespace-nowrap">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[var(--ok-soft)] text-[var(--ok)] border border-[var(--ok-line)] whitespace-nowrap">
+          <CheckCircle2 className="w-3.5 h-3.5 text-[var(--ok)]" />
           <span>Perpetual</span>
         </span>
       );
@@ -459,8 +459,8 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
     if (diffDays < 0) {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200 dark:border-rose-800/40 whitespace-nowrap">
-          <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[var(--crit-soft)] text-[var(--crit)] border border-[var(--crit-line)] whitespace-nowrap">
+          <AlertTriangle className="w-3.5 h-3.5 text-[var(--crit)]" />
           <span>Expired ({expiryDate})</span>
         </span>
       );
@@ -468,16 +468,16 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
     if (diffDays <= 60) {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 whitespace-nowrap">
-          <Clock className="w-3.5 h-3.5 text-amber-500" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[var(--warn-soft)] text-[var(--warn)] border border-[var(--warn-line)] whitespace-nowrap">
+          <Clock className="w-3.5 h-3.5 text-[var(--warn)]" />
           <span>Expires in {diffDays}d</span>
         </span>
       );
     }
 
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-100 text-slate-700 dark:bg-slate-800/60 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 whitespace-nowrap">
-        <Calendar className="w-3.5 h-3.5 text-slate-400" />
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium bg-[var(--bg-subtle)] text-[var(--text-primary)] border border-[var(--border-default)] whitespace-nowrap">
+        <Calendar className="w-3.5 h-3.5 text-[var(--text-muted)]" />
         <span>Valid to {expiryDate}</span>
       </span>
     );
@@ -488,15 +488,15 @@ export const MasterDocumentVaultPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
+          <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] mb-1">
             <span>Corporate Repository</span>
             <span>•</span>
-            <span className="font-semibold text-blue-600 dark:text-blue-400">Master Reusable Vault</span>
+            <span className="font-semibold text-[var(--accent)]">Master Reusable Vault</span>
           </div>
-          <h1 className="font-display text-2xl font-bold text-[#0F172A] dark:text-slate-100 tracking-tight">
+          <h1 className="font-display text-2xl font-bold text-[var(--text-primary)] tracking-tight">
             Reusable Master Document Library
           </h1>
-          <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5 max-w-2xl">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5 max-w-2xl">
             Central repository of statutory credentials, audited balance sheets, ISO certifications, and CVs. Reference into any tender with 1 click.
           </p>
         </div>
@@ -505,7 +505,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
           <button
             type="button"
             onClick={handleOpenAddModal}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold transition-all shadow-sm hover:shadow-md active:scale-98 shrink-0 self-start md:self-auto cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[var(--accent)] hover:bg-[var(--accent)] text-[var(--accent-on)] rounded-xl text-xs font-semibold transition-all shadow-sm hover:shadow-md active:scale-98 shrink-0 self-start md:self-auto cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Upload Reusable Master File</span>
@@ -514,19 +514,19 @@ export const MasterDocumentVaultPage: React.FC = () => {
       </div>
 
       {/* Primary Vault Mode Switcher: Reusable Documents vs Company Past Projects & Credentials */}
-      <div className="flex items-center gap-1.5 bg-[#F1F5F9] dark:bg-slate-900/80 p-1.5 rounded-2xl w-fit border border-[#E2E8F0] dark:border-slate-800 shadow-2xs overflow-x-auto max-w-full">
+      <div className="flex items-center gap-1.5 bg-[var(--bg-subtle)] p-1.5 rounded-2xl w-fit border border-[var(--border-default)] shadow-2xs overflow-x-auto max-w-full">
         <button
           type="button"
           onClick={() => handleSwitchTab('DOCUMENTS')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-            activeLibraryTab === 'DOCUMENTS'
-              ? 'bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 shadow-xs'
-              : 'text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200'
+ activeLibraryTab === 'DOCUMENTS'
+ ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-xs'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
-          <FileCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+          <FileCheck className="w-4 h-4 text-[var(--accent)]" />
           <span>Statutory &amp; Master Documents</span>
-          <span className="text-[10px] font-mono bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full font-bold border border-blue-200 dark:border-blue-900/40">
+          <span className="text-[10px] font-mono bg-[var(--accent-soft)] text-[var(--accent)] px-2 py-0.5 rounded-full font-bold border border-[var(--accent-line)]">
             {reusableDocuments.length}
           </span>
         </button>
@@ -535,25 +535,25 @@ export const MasterDocumentVaultPage: React.FC = () => {
           type="button"
           onClick={() => handleSwitchTab('PROJECT_CREDENTIALS')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-            activeLibraryTab === 'PROJECT_CREDENTIALS'
-              ? 'bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 shadow-xs'
-              : 'text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200'
+ activeLibraryTab === 'PROJECT_CREDENTIALS'
+ ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-xs'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
-          <Briefcase className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <Briefcase className="w-4 h-4 text-[var(--ok)]" />
           <span>Past Projects &amp; Work Orders (WO &amp; CC)</span>
-          <span className="text-[10px] font-mono bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full font-bold border border-emerald-200 dark:border-emerald-900/40">
+          <span className="text-[10px] font-mono bg-[var(--ok-soft)] text-[var(--ok)] px-2 py-0.5 rounded-full font-bold border border-[var(--ok-line)]">
             {companyProjects.length}
           </span>
         </button>
 
         <Link
           to="/tools/company-profiles"
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-800/40"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]/60"
         >
-          <Building2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+          <Building2 className="w-4 h-4 text-[var(--text-secondary)]" />
           <span>Corporate Profiles &amp; Financials</span>
-          <span className="text-[10px] font-mono bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded-full font-bold border border-purple-200 dark:border-purple-900/40">
+          <span className="text-[10px] font-mono bg-[var(--bg-subtle)] text-[var(--text-secondary)] px-2 py-0.5 rounded-full font-bold border border-[var(--border-default)]">
             {companyProfiles.length}
           </span>
         </Link>
@@ -566,85 +566,85 @@ export const MasterDocumentVaultPage: React.FC = () => {
           {/* KPI Stats Summary */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Card 1: Total Master Files */}
-            <Card className="p-4 relative overflow-hidden border-blue-100 dark:border-blue-900/30 bg-gradient-to-br from-white to-blue-50/20 dark:from-slate-900 dark:to-blue-950/10 shadow-xs hover:border-blue-200 transition-all">
+            <Card className="p-4 relative overflow-hidden border-[var(--accent-line)] bg-gradient-to-br from-[var(--bg-surface)] to-[var(--accent-soft)]/20 shadow-xs hover:border-[var(--accent-line)] transition-all">
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-xs font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
+                  <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider block">
                     Total Master Files
                   </span>
-                  <div className="font-display text-2xl font-bold text-[#0F172A] dark:text-slate-100 mt-1">
+                  <div className="font-display text-2xl font-bold text-[var(--text-primary)] mt-1">
                     {reusableDocuments.length}
                   </div>
                 </div>
-                <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 border border-blue-200/50 dark:border-blue-800/40">
+                <div className="w-9 h-9 rounded-xl bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center shrink-0 border border-[var(--accent-line)]/50">
                   <FileCheck className="w-5 h-5" />
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+              <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-[var(--border-default)] text-[11px] text-[var(--ok)] font-semibold">
                 <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                 <span>Ready for Tender Proposals</span>
               </div>
             </Card>
 
             {/* Card 2: Company Credentials */}
-            <Card className="p-4 relative overflow-hidden border-emerald-100 dark:border-emerald-900/30 bg-gradient-to-br from-white to-emerald-50/20 dark:from-slate-900 dark:to-emerald-950/10 shadow-xs hover:border-emerald-200 transition-all">
+            <Card className="p-4 relative overflow-hidden border-[var(--ok-line)] bg-gradient-to-br from-[var(--bg-surface)] to-[var(--ok-soft)]/20 shadow-xs hover:border-[var(--ok-line)] transition-all">
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-xs font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
+                  <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider block">
                     Company Credentials
                   </span>
-                  <div className="font-display text-2xl font-bold text-[#0F172A] dark:text-slate-100 mt-1">
+                  <div className="font-display text-2xl font-bold text-[var(--text-primary)] mt-1">
                     {reusableDocuments.filter((d) => d.category === 'Company Statutory' || d.category === 'Certifications & ISO').length}
                   </div>
                 </div>
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-200/50 dark:border-emerald-800/40">
+                <div className="w-9 h-9 rounded-xl bg-[var(--ok)]/10 text-[var(--ok)] flex items-center justify-center shrink-0 border border-[var(--ok-line)]/50">
                   <Building2 className="w-5 h-5" />
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-[#64748B] dark:text-slate-400">
+              <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-[var(--border-default)] text-[11px] text-[var(--text-secondary)]">
                 <span>Trade Licenses &amp; ISO Standards</span>
               </div>
             </Card>
 
             {/* Card 3: Financial & Legal */}
-            <Card className="p-4 relative overflow-hidden border-amber-100 dark:border-amber-900/30 bg-gradient-to-br from-white to-amber-50/20 dark:from-slate-900 dark:to-amber-950/10 shadow-xs hover:border-amber-200 transition-all">
+            <Card className="p-4 relative overflow-hidden border-[var(--warn-line)] bg-gradient-to-br from-[var(--bg-surface)] to-[var(--warn-soft)]/20 shadow-xs hover:border-[var(--warn-line)] transition-all">
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-xs font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
+                  <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider block">
                     Financial &amp; Legal
                   </span>
-                  <div className="font-display text-2xl font-bold text-[#0F172A] dark:text-slate-100 mt-1">
+                  <div className="font-display text-2xl font-bold text-[var(--text-primary)] mt-1">
                     {reusableDocuments.filter((d) => d.category === 'Financial & Tax' || d.category === 'Legal & Governance').length}
                   </div>
                 </div>
-                <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200/50 dark:border-amber-800/40">
+                <div className="w-9 h-9 rounded-xl bg-[var(--warn)]/10 text-[var(--warn)] flex items-center justify-center shrink-0 border border-[var(--warn-line)]/50">
                   <Scale className="w-5 h-5" />
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-[#64748B] dark:text-slate-400">
+              <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-[var(--border-default)] text-[11px] text-[var(--text-secondary)]">
                 <span>Audited Statements, Solvency &amp; POA</span>
               </div>
             </Card>
           </div>
 
           {/* Unified Command & Filter Toolbar */}
-          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-[#E2E8F0] dark:border-slate-800 shadow-xs space-y-3.5">
+          <div className="bg-[var(--bg-surface)] p-4 rounded-2xl border border-[var(--border-default)] shadow-xs space-y-3.5">
             <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
               {/* Search Box */}
               <div className="relative flex-1 max-w-xl">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8] w-4 h-4" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-4 h-4" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search by file name, category, SHA-256, or entity..."
-                  className="w-full pl-10 pr-9 py-2 bg-[#F8FAFC] dark:bg-slate-800/70 border border-[#E2E8F0] dark:border-slate-700/80 rounded-xl text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  className="w-full pl-10 pr-9 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] transition-all"
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 rounded"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] p-0.5 rounded"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -654,13 +654,13 @@ export const MasterDocumentVaultPage: React.FC = () => {
               {/* Entity & Access Level Dropdowns */}
               <div className="flex items-center gap-2.5 flex-wrap">
                 {/* Owning Entity Selector */}
-                <div className="flex items-center gap-1.5 bg-[#F8FAFC] dark:bg-slate-800/70 border border-[#E2E8F0] dark:border-slate-700/80 px-3 py-1.5 rounded-xl text-xs shadow-2xs">
-                  <Building2 className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-                  <span className="text-slate-500 dark:text-slate-400 font-medium">Entity:</span>
+                <div className="flex items-center gap-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] px-3 py-1.5 rounded-xl text-xs shadow-2xs">
+                  <Building2 className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                  <span className="text-[var(--text-secondary)] font-medium">Entity:</span>
                   <select
                     value={selectedCompany}
                     onChange={(e) => setSelectedCompany(e.target.value)}
-                    className="bg-transparent text-xs font-bold text-[#0F172A] dark:text-slate-200 border-none focus:outline-none cursor-pointer pr-1"
+                    className="bg-transparent text-xs font-bold text-[var(--text-primary)] border-none focus:outline-none cursor-pointer pr-1"
                   >
                     <option value="ALL">All Entities</option>
                     <option value="LEAD">Lead Bidder (PrimeTech)</option>
@@ -669,13 +669,13 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 </div>
 
                 {/* Access Level Selector */}
-                <div className="flex items-center gap-1.5 bg-[#F8FAFC] dark:bg-slate-800/70 border border-[#E2E8F0] dark:border-slate-700/80 px-3 py-1.5 rounded-xl text-xs shadow-2xs">
-                  <Shield className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-                  <span className="text-slate-500 dark:text-slate-400 font-medium">Access:</span>
+                <div className="flex items-center gap-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] px-3 py-1.5 rounded-xl text-xs shadow-2xs">
+                  <Shield className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                  <span className="text-[var(--text-secondary)] font-medium">Access:</span>
                   <select
                     value={selectedAccess}
                     onChange={(e) => setSelectedAccess(e.target.value)}
-                    className="bg-transparent text-xs font-bold text-[#0F172A] dark:text-slate-200 border-none focus:outline-none cursor-pointer pr-1"
+                    className="bg-transparent text-xs font-bold text-[var(--text-primary)] border-none focus:outline-none cursor-pointer pr-1"
                   >
                     <option value="ALL">All Access Levels</option>
                     <option value="ALL_TEAM">All Team Members</option>
@@ -689,7 +689,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleResetFilters}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[var(--crit)] hover:bg-[var(--crit-soft)] rounded-xl transition-colors"
                   >
                     <RotateCcw className="w-3 h-3" />
                     <span>Reset</span>
@@ -699,20 +699,20 @@ export const MasterDocumentVaultPage: React.FC = () => {
             </div>
 
             {/* Category Filter Pills Row */}
-            <div className="flex items-center gap-2 overflow-x-auto pt-2.5 border-t border-[#F1F5F9] dark:border-slate-800 scrollbar-none">
+            <div className="flex items-center gap-2 overflow-x-auto pt-2.5 border-t border-[var(--border-subtle)] scrollbar-none">
               <button
                 type="button"
                 onClick={() => setSelectedCategory('ALL')}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap inline-flex items-center gap-1.5 cursor-pointer ${
-                  selectedCategory === 'ALL'
-                    ? 'bg-[#0F172A] dark:bg-blue-600 text-white shadow-xs'
-                    : 'bg-[#F1F5F9] dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+ selectedCategory === 'ALL'
+ ? 'bg-[var(--accent)] text-[var(--accent-on)] shadow-xs'
+                    : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)]'
                 }`}
               >
                 <span>All Categories</span>
                 <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
-                  selectedCategory === 'ALL' ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                }`}>
+ selectedCategory === 'ALL' ? 'bg-[var(--bg-surface)]/20 text-[var(--accent-on)]' : 'bg-[var(--bg-subtle)] text-[var(--text-primary)]'
+ }`}>
                   {reusableDocuments.length}
                 </span>
               </button>
@@ -729,16 +729,16 @@ export const MasterDocumentVaultPage: React.FC = () => {
                     type="button"
                     onClick={() => setSelectedCategory(cat)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all whitespace-nowrap inline-flex items-center gap-1.5 cursor-pointer ${
-                      isSelected
-                        ? 'bg-[#0F172A] dark:bg-blue-600 text-white font-bold shadow-xs'
-                        : 'bg-[#F1F5F9] dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+ isSelected
+ ? 'bg-[var(--accent)] text-[var(--accent-on)] font-bold shadow-xs'
+                        : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)]'
                     }`}
                   >
-                    <IconComponent className={`w-3.5 h-3.5 ${isSelected ? 'text-white' : cfg?.color || 'text-slate-500'}`} />
+                    <IconComponent className={`w-3.5 h-3.5 ${isSelected ? 'text-[var(--accent-on)]' : cfg?.color || 'text-[var(--text-secondary)]'}`} />
                     <span>{cat}</span>
                     <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
-                      isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                    }`}>
+ isSelected ? 'bg-[var(--bg-surface)]/20 text-[var(--accent-on)]' : 'bg-[var(--bg-subtle)] text-[var(--text-primary)]'
+ }`}>
                       {count}
                     </span>
                   </button>
@@ -748,14 +748,14 @@ export const MasterDocumentVaultPage: React.FC = () => {
           </div>
 
           {/* Master Documents Table */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-[#E2E8F0] dark:border-slate-800 shadow-xs overflow-hidden">
-            <div className="p-4 sm:px-6 flex items-center justify-between border-b border-[#F1F5F9] dark:border-slate-800">
+          <div className="bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-default)] shadow-xs overflow-hidden">
+            <div className="p-4 sm:px-6 flex items-center justify-between border-b border-[var(--border-subtle)]">
               <div>
-                <h3 className="text-sm font-bold text-[#0F172A] dark:text-slate-100">
+                <h3 className="text-sm font-bold text-[var(--text-primary)]">
                   Reusable Master Files Dossier
                 </h3>
-                <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">
-                  Showing <span className="font-semibold text-blue-600 dark:text-blue-400">{filteredDocs.length}</span> of {reusableDocuments.length} master credential(s) available for cross-tender referencing
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                  Showing <span className="font-semibold text-[var(--accent)]">{filteredDocs.length}</span> of {reusableDocuments.length} master credential(s) available for cross-tender referencing
                 </p>
               </div>
 
@@ -763,7 +763,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleResetFilters}
-                  className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                  className="text-xs font-semibold text-[var(--accent)] hover:underline"
                 >
                   Clear Filters
                 </button>
@@ -773,35 +773,35 @@ export const MasterDocumentVaultPage: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-[#F8FAFC] dark:bg-slate-800/60 border-b border-[#E2E8F0] dark:border-slate-800 text-[11px] font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">
+                  <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
                     <th className="py-3 px-3.5 min-w-[240px] max-w-[320px]">Master Document</th>
                     <th className="py-3 px-3.5 whitespace-nowrap">Owning Entity</th>
                     <th className="py-3 px-3.5 whitespace-nowrap">Clearance Scope</th>
                     <th className="py-3 px-3.5 whitespace-nowrap">Validity / Expiry</th>
-                    <th className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-[#F8FAFC] dark:bg-slate-800 shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[210px] min-w-[210px]">
+                    <th className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-[var(--bg-subtle)] shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[210px] min-w-[210px]">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#F1F5F9] dark:divide-slate-800/80">
+                <tbody className="divide-y divide-[var(--border-subtle)]">
                   {filteredDocs.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="py-12 text-center">
                         <div className="flex flex-col items-center justify-center gap-2.5">
-                          <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+                          <div className="w-12 h-12 rounded-2xl bg-[var(--bg-subtle)] flex items-center justify-center text-[var(--text-muted)]">
                             <Search className="w-6 h-6" />
                           </div>
-                          <p className="text-sm font-semibold text-[#0F172A] dark:text-slate-200">
+                          <p className="text-sm font-semibold text-[var(--text-primary)]">
                             No matching master documents found
                           </p>
-                          <p className="text-xs text-[#64748B] dark:text-slate-400 max-w-sm">
+                          <p className="text-xs text-[var(--text-secondary)] max-w-sm">
                             Try adjusting your search terms, changing the category, or clearing the active filters.
                           </p>
                           {hasActiveFilters && (
                             <button
                               type="button"
                               onClick={handleResetFilters}
-                              className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-xs font-semibold hover:bg-blue-100 transition-colors cursor-pointer"
+                              className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent-soft)] text-[var(--accent)] rounded-lg text-xs font-semibold hover:bg-[var(--accent-soft)] transition-colors cursor-pointer"
                             >
                               <RotateCcw className="w-3.5 h-3.5" />
                               <span>Reset All Filters</span>
@@ -815,16 +815,16 @@ export const MasterDocumentVaultPage: React.FC = () => {
                       const hasAccess = hasDocumentAccess(doc.accessLevel);
                       const catConfig = CATEGORY_CONFIG[doc.category] || {
                         icon: FileText,
-                        color: 'text-blue-600 dark:text-blue-400',
-                        bg: 'bg-blue-50 dark:bg-blue-950/40',
-                        border: 'border-blue-200 dark:border-blue-800/40',
+                        color: 'text-[var(--accent)]',
+                        bg: 'bg-[var(--accent-soft)]',
+                        border: 'border-[var(--accent-line)]',
                       };
                       const Icon = catConfig.icon;
                       const accessBadge = ACCESS_CONFIG[doc.accessLevel] || ACCESS_CONFIG.ALL_TEAM;
                       const isJv = doc.isJvPartner || doc.companyRole === 'JV_PARTNER';
 
                       return (
-                        <tr key={doc.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors group">
+                        <tr key={doc.id} className="hover:bg-[var(--bg-subtle)]/70 transition-colors group">
                           {/* Master Document Column */}
                           <td className="py-3 px-3.5 max-w-[280px]">
                             <div className="flex items-start gap-2.5">
@@ -835,21 +835,21 @@ export const MasterDocumentVaultPage: React.FC = () => {
                                 <button
                                   type="button"
                                   onClick={() => setPreviewDoc(doc)}
-                                  className="font-semibold text-xs text-[#0F172A] dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 hover:underline text-left cursor-pointer leading-snug block truncate"
+                                  className="font-semibold text-xs text-[var(--text-primary)] hover:text-[var(--accent)] hover:underline text-left cursor-pointer leading-snug block truncate"
                                   title={`Click to preview: ${doc.name}`}
                                 >
                                   {doc.name}
                                 </button>
                                 {doc.description && (
-                                  <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5 leading-relaxed truncate" title={doc.description}>
+                                  <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-relaxed truncate" title={doc.description}>
                                     {doc.description}
                                   </p>
                                 )}
                                 <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-                                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono font-medium">
+                                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-[var(--bg-subtle)] text-[var(--text-secondary)] font-mono font-medium">
                                     {doc.size || '2.8 MB'}
                                   </span>
-                                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono font-medium">
+                                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-[var(--bg-subtle)] text-[var(--text-secondary)] font-mono font-medium">
                                     {doc.revision || 'v1.0'}
                                   </span>
                                 </div>
@@ -860,14 +860,14 @@ export const MasterDocumentVaultPage: React.FC = () => {
                           {/* Owning Entity Column */}
                           <td className="py-3 px-3 whitespace-nowrap">
                             {isJv ? (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200 dark:border-purple-800/40 shadow-2xs">
-                                <Users className="w-3 h-3 text-purple-600 dark:text-purple-400" />
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[var(--bg-subtle)] text-[var(--text-secondary)] border border-[var(--border-default)] shadow-2xs">
+                                <Users className="w-3 h-3 text-[var(--text-secondary)]" />
                                 <span>{doc.companyName || 'JV Partner'}</span>
                                 <span className="text-[9px] font-semibold opacity-75">(JV)</span>
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800/40 shadow-2xs">
-                                <Building2 className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)] shadow-2xs">
+                                <Building2 className="w-3 h-3 text-[var(--accent)]" />
                                 <span>{doc.companyName || 'PrimeTech Ltd'}</span>
                                 <span className="text-[9px] font-semibold opacity-75">(Lead)</span>
                               </span>
@@ -903,13 +903,13 @@ export const MasterDocumentVaultPage: React.FC = () => {
                           </td>
 
                           {/* Actions Column - Clean Redesigned Unified Action Bar */}
-                          <td className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50/90 dark:group-hover:bg-slate-800/90 transition-colors shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[210px] min-w-[210px]">
+                          <td className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-[var(--bg-surface)] group-hover:bg-[var(--bg-subtle)]/90 transition-colors shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[210px] min-w-[210px]">
                             <div className="flex items-center justify-end gap-1.5">
                               {/* 1. Preview Document */}
                               <button
                                 type="button"
                                 onClick={() => setPreviewDoc(doc)}
-                                className="p-1.5 text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 bg-slate-50 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 rounded-lg transition-colors cursor-pointer shrink-0"
+                                className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--accent)] bg-[var(--bg-subtle)] hover:bg-[var(--bg-surface)] border border-[var(--border-default)]/80 rounded-lg transition-colors cursor-pointer shrink-0"
                                 title="Preview document in browser"
                               >
                                 <Eye className="w-3.5 h-3.5" />
@@ -933,7 +933,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                                     },
                                   })
                                 }
-                                className="p-1.5 text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 bg-slate-50 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 rounded-lg transition-colors cursor-pointer shrink-0"
+                                className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--accent)] bg-[var(--bg-subtle)] hover:bg-[var(--bg-surface)] border border-[var(--border-default)]/80 rounded-lg transition-colors cursor-pointer shrink-0"
                                 title="Generate secure shareable link"
                               >
                                 <Share2 className="w-3.5 h-3.5" />
@@ -944,14 +944,14 @@ export const MasterDocumentVaultPage: React.FC = () => {
                                 <button
                                   type="button"
                                   onClick={() => window.open(`/api/reusable-documents/${doc.id}/download`, '_blank')}
-                                  className="p-1.5 text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 bg-slate-50 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 rounded-lg transition-colors cursor-pointer shrink-0"
+                                  className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--ok)] bg-[var(--bg-subtle)] hover:bg-[var(--bg-surface)] border border-[var(--border-default)]/80 rounded-lg transition-colors cursor-pointer shrink-0"
                                   title="Download original file"
                                 >
                                   <Download className="w-3.5 h-3.5" />
                                 </button>
                               ) : (
                                 <div
-                                  className="p-1.5 text-rose-500 dark:text-rose-400 bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200/80 dark:border-rose-900/40 rounded-lg cursor-not-allowed shrink-0"
+                                  className="p-1.5 text-[var(--crit)] bg-[var(--crit-soft)]/70 border border-[var(--crit-line)]/80 rounded-lg cursor-not-allowed shrink-0"
                                   title={`Restricted: Requires ${accessBadge.label} clearance`}
                                 >
                                   <Lock className="w-3.5 h-3.5" />
@@ -962,7 +962,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={() => setDocToLink(doc)}
-                                className="p-1.5 text-white bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-lg transition-all shadow-xs cursor-pointer shrink-0"
+                                className="p-1.5 text-[var(--accent-on)] bg-[var(--accent)] hover:bg-[var(--accent)] active:scale-95 rounded-lg transition-all shadow-xs cursor-pointer shrink-0"
                                 title="Use in Tender (Reference into active tender)"
                               >
                                 <LinkIcon className="w-3.5 h-3.5" />
@@ -972,7 +972,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={() => handleOpenEditModal(doc)}
-                                className="p-1.5 text-slate-500 hover:text-amber-600 dark:text-slate-400 dark:hover:text-amber-400 bg-slate-50 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 rounded-lg transition-colors cursor-pointer shrink-0"
+                                className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--warn)] bg-[var(--bg-subtle)] hover:bg-[var(--bg-surface)] border border-[var(--border-default)]/80 rounded-lg transition-colors cursor-pointer shrink-0"
                                 title="Edit document metadata or replace file"
                               >
                                 <Edit2 className="w-3.5 h-3.5" />
@@ -982,7 +982,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={() => setDocToDelete(doc)}
-                                className="p-1.5 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 bg-slate-50 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 rounded-lg transition-colors cursor-pointer shrink-0"
+                                className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--crit)] bg-[var(--bg-subtle)] hover:bg-[var(--bg-surface)] border border-[var(--border-default)]/80 rounded-lg transition-colors cursor-pointer shrink-0"
                                 title="Delete master document"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -1002,12 +1002,12 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
       {/* Modal: Upload Reusable Document */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9]">
+        <div className="tt-overlay items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
-                <FileCheck className="w-5 h-5 text-[#2563EB]" />
-                <h3 className="font-display text-sm font-bold text-[#0F172A]">
+                <FileCheck className="w-5 h-5 text-[var(--accent)]" />
+                <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
                   Upload Reusable Master File
                 </h3>
               </div>
@@ -1017,7 +1017,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                   setIsAddModalOpen(false);
                   setSelectedFile(null);
                 }}
-                className="text-[#94A3B8] hover:text-[#0F172A]"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1026,21 +1026,21 @@ export const MasterDocumentVaultPage: React.FC = () => {
             <form onSubmit={handleCreateDocument} className="space-y-3.5 text-xs">
               {/* Interactive File Dropzone */}
               <div className="space-y-1.5">
-                <label className="block font-semibold text-[#0F172A]">
-                  Select Master Document File <span className="text-[#DC2626]">*</span>
+                <label className="block font-semibold text-[var(--text-primary)]">
+                  Select Master Document File <span className="text-[var(--crit)]">*</span>
                 </label>
 
                 {selectedFile ? (
-                  <div className="p-3 bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl flex items-center justify-between gap-3">
+                  <div className="p-3 bg-[var(--ok-soft)] border border-[var(--ok-line)] rounded-xl flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-9 h-9 rounded-lg bg-[#DCFCE7] text-[#16A34A] flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-lg bg-[var(--ok-soft)] text-[var(--ok)] flex items-center justify-center shrink-0">
                         <FileText className="w-5 h-5" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs font-bold text-[#0F172A] truncate">
+                        <p className="text-xs font-bold text-[var(--text-primary)] truncate">
                           {selectedFile.name}
                         </p>
-                        <p className="text-[11px] text-[#15803D] font-mono">
+                        <p className="text-[11px] text-[var(--ok)] font-mono">
                           {selectedFile.size >= 1024 * 1024
                             ? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`
                             : `${Math.round(selectedFile.size / 1024)} KB`}{' '}
@@ -1052,7 +1052,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="px-2.5 py-1 text-[11px] font-semibold text-[#2563EB] hover:bg-[#DBEAFE] rounded-md transition-colors"
+                        className="px-2.5 py-1 text-[11px] font-semibold text-[var(--accent)] hover:bg-[var(--accent-soft)] rounded-md transition-colors"
                       >
                         Replace
                       </button>
@@ -1062,7 +1062,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                           setSelectedFile(null);
                           if (fileInputRef.current) fileInputRef.current.value = '';
                         }}
-                        className="p-1 text-[#94A3B8] hover:text-[#DC2626] rounded-md hover:bg-[#FEE2E2] transition-colors"
+                        className="p-1 text-[var(--text-muted)] hover:text-[var(--crit)] rounded-md hover:bg-[var(--crit-soft)] transition-colors"
                         title="Remove file"
                       >
                         <X className="w-4 h-4" />
@@ -1089,9 +1089,9 @@ export const MasterDocumentVaultPage: React.FC = () => {
                     }}
                     onClick={() => fileInputRef.current?.click()}
                     className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
-                      isDragging
-                        ? 'border-[#2563EB] bg-[#EFF6FF]'
-                        : 'border-[#CBD5E1] bg-[#F8FAFC] hover:border-[#2563EB] hover:bg-[#F1F5F9]'
+ isDragging
+ ? 'border-[var(--accent)] bg-[var(--accent-soft)]'
+                        : 'border-[var(--border-strong)] bg-[var(--bg-subtle)] hover:border-[var(--accent)] hover:bg-[var(--bg-subtle)]'
                     }`}
                   >
                     <input
@@ -1110,16 +1110,16 @@ export const MasterDocumentVaultPage: React.FC = () => {
                       }}
                     />
                     <div className="flex flex-col items-center gap-1.5 pointer-events-none">
-                      <div className="w-9 h-9 rounded-full bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center">
                         <UploadCloud className="w-4 h-4" />
                       </div>
-                      <div className="text-xs text-[#0F172A]">
-                        <span className="font-bold text-[#2563EB] hover:underline">
+                      <div className="text-xs text-[var(--text-primary)]">
+                        <span className="font-bold text-[var(--accent)] hover:underline">
                           Click to browse
                         </span>{' '}
                         or drag and drop document file
                       </div>
-                      <p className="text-[11px] text-[#64748B]">
+                      <p className="text-[11px] text-[var(--text-secondary)]">
                         PDF, Word, Excel, Images, or ZIP archives (max 50 MB)
                       </p>
                     </div>
@@ -1128,7 +1128,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Document Title / File Name *
                 </label>
                 <input
@@ -1137,15 +1137,15 @@ export const MasterDocumentVaultPage: React.FC = () => {
                   placeholder="e.g. ISO_27001_Global_Security_Accreditation_2026.pdf"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               {/* Owning Entity & Profile Selection */}
-              <div className="p-3 bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E2E8F0] dark:border-slate-700 rounded-xl space-y-2.5">
+              <div className="p-3 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-xs text-[#0F172A] dark:text-slate-200 flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <span className="font-semibold text-xs text-[var(--text-primary)] flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-[var(--accent)]" />
                     <span>Company / Owning Entity *</span>
                   </span>
 
@@ -1165,15 +1165,15 @@ export const MasterDocumentVaultPage: React.FC = () => {
                           }
                         }
                       }}
-                      className="text-blue-600 dark:text-blue-400 hover:underline font-semibold cursor-pointer"
+                      className="text-[var(--accent)] hover:underline font-semibold cursor-pointer"
                     >
                       {isManualCompany ? '🏢 Select from Profiles' : '✏️ Add Manually'}
                     </button>
-                    <span className="text-slate-300 dark:text-slate-600">•</span>
+                    <span className="text-[var(--text-muted)]">•</span>
                     <button
                       type="button"
                       onClick={() => setIsQuickCreatingCompany(!isQuickCreatingCompany)}
-                      className="text-emerald-600 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
+                      className="text-[var(--ok)] hover:underline font-semibold cursor-pointer"
                     >
                       {isQuickCreatingCompany ? 'Close Creator' : '➕ New Profile'}
                     </button>
@@ -1182,9 +1182,9 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
                 {/* Quick Add Company Profile Form (Inline Expander) */}
                 {isQuickCreatingCompany && (
-                  <div className="p-3 bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-xl space-y-2.5 animate-fadeIn">
+                  <div className="p-3 bg-[var(--ok-soft)]/70 border border-[var(--ok-line)] rounded-xl space-y-2.5 animate-fadeIn">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-[var(--ok)] flex items-center gap-1.5">
                         <Plus className="w-3.5 h-3.5" />
                         <span>Create Company Profile</span>
                       </span>
@@ -1192,14 +1192,14 @@ export const MasterDocumentVaultPage: React.FC = () => {
                         href="/tools/company-profiles"
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[10px] text-emerald-700 dark:text-emerald-400 hover:underline font-medium"
+                        className="text-[10px] text-[var(--ok)] hover:underline font-medium"
                       >
                         Open Full Profile Manager ↗
                       </a>
                     </div>
                     <div className="grid grid-cols-2 gap-2.5">
                       <div>
-                        <label className="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                        <label className="block text-[10px] font-semibold text-[var(--text-primary)] mb-0.5">
                           Company Legal Name *
                         </label>
                         <input
@@ -1208,17 +1208,17 @@ export const MasterDocumentVaultPage: React.FC = () => {
                           placeholder="e.g. Apex Joint Venture Ltd"
                           value={quickLegalName}
                           onChange={(e) => setQuickLegalName(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 rounded-lg text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--ok-line)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--ok)]"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                        <label className="block text-[10px] font-semibold text-[var(--text-primary)] mb-0.5">
                           Entity Role *
                         </label>
                         <select
                           value={quickRole}
                           onChange={(e) => setQuickRole(e.target.value as any)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 rounded-lg text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--ok-line)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--ok)]"
                         >
                           <option value="LEAD_BIDDER">🏛️ Lead Bidder</option>
                           <option value="JV_PARTNER">⭐ JV Partner</option>
@@ -1226,11 +1226,11 @@ export const MasterDocumentVaultPage: React.FC = () => {
                         </select>
                       </div>
                     </div>
-                    <div className="flex items-center justify-end gap-2 pt-1 border-t border-emerald-200/60 dark:border-emerald-800/40">
+                    <div className="flex items-center justify-end gap-2 pt-1 border-t border-[var(--ok-line)]/60">
                       <button
                         type="button"
                         onClick={() => setIsQuickCreatingCompany(false)}
-                        className="px-2.5 py-1 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 cursor-pointer"
+                        className="px-2.5 py-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
                       >
                         Cancel
                       </button>
@@ -1238,7 +1238,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                         type="button"
                         disabled={isQuickSavingCompany || !quickLegalName.trim()}
                         onClick={() => handleQuickCreateCompany('UPLOAD')}
-                        className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-2xs transition-colors disabled:opacity-50 cursor-pointer"
+                        className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold bg-[var(--ok)] hover:bg-[var(--ok)] text-[var(--accent-on)] rounded-lg shadow-2xs transition-colors disabled:opacity-50 cursor-pointer"
                       >
                         {isQuickSavingCompany ? (
                           <>
@@ -1259,7 +1259,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 {/* Company Selection: Either Dropdown or Manual Input */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       Owning Entity Role *
                     </label>
                     <select
@@ -1268,7 +1268,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                         const role = e.target.value as 'LEAD_BIDDER' | 'JV_PARTNER' | 'SUBCONTRACTOR';
                         setNewCompanyRole(role);
                       }}
-                      className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                     >
                       <option value="LEAD_BIDDER">🏛️ Lead Bidder</option>
                       <option value="JV_PARTNER">⭐ JV Partner</option>
@@ -1277,7 +1277,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       {isManualCompany ? 'Company / Entity Name (Manual) *' : 'Select Company Profile *'}
                     </label>
                     {isManualCompany ? (
@@ -1287,7 +1287,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                         placeholder="e.g. Acme Joint Venture Ltd"
                         value={newCompanyName}
                         onChange={(e) => setNewCompanyName(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     ) : (
                       <select
@@ -1309,7 +1309,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                             }
                           }
                         }}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       >
                         <optgroup label="🏢 Registered Company Profiles">
                           {companyProfiles.map((p) => (
@@ -1330,13 +1330,13 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Document Category *
                   </label>
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     {categories.map((c) => (
                       <option key={c} value={c}>
@@ -1347,26 +1347,26 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Validity / Expiration Date
                   </label>
                   <input
                     type="date"
                     value={newExpiry}
                     onChange={(e) => setNewExpiry(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Access &amp; Security Permission Scope *
                 </label>
                 <select
                   value={newAccess}
                   onChange={(e) => setNewAccess(e.target.value as DocumentAccessLevel)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 >
                   <option value="ALL_TEAM">🌐 All Team Members (Public to organization)</option>
                   <option value="MANAGEMENT_ONLY">🛡️ Management Only (Directors &amp; Managers)</option>
@@ -1376,7 +1376,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Brief Description / Scope of Use
                 </label>
                 <textarea
@@ -1384,29 +1384,29 @@ export const MasterDocumentVaultPage: React.FC = () => {
                   placeholder="e.g. Certified copy of ISO audit report valid across EMEA and Asia..."
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
-              <div className="p-3 bg-[#EFF6FF] border border-[#BFDBFE] rounded-lg text-[11px] text-[#1D4ED8]">
+              <div className="p-3 bg-[var(--accent-soft)] border border-[var(--accent-line)] rounded-lg text-[11px] text-[var(--accent)]">
                 <strong>Multi-Company Storage Isolation:</strong> Files are cataloged with their owning company entity ({newCompanyName || 'Entity'}) to prevent name collisions and allow instant reuse across JV proposals.
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => {
                     setIsAddModalOpen(false);
                     setSelectedFile(null);
                   }}
-                  className="px-3.5 py-1.5 rounded-lg border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] font-semibold transition-colors"
+                  className="px-3.5 py-1.5 rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isUploading}
-                  className="px-4 py-2 rounded-lg bg-[#0F172A] text-white font-semibold hover:bg-[#1E293B] shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-60"
+                  className="px-4 py-2 rounded-lg bg-[var(--accent)] text-[var(--accent-on)] font-semibold hover:bg-[var(--accent-hover)] shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-60"
                 >
                   {isUploading ? (
                     <>
@@ -1428,49 +1428,49 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
       {/* Modal: Reference / Link Document to Project Tender */}
       {docToLink && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9]">
+        <div className="tt-overlay items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
-                <LinkIcon className="w-5 h-5 text-[#2563EB]" />
-                <h3 className="font-display text-sm font-bold text-[#0F172A]">
+                <LinkIcon className="w-5 h-5 text-[var(--accent)]" />
+                <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
                   Reference Document in Tender Project
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setDocToLink(null)}
-                className="text-[#94A3B8] hover:text-[#0F172A]"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {linkSuccessMsg ? (
-              <div className="p-4 bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl text-center space-y-2">
-                <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto" />
-                <p className="text-xs font-bold text-[#15803D]">{linkSuccessMsg}</p>
+              <div className="p-4 bg-[var(--ok-soft)] border border-[var(--ok-line)] rounded-xl text-center space-y-2">
+                <CheckCircle2 className="w-8 h-8 text-[var(--ok)] mx-auto" />
+                <p className="text-xs font-bold text-[var(--ok)]">{linkSuccessMsg}</p>
               </div>
             ) : (
               <form onSubmit={handleLinkToTender} className="space-y-3.5 text-xs">
-                <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg">
-                  <span className="text-[10px] text-[#64748B] uppercase font-bold tracking-wider block">
+                <div className="p-3 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg">
+                  <span className="text-[10px] text-[var(--text-secondary)] uppercase font-bold tracking-wider block">
                     Referencing Master Document:
                   </span>
-                  <span className="font-semibold text-xs text-[#0F172A] block mt-0.5">
+                  <span className="font-semibold text-xs text-[var(--text-primary)] block mt-0.5">
                     {docToLink.name}
                   </span>
-                  <div className="flex items-center gap-2 mt-1 text-[11px] text-[#64748B]">
+                  <div className="flex items-center gap-2 mt-1 text-[11px] text-[var(--text-secondary)]">
                     <span>Category: {docToLink.category}</span>
                     <span>•</span>
-                    <span className="font-semibold text-[#0F172A]">
+                    <span className="font-semibold text-[var(--text-primary)]">
                       {docToLink.companyName || 'PrimeTech Ltd'} ({docToLink.companyRole || 'LEAD_BIDDER'})
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Select Target Tender Opportunity *
                   </label>
                   <select
@@ -1490,7 +1490,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                         setTargetFolder('02A_jv_partner_credentials');
                       }
                     }}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-medium focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] font-medium focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     {tenders.map((t) => (
                       <option key={t.id} value={t.id}>
@@ -1501,16 +1501,16 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Destination Vault Folder in Proposal *
                   </label>
                   <select
                     value={targetFolder}
                     onChange={(e) => setTargetFolder(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-medium focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] font-medium focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     {/* JV Partner Folder prioritized at top when JV is detected */}
-                    <option value="02A_jv_partner_credentials" className="font-bold text-amber-700 bg-amber-50">
+                    <option value="02A_jv_partner_credentials" className="font-bold text-[var(--warn)] bg-[var(--warn-soft)]">
                       ⭐ 02A JV Partner Credentials &amp; Statutory Dossier
                     </option>
                     <option value="02_company_statutory_documents">
@@ -1531,17 +1531,17 @@ export const MasterDocumentVaultPage: React.FC = () => {
                   </select>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border-subtle)]">
                   <button
                     type="button"
                     onClick={() => setDocToLink(null)}
-                    className="px-3.5 py-1.5 rounded-lg border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] font-semibold transition-colors"
+                    className="px-3.5 py-1.5 rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-lg bg-[#2563EB] text-white font-semibold hover:bg-[#1D4ED8] shadow-sm transition-colors"
+                    className="px-4 py-1.5 rounded-lg bg-[var(--accent)] text-[var(--accent-on)] font-semibold hover:bg-[var(--accent-hover)] shadow-sm transition-colors"
                   >
                     Link to Project Folder
                   </button>
@@ -1554,19 +1554,19 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
       {/* Modal: Edit Master Document */}
       {editingDoc && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <div className="tt-overlay items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border-default)]">
               <div className="flex items-center gap-2">
-                <Edit2 className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <Edit2 className="w-5 h-5 text-[var(--warn)]" />
                 <div>
-                  <h3 className="font-display text-sm font-bold text-slate-900 dark:text-slate-100">
+                  <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
                     Edit Master Document Details
                   </h3>
-                  <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                    <span>ID: <code className="font-mono text-slate-700 dark:text-slate-300">{editingDoc.id}</code></span>
+                  <div className="flex items-center gap-2 text-[11px] text-[var(--text-secondary)] mt-0.5">
+                    <span>ID: <code className="font-mono text-[var(--text-primary)]">{editingDoc.id}</code></span>
                     <span>•</span>
-                    <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded font-semibold text-slate-600 dark:text-slate-300">{editingDoc.revision || 'v1.0'}</span>
+                    <span className="px-1.5 py-0.5 bg-[var(--bg-subtle)] rounded font-semibold text-[var(--text-secondary)]">{editingDoc.revision || 'v1.0'}</span>
                   </div>
                 </div>
               </div>
@@ -1576,7 +1576,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                   setEditingDoc(null);
                   setEditFile(null);
                 }}
-                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1585,7 +1585,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
             <form onSubmit={handleSaveEdit} className="space-y-3.5 text-xs">
               {/* Document Title */}
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Document Title / Display Name *
                 </label>
                 <input
@@ -1593,15 +1593,15 @@ export const MasterDocumentVaultPage: React.FC = () => {
                   required
                   value={editFormData.name}
                   onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--warn)]"
                 />
               </div>
 
               {/* Owning Entity & Profile Selection */}
-              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2.5">
+              <div className="p-3 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-xs text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  <span className="font-semibold text-xs text-[var(--text-primary)] flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-[var(--warn)]" />
                     <span>Company / Owning Entity *</span>
                   </span>
 
@@ -1624,15 +1624,15 @@ export const MasterDocumentVaultPage: React.FC = () => {
                           }
                         }
                       }}
-                      className="text-amber-600 dark:text-amber-400 hover:underline font-semibold cursor-pointer"
+                      className="text-[var(--warn)] hover:underline font-semibold cursor-pointer"
                     >
                       {editIsManualCompany ? '🏢 Select from Profiles' : '✏️ Add Manually'}
                     </button>
-                    <span className="text-slate-300 dark:text-slate-600">•</span>
+                    <span className="text-[var(--text-muted)]">•</span>
                     <button
                       type="button"
                       onClick={() => setIsEditQuickCreating(!isEditQuickCreating)}
-                      className="text-emerald-600 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
+                      className="text-[var(--ok)] hover:underline font-semibold cursor-pointer"
                     >
                       {isEditQuickCreating ? 'Close Creator' : '➕ New Profile'}
                     </button>
@@ -1641,9 +1641,9 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
                 {/* Quick Add Company Profile Form (Inline Expander in Edit Modal) */}
                 {isEditQuickCreating && (
-                  <div className="p-3 bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-xl space-y-2.5 animate-fadeIn">
+                  <div className="p-3 bg-[var(--ok-soft)]/70 border border-[var(--ok-line)] rounded-xl space-y-2.5 animate-fadeIn">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-[var(--ok)] flex items-center gap-1.5">
                         <Plus className="w-3.5 h-3.5" />
                         <span>Create Company Profile</span>
                       </span>
@@ -1651,14 +1651,14 @@ export const MasterDocumentVaultPage: React.FC = () => {
                         href="/tools/company-profiles"
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[10px] text-emerald-700 dark:text-emerald-400 hover:underline font-medium"
+                        className="text-[10px] text-[var(--ok)] hover:underline font-medium"
                       >
                         Open Full Profile Manager ↗
                       </a>
                     </div>
                     <div className="grid grid-cols-2 gap-2.5">
                       <div>
-                        <label className="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                        <label className="block text-[10px] font-semibold text-[var(--text-primary)] mb-0.5">
                           Company Legal Name *
                         </label>
                         <input
@@ -1667,17 +1667,17 @@ export const MasterDocumentVaultPage: React.FC = () => {
                           placeholder="e.g. Apex Joint Venture Ltd"
                           value={editQuickLegalName}
                           onChange={(e) => setEditQuickLegalName(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 rounded-lg text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--ok-line)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--ok)]"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                        <label className="block text-[10px] font-semibold text-[var(--text-primary)] mb-0.5">
                           Entity Role *
                         </label>
                         <select
                           value={editQuickRole}
                           onChange={(e) => setEditQuickRole(e.target.value as any)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 rounded-lg text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--ok-line)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--ok)]"
                         >
                           <option value="LEAD_BIDDER">🏛️ Lead Bidder</option>
                           <option value="JV_PARTNER">⭐ JV Partner</option>
@@ -1685,11 +1685,11 @@ export const MasterDocumentVaultPage: React.FC = () => {
                         </select>
                       </div>
                     </div>
-                    <div className="flex items-center justify-end gap-2 pt-1 border-t border-emerald-200/60 dark:border-emerald-800/40">
+                    <div className="flex items-center justify-end gap-2 pt-1 border-t border-[var(--ok-line)]/60">
                       <button
                         type="button"
                         onClick={() => setIsEditQuickCreating(false)}
-                        className="px-2.5 py-1 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 cursor-pointer"
+                        className="px-2.5 py-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
                       >
                         Cancel
                       </button>
@@ -1697,7 +1697,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                         type="button"
                         disabled={isEditQuickSaving || !editQuickLegalName.trim()}
                         onClick={() => handleQuickCreateCompany('EDIT')}
-                        className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-2xs transition-colors disabled:opacity-50 cursor-pointer"
+                        className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold bg-[var(--ok)] hover:bg-[var(--ok)] text-[var(--accent-on)] rounded-lg shadow-2xs transition-colors disabled:opacity-50 cursor-pointer"
                       >
                         {isEditQuickSaving ? (
                           <>
@@ -1718,7 +1718,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 {/* Company Selection: Either Dropdown or Manual Input */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       Owning Entity Role *
                     </label>
                     <select
@@ -1730,7 +1730,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                           companyRole: role,
                         });
                       }}
-                      className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--warn)]"
                     >
                       <option value="LEAD_BIDDER">🏛️ Lead Bidder</option>
                       <option value="JV_PARTNER">⭐ JV Partner</option>
@@ -1739,7 +1739,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block font-semibold text-[var(--text-primary)] mb-1">
                       {editIsManualCompany ? 'Company / Entity Name (Manual) *' : 'Select Company Profile *'}
                     </label>
                     {editIsManualCompany ? (
@@ -1749,7 +1749,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                         placeholder="e.g. Acme Joint Venture Ltd"
                         value={editFormData.companyName}
                         onChange={(e) => setEditFormData({ ...editFormData, companyName: e.target.value })}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--warn)]"
                       />
                     ) : (
                       <select
@@ -1774,7 +1774,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                             }
                           }
                         }}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--warn)]"
                       >
                         <optgroup label="🏢 Registered Company Profiles">
                           {companyProfiles.map((p) => (
@@ -1796,13 +1796,13 @@ export const MasterDocumentVaultPage: React.FC = () => {
               {/* Category & Clearance Scope */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Document Category *
                   </label>
                   <select
                     value={editFormData.category}
                     onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--warn)]"
                   >
                     {categories.map((c) => (
                       <option key={c} value={c}>{c}</option>
@@ -1811,13 +1811,13 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Clearance Scope *
                   </label>
                   <select
                     value={editFormData.accessLevel}
                     onChange={(e) => setEditFormData({ ...editFormData, accessLevel: e.target.value as DocumentAccessLevel })}
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--warn)]"
                   >
                     <option value="ALL_TEAM">Public Team (All Bid Members)</option>
                     <option value="RESTRICTED_TEAM">Restricted Team (Assigned Leads)</option>
@@ -1829,34 +1829,34 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
               {/* Validity Date */}
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Validity / Expiration Date (Optional)
                 </label>
                 <input
                   type="date"
                   value={editFormData.expiryDate}
                   onChange={(e) => setEditFormData({ ...editFormData, expiryDate: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--warn)]"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Description / Compliance Notes (Optional)
                 </label>
                 <textarea
                   rows={2}
                   value={editFormData.description}
                   onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 resize-none"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--warn)] resize-none"
                   placeholder="e.g. FY2023-24 Audited Balance sheet with Tax Clearances..."
                 />
               </div>
 
               {/* File Replacement Dropzone */}
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <div className="pt-2 border-t border-[var(--border-default)]">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1.5">
                   Replace Master File (Optional)
                 </label>
                 <input
@@ -1884,24 +1884,24 @@ export const MasterDocumentVaultPage: React.FC = () => {
                   }}
                   onClick={() => editFileInputRef.current?.click()}
                   className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
-                    isEditDragging
-                      ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/20'
+ isEditDragging
+ ? 'border-[var(--warn)] bg-[var(--warn-soft)]/50'
                       : editFile
-                      ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/20'
-                      : 'border-slate-300 dark:border-slate-700 hover:border-amber-400 bg-slate-50/50 dark:bg-slate-800/40'
+                      ? 'border-[var(--ok)] bg-[var(--ok-soft)]/40'
+                      : 'border-[var(--border-strong)] hover:border-[var(--warn-line)] bg-[var(--bg-subtle)]/50'
                   }`}
                 >
                   {editFile ? (
                     <div className="flex items-center justify-between gap-3 text-left">
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-[var(--ok-soft)] flex items-center justify-center text-[var(--ok)] shrink-0">
                           <FileText className="w-4 h-4" />
                         </div>
                         <div className="truncate">
-                          <p className="font-semibold text-slate-800 dark:text-slate-200 truncate">
+                          <p className="font-semibold text-[var(--text-primary)] truncate">
                             {editFile.name}
                           </p>
-                          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                          <p className="text-[11px] text-[var(--ok)] font-medium">
                             {(editFile.size / (1024 * 1024)).toFixed(2)} MB • Ready to replace (Revision will increment)
                           </p>
                         </div>
@@ -1912,7 +1912,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                           e.stopPropagation();
                           setEditFile(null);
                         }}
-                        className="p-1 text-slate-400 hover:text-rose-600"
+                        className="p-1 text-[var(--text-muted)] hover:text-[var(--crit)]"
                         title="Remove replacement file"
                       >
                         <X className="w-4 h-4" />
@@ -1920,12 +1920,12 @@ export const MasterDocumentVaultPage: React.FC = () => {
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center py-1">
-                      <UploadCloud className="w-6 h-6 text-slate-400 mb-1" />
-                      <p className="font-semibold text-slate-700 dark:text-slate-300 text-xs">
+                      <UploadCloud className="w-6 h-6 text-[var(--text-muted)] mb-1" />
+                      <p className="font-semibold text-[var(--text-primary)] text-xs">
                         Click to select or drag replacement file
                       </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">
-                        Current file: <span className="font-mono text-slate-600 dark:text-slate-400">{editingDoc.size}</span>
+                      <p className="text-[10px] text-[var(--text-muted)] mt-0.5">
+                        Current file: <span className="font-mono text-[var(--text-secondary)]">{editingDoc.size}</span>
                       </p>
                     </div>
                   )}
@@ -1933,21 +1933,21 @@ export const MasterDocumentVaultPage: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border-default)]">
                 <button
                   type="button"
                   onClick={() => {
                     setEditingDoc(null);
                     setEditFile(null);
                   }}
-                  className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-semibold transition-colors"
+                  className="px-3.5 py-1.5 rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isEditSaving}
-                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-amber-600 text-white font-semibold hover:bg-amber-700 shadow-sm transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[var(--warn)] text-[var(--accent-on)] font-semibold hover:bg-[var(--warn)] shadow-sm transition-colors disabled:opacity-50"
                 >
                   {isEditSaving ? (
                     <>
@@ -1969,30 +1969,30 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
       {/* Modal: Delete Confirmation */}
       {docToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 max-w-md w-full shadow-2xl space-y-4">
+        <div className="tt-overlay items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] p-6 max-w-md w-full shadow-2xl space-y-4">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[var(--crit-soft)] text-[var(--crit)] flex items-center justify-center shrink-0">
                 <AlertTriangle className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-display text-sm font-bold text-slate-900 dark:text-slate-100">
+                <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
                   Delete Master Document
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  Are you sure you want to permanently delete <strong className="text-slate-800 dark:text-slate-200">{docToDelete.name}</strong> (<code className="font-mono text-[11px]">{docToDelete.id}</code>)?
+                <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
+                  Are you sure you want to permanently delete <strong className="text-[var(--text-primary)]">{docToDelete.name}</strong> (<code className="font-mono text-[11px]">{docToDelete.id}</code>)?
                 </p>
-                <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-2 bg-amber-50 dark:bg-amber-950/30 p-2 rounded-lg border border-amber-200/60 dark:border-amber-800/40">
+                <p className="text-[11px] text-[var(--warn)] mt-2 bg-[var(--warn-soft)] p-2 rounded-lg border border-[var(--warn-line)]/60">
                   Note: This removes the document from the Master Vault and local storage. Active tenders that already linked snapshot copies will keep their files.
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border-default)] text-xs">
               <button
                 type="button"
                 onClick={() => setDocToDelete(null)}
-                className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-semibold transition-colors"
+                className="px-3.5 py-1.5 rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors"
               >
                 Cancel
               </button>
@@ -2000,7 +2000,7 @@ export const MasterDocumentVaultPage: React.FC = () => {
                 type="button"
                 disabled={isDeleting}
                 onClick={handleConfirmDelete}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-rose-600 text-white font-semibold hover:bg-rose-700 shadow-sm transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[var(--crit)] text-[var(--accent-on)] font-semibold hover:bg-[var(--crit)] shadow-sm transition-colors disabled:opacity-50"
               >
                 {isDeleting ? (
                   <>

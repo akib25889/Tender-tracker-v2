@@ -48,9 +48,9 @@ export const TenderRequirementsTab: React.FC = () => {
     <div className="space-y-6">
       {/* Blocker Alert Banner */}
       {blockers.length > 0 && (
-        <div className="p-4 bg-[#FEF2F2] border border-[#FECACA] rounded-lg text-xs text-[#B91C1C] flex items-center justify-between shadow-sm">
+        <div className="p-4 bg-[var(--crit-soft)] border border-[var(--crit-line)] rounded-lg text-xs text-[var(--crit)] flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-2.5">
-            <AlertTriangle className="w-5 h-5 shrink-0 animate-pulse text-[#DC2626]" />
+            <AlertTriangle className="w-5 h-5 shrink-0 animate-pulse text-[var(--crit)]" />
             <div>
               <span className="font-bold block">
                 {blockers.length} Mandatory Compliance Blocker(s) Identified
@@ -65,7 +65,7 @@ export const TenderRequirementsTab: React.FC = () => {
               setActiveTenderIdForModal(tender.id);
               setUploadFolderTarget('02_company_statutory_documents');
             }}
-            className="px-3 py-1.5 bg-[#DC2626] text-white rounded-md font-semibold hover:bg-[#B91C1C] transition-colors shrink-0"
+            className="px-3 py-1.5 bg-[var(--crit)] text-[var(--accent-on)] rounded-md font-semibold hover:bg-[var(--crit)] transition-colors shrink-0"
           >
             Upload Evidence
           </button>
@@ -77,11 +77,11 @@ export const TenderRequirementsTab: React.FC = () => {
         subtitle="Clause-by-clause statutory checklist mapped to evidence documents in the vault"
         headerAction={
           <div className="flex items-center gap-2">
-            <div className="flex items-center p-0.5 bg-[#F1F5F9] rounded-lg text-xs">
+            <div className="flex items-center p-0.5 bg-[var(--bg-subtle)] rounded-lg text-xs">
               <button
                 onClick={() => setFilter('ALL')}
                 className={`px-2 py-1 rounded-md font-medium transition-colors ${
-                  filter === 'ALL' ? 'bg-white text-[#0F172A] shadow-sm font-semibold' : 'text-[#64748B]'
+ filter === 'ALL' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm font-semibold' : 'text-[var(--text-secondary)]'
                 }`}
               >
                 All ({tender.requirements.length})
@@ -89,7 +89,7 @@ export const TenderRequirementsTab: React.FC = () => {
               <button
                 onClick={() => setFilter('VERIFIED')}
                 className={`px-2 py-1 rounded-md font-medium transition-colors ${
-                  filter === 'VERIFIED' ? 'bg-white text-[#0F172A] shadow-sm font-semibold' : 'text-[#64748B]'
+ filter === 'VERIFIED' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm font-semibold' : 'text-[var(--text-secondary)]'
                 }`}
               >
                 Verified
@@ -97,7 +97,7 @@ export const TenderRequirementsTab: React.FC = () => {
               <button
                 onClick={() => setFilter('BLOCKER')}
                 className={`px-2 py-1 rounded-md font-medium transition-colors ${
-                  filter === 'BLOCKER' ? 'bg-white text-[#0F172A] shadow-sm font-semibold' : 'text-[#64748B]'
+ filter === 'BLOCKER' ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm font-semibold' : 'text-[var(--text-secondary)]'
                 }`}
               >
                 Blockers ({blockers.length})
@@ -109,7 +109,7 @@ export const TenderRequirementsTab: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+              <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
                 <th className="py-2.5 px-3">Req ID</th>
                 <th className="py-2.5 px-3">Requirement Title</th>
                 <th className="py-2.5 px-3">Category</th>
@@ -118,16 +118,16 @@ export const TenderRequirementsTab: React.FC = () => {
                 <th className="py-2.5 px-3">Owner</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F1F5F9]">
+            <tbody className="divide-y divide-[var(--border-subtle)]">
               {filteredRequirements.map((req) => (
-                <tr key={req.id} className="hover:bg-[#F8FAFC]">
-                  <td className="py-3 px-3 font-mono font-bold text-[#0F172A]">
+                <tr key={req.id} className="hover:bg-[var(--bg-subtle)]">
+                  <td className="py-3 px-3 font-mono font-bold text-[var(--text-primary)]">
                     {req.id}
                   </td>
-                  <td className="py-3 px-3 font-medium text-[#0F172A]">
+                  <td className="py-3 px-3 font-medium text-[var(--text-primary)]">
                     {req.title}
                   </td>
-                  <td className="py-3 px-3 text-[#64748B]">{req.category}</td>
+                  <td className="py-3 px-3 text-[var(--text-secondary)]">{req.category}</td>
                   <td className="py-3 px-3">
                     <button
                       onClick={() => handleStatusCycle(req.id, req.status)}
@@ -135,23 +135,23 @@ export const TenderRequirementsTab: React.FC = () => {
                       title="Click to cycle status"
                     >
                       {req.status === 'VERIFIED' ? (
-                        <span className="inline-flex items-center gap-1 text-[#15803D] font-semibold bg-[#F0FDF4] px-2 py-0.5 rounded border border-[#BBF7D0]">
+                        <span className="inline-flex items-center gap-1 text-[var(--ok)] font-semibold bg-[var(--ok-soft)] px-2 py-0.5 rounded border border-[var(--ok-line)]">
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           <span>Verified</span>
                         </span>
                       ) : req.status === 'BLOCKER' ? (
-                        <span className="inline-flex items-center gap-1 text-[#DC2626] font-bold bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FECACA]">
+                        <span className="inline-flex items-center gap-1 text-[var(--crit)] font-bold bg-[var(--crit-soft)] px-2 py-0.5 rounded border border-[var(--crit-line)]">
                           <AlertTriangle className="w-3.5 h-3.5 animate-pulse" />
                           <span>Blocker</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[#D97706] font-semibold bg-[#FFFBEB] px-2 py-0.5 rounded border border-[#FDE68A]">
+                        <span className="inline-flex items-center gap-1 text-[var(--warn)] font-semibold bg-[var(--warn-soft)] px-2 py-0.5 rounded border border-[var(--warn-line)]">
                           <span>Pending Clearance</span>
                         </span>
                       )}
                     </button>
                   </td>
-                  <td className="py-3 px-3 font-mono text-[11px] text-[#2563EB] truncate max-w-xs">
+                  <td className="py-3 px-3 font-mono text-[11px] text-[var(--accent)] truncate max-w-xs">
                     {req.evidenceFile ? (
                       <span className="flex items-center gap-1.5 truncate">
                         <FileText className="w-3 h-3 shrink-0" />
@@ -164,13 +164,13 @@ export const TenderRequirementsTab: React.FC = () => {
                           setActiveRequirementForModal({ id: req.id, title: req.title });
                           setUploadFolderTarget('02_company_statutory_documents');
                         }}
-                        className="text-[#94A3B8] hover:text-[#2563EB] italic"
+                        className="text-[var(--text-muted)] hover:text-[var(--accent)] italic"
                       >
                         + Attach vault document
                       </button>
                     )}
                   </td>
-                  <td className="py-3 px-3 text-[#475569]">{req.owner}</td>
+                  <td className="py-3 px-3 text-[var(--text-secondary)]">{req.owner}</td>
                 </tr>
               ))}
             </tbody>

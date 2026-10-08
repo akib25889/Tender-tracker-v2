@@ -32,9 +32,18 @@ interface SidebarProps {
   onToggle: () => void;
 }
 
+type NavEntry = {
+  label: string;
+  path: string;
+  icon: React.ComponentType<{ className?: string }>;
+  count?: number;
+  urgent?: boolean;
+};
+
 export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
   const location = useLocation();
   const { tenders } = useTenders();
+
   const newDiscoveredCount = tenders.filter((t) => t.stage === 'DISCOVERED').length;
   const archivedCount = tenders.filter((t) => t.stage === 'ARCHIVED').length;
   const pendingTasksCount = tenders.reduce(
@@ -42,7 +51,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
     0
   );
   const upcomingDeadlinesCount = tenders.filter(
-    (t) => t.daysRemaining >= 0 && t.daysRemaining <= 7 && t.stage !== 'SUBMITTED' && t.stage !== 'ARCHIVED'
+    (t) =>
+      t.daysRemaining >= 0 &&
+      t.daysRemaining <= 7 &&
+      t.stage !== 'SUBMITTED' &&
+      t.stage !== 'ARCHIVED'
   ).length;
 
   const isToolsRoute =
@@ -53,173 +66,83 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
   const [isToolsOpen, setIsToolsOpen] = useState<boolean>(() => isToolsRoute);
 
   useEffect(() => {
-    if (isToolsRoute) {
-      setIsToolsOpen(true);
-    }
+    if (isToolsRoute) setIsToolsOpen(true);
   }, [isToolsRoute]);
 
-  const navItems = [
-    {
-      label: 'Dashboard',
-      path: '/dashboard',
-      icon: LayoutDashboard,
-      badge: undefined,
-    },
-    {
-      label: 'Bid Discovery',
-      path: '/tenders?stage=DISCOVERED',
-      icon: Compass,
-      badge: newDiscoveredCount > 0 ? `${newDiscoveredCount} New` : undefined,
-    },
-    {
-      label: 'Tender Registry',
-      path: '/registry',
-      icon: ClipboardList,
-      badge: undefined,
-    },
-    {
-      label: 'Pipeline Overview',
-      path: '/tenders',
-      icon: FolderGit2,
-      badge: undefined,
-    },
-    {
-      label: 'My Tasks',
-      path: '/tasks/my-tasks',
-      icon: CheckCircle2,
-      badge: pendingTasksCount > 0 ? `${pendingTasksCount}` : undefined,
-    },
-    {
-      label: 'Calendar',
-      path: '/calendar',
-      icon: CalendarDays,
-      urgentBadge: upcomingDeadlinesCount > 0 ? `${upcomingDeadlinesCount} Due` : undefined,
-    },
-    {
-      label: 'Client Visitors',
-      path: '/clients/visits',
-      icon: UserCheck,
-      badge: undefined,
-    },
-    {
-      label: 'Document Vault',
-      path: '/documents',
-      icon: FileCheck,
-      badge: undefined,
-    },
-    {
-      label: 'Chat & Comments',
-      path: '/discussions',
-      icon: MessageSquare,
-      badge: undefined,
-    },
-    {
-      label: 'Report & Analytics',
-      path: '/reports',
-      icon: BarChart3,
-      badge: undefined,
-    },
+  const navItems: NavEntry[] = [
+    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { label: 'Bid discovery', path: '/tenders?stage=DISCOVERED', icon: Compass, count: newDiscoveredCount },
+    { label: 'Tender registry', path: '/registry', icon: ClipboardList },
+    { label: 'Pipeline', path: '/tenders', icon: FolderGit2 },
+    { label: 'My tasks', path: '/tasks/my-tasks', icon: CheckCircle2, count: pendingTasksCount },
+    { label: 'Calendar', path: '/calendar', icon: CalendarDays, count: upcomingDeadlinesCount, urgent: true },
+    { label: 'Client visitors', path: '/clients/visits', icon: UserCheck },
+    { label: 'Document vault', path: '/documents', icon: FileCheck },
+    { label: 'Discussions', path: '/discussions', icon: MessageSquare },
+    { label: 'Reports', path: '/reports', icon: BarChart3 },
   ];
 
-  const toolsItems = [
-    {
-      label: 'Company Profiles',
-      path: '/tools/company-profiles',
-      icon: Building2,
-      badge: undefined,
-    },
-    {
-      label: 'Organizations',
-      path: '/tools/organizations',
-      icon: Landmark,
-      badge: undefined,
-    },
-    {
-      label: 'SOW Categories',
-      path: '/tools/categories',
-      icon: Tags,
-      badge: undefined,
-    },
-    {
-      label: 'Access & Permissions',
-      path: '/tools/permissions',
-      icon: KeyRound,
-      badge: undefined,
-    },
-    {
-      label: 'Team & Capacity',
-      path: '/team',
-      icon: Users,
-      badge: undefined,
-    },
-    {
-      label: 'Company Credentials',
-      path: '/documents?tab=credentials',
-      icon: Award,
-      badge: undefined,
-    },
-    {
-      label: 'Personnel Dossiers',
-      path: '/profile',
-      icon: UserCheck,
-      badge: undefined,
-    },
-    {
-      label: 'Archive',
-      path: '/tools/archive',
-      icon: Archive,
-      badge: archivedCount > 0 ? `${archivedCount}` : undefined,
-    },
+  const toolsItems: NavEntry[] = [
+    { label: 'Company profiles', path: '/tools/company-profiles', icon: Building2 },
+    { label: 'Organizations', path: '/tools/organizations', icon: Landmark },
+    { label: 'SOW categories', path: '/tools/categories', icon: Tags },
+    { label: 'Access & permissions', path: '/tools/permissions', icon: KeyRound },
+    { label: 'Team & capacity', path: '/team', icon: Users },
+    { label: 'Company credentials', path: '/documents?tab=credentials', icon: Award },
+    { label: 'Personnel dossiers', path: '/profile', icon: UserCheck },
+    { label: 'Archive', path: '/tools/archive', icon: Archive, count: archivedCount },
   ];
 
-  const systemItems = [
-    {
-      label: 'Settings',
-      path: '/settings',
-      icon: Settings,
-      badge: undefined,
-    },
-  ];
+  const matches = (path: string) =>
+    path.includes('?')
+      ? location.pathname + location.search === path
+      : location.pathname === path && !location.search;
+
+  const countPill = (item: NavEntry) =>
+    item.count ? (
+      <span className={`tt-nav-count ${item.urgent ? 'tt-nav-count-crit' : ''}`}>{item.count}</span>
+    ) : null;
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-full bg-[#0F172A] border-r border-[#1E293B] z-50 flex flex-col justify-between select-none transition-all duration-300 ${
+      className={`fixed left-0 top-0 h-full tt-rail z-50 flex flex-col justify-between select-none transition-all duration-300 ${
         collapsed ? 'w-20' : 'w-64'
       }`}
     >
-      {/* Top Header / Branding with Minimizer Button */}
       <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
-        <div className={`h-14 ${collapsed ? 'flex items-center justify-center px-0' : 'px-3 flex items-center justify-between'} border-b border-[#1E293B] shrink-0`}>
+        {/* Brand */}
+        <div
+          className={`h-14 shrink-0 tt-rail-head flex items-center ${
+            collapsed ? 'justify-center px-0' : 'px-3 justify-between'
+          }`}
+        >
           {collapsed ? (
             <button
               onClick={onToggle}
-              className="relative w-9 h-9 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] flex items-center justify-center text-white shadow-sm transition-all group cursor-pointer"
+              className="tt-brand-mark w-9 h-9 flex items-center justify-center group tt-focus cursor-pointer"
               title="Expand sidebar"
             >
-              <ShieldCheck className="w-4 h-4 group-hover:hidden transition-transform" />
-              <ChevronRight className="w-4 h-4 hidden group-hover:block transition-transform" />
+              <ShieldCheck className="w-4 h-4 group-hover:hidden" />
+              <ChevronRight className="w-4 h-4 hidden group-hover:block" />
             </button>
           ) : (
             <>
-              <div className="flex items-center gap-2.5 overflow-hidden min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center text-white shrink-0 shadow-sm">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="tt-brand-mark w-8 h-8 flex items-center justify-center shrink-0">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="font-display font-bold text-sm text-white tracking-tight leading-none truncate">
+                  <span className="font-display font-semibold text-sm tt-text tracking-tight leading-none tt-truncate">
                     TenderTracker
                   </span>
-                  <span className="text-[10px] font-semibold text-[#94A3B8] uppercase tracking-wider mt-1 truncate">
-                    Command Center
-                  </span>
+                  <span className="tt-rail-label mt-1 tt-truncate">NYK Advance</span>
                 </div>
               </div>
-
-              {/* Minimizer Button */}
               <button
                 onClick={onToggle}
-                className="p-1.5 rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#1E293B] transition-colors shrink-0 cursor-pointer"
-                title="Minimize sidebar"
+                className="tt-icon-btn shrink-0"
+                title="Collapse sidebar"
+                aria-label="Collapse sidebar"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -227,110 +150,77 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
           )}
         </div>
 
-        {/* Command Navigation */}
+        {/* Primary navigation */}
         <div className="px-3 py-4">
-          {!collapsed && (
-            <div className="px-2 pb-2 text-[10px] font-semibold tracking-wider uppercase text-[#64748B]">
-              Command Navigation
-            </div>
-          )}
-          <nav className="space-y-1">
+          {!collapsed && <div className="tt-rail-label px-2 pb-2">Navigation</div>}
+          <nav className="space-y-0.5">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isMatch = item.path.includes('?')
-                ? location.pathname + location.search === item.path
-                : location.pathname === item.path && !location.search;
-
+              const active = matches(item.path);
               return (
                 <NavLink
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center ${
-                    collapsed ? 'justify-center px-0 py-2.5' : 'justify-between px-3 py-2'
-                  } rounded-lg text-sm font-medium transition-colors group relative ${
-                    isMatch
-                      ? 'bg-[#1E293B] text-white font-semibold'
-                      : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
-                  }`}
-                  title={
-                    collapsed
-                      ? item.badge || item.urgentBadge
-                        ? `${item.label} (${item.urgentBadge || item.badge})`
-                        : item.label
-                      : undefined
+                  className={() =>
+                    `tt-nav-item tt-focus relative ${active ? 'is-active' : ''} ${
+                      collapsed ? 'justify-center px-0 py-2.5' : 'justify-between px-3 py-2 gap-2'
+                    }`
                   }
+                  title={collapsed ? item.label : undefined}
                 >
-                  <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} truncate`}>
-                    <Icon className="w-4 h-4 shrink-0 text-[#94A3B8] group-hover:text-white transition-colors" />
-                    {!collapsed && <span className="truncate">{item.label}</span>}
-                  </div>
-
-                  {collapsed ? (
-                    (item.urgentBadge || item.badge) && (
-                      <span
-                        className={`absolute top-1.5 right-2 w-2 h-2 rounded-full ${
-                          item.urgentBadge ? 'bg-[#EF4444] animate-pulse' : 'bg-[#3B82F6]'
-                        }`}
-                      />
-                    )
-                  ) : (
-                    <>
-                      {item.urgentBadge && (
-                        <span className="px-1.5 py-0.5 rounded-full bg-[#FEF2F2] text-[#B91C1C] font-mono text-[10px] font-bold">
-                          {item.urgentBadge}
-                        </span>
-                      )}
-                      {item.badge && (
-                        <span className="px-1.5 py-0.2 rounded-full bg-[#1E293B] text-[#F8FAFC] font-mono text-[11px] font-semibold">
-                          {item.badge}
-                        </span>
-                      )}
-                    </>
-                  )}
+                  <span className={`flex items-center min-w-0 ${collapsed ? '' : 'gap-3'}`}>
+                    <Icon className="w-4 h-4 shrink-0" />
+                    {!collapsed && <span className="tt-truncate">{item.label}</span>}
+                  </span>
+                  {collapsed
+                    ? Boolean(item.count) && (
+                        <i
+                          className={`tt-dot ${item.urgent ? 'tt-dot-crit' : 'tt-dot-accent'} absolute top-1.5 right-2`}
+                          aria-hidden="true"
+                        />
+                      )
+                    : countPill(item)}
                 </NavLink>
               );
             })}
           </nav>
         </div>
 
-        {/* Tools & Addons Dropdown Module */}
+        {/* Tools */}
         <div className="px-3 pb-3">
           {collapsed ? (
             <div className="relative group/mini">
               <button
                 type="button"
                 onClick={() => setIsToolsOpen(!isToolsOpen)}
-                className={`w-full flex items-center justify-center py-2.5 px-0 rounded-lg text-sm transition-colors cursor-pointer ${
-                  isToolsRoute
-                    ? 'bg-[#1E293B] text-white'
-                    : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
+                className={`tt-nav-item tt-focus w-full justify-center py-2.5 px-0 ${
+                  isToolsRoute ? 'is-active' : ''
                 }`}
-                title="Tools & Addons"
+                title="Tools & add-ons"
               >
-                <Wrench className={`w-4 h-4 ${isToolsRoute ? 'text-[#38BDF8]' : 'text-[#94A3B8]'}`} />
+                <Wrench className="w-4 h-4" />
               </button>
 
-              {/* Popover on hover in collapsed mode */}
-              <div className="absolute left-full top-0 ml-2 hidden group-hover/mini:block z-50 bg-[#0F172A] border border-[#1E293B] rounded-xl shadow-xl p-2 w-48 animate-scaleIn">
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#64748B] px-2 py-1 flex items-center gap-1.5 border-b border-[#1E293B] mb-1">
-                  <Wrench className="w-3 h-3 text-[#38BDF8]" />
-                  <span>Tools & Addons</span>
+              <div className="absolute left-full top-0 ml-2 hidden group-hover/mini:block z-50 tt-menu p-2 w-52">
+                <div className="tt-rail-label px-2 py-1 mb-1 flex items-center gap-1.5 tt-menu-sep pb-2">
+                  <Wrench className="w-3 h-3" />
+                  <span>Tools &amp; add-ons</span>
                 </div>
                 {toolsItems.map((item) => {
                   const Icon = item.icon;
-                  const isMatch = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+                  const active =
+                    location.pathname === item.path ||
+                    location.pathname.startsWith(item.path + '/');
                   return (
                     <NavLink
                       key={item.path}
                       to={item.path}
-                      className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                        isMatch
-                          ? 'bg-[#2563EB] text-white font-semibold'
-                          : 'text-[#94A3B8] hover:bg-[#1E293B] hover:text-white'
-                      }`}
+                      className={() =>
+                        `tt-nav-sub flex items-center gap-2.5 px-2.5 py-1.5 ${active ? 'is-active' : ''}`
+                      }
                     >
-                      <Icon className="w-3.5 h-3.5" />
-                      <span>{item.label}</span>
+                      <Icon className="w-3.5 h-3.5 shrink-0" />
+                      <span className="tt-truncate">{item.label}</span>
                     </NavLink>
                   );
                 })}
@@ -341,57 +231,47 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
               <button
                 type="button"
                 onClick={() => setIsToolsOpen(!isToolsOpen)}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors group ${
-                  isToolsRoute
-                    ? 'bg-[#1E293B] text-white font-semibold'
-                    : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
+                aria-expanded={isToolsOpen}
+                className={`tt-nav-item tt-focus w-full justify-between px-3 py-2 gap-2 ${
+                  isToolsRoute ? 'is-active' : ''
                 }`}
               >
-                <div className="flex items-center gap-3 truncate">
-                  <Wrench
-                    className={`w-4 h-4 shrink-0 transition-colors ${
-                      isToolsRoute ? 'text-[#38BDF8]' : 'text-[#94A3B8] group-hover:text-white'
-                    }`}
-                  />
-                  <span className="truncate">Tools &amp; Addons</span>
-                </div>
+                <span className="flex items-center gap-3 min-w-0">
+                  <Wrench className="w-4 h-4 shrink-0" />
+                  <span className="tt-truncate">Tools &amp; add-ons</span>
+                </span>
                 <ChevronDown
-                  className={`w-4 h-4 shrink-0 text-[#64748B] group-hover:text-white transition-transform duration-200 ${
-                    isToolsOpen ? 'transform rotate-180 text-white' : ''
+                  className={`w-4 h-4 shrink-0 transition-transform duration-200 ${
+                    isToolsOpen ? 'rotate-180' : ''
                   }`}
                 />
               </button>
 
               {isToolsOpen && (
-                <div className="mt-1 ml-4 pl-3 border-l border-[#334155] space-y-1 animate-fadeIn">
+                <div
+                  className="mt-1 ml-4 pl-3 space-y-0.5"
+                  style={{ borderLeft: '1px solid var(--border-default)' }}
+                >
                   {toolsItems.map((item) => {
                     const Icon = item.icon;
-                    const isMatch = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
-
+                    const active =
+                      location.pathname === item.path ||
+                      location.pathname.startsWith(item.path + '/');
                     return (
                       <NavLink
                         key={item.path}
                         to={item.path}
-                        className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors group ${
-                          isMatch
-                            ? 'bg-[#2563EB] text-white font-semibold shadow-xs'
-                            : 'text-[#94A3B8] hover:bg-[#1E293B] hover:text-white'
-                        }`}
+                        className={() =>
+                          `tt-nav-sub flex items-center justify-between gap-2 px-2.5 py-1.5 ${
+                            active ? 'is-active' : ''
+                          }`
+                        }
                       >
-                        <div className="flex items-center gap-2.5 truncate">
-                          <Icon
-                            className={`w-3.5 h-3.5 shrink-0 transition-colors ${
-                              isMatch ? 'text-white' : 'text-[#94A3B8] group-hover:text-white'
-                            }`}
-                          />
-                          <span className="truncate">{item.label}</span>
-                        </div>
-
-                        {item.badge && (
-                          <span className="px-1.5 py-0.2 rounded-full bg-[#1E293B] text-[#F8FAFC] font-mono text-[10px] font-semibold">
-                            {item.badge}
-                          </span>
-                        )}
+                        <span className="flex items-center gap-2.5 min-w-0">
+                          <Icon className="w-3.5 h-3.5 shrink-0" />
+                          <span className="tt-truncate">{item.label}</span>
+                        </span>
+                        {countPill(item)}
                       </NavLink>
                     );
                   })}
@@ -402,56 +282,37 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
         </div>
       </div>
 
-      {/* Footer Area: System Nav */}
-      <div className="p-3 border-t border-[#1E293B]">
-
-        <nav className="space-y-1 mb-2">
-          {systemItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={({ isActive }) =>
-                  `flex items-center ${
-                    collapsed ? 'justify-center px-0 py-2.5' : 'justify-between px-3 py-2'
-                  } rounded-lg text-sm font-medium transition-colors group relative ${
-                    isActive
-                      ? 'bg-[#1E293B] text-white font-semibold'
-                      : 'text-[#94A3B8] hover:bg-[#1E293B]/70 hover:text-white'
-                  }`
-                }
-                title={collapsed ? item.label : undefined}
-              >
-                <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} truncate`}>
-                  <Icon className="w-4 h-4 shrink-0 text-[#94A3B8] group-hover:text-white" />
-                  {!collapsed && <span className="truncate">{item.label}</span>}
-                </div>
-                {!collapsed && item.badge && (
-                  <span className="px-1.5 py-0.2 rounded-full bg-[#2563EB] text-white font-mono text-[10px] font-bold">
-                    {item.badge}
-                  </span>
-                )}
-              </NavLink>
-            );
-          })}
+      {/* Footer */}
+      <div className="p-3 tt-rail-foot">
+        <nav className="space-y-0.5 mb-2">
+          <NavLink
+            to="/settings"
+            className={({ isActive }) =>
+              `tt-nav-item tt-focus ${isActive ? 'is-active' : ''} ${
+                collapsed ? 'justify-center px-0 py-2.5' : 'px-3 py-2 gap-3'
+              }`
+            }
+            title={collapsed ? 'Settings' : undefined}
+          >
+            <Settings className="w-4 h-4 shrink-0" />
+            {!collapsed && <span className="tt-truncate">Settings</span>}
+          </NavLink>
         </nav>
 
-        {/* Sidebar Minimizer Bar at Bottom */}
         <button
           onClick={onToggle}
-          className={`w-full flex items-center justify-center ${
-            collapsed ? 'py-2.5 px-0' : 'py-2 px-3'
-          } rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#1E293B] transition-colors cursor-pointer`}
-          title={collapsed ? 'Expand sidebar' : 'Minimize sidebar'}
+          className={`tt-nav-item tt-focus w-full justify-center ${
+            collapsed ? 'py-2.5 px-0' : 'py-2 px-3 gap-2'
+          }`}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? (
             <ChevronRight className="w-4 h-4" />
           ) : (
-            <div className="flex items-center gap-2 text-xs">
+            <>
               <ChevronLeft className="w-4 h-4" />
-              <span>Minimize Sidebar</span>
-            </div>
+              <span className="text-xs">Collapse</span>
+            </>
           )}
         </button>
       </div>

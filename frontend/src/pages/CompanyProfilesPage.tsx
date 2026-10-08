@@ -52,7 +52,7 @@ const ProfileField: React.FC<ProfileFieldProps> = ({
   onDelete,
   copiedId,
   badge,
-  badgeColor = 'bg-blue-50 text-blue-700 border-blue-200',
+  badgeColor = 'bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--accent-line)]',
   prefix,
   isMultiline = false,
 }) => {
@@ -69,17 +69,17 @@ const ProfileField: React.FC<ProfileFieldProps> = ({
   };
 
   return (
-    <div className="group relative bg-[#F8FAFC] hover:bg-[#F1F5F9]/80 border border-[#E2E8F0] hover:border-[#CBD5E1] rounded-lg p-3 transition-all">
+    <div className="group relative bg-[var(--bg-subtle)] hover:bg-[var(--bg-subtle)]/80 border border-[var(--border-default)] hover:border-[var(--border-strong)] rounded-lg p-3 transition-all">
       {/* Top Header on top of field with Copy, Edit, Delete toolbar */}
-      <div className="flex items-center justify-between gap-2 mb-1.5 pb-1.5 border-b border-[#E2E8F0]/80">
+      <div className="flex items-center justify-between gap-2 mb-1.5 pb-1.5 border-b border-[var(--border-default)]/80">
         <div className="flex items-center gap-1.5 min-w-0">
-          <span className="text-[11px] font-semibold text-[#475569] uppercase tracking-wide truncate">
+          <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wide truncate">
             {isEditing && isCustom ? (
               <input
                 type="text"
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
-                className="bg-white border border-[#2563EB] rounded px-1.5 py-0.5 text-xs text-[#0F172A] font-bold outline-none"
+                className="bg-[var(--bg-surface)] border border-[var(--accent)] rounded px-1.5 py-0.5 text-xs text-[var(--text-primary)] font-bold outline-none"
                 placeholder="Field Name"
               />
             ) : (
@@ -92,7 +92,7 @@ const ProfileField: React.FC<ProfileFieldProps> = ({
             </span>
           )}
           {isCustom && (
-            <span className="text-[9px] font-bold px-1.5 py-0.5 bg-purple-50 text-purple-700 border border-purple-200 rounded shrink-0">
+            <span className="text-[9px] font-bold px-1.5 py-0.5 bg-[var(--bg-subtle)] text-[var(--text-secondary)] border border-[var(--border-default)] rounded shrink-0">
               Custom
             </span>
           )}
@@ -105,13 +105,13 @@ const ProfileField: React.FC<ProfileFieldProps> = ({
             type="button"
             onClick={() => onCopy(displayVal)}
             className={`p-1 rounded transition-colors ${
-              isCopied
-                ? 'bg-emerald-50 text-emerald-600'
-                : 'text-[#64748B] hover:text-[#0F172A] hover:bg-white'
+ isCopied
+ ? 'bg-[var(--ok-soft)] text-[var(--ok)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]'
             }`}
             title="Copy field value to clipboard"
           >
-            {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+            {isCopied ? <Check className="w-3.5 h-3.5 text-[var(--ok)]" /> : <Copy className="w-3.5 h-3.5" />}
           </button>
 
           {/* Edit Icon Button */}
@@ -125,9 +125,9 @@ const ProfileField: React.FC<ProfileFieldProps> = ({
               }
             }}
             className={`p-1 rounded transition-colors ${
-              isEditing
-                ? 'bg-blue-600 text-white'
-                : 'text-[#64748B] hover:text-[#2563EB] hover:bg-white'
+ isEditing
+ ? 'bg-[var(--accent)] text-[var(--accent-on)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--bg-surface)]'
             }`}
             title={isEditing ? 'Save changes' : 'Edit field value'}
           >
@@ -138,7 +138,7 @@ const ProfileField: React.FC<ProfileFieldProps> = ({
           <button
             type="button"
             onClick={() => onDelete(id)}
-            className="p-1 rounded text-[#64748B] hover:text-red-600 hover:bg-white transition-colors"
+            className="p-1 rounded text-[var(--text-secondary)] hover:text-[var(--crit)] hover:bg-[var(--bg-surface)] transition-colors"
             title={isCustom ? 'Delete custom field' : 'Clear field value'}
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -154,18 +154,18 @@ const ProfileField: React.FC<ProfileFieldProps> = ({
               rows={3}
               value={editVal}
               onChange={(e) => setEditVal(e.target.value)}
-              className="w-full bg-white border border-[#2563EB] rounded px-2.5 py-1.5 text-xs text-[#0F172A] font-medium outline-none focus:ring-1 focus:ring-[#2563EB]"
+              className="w-full bg-[var(--bg-surface)] border border-[var(--accent)] rounded px-2.5 py-1.5 text-xs text-[var(--text-primary)] font-medium outline-none focus:ring-1 focus:ring-[var(--accent)]"
               placeholder="Field value"
               autoFocus
             />
           ) : (
             <div className="flex items-center gap-1.5">
-              {prefix && <span className="text-xs text-[#64748B] font-semibold">{prefix}</span>}
+              {prefix && <span className="text-xs text-[var(--text-secondary)] font-semibold">{prefix}</span>}
               <input
                 type="text"
                 value={editVal}
                 onChange={(e) => setEditVal(e.target.value)}
-                className="w-full bg-white border border-[#2563EB] rounded px-2.5 py-1 text-xs text-[#0F172A] font-medium outline-none focus:ring-1 focus:ring-[#2563EB]"
+                className="w-full bg-[var(--bg-surface)] border border-[var(--accent)] rounded px-2.5 py-1 text-xs text-[var(--text-primary)] font-medium outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 placeholder="Field value"
                 autoFocus
               />
@@ -175,34 +175,34 @@ const ProfileField: React.FC<ProfileFieldProps> = ({
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="px-2 py-0.5 text-[10px] text-[#64748B] hover:text-[#0F172A] font-medium"
+              className="px-2 py-0.5 text-[10px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleSave}
-              className="px-2.5 py-1 bg-[#2563EB] text-white rounded text-[11px] font-bold hover:bg-[#1D4ED8]"
+              className="px-2.5 py-1 bg-[var(--accent)] text-[var(--accent-on)] rounded text-[11px] font-bold hover:bg-[var(--accent-hover)]"
             >
               Save
             </button>
           </div>
         </div>
       ) : (
-        <div className="font-medium text-xs text-[#0F172A] break-words">
+        <div className="font-medium text-xs text-[var(--text-primary)] break-words">
           {displayVal ? (
             <span>
-              {prefix && <span className="text-[#64748B] font-normal mr-1">{prefix}</span>}
+              {prefix && <span className="text-[var(--text-secondary)] font-normal mr-1">{prefix}</span>}
               {displayVal}
             </span>
           ) : (
-            <span className="text-[#94A3B8] italic font-normal">Not specified</span>
+            <span className="text-[var(--text-muted)] italic font-normal">Not specified</span>
           )}
         </div>
       )}
 
       {isCopied && (
-        <span className="absolute right-2 -bottom-2 px-1.5 py-0.5 bg-emerald-600 text-white rounded text-[9px] font-bold shadow-xs animate-fadeIn">
+        <span className="absolute right-2 -bottom-2 px-1.5 py-0.5 bg-[var(--ok)] text-[var(--accent-on)] rounded text-[9px] font-bold shadow-xs animate-fadeIn">
           Copied!
         </span>
       )}
@@ -493,8 +493,8 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 bg-[#0F172A] text-white px-4 py-2.5 rounded-lg shadow-xl text-xs font-semibold flex items-center gap-2 animate-slideUp">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div className="fixed bottom-5 right-5 z-50 bg-[var(--accent)] text-[var(--accent-on)] px-4 py-2.5 rounded-lg shadow-xl text-xs font-semibold flex items-center gap-2 animate-slideUp">
+          <CheckCircle2 className="w-4 h-4 text-[var(--ok)] shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -503,14 +503,14 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="p-2.5 bg-blue-50 text-blue-700 rounded-xl border border-blue-100 shadow-xs">
+            <div className="p-2.5 bg-[var(--accent-soft)] text-[var(--accent)] rounded-xl border border-[var(--accent-line)] shadow-xs">
               <Building2 className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-[#0F172A] tracking-tight">
+              <h1 className="text-xl font-bold text-[var(--text-primary)] tracking-tight">
                 Corporate Entities & Company Profiles
               </h1>
-              <p className="text-xs text-[#64748B] mt-0.5">
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                 Central command repository for corporate identities, statutory tax credentials, banking solvency, and dynamic bidding metadata.
               </p>
             </div>
@@ -522,17 +522,17 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
           <button
             type="button"
             onClick={handleCopyProfileSummary}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white border border-[#CBD5E1] text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] rounded-lg text-xs font-semibold shadow-xs transition-colors"
             title="Copy formatted summary of current profile for pasting into tender submission forms"
           >
-            <Copy className="w-3.5 h-3.5 text-[#2563EB]" />
+            <Copy className="w-3.5 h-3.5 text-[var(--accent)]" />
             <span>Copy Tender Profile Summary</span>
           </button>
 
           <button
             type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#2563EB] text-white hover:bg-[#1D4ED8] rounded-lg text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[var(--accent)] text-[var(--accent-on)] hover:bg-[var(--accent-hover)] rounded-lg text-xs font-semibold shadow-xs transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>Add Company Profile</span>
@@ -541,23 +541,23 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
       </div>
 
       {/* Company Selector Ribbon & Search Bar */}
-      <div className="bg-white p-3.5 rounded-xl border border-[#E2E8F0] shadow-xs space-y-3">
+      <div className="bg-[var(--bg-surface)] p-3.5 rounded-xl border border-[var(--border-default)] shadow-xs space-y-3">
         <div className="flex flex-col md:flex-row items-center justify-between gap-3">
           {/* Search bar */}
           <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-4 h-4" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search companies, TIN, reg no..."
-              className="w-full pl-9 pr-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+              className="w-full pl-9 pr-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
             />
           </div>
 
           {/* Role Filter Chips */}
           <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto">
-            <span className="text-xs text-[#64748B] font-medium mr-1 shrink-0">Filter:</span>
+            <span className="text-xs text-[var(--text-secondary)] font-medium mr-1 shrink-0">Filter:</span>
             {[
               { id: 'ALL', label: `All Entities (${companyProfiles.length})` },
               {
@@ -574,9 +574,9 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                 type="button"
                 onClick={() => setRoleFilter(f.id)}
                 className={`px-3 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
-                  roleFilter === f.id
-                    ? 'bg-[#0F172A] text-white font-semibold'
-                    : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A]'
+ roleFilter === f.id
+ ? 'bg-[var(--accent)] text-[var(--accent-on)] font-semibold'
+                    : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 {f.label}
@@ -586,7 +586,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
         </div>
 
         {/* Horizontal Company Profile Cards Slider */}
-        <div className="flex items-center gap-2.5 overflow-x-auto pt-2 border-t border-[#F1F5F9] pb-1">
+        <div className="flex items-center gap-2.5 overflow-x-auto pt-2 border-t border-[var(--border-subtle)] pb-1">
           {filteredProfiles.map((company) => {
             const isSelected = currentProfile?.id === company.id;
             const isLead = company.company_role === 'LEAD_BIDDER';
@@ -597,38 +597,38 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                 type="button"
                 onClick={() => setSelectedCompanyId(company.id)}
                 className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-left border transition-all shrink-0 ${
-                  isSelected
-                    ? isLead
-                      ? 'bg-blue-50/70 border-blue-500 ring-2 ring-blue-500/20 shadow-xs'
-                      : 'bg-purple-50/70 border-purple-500 ring-2 ring-purple-500/20 shadow-xs'
-                    : 'bg-white border-[#E2E8F0] hover:border-[#CBD5E1] hover:bg-[#F8FAFC]'
+ isSelected
+ ? isLead
+                      ? 'bg-[var(--accent-soft)]/70 border-[var(--accent)] ring-2 ring-[var(--accent)]/20 shadow-xs'
+                      : 'bg-[var(--bg-subtle)]/70 border-[var(--border-default)] ring-2 ring-[var(--border-default)]/20 shadow-xs'
+                    : 'bg-[var(--bg-surface)] border-[var(--border-default)] hover:border-[var(--border-strong)] hover:bg-[var(--bg-subtle)]'
                 }`}
               >
                 <div
                   className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${
-                    isLead
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'bg-purple-600 text-white shadow-xs'
+ isLead
+ ? 'bg-[var(--accent)] text-[var(--accent-on)] shadow-xs'
+                      : 'bg-[var(--bg-subtle)] text-[var(--accent-on)] shadow-xs'
                   }`}
                 >
                   {company.trade_name.slice(0, 2).toUpperCase()}
                 </div>
                 <div className="min-w-0 pr-1">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-[#0F172A] truncate max-w-[160px]">
+                    <span className="text-xs font-bold text-[var(--text-primary)] truncate max-w-[160px]">
                       {company.trade_name}
                     </span>
                     {isLead ? (
-                      <span className="text-[9px] font-bold px-1.5 py-0.2 bg-blue-100 text-blue-700 rounded">
+                      <span className="text-[9px] font-bold px-1.5 py-0.2 bg-[var(--accent-soft)] text-[var(--accent)] rounded">
                         LEAD
                       </span>
                     ) : (
-                      <span className="text-[9px] font-bold px-1.5 py-0.2 bg-purple-100 text-purple-700 rounded">
+                      <span className="text-[9px] font-bold px-1.5 py-0.2 bg-[var(--bg-subtle)] text-[var(--text-secondary)] rounded">
                         JV
                       </span>
                     )}
                   </div>
-                  <p className="text-[10px] text-[#64748B] truncate max-w-[170px]">
+                  <p className="text-[10px] text-[var(--text-secondary)] truncate max-w-[170px]">
                     {company.tin_number ? `TIN: ${company.tin_number}` : company.country}
                   </p>
                 </div>
@@ -641,56 +641,56 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
       {currentProfile ? (
         <>
           {/* Selected Company Hero Card */}
-          <div className="bg-white rounded-xl border border-[#E2E8F0] p-5 shadow-sm space-y-4">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] p-5 shadow-sm space-y-4">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex items-center gap-3.5 min-w-0">
                 <div
                   className={`w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-xl shadow-xs shrink-0 ${
-                    currentProfile.company_role === 'LEAD_BIDDER'
-                      ? 'bg-gradient-to-br from-blue-600 to-indigo-700 text-white'
-                      : 'bg-gradient-to-br from-purple-600 to-indigo-800 text-white'
+ currentProfile.company_role === 'LEAD_BIDDER'
+ ? 'bg-gradient-to-br from-[var(--accent)] to-[var(--bg-subtle)] text-[var(--accent-on)]'
+                      : 'bg-gradient-to-br from-[var(--bg-subtle)] to-[var(--bg-subtle)] text-[var(--accent-on)]'
                   }`}
                 >
                   {currentProfile.trade_name.slice(0, 2).toUpperCase()}
                 </div>
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h2 className="text-lg font-bold text-[#0F172A]">
+                    <h2 className="text-lg font-bold text-[var(--text-primary)]">
                       {currentProfile.legal_name}
                     </h2>
                     {currentProfile.company_role === 'LEAD_BIDDER' ? (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)]">
                         🏛️ Principal Lead Bidder
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[var(--bg-subtle)] text-[var(--text-secondary)] border border-[var(--border-default)]">
                         ⭐ Joint Venture Partner
                       </span>
                     )}
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[var(--ok-soft)] text-[var(--ok)] border border-[var(--ok-line)] flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3" />
                       {currentProfile.status}
                     </span>
                   </div>
 
-                  <p className="text-xs text-[#64748B] mt-1 flex items-center gap-3 flex-wrap">
+                  <p className="text-xs text-[var(--text-secondary)] mt-1 flex items-center gap-3 flex-wrap">
                     <span>
-                      <strong className="text-[#0F172A] font-semibold">Trade:</strong>{' '}
+                      <strong className="text-[var(--text-primary)] font-semibold">Trade:</strong>{' '}
                       {currentProfile.trade_name}
                     </span>
                     <span>•</span>
                     <span>
-                      <strong className="text-[#0F172A] font-semibold">Reg No:</strong>{' '}
+                      <strong className="text-[var(--text-primary)] font-semibold">Reg No:</strong>{' '}
                       {currentProfile.registration_no || 'Not registered'}
                     </span>
                     <span>•</span>
                     <span>
-                      <strong className="text-[#0F172A] font-semibold">Incorporated:</strong>{' '}
+                      <strong className="text-[var(--text-primary)] font-semibold">Incorporated:</strong>{' '}
                       {currentProfile.incorporation_date || 'N/A'}
                     </span>
                     <span>•</span>
                     <span>
-                      <strong className="text-[#0F172A] font-semibold">Country:</strong>{' '}
+                      <strong className="text-[var(--text-primary)] font-semibold">Country:</strong>{' '}
                       {currentProfile.country}
                     </span>
                   </p>
@@ -699,29 +699,29 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
 
               {/* Quick Metrics Header */}
               <div className="flex items-center gap-3 shrink-0 flex-wrap">
-                <div className="bg-[#F8FAFC] border border-[#E2E8F0] px-3 py-1.5 rounded-lg text-right">
-                  <div className="text-[10px] text-[#64748B] font-semibold uppercase tracking-wider">
+                <div className="bg-[var(--bg-subtle)] border border-[var(--border-default)] px-3 py-1.5 rounded-lg text-right">
+                  <div className="text-[10px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider">
                     Audited Turnover (3-Yr)
                   </div>
-                  <div className="text-xs font-bold text-[#0F172A]">
+                  <div className="text-xs font-bold text-[var(--text-primary)]">
                     BDT {(currentProfile.audited_turnover_bdt / 10000000).toFixed(2)} Cr
                   </div>
                 </div>
 
-                <div className="bg-[#F8FAFC] border border-[#E2E8F0] px-3 py-1.5 rounded-lg text-right">
-                  <div className="text-[10px] text-[#64748B] font-semibold uppercase tracking-wider">
+                <div className="bg-[var(--bg-subtle)] border border-[var(--border-default)] px-3 py-1.5 rounded-lg text-right">
+                  <div className="text-[10px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider">
                     Solvency / Credit Line
                   </div>
-                  <div className="text-xs font-bold text-emerald-700">
+                  <div className="text-xs font-bold text-[var(--ok)]">
                     BDT {(currentProfile.bank_solvency_limit_bdt / 10000000).toFixed(2)} Cr
                   </div>
                 </div>
 
-                <div className="bg-[#F8FAFC] border border-[#E2E8F0] px-3 py-1.5 rounded-lg text-right">
-                  <div className="text-[10px] text-[#64748B] font-semibold uppercase tracking-wider">
+                <div className="bg-[var(--bg-subtle)] border border-[var(--border-default)] px-3 py-1.5 rounded-lg text-right">
+                  <div className="text-[10px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider">
                     Linked Past Projects
                   </div>
-                  <div className="text-xs font-bold text-blue-700">
+                  <div className="text-xs font-bold text-[var(--accent)]">
                     {associatedProjects.length} Verified
                   </div>
                 </div>
@@ -730,7 +730,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                   <button
                     type="button"
                     onClick={handleDeleteCurrentProfile}
-                    className="p-2 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 rounded-lg transition-colors"
+                    className="p-2 bg-[var(--crit-soft)] text-[var(--crit)] hover:bg-[var(--crit-soft)] border border-[var(--crit-line)] rounded-lg transition-colors"
                     title="Delete this company profile"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -740,7 +740,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex items-center gap-2 border-b border-[#E2E8F0] pt-2 overflow-x-auto">
+            <div className="flex items-center gap-2 border-b border-[var(--border-default)] pt-2 overflow-x-auto">
               {[
                 { id: 'identity', label: 'Overview & Identity', icon: Building2 },
                 { id: 'statutory', label: 'Statutory & Tax', icon: FileCheck2 },
@@ -765,9 +765,9 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     type="button"
                     onClick={() => setActiveTab(tab.id as any)}
                     className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap ${
-                      isActive
-                        ? 'border-[#2563EB] text-[#2563EB]'
-                        : 'border-transparent text-[#64748B] hover:text-[#0F172A] hover:border-[#CBD5E1]'
+ isActive
+ ? 'border-[var(--accent)] text-[var(--accent)]'
+                        : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)]'
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5" />
@@ -781,15 +781,15 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
           {/* TAB 1: OVERVIEW & IDENTITY */}
           {activeTab === 'identity' && (
             <div className="space-y-4">
-              <Card className="p-5 border border-[#E2E8F0] shadow-xs">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#F1F5F9]">
+              <Card className="p-5 border border-[var(--border-default)] shadow-xs">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border-subtle)]">
                   <div className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-[#2563EB]" />
-                    <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    <Building2 className="w-4 h-4 text-[var(--accent)]" />
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Corporate Registration & Legal Character
                     </h3>
                   </div>
-                  <span className="text-[11px] text-[#64748B]">
+                  <span className="text-[11px] text-[var(--text-secondary)]">
                     Top-of-field toolbar: [📋 Copy] [✏️ Edit] [🗑️ Delete]
                   </span>
                 </div>
@@ -871,11 +871,11 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
               </Card>
 
               {/* Registered Office & Contact Details */}
-              <Card className="p-5 border border-[#E2E8F0] shadow-xs">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#F1F5F9]">
+              <Card className="p-5 border border-[var(--border-default)] shadow-xs">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border-subtle)]">
                   <div className="flex items-center gap-2">
-                    <Globe className="w-4 h-4 text-[#2563EB]" />
-                    <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    <Globe className="w-4 h-4 text-[var(--accent)]" />
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Office Addresses & Communication Channels
                     </h3>
                   </div>
@@ -949,11 +949,11 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
               </Card>
 
               {/* Key Liaison & Authorized Signatory */}
-              <Card className="p-5 border border-[#E2E8F0] shadow-xs">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#F1F5F9]">
+              <Card className="p-5 border border-[var(--border-default)] shadow-xs">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border-subtle)]">
                   <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-[#2563EB]" />
-                    <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    <Users className="w-4 h-4 text-[var(--accent)]" />
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Focal Liaison Officer & Authorized Power of Attorney Signatory
                     </h3>
                   </div>
@@ -961,9 +961,9 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Focal Contact */}
-                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 space-y-3">
-                    <div className="text-xs font-bold text-[#0F172A] flex items-center gap-2">
-                      <Phone className="w-3.5 h-3.5 text-blue-600" />
+                  <div className="bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl p-4 space-y-3">
+                    <div className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-2">
+                      <Phone className="w-3.5 h-3.5 text-[var(--accent)]" />
                       Focal Tender Point of Contact
                     </div>
 
@@ -1010,9 +1010,9 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                   </div>
 
                   {/* Authorized Signatory */}
-                  <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 space-y-3">
-                    <div className="text-xs font-bold text-[#0F172A] flex items-center gap-2">
-                      <Scale className="w-3.5 h-3.5 text-purple-600" />
+                  <div className="bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl p-4 space-y-3">
+                    <div className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-2">
+                      <Scale className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
                       Authorized Signatory & Power of Attorney Holder
                     </div>
 
@@ -1064,15 +1064,15 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
 
           {/* TAB 2: STATUTORY & TAX */}
           {activeTab === 'statutory' && (
-            <Card className="p-5 border border-[#E2E8F0] shadow-xs space-y-4">
-              <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#F1F5F9]">
+            <Card className="p-5 border border-[var(--border-default)] shadow-xs space-y-4">
+              <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border-subtle)]">
                 <div className="flex items-center gap-2">
-                  <FileCheck2 className="w-4 h-4 text-emerald-600" />
-                  <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                  <FileCheck2 className="w-4 h-4 text-[var(--ok)]" />
+                  <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                     Statutory Tax Identifiers & Municipal Licenses
                   </h3>
                 </div>
-                <span className="text-[11px] text-[#64748B]">
+                <span className="text-[11px] text-[var(--text-secondary)]">
                   Click copy icon on any field for quick RFP bid form entry
                 </span>
               </div>
@@ -1087,7 +1087,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                   onDelete={() => handleStandardFieldDelete('tin_number')}
                   copiedId={copiedId}
                   badge="Mandatory"
-                  badgeColor="bg-emerald-50 text-emerald-700 border-emerald-200"
+                  badgeColor="bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)]"
                 />
 
                 <ProfileField
@@ -1099,7 +1099,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                   onDelete={() => handleStandardFieldDelete('bin_vat_number')}
                   copiedId={copiedId}
                   badge="Mandatory"
-                  badgeColor="bg-emerald-50 text-emerald-700 border-emerald-200"
+                  badgeColor="bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)]"
                 />
 
                 <ProfileField
@@ -1121,7 +1121,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                   onDelete={() => handleStandardFieldDelete('trade_license_expiry')}
                   copiedId={copiedId}
                   badge="Active"
-                  badgeColor="bg-blue-50 text-blue-700 border-blue-200"
+                  badgeColor="bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--accent-line)]"
                 />
 
                 <ProfileField
@@ -1170,11 +1170,11 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
           {/* TAB 3: BANKING & FINANCIALS */}
           {activeTab === 'banking' && (
             <div className="space-y-4">
-              <Card className="p-5 border border-[#E2E8F0] shadow-xs">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#F1F5F9]">
+              <Card className="p-5 border border-[var(--border-default)] shadow-xs">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border-subtle)]">
                   <div className="flex items-center gap-2">
-                    <Landmark className="w-4 h-4 text-blue-600" />
-                    <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    <Landmark className="w-4 h-4 text-[var(--accent)]" />
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Principal Banking Credentials & Guarantees
                     </h3>
                   </div>
@@ -1244,11 +1244,11 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
               </Card>
 
               {/* Financial Turnovers & Solvency */}
-              <Card className="p-5 border border-[#E2E8F0] shadow-xs">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#F1F5F9]">
+              <Card className="p-5 border border-[var(--border-default)] shadow-xs">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border-subtle)]">
                   <div className="flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-emerald-600" />
-                    <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    <DollarSign className="w-4 h-4 text-[var(--ok)]" />
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Turnovers, Capital Standing & Solvency Capacity
                     </h3>
                   </div>
@@ -1287,7 +1287,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     onDelete={() => handleStandardFieldDelete('bank_solvency_limit_bdt')}
                     copiedId={copiedId}
                     badge="Solvency"
-                    badgeColor="bg-emerald-50 text-emerald-700 border-emerald-200"
+                    badgeColor="bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)]"
                   />
 
                   <ProfileField
@@ -1330,11 +1330,11 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
           {/* TAB 4: ACCREDITATIONS & WORKFORCE */}
           {activeTab === 'capacity' && (
             <div className="space-y-4">
-              <Card className="p-5 border border-[#E2E8F0] shadow-xs">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#F1F5F9]">
+              <Card className="p-5 border border-[var(--border-default)] shadow-xs">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border-subtle)]">
                   <div className="flex items-center gap-2">
-                    <Award className="w-4 h-4 text-purple-600" />
-                    <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    <Award className="w-4 h-4 text-[var(--text-secondary)]" />
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Quality, Security & Governance Certifications
                     </h3>
                   </div>
@@ -1344,16 +1344,16 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                   {(currentProfile.certifications || []).map((cert, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between gap-3 p-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg hover:border-[#CBD5E1] transition-all"
+                      className="flex items-center justify-between gap-3 p-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg hover:border-[var(--border-strong)] transition-all"
                     >
                       <div className="flex items-center gap-2 min-w-0">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                        <span className="text-xs font-semibold text-[#0F172A]">{cert}</span>
+                        <CheckCircle2 className="w-4 h-4 text-[var(--ok)] shrink-0" />
+                        <span className="text-xs font-semibold text-[var(--text-primary)]">{cert}</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => handleCopy(cert, `cert-${idx}`)}
-                        className="p-1 rounded text-[#64748B] hover:text-[#0F172A] hover:bg-white transition-colors"
+                        className="p-1 rounded text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)] transition-colors"
                         title="Copy certification name"
                       >
                         <Copy className="w-3.5 h-3.5" />
@@ -1364,11 +1364,11 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
               </Card>
 
               {/* Workforce & Technical Capacity */}
-              <Card className="p-5 border border-[#E2E8F0] shadow-xs">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#F1F5F9]">
+              <Card className="p-5 border border-[var(--border-default)] shadow-xs">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border-subtle)]">
                   <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-blue-600" />
-                    <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    <Users className="w-4 h-4 text-[var(--accent)]" />
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Workforce Numbers & Core Technical Capabilities
                     </h3>
                   </div>
@@ -1397,14 +1397,14 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                 </div>
 
                 <div className="space-y-2">
-                  <span className="text-[11px] font-semibold text-[#475569] uppercase tracking-wide">
+                  <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wide">
                     Core Technical Domains
                   </span>
                   <div className="flex items-center gap-2 flex-wrap">
                     {(currentProfile.core_competencies || []).map((skill, idx) => (
                       <span
                         key={idx}
-                        className="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-xs font-medium"
+                        className="px-3 py-1 bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)] rounded-lg text-xs font-medium"
                       >
                         {skill}
                       </span>
@@ -1417,16 +1417,16 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
 
           {/* TAB 5: DYNAMIC CUSTOM FIELDS */}
           {activeTab === 'custom' && (
-            <Card className="p-5 border border-[#E2E8F0] shadow-xs space-y-4">
-              <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#F1F5F9]">
+            <Card className="p-5 border border-[var(--border-default)] shadow-xs space-y-4">
+              <div className="flex items-center justify-between mb-2 pb-2 border-b border-[var(--border-subtle)]">
                 <div>
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-purple-600" />
-                    <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    <Sparkles className="w-4 h-4 text-[var(--text-secondary)]" />
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Dynamic Custom Profile Fields & Attributes
                     </h3>
                   </div>
-                  <p className="text-[11px] text-[#64748B] mt-0.5">
+                  <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
                     Add arbitrary metadata for tender criteria (e.g. DLMS Conformance, Ministry Quotas, Special Licenses).
                   </p>
                 </div>
@@ -1434,7 +1434,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                 <button
                   type="button"
                   onClick={() => setIsAddingField(!isAddingField)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] text-white hover:bg-[#1D4ED8] rounded-lg text-xs font-semibold shadow-xs transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent)] text-[var(--accent-on)] hover:bg-[var(--accent-hover)] rounded-lg text-xs font-semibold shadow-xs transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>{isAddingField ? 'Close Form' : 'Add Custom Field'}</span>
@@ -1445,12 +1445,12 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
               {isAddingField && (
                 <form
                   onSubmit={handleAddCustomField}
-                  className="bg-blue-50/50 border border-blue-200 rounded-xl p-3.5 space-y-3 animate-fadeIn"
+                  className="bg-[var(--accent-soft)]/50 border border-[var(--accent-line)] rounded-xl p-3.5 space-y-3 animate-fadeIn"
                 >
-                  <div className="text-xs font-bold text-[#0F172A]">Create New Custom Field</div>
+                  <div className="text-xs font-bold text-[var(--text-primary)]">Create New Custom Field</div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Field Name / Title *
                       </label>
                       <input
@@ -1458,13 +1458,13 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                         value={newFieldName}
                         onChange={(e) => setNewFieldName(e.target.value)}
                         placeholder="e.g. Environmental Clearance Certificate No"
-                        className="w-full bg-white border border-[#CBD5E1] rounded-lg px-3 py-1.5 text-xs text-[#0F172A] outline-none focus:border-[#2563EB]"
+                        className="w-full bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg px-3 py-1.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                         required
                         autoFocus
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Field Value *
                       </label>
                       <input
@@ -1472,7 +1472,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                         value={newFieldValue}
                         onChange={(e) => setNewFieldValue(e.target.value)}
                         placeholder="e.g. DOE/CLEARANCE/2025/9401"
-                        className="w-full bg-white border border-[#CBD5E1] rounded-lg px-3 py-1.5 text-xs text-[#0F172A] outline-none focus:border-[#2563EB]"
+                        className="w-full bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg px-3 py-1.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                         required
                       />
                     </div>
@@ -1481,13 +1481,13 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     <button
                       type="button"
                       onClick={() => setIsAddingField(false)}
-                      className="px-3 py-1 text-xs text-[#64748B] hover:text-[#0F172A]"
+                      className="px-3 py-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-3.5 py-1.5 bg-[#2563EB] text-white rounded-lg text-xs font-bold hover:bg-[#1D4ED8]"
+                      className="px-3.5 py-1.5 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg text-xs font-bold hover:bg-[var(--accent-hover)]"
                     >
                       Save Field
                     </button>
@@ -1513,10 +1513,10 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 bg-[#F8FAFC] rounded-xl border border-dashed border-[#CBD5E1]">
-                  <Sparkles className="w-8 h-8 text-[#94A3B8] mx-auto mb-2" />
-                  <p className="text-xs font-semibold text-[#0F172A]">No custom fields added yet</p>
-                  <p className="text-[11px] text-[#64748B] mt-0.5">
+                <div className="text-center py-8 bg-[var(--bg-subtle)] rounded-xl border border-dashed border-[var(--border-strong)]">
+                  <Sparkles className="w-8 h-8 text-[var(--text-muted)] mx-auto mb-2" />
+                  <p className="text-xs font-semibold text-[var(--text-primary)]">No custom fields added yet</p>
+                  <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
                     Click "Add Custom Field" above to add dynamic attributes for this company.
                   </p>
                 </div>
@@ -1528,15 +1528,15 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
           {activeTab === 'linked_assets' && (
             <div className="space-y-4">
               {/* Linked Past Projects */}
-              <Card className="p-5 border border-[#E2E8F0] shadow-xs">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#F1F5F9]">
+              <Card className="p-5 border border-[var(--border-default)] shadow-xs">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border-subtle)]">
                   <div className="flex items-center gap-2">
-                    <Briefcase className="w-4 h-4 text-blue-600" />
-                    <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    <Briefcase className="w-4 h-4 text-[var(--accent)]" />
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Verified Past Project Credentials ({associatedProjects.length})
                     </h3>
                   </div>
-                  <span className="text-[11px] text-[#64748B]">
+                  <span className="text-[11px] text-[var(--text-secondary)]">
                     Includes signed Work Orders & Completion Certificates
                   </span>
                 </div>
@@ -1546,39 +1546,39 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     {associatedProjects.map((p) => (
                       <div
                         key={p.id}
-                        className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3.5 space-y-2 hover:border-[#CBD5E1] transition-all"
+                        className="bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl p-3.5 space-y-2 hover:border-[var(--border-strong)] transition-all"
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <span className="text-[10px] font-bold px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded mr-1.5">
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 bg-[var(--accent-soft)] text-[var(--accent)] rounded mr-1.5">
                               {p.id}
                             </span>
-                            <span className="text-xs font-bold text-[#0F172A]">{p.projectTitle}</span>
+                            <span className="text-xs font-bold text-[var(--text-primary)]">{p.projectTitle}</span>
                           </div>
                           <button
                             type="button"
                             onClick={() => handleCopy(`${p.projectTitle} - Client: ${p.clientName} (Value: ${p.currency} ${p.contractValue.toLocaleString()})`, p.id)}
-                            className="p-1 rounded text-[#64748B] hover:text-[#0F172A] hover:bg-white shrink-0"
+                            className="p-1 rounded text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)] shrink-0"
                             title="Copy project reference"
                           >
                             <Copy className="w-3.5 h-3.5" />
                           </button>
                         </div>
 
-                        <p className="text-[11px] text-[#64748B]">
-                          <strong className="text-[#0F172A]">Client:</strong> {p.clientName} •{' '}
-                          <strong className="text-[#0F172A]">Value:</strong> {p.currency}{' '}
+                        <p className="text-[11px] text-[var(--text-secondary)]">
+                          <strong className="text-[var(--text-primary)]">Client:</strong> {p.clientName} •{' '}
+                          <strong className="text-[var(--text-primary)]">Value:</strong> {p.currency}{' '}
                           {p.contractValue.toLocaleString()}
                         </p>
 
-                        <div className="flex items-center gap-2 pt-2 border-t border-[#E2E8F0]/60 flex-wrap">
+                        <div className="flex items-center gap-2 pt-2 border-t border-[var(--border-default)]/60 flex-wrap">
                           {p.workOrderFilename && (
-                            <span className="flex items-center gap-1 text-[10px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                            <span className="flex items-center gap-1 text-[10px] font-semibold text-[var(--accent)] bg-[var(--accent-soft)] px-2 py-0.5 rounded border border-[var(--accent-line)]">
                               <FileText className="w-3 h-3" /> WO: {p.workOrderFilename}
                             </span>
                           )}
                           {p.completionCertFilename && (
-                            <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                            <span className="flex items-center gap-1 text-[10px] font-semibold text-[var(--ok)] bg-[var(--ok-soft)] px-2 py-0.5 rounded border border-[var(--ok-line)]">
                               <CheckCircle2 className="w-3 h-3" /> CC: {p.completionCertFilename}
                             </span>
                           )}
@@ -1587,18 +1587,18 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-6 text-xs text-[#64748B]">
+                  <div className="text-center py-6 text-xs text-[var(--text-secondary)]">
                     No past project credentials registered under this company yet.
                   </div>
                 )}
               </Card>
 
               {/* Linked Master Documents in Vault */}
-              <Card className="p-5 border border-[#E2E8F0] shadow-xs">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#F1F5F9]">
+              <Card className="p-5 border border-[var(--border-default)] shadow-xs">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border-subtle)]">
                   <div className="flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-purple-600" />
-                    <h3 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                    <Layers className="w-4 h-4 text-[var(--text-secondary)]" />
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Master Corporate Vault Documents ({associatedDocuments.length})
                     </h3>
                   </div>
@@ -1609,20 +1609,20 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     {associatedDocuments.map((doc) => (
                       <div
                         key={doc.id}
-                        className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 flex items-center justify-between gap-2"
+                        className="bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl p-3 flex items-center justify-between gap-2"
                       >
                         <div className="min-w-0">
-                          <div className="text-xs font-bold text-[#0F172A] truncate">
+                          <div className="text-xs font-bold text-[var(--text-primary)] truncate">
                             {doc.name}
                           </div>
-                          <div className="text-[10px] text-[#64748B] mt-0.5">
+                          <div className="text-[10px] text-[var(--text-secondary)] mt-0.5">
                             {doc.category} • {doc.size || 'PDF'}
                           </div>
                         </div>
                         <button
                           type="button"
                           onClick={() => handleCopy(doc.name, doc.id)}
-                          className="p-1 rounded text-[#64748B] hover:text-[#0F172A] hover:bg-white shrink-0"
+                          className="p-1 rounded text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)] shrink-0"
                           title="Copy file name"
                         >
                           <Copy className="w-3.5 h-3.5" />
@@ -1631,7 +1631,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-6 text-xs text-[#64748B]">
+                  <div className="text-center py-6 text-xs text-[var(--text-secondary)]">
                     No documents currently tagged under this company name in the Master Vault.
                   </div>
                 )}
@@ -1640,16 +1640,16 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
           )}
         </>
       ) : (
-        <Card className="p-12 text-center border-dashed border-[#CBD5E1]">
-          <Building2 className="w-12 h-12 text-[#94A3B8] mx-auto mb-3" />
-          <h3 className="text-sm font-bold text-[#0F172A]">No Company Profile Found</h3>
-          <p className="text-xs text-[#64748B] mt-1">
+        <Card className="p-12 text-center border-dashed border-[var(--border-strong)]">
+          <Building2 className="w-12 h-12 text-[var(--text-muted)] mx-auto mb-3" />
+          <h3 className="text-sm font-bold text-[var(--text-primary)]">No Company Profile Found</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">
             Create a profile to manage company identities, tax credentials, and banking standing.
           </p>
           <button
             type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="mt-4 px-4 py-2 bg-[#2563EB] text-white rounded-lg text-xs font-semibold hover:bg-[#1D4ED8]"
+            className="mt-4 px-4 py-2 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg text-xs font-semibold hover:bg-[var(--accent-hover)]"
           >
             Add First Company Profile
           </button>
@@ -1658,16 +1658,16 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
 
       {/* CREATE NEW COMPANY PROFILE MODAL */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#0F172A]/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-2xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9]">
+        <div className="fixed inset-0 z-50 bg-[var(--accent)]/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-default)] shadow-2xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 bg-blue-50 text-blue-700 rounded-lg">
+                <div className="p-2 bg-[var(--accent-soft)] text-[var(--accent)] rounded-lg">
                   <Building2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-[#0F172A]">Create New Company Profile</h3>
-                  <p className="text-xs text-[#64748B]">
+                  <h3 className="text-sm font-bold text-[var(--text-primary)]">Create New Company Profile</h3>
+                  <p className="text-xs text-[var(--text-secondary)]">
                     Register a new bidding entity (Lead Bidder or Joint Venture Partner)
                   </p>
                 </div>
@@ -1675,7 +1675,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(false)}
-                className="p-1.5 text-[#64748B] hover:text-[#0F172A] rounded-lg"
+                className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-lg"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1684,7 +1684,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
             <form onSubmit={handleCreateCompany} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+                  <label className="block text-xs font-semibold text-[var(--text-primary)] mb-1">
                     Legal Company Name *
                   </label>
                   <input
@@ -1692,13 +1692,13 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     value={newLegalName}
                     onChange={(e) => setNewLegalName(e.target.value)}
                     placeholder="e.g. Apex Global Engineering Ltd"
-                    className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-[#2563EB]"
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+                  <label className="block text-xs font-semibold text-[var(--text-primary)] mb-1">
                     Trade / Short Name
                   </label>
                   <input
@@ -1706,18 +1706,18 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     value={newTradeName}
                     onChange={(e) => setNewTradeName(e.target.value)}
                     placeholder="e.g. Apex Engineering"
-                    className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-[#2563EB]"
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+                  <label className="block text-xs font-semibold text-[var(--text-primary)] mb-1">
                     Role in Bidding
                   </label>
                   <select
                     value={newRole}
                     onChange={(e) => setNewRole(e.target.value)}
-                    className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-[#2563EB]"
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                   >
                     <option value="LEAD_BIDDER">🏛️ Lead Bidder</option>
                     <option value="JV_PARTNER">⭐ Joint Venture Partner</option>
@@ -1726,13 +1726,13 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+                  <label className="block text-xs font-semibold text-[var(--text-primary)] mb-1">
                     Entity Type
                   </label>
                   <select
                     value={newEntityType}
                     onChange={(e) => setNewEntityType(e.target.value)}
-                    className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-[#2563EB]"
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                   >
                     <option value="Private Limited Company">Private Limited Company</option>
                     <option value="Public Limited Company">Public Limited Company</option>
@@ -1743,7 +1743,7 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+                  <label className="block text-xs font-semibold text-[var(--text-primary)] mb-1">
                     Registration / Incorporation No
                   </label>
                   <input
@@ -1751,24 +1751,24 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     value={newRegNo}
                     onChange={(e) => setNewRegNo(e.target.value)}
                     placeholder="e.g. C-184920/2021"
-                    className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-[#2563EB]"
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+                  <label className="block text-xs font-semibold text-[var(--text-primary)] mb-1">
                     Country
                   </label>
                   <input
                     type="text"
                     value={newCountry}
                     onChange={(e) => setNewCountry(e.target.value)}
-                    className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-[#2563EB]"
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+                  <label className="block text-xs font-semibold text-[var(--text-primary)] mb-1">
                     e-TIN Number
                   </label>
                   <input
@@ -1776,12 +1776,12 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     value={newTin}
                     onChange={(e) => setNewTin(e.target.value)}
                     placeholder="12-digit e-TIN"
-                    className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-[#2563EB]"
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+                  <label className="block text-xs font-semibold text-[var(--text-primary)] mb-1">
                     VAT / BIN Number
                   </label>
                   <input
@@ -1789,12 +1789,12 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     value={newBin}
                     onChange={(e) => setNewBin(e.target.value)}
                     placeholder="13-digit BIN"
-                    className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-[#2563EB]"
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+                  <label className="block text-xs font-semibold text-[var(--text-primary)] mb-1">
                     Principal Bank Name
                   </label>
                   <input
@@ -1802,12 +1802,12 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     value={newBankName}
                     onChange={(e) => setNewBankName(e.target.value)}
                     placeholder="e.g. Standard Chartered Bank"
-                    className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-[#2563EB]"
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+                  <label className="block text-xs font-semibold text-[var(--text-primary)] mb-1">
                     Avg Annual Turnover (BDT)
                   </label>
                   <input
@@ -1815,22 +1815,22 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
                     value={newTurnoverBDT}
                     onChange={(e) => setNewTurnoverBDT(e.target.value)}
                     placeholder="e.g. 50000000"
-                    className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-[#2563EB]"
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-4 border-t border-[#F1F5F9]">
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 text-xs font-medium text-[#64748B] hover:text-[#0F172A]"
+                  className="px-4 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#2563EB] text-white rounded-lg text-xs font-bold hover:bg-[#1D4ED8]"
+                  className="px-4 py-2 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg text-xs font-bold hover:bg-[var(--accent-hover)]"
                 >
                   Create Company Profile
                 </button>

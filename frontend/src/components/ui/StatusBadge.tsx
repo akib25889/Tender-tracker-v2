@@ -7,114 +7,70 @@ interface StatusBadgeProps {
   className?: string;
 }
 
-const STAGE_CONFIG: Record<TenderStage, { label: string; bg: string; text: string; border: string }> = {
-  DISCOVERED: {
-    label: 'Discovered',
-    bg: 'bg-[#EFF6FF]',
-    text: 'text-[#1D4ED8]',
-    border: 'border-[#BFDBFE]',
-  },
-  SCREENING: {
-    label: 'Screening',
-    bg: 'bg-[#EEF2FF]',
-    text: 'text-[#4338CA]',
-    border: 'border-[#C7D2FE]',
-  },
-  UNDER_ANALYSIS: {
-    label: 'Analysis',
-    bg: 'bg-[#F5F3FF]',
-    text: 'text-[#6D28D9]',
-    border: 'border-[#DDD6FE]',
-  },
-  PREPARATION: {
-    label: 'Preparation',
-    bg: 'bg-[#FFFBEB]',
-    text: 'text-[#B45309]',
-    border: 'border-[#FDE68A]',
-  },
-  INTERNAL_REVIEW: {
-    label: 'Review',
-    bg: 'bg-[#FFF7ED]',
-    text: 'text-[#C2410C]',
-    border: 'border-[#FED7AA]',
-  },
-  SUBMITTED: {
-    label: 'Submitted',
-    bg: 'bg-[#F1F5F9]',
-    text: 'text-[#334155]',
-    border: 'border-[#CBD5E1]',
-  },
-  AWARDED: {
-    label: 'Awarded (Won)',
-    bg: 'bg-[#F0FDF4]',
-    text: 'text-[#15803D]',
-    border: 'border-[#BBF7D0]',
-  },
-  LOST: {
-    label: 'Lost',
-    bg: 'bg-[#FEF2F2]',
-    text: 'text-[#B91C1C]',
-    border: 'border-[#FECACA]',
-  },
-  DECLINED: {
-    label: 'Declined (No-Go)',
-    bg: 'bg-[#F8FAFC]',
-    text: 'text-[#64748B]',
-    border: 'border-[#E2E8F0]',
-  },
-  ARCHIVED: {
-    label: 'Archived (Record)',
-    bg: 'bg-[#F1F5F9]',
-    text: 'text-[#475569]',
-    border: 'border-[#CBD5E1]',
-  },
+/**
+ * Lifecycle stages read as a dot plus a word, not as a filled pill.
+ * A row can carry several of these, so only the two terminal outcomes
+ * (Awarded, Lost) spend a semantic colour; everything in flight is neutral
+ * or accent. Tone names map to the token layer in index.css.
+ */
+type Tone = 'neutral' | 'accent' | 'ok' | 'warn' | 'crit' | 'ring';
+
+const STAGE_CONFIG: Record<TenderStage, { label: string; tone: Tone; filled?: boolean }> = {
+  DISCOVERED:      { label: 'Discovered', tone: 'neutral' },
+  SCREENING:       { label: 'Screening', tone: 'accent' },
+  UNDER_ANALYSIS:  { label: 'Under analysis', tone: 'accent' },
+  PREPARATION:     { label: 'Preparation', tone: 'accent' },
+  INTERNAL_REVIEW: { label: 'Internal review', tone: 'accent' },
+  SUBMITTED:       { label: 'Submitted', tone: 'ok' },
+  AWARDED:         { label: 'Awarded', tone: 'ok', filled: true },
+  LOST:            { label: 'Lost', tone: 'crit', filled: true },
+  DECLINED:        { label: 'Declined', tone: 'ring' },
+  ARCHIVED:        { label: 'Archived', tone: 'ring' },
 };
 
-const DECISION_CONFIG: Record<DecisionStatus, { label: string; bg: string; text: string; border: string }> = {
-  GO: {
-    label: 'GO',
-    bg: 'bg-[#ECFDF5]',
-    text: 'text-[#047857]',
-    border: 'border-[#A7F3D0]',
-  },
-  NO_GO: {
-    label: 'NO-GO',
-    bg: 'bg-[#FEF2F2]',
-    text: 'text-[#DC2626]',
-    border: 'border-[#FECACA]',
-  },
-  CONDITIONAL: {
-    label: 'Conditional',
-    bg: 'bg-[#FFFBEB]',
-    text: 'text-[#D97706]',
-    border: 'border-[#FDE68A]',
-  },
-  PENDING: {
-    label: 'Pending',
-    bg: 'bg-[#F8FAFC]',
-    text: 'text-[#64748B]',
-    border: 'border-[#E2E8F0]',
-  },
+const DECISION_CONFIG: Record<DecisionStatus, { label: string; tone: Tone }> = {
+  GO:          { label: 'Go', tone: 'ok' },
+  NO_GO:       { label: 'No-go', tone: 'crit' },
+  CONDITIONAL: { label: 'Conditional', tone: 'warn' },
+  PENDING:     { label: 'Pending', tone: 'neutral' },
+};
+
+const DOT_CLASS: Record<Tone, string> = {
+  neutral: 'tt-dot',
+  accent: 'tt-dot tt-dot-accent',
+  ok: 'tt-dot tt-dot-ok',
+  warn: 'tt-dot tt-dot-warn',
+  crit: 'tt-dot tt-dot-crit',
+  ring: 'tt-dot tt-dot-ring',
+};
+
+const TAG_CLASS: Record<Tone, string> = {
+  neutral: 'tt-tag',
+  accent: 'tt-tag tt-tag-accent',
+  ok: 'tt-tag tt-tag-ok',
+  warn: 'tt-tag tt-tag-warn',
+  crit: 'tt-tag tt-tag-crit',
+  ring: 'tt-tag',
 };
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ stage, decision, className = '' }) => {
   if (decision) {
     const config = DECISION_CONFIG[decision] || DECISION_CONFIG.PENDING;
-    return (
-      <span
-        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 border ${config.bg} ${config.text} ${config.border} ${className}`}
-      >
-        {config.label}
-      </span>
-    );
+    return <span className={`${TAG_CLASS[config.tone]} ${className}`}>{config.label}</span>;
   }
 
   if (stage) {
     const config = STAGE_CONFIG[stage] || STAGE_CONFIG.DISCOVERED;
+
+    if (config.filled) {
+      return <span className={`${TAG_CLASS[config.tone]} ${className}`}>{config.label}</span>;
+    }
+
     return (
       <span
-        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 border ${config.bg} ${config.text} ${config.border} ${className}`}
+        className={`inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 text-xs tt-text-2 ${className}`}
       >
+        <i className={DOT_CLASS[config.tone]} aria-hidden="true" />
         {config.label}
       </span>
     );
@@ -122,4 +78,3 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ stage, decision, class
 
   return null;
 };
-

@@ -1,26 +1,18 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  FolderGit2,
-  Clock,
-  AlertTriangle,
-  Activity,
   Plus,
-  FileWarning,
-  ExternalLink,
   Search,
   RotateCcw,
-  CheckCircle2,
   X,
-  Filter,
   ChevronLeft,
   ChevronRight,
+  ArrowUpRight,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { UrgencyBadge } from '../components/ui/UrgencyBadge';
 import { ReadinessBar } from '../components/ui/ReadinessBar';
-import { Card } from '../components/ui/Card';
 import { TenderStage } from '../types/tender';
 import { fuzzyMatch } from '../utils/fuzzySearch';
 
@@ -33,6 +25,13 @@ export type UrgentFilterMode =
   | 'LOW_READINESS'
   | 'CRITICAL';
 
+/** Deadline severity drives the one coloured rail on a row. */
+function rowSeverity(daysRemaining: number): '' | 'tt-sev-warn' | 'tt-sev-crit' {
+  if (daysRemaining > 0 && daysRemaining <= 2) return 'tt-sev-crit';
+  if (daysRemaining > 0 && daysRemaining <= 5) return 'tt-sev-warn';
+  return '';
+}
+
 export const DashboardPage: React.FC = () => {
   const { tenders } = useTenders();
   const [filterMode, setFilterMode] = useState<UrgentFilterMode>('ALL_TENDERS');
@@ -40,152 +39,98 @@ export const DashboardPage: React.FC = () => {
   const [selectedStage, setSelectedStage] = useState<string>('ALL');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(5);
+  const [pageSize, setPageSize] = useState<number>(8);
 
-  // Dynamic live operational metric calculations
   const activeTenders = tenders.filter(
     (t) => t.stage !== 'AWARDED' && t.stage !== 'LOST' && t.stage !== 'DECLINED'
   );
-  const dueThisWeek = tenders.filter((t) => t.daysRemaining <= 7);
-  const totalMissingDocs = tenders.reduce(
-    (acc, t) => acc + (t.missingDocumentsCount || 0),
-    0
-  );
+  const dueThisWeek = tenders.filter((t) => t.daysRemaining > 0 && t.daysRemaining <= 7);
+  const totalMissingDocs = tenders.reduce((acc, t) => acc + (t.missingDocumentsCount || 0), 0);
   const avgReadiness =
     tenders.length > 0
-      ? Math.round(
-          tenders.reduce((acc, t) => acc + (t.readinessScore || 0), 0) / tenders.length
-        )
+      ? Math.round(tenders.reduce((acc, t) => acc + (t.readinessScore || 0), 0) / tenders.length)
       : 0;
 
-  const categories = useMemo(() => {
-    return Array.from(new Set(tenders.map((t) => t.category).filter(Boolean))).sort();
-  }, [tenders]);
+  const categories = useMemo(
+    () => Array.from(new Set(tenders.map((t) => t.category).filter(Boolean))).sort(),
+    [tenders]
+  );
 
-  const baseUrgentPool = useMemo(() => {
-    return tenders.filter(
-      (t) => t.stage !== 'ARCHIVED' && t.stage !== 'LOST' && t.stage !== 'DECLINED'
-    );
-  }, [tenders]);
+  const baseUrgentPool = useMemo(
+    () => tenders.filter((t) => t.stage !== 'ARCHIVED' && t.stage !== 'LOST' && t.stage !== 'DECLINED'),
+    [tenders]
+  );
 
-  const allUrgentCount = useMemo(() => {
-    return baseUrgentPool.filter(
-      (t) =>
-        (t.daysRemaining > 0 && t.daysRemaining <= 7) ||
-        t.blockers.length > 0 ||
-        t.priority === 'CRITICAL' ||
-        (t.missingDocumentsCount || 0) > 0
-    ).length;
-  }, [baseUrgentPool]);
+  const counts = useMemo(() => {
+    const isUrgent = (t: (typeof baseUrgentPool)[number]) =>
+      (t.daysRemaining > 0 && t.daysRemaining <= 7) ||
+      t.blockers.length > 0 ||
+      t.priority === 'CRITICAL' ||
+      (t.missingDocumentsCount || 0) > 0;
 
-  const closingSoonCount = useMemo(() => {
-    return baseUrgentPool.filter((t) => t.daysRemaining > 0 && t.daysRemaining <= 4).length;
-  }, [baseUrgentPool]);
-
-  const blockersCount = useMemo(() => {
-    return baseUrgentPool.filter((t) => t.blockers.length > 0).length;
-  }, [baseUrgentPool]);
-
-  const missingDocsCount = useMemo(() => {
-    return baseUrgentPool.filter((t) => (t.missingDocumentsCount || 0) > 0).length;
-  }, [baseUrgentPool]);
-
-  const lowReadinessCount = useMemo(() => {
-    return baseUrgentPool.filter((t) => (t.readinessScore || 0) < 50).length;
-  }, [baseUrgentPool]);
-
-  const criticalCount = useMemo(() => {
-    return baseUrgentPool.filter((t) => t.priority === 'CRITICAL').length;
+    return {
+      ALL_TENDERS: baseUrgentPool.length,
+      ALL_URGENT: baseUrgentPool.filter(isUrgent).length,
+      CLOSING_SOON: baseUrgentPool.filter((t) => t.daysRemaining > 0 && t.daysRemaining <= 4).length,
+      BLOCKERS: baseUrgentPool.filter((t) => t.blockers.length > 0).length,
+      MISSING_DOCS: baseUrgentPool.filter((t) => (t.missingDocumentsCount || 0) > 0).length,
+      LOW_READINESS: baseUrgentPool.filter((t) => (t.readinessScore || 0) < 50).length,
+      CRITICAL: baseUrgentPool.filter((t) => t.priority === 'CRITICAL').length,
+    };
   }, [baseUrgentPool]);
 
   const urgentQueue = useMemo(() => {
-    return baseUrgentPool.filter((t) => {
-      // 1. Mode filter
+    const matched = baseUrgentPool.filter((t) => {
       let matchesMode = false;
-      if (filterMode === 'ALL_TENDERS') {
-        matchesMode = true;
-      } else if (filterMode === 'CLOSING_SOON') {
-        matchesMode = t.daysRemaining > 0 && t.daysRemaining <= 4;
-      } else if (filterMode === 'BLOCKERS') {
-        matchesMode = t.blockers.length > 0;
-      } else if (filterMode === 'MISSING_DOCS') {
-        matchesMode = (t.missingDocumentsCount || 0) > 0;
-      } else if (filterMode === 'LOW_READINESS') {
-        matchesMode = (t.readinessScore || 0) < 50;
-      } else if (filterMode === 'CRITICAL') {
-        matchesMode = t.priority === 'CRITICAL';
-      } else {
-        // ALL_URGENT
+      if (filterMode === 'ALL_TENDERS') matchesMode = true;
+      else if (filterMode === 'CLOSING_SOON') matchesMode = t.daysRemaining > 0 && t.daysRemaining <= 4;
+      else if (filterMode === 'BLOCKERS') matchesMode = t.blockers.length > 0;
+      else if (filterMode === 'MISSING_DOCS') matchesMode = (t.missingDocumentsCount || 0) > 0;
+      else if (filterMode === 'LOW_READINESS') matchesMode = (t.readinessScore || 0) < 50;
+      else if (filterMode === 'CRITICAL') matchesMode = t.priority === 'CRITICAL';
+      else
         matchesMode =
           (t.daysRemaining > 0 && t.daysRemaining <= 7) ||
           t.blockers.length > 0 ||
           t.priority === 'CRITICAL' ||
           (t.missingDocumentsCount || 0) > 0;
-      }
+
       if (!matchesMode) return false;
-
-      // 2. Stage filter
-      if (selectedStage !== 'ALL' && t.stage !== selectedStage) {
-        return false;
-      }
-
-      // 3. Category filter
-      if (selectedCategory !== 'ALL' && t.category !== selectedCategory) {
-        return false;
-      }
-
-      // 4. Search query
+      if (selectedStage !== 'ALL' && t.stage !== selectedStage) return false;
+      if (selectedCategory !== 'ALL' && t.category !== selectedCategory) return false;
       if (searchQuery.trim()) {
-        const matchesSearch = fuzzyMatch(
-          [t.title, t.id, t.referenceNo, t.organization, t.category],
-          searchQuery
-        );
-        if (!matchesSearch) return false;
+        if (!fuzzyMatch([t.title, t.id, t.referenceNo, t.organization, t.category], searchQuery)) {
+          return false;
+        }
       }
-
       return true;
+    });
+
+    // Soonest deadline first; anything already past the cutoff sinks to the bottom.
+    return matched.sort((a, b) => {
+      const rank = (d: number) => (d > 0 ? d : Number.MAX_SAFE_INTEGER - d);
+      return rank(a.daysRemaining) - rank(b.daysRemaining);
     });
   }, [baseUrgentPool, filterMode, selectedStage, selectedCategory, searchQuery]);
 
-  // Pagination Calculations
-  const totalPages = Math.max(1, Math.ceil(urgentQueue.length / (pageSize === -1 ? urgentQueue.length || 1 : pageSize)));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(urgentQueue.length / (pageSize === -1 ? urgentQueue.length || 1 : pageSize))
+  );
   const paginatedTenders = useMemo(() => {
     if (pageSize === -1) return urgentQueue;
     const start = (currentPage - 1) * pageSize;
     return urgentQueue.slice(start, start + pageSize);
   }, [urgentQueue, currentPage, pageSize]);
 
-  const handleFilterModeChange = (mode: UrgentFilterMode) => {
+  const setMode = (mode: UrgentFilterMode) => {
     setFilterMode(mode);
     setCurrentPage(1);
   };
 
-  const handleKpiCardClick = (mode: UrgentFilterMode) => {
-    handleFilterModeChange(mode);
-    const element = document.getElementById('intervention-queue-section');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  const handleSearchChange = (val: string) => {
-    setSearchQuery(val);
-    setCurrentPage(1);
-  };
-
-  const handleStageChange = (val: string) => {
-    setSelectedStage(val);
-    setCurrentPage(1);
-  };
-
-  const handleCategoryChange = (val: string) => {
-    setSelectedCategory(val);
-    setCurrentPage(1);
-  };
-
-  const handlePageSizeChange = (val: number) => {
-    setPageSize(val);
-    setCurrentPage(1);
+  const jumpToQueue = (mode: UrgentFilterMode) => {
+    setMode(mode);
+    document.getElementById('attention-queue')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const hasActiveFilters =
@@ -202,198 +147,139 @@ export const DashboardPage: React.FC = () => {
     setCurrentPage(1);
   };
 
-  const stages: { stage: TenderStage; label: string }[] = [
-    { stage: 'DISCOVERED', label: '1. Discovery' },
-    { stage: 'SCREENING', label: '2. Screening' },
-    { stage: 'UNDER_ANALYSIS', label: '3. Analysis' },
-    { stage: 'PREPARATION', label: '4. Preparation' },
-    { stage: 'SUBMITTED', label: '5. Submitted' },
-    { stage: 'AWARDED', label: '6. Won / Award' },
+  const stages: { stage: TenderStage; label: string; sub: string }[] = [
+    { stage: 'DISCOVERED', label: 'Discovered', sub: 'Intake & triage' },
+    { stage: 'SCREENING', label: 'Screening', sub: 'Go / no-go gate' },
+    { stage: 'UNDER_ANALYSIS', label: 'Under analysis', sub: 'ToR & scope audit' },
+    { stage: 'PREPARATION', label: 'Preparation', sub: 'Financials & BoQ' },
+    { stage: 'SUBMITTED', label: 'Submitted', sub: 'Receipt & guarantee' },
+    { stage: 'AWARDED', label: 'Awarded', sub: 'Won' },
+  ];
+
+  const filters: { mode: UrgentFilterMode; label: string }[] = [
+    { mode: 'ALL_TENDERS', label: 'All' },
+    { mode: 'ALL_URGENT', label: 'Urgent' },
+    { mode: 'CLOSING_SOON', label: 'Closing ≤ 4d' },
+    { mode: 'BLOCKERS', label: 'Blockers' },
+    { mode: 'MISSING_DOCS', label: 'Missing docs' },
+    { mode: 'LOW_READINESS', label: 'Low readiness' },
+    { mode: 'CRITICAL', label: 'Critical' },
   ];
 
   return (
-    <div className="space-y-3.5">
-      {/* Top Banner / Welcome Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <h1 className="font-display text-xl font-bold text-[#0F172A] dark:text-white tracking-tight">
-            Tender Command Center
-          </h1>
-          <span className="inline-flex items-center text-[10.5px] font-medium text-[#64748B] dark:text-slate-400 bg-[#F1F5F9] dark:bg-slate-800 px-2 py-0.5 rounded">
-            Operations • Real-Time Mission Control
-          </span>
+    <div className="space-y-4">
+      {/* Page header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+        <div>
+          <div className="tt-label">Operations</div>
+          <h1 className="font-display text-xl font-semibold tt-text tracking-tight mt-1">Dashboard</h1>
+          <p className="text-xs tt-text-2 mt-1">
+            Live multi-donor tender operations, readiness and statutory deadlines.
+          </p>
         </div>
-
-        <div className="flex items-center gap-2 shrink-0">
-          <Link
-            to="/registry"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0F172A] text-white rounded-md text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Tender Registry &amp; Data Entry</span>
-          </Link>
-        </div>
+        <Link to="/registry" className="tt-btn tt-btn-primary shrink-0">
+          <Plus className="w-3.5 h-3.5" />
+          <span>New tender</span>
+        </Link>
       </div>
 
-      {/* 4 Operational KPI Ribbons (Interactive Click-to-View) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-        {/* KPI 1: Active Opportunities */}
+      {/* Headline figures — each one filters the queue below */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <div
           role="button"
           tabIndex={0}
-          onClick={() => handleKpiCardClick('ALL_TENDERS')}
-          onKeyDown={(e) => e.key === 'Enter' && handleKpiCardClick('ALL_TENDERS')}
-          className={`bg-white dark:bg-slate-900 px-3.5 py-2.5 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#2563EB] hover:shadow-md transition-all group ${
-            filterMode === 'ALL_TENDERS' ? 'ring-2 ring-[#2563EB] border-[#2563EB]' : ''
-          }`}
-          title="Click to view all live proposals in table"
+          aria-pressed={filterMode === 'ALL_TENDERS'}
+          onClick={() => jumpToQueue('ALL_TENDERS')}
+          onKeyDown={(e) => e.key === 'Enter' && jumpToQueue('ALL_TENDERS')}
+          className="tt-tile tt-focus"
         >
-          <div className="min-w-0 pr-2">
-            <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
-              Active Opportunities
-            </span>
-            <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="font-display text-xl font-bold text-[#0F172A] dark:text-white">
-                {activeTenders.length}
-              </span>
-              <span className="text-[11px] text-[#2563EB] font-semibold">
-                Proposals Live
-              </span>
-            </div>
-            <span className="text-[10px] text-[#16A34A] font-medium block truncate">
-              {tenders.filter((t) => t.stage === 'PREPARATION').length} in active drafting
-            </span>
-          </div>
-          <div className="w-8 h-8 rounded-md bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <FolderGit2 className="w-4 h-4" />
+          <div className="tt-label">Active opportunities</div>
+          <div className="tt-tile-value mt-2">{activeTenders.length}</div>
+          <div className="text-xs tt-text-2 mt-2">
+            {tenders.filter((t) => t.stage === 'PREPARATION').length} in active drafting
           </div>
         </div>
 
-        {/* KPI 2: Closing This Week */}
         <div
           role="button"
           tabIndex={0}
-          onClick={() => handleKpiCardClick('CLOSING_SOON')}
-          onKeyDown={(e) => e.key === 'Enter' && handleKpiCardClick('CLOSING_SOON')}
-          className={`bg-white dark:bg-slate-900 px-3.5 py-2.5 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#DC2626] hover:shadow-md transition-all group ${
-            filterMode === 'CLOSING_SOON' ? 'ring-2 ring-[#DC2626] border-[#DC2626]' : ''
-          }`}
-          title="Click to view closing bids in table"
+          aria-pressed={filterMode === 'CLOSING_SOON'}
+          onClick={() => jumpToQueue('CLOSING_SOON')}
+          onKeyDown={(e) => e.key === 'Enter' && jumpToQueue('CLOSING_SOON')}
+          className="tt-tile tt-focus"
         >
-          <div className="min-w-0 pr-2">
-            <span className="text-[10px] font-bold text-[#DC2626] uppercase tracking-wider block">
-              Closing This Week
-            </span>
-            <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="font-display text-xl font-bold text-[#DC2626]">
-                {dueThisWeek.length}
-              </span>
-              <span className="text-[11px] text-[#64748B] dark:text-slate-400">Bids</span>
-            </div>
-            <span className="text-[10px] text-[#DC2626] font-medium block truncate">
-              {dueThisWeek.filter((t) => t.daysRemaining <= 2).length} bids &lt; 48h window
-            </span>
-          </div>
-          <div className="w-8 h-8 rounded-md bg-[#FEF2F2] text-[#DC2626] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <Clock className="w-4 h-4" />
+          <div className="tt-label">Closing this week</div>
+          <div className="tt-tile-value mt-2">{dueThisWeek.length}</div>
+          <div className="text-xs mt-2" style={{ color: 'var(--warn)' }}>
+            {dueThisWeek.filter((t) => t.daysRemaining <= 2).length} inside the 48-hour window
           </div>
         </div>
 
-        {/* KPI 3: Missing Documents & Blockers */}
         <div
           role="button"
           tabIndex={0}
-          onClick={() => handleKpiCardClick('MISSING_DOCS')}
-          onKeyDown={(e) => e.key === 'Enter' && handleKpiCardClick('MISSING_DOCS')}
-          className={`bg-white dark:bg-slate-900 px-3.5 py-2.5 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#EA580C] hover:shadow-md transition-all group ${
-            filterMode === 'MISSING_DOCS' || filterMode === 'BLOCKERS' ? 'ring-2 ring-[#EA580C] border-[#EA580C]' : ''
-          }`}
-          title="Click to view tenders with missing documents and blockers"
+          aria-pressed={filterMode === 'MISSING_DOCS'}
+          onClick={() => jumpToQueue('MISSING_DOCS')}
+          onKeyDown={(e) => e.key === 'Enter' && jumpToQueue('MISSING_DOCS')}
+          className="tt-tile tt-focus"
         >
-          <div className="min-w-0 pr-2">
-            <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
-              Missing Docs &amp; Blockers
-            </span>
-            <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="font-display text-xl font-bold text-[#EA580C]">
-                {totalMissingDocs}
-              </span>
-              <span className="text-[11px] text-[#64748B] dark:text-slate-400">Pending Files</span>
-            </div>
-            <span className="text-[10px] text-[#64748B] dark:text-slate-400 font-medium block truncate">
-              Solvency &amp; Statutory gates
-            </span>
-          </div>
-          <div className="w-8 h-8 rounded-md bg-[#FFF7ED] text-[#EA580C] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <AlertTriangle className="w-4 h-4" />
+          <div className="tt-label">Documents outstanding</div>
+          <div className="tt-tile-value mt-2">{totalMissingDocs}</div>
+          <div className="text-xs mt-2" style={{ color: 'var(--crit)' }}>
+            blocking qualification on {counts.MISSING_DOCS} tenders
           </div>
         </div>
 
-        {/* KPI 4: Fleet Readiness Score */}
         <div
           role="button"
           tabIndex={0}
-          onClick={() => handleKpiCardClick('LOW_READINESS')}
-          onKeyDown={(e) => e.key === 'Enter' && handleKpiCardClick('LOW_READINESS')}
-          className={`bg-white dark:bg-slate-900 px-3.5 py-2.5 rounded-lg border border-[#CBD5E1] dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:border-[#2563EB] hover:shadow-md transition-all group ${
-            filterMode === 'LOW_READINESS' ? 'ring-2 ring-[#2563EB] border-[#2563EB]' : ''
-          }`}
-          title="Click to view tenders with low readiness in table"
+          aria-pressed={filterMode === 'LOW_READINESS'}
+          onClick={() => jumpToQueue('LOW_READINESS')}
+          onKeyDown={(e) => e.key === 'Enter' && jumpToQueue('LOW_READINESS')}
+          className="tt-tile tt-focus"
         >
-          <div className="min-w-0 pr-2 flex-1">
-            <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 uppercase tracking-wider block">
-              Submission Readiness
-            </span>
-            <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="font-display text-xl font-bold text-[#0F172A] dark:text-white">
-                {avgReadiness}%
-              </span>
-              <span className="font-mono text-[10px] text-[#64748B] dark:text-slate-400 uppercase font-semibold">
-                Avg Health
-              </span>
-            </div>
-            <div className="w-20 mt-1">
-              <ReadinessBar score={avgReadiness} showLabel={false} />
-            </div>
-          </div>
-          <div className="w-8 h-8 rounded-md bg-[#F1F5F9] text-[#0F172A] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <Activity className="w-4 h-4" />
+          <div className="tt-label">Average readiness</div>
+          <div className="tt-tile-value mt-2">{avgReadiness}%</div>
+          <div className="mt-3">
+            <ReadinessBar score={avgReadiness} showLabel={false} />
           </div>
         </div>
       </div>
 
-      {/* 6-Gate Tender Pipeline Breakdown (Compact Ribbon) */}
-      <div className="bg-white dark:bg-slate-900 rounded-lg border border-[#CBD5E1] dark:border-slate-700 px-3.5 py-2 shadow-sm">
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">
-            6-Gate Tender Pipeline Breakdown
-          </span>
-          <span className="text-[10px] font-semibold text-[#64748B] dark:text-slate-400">
-            {tenders.length} Total Registered
-          </span>
+      {/* Pipeline gates */}
+      <div className="tt-card overflow-hidden">
+        <div className="tt-card-head">
+          <div>
+            <h3 className="tt-title">Pipeline gates</h3>
+            <p className="text-xs tt-text-3 mt-0.5">
+              {tenders.length} tenders registered across the six-gate lifecycle
+            </p>
+          </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-          {stages.map((s) => {
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+          {stages.map((s, i) => {
             const count = tenders.filter((t) => t.stage === s.stage).length;
             const pct = tenders.length > 0 ? Math.round((count / tenders.length) * 100) : 0;
-
             return (
               <Link
                 key={s.stage}
                 to={`/tenders?stage=${s.stage}`}
-                className="px-2.5 py-1.5 rounded-md bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E2E8F0] dark:border-slate-700 hover:border-[#2563EB] hover:bg-[#EFF6FF]/50 transition-all flex items-center justify-between group"
-                title={`Click to show all ${s.label} tenders`}
+                className="px-4 py-3 min-w-0 tt-focus"
+                style={{
+                  borderLeft: i === 0 ? 'none' : '1px solid var(--border-default)',
+                  borderTop: '1px solid var(--border-subtle)',
+                }}
+                title={`Show ${s.label} tenders`}
               >
-                <span className="text-[11px] font-medium text-[#64748B] dark:text-slate-400 truncate pr-1 group-hover:text-[#0F172A] dark:group-hover:text-white transition-colors">
-                  {s.label}
-                </span>
-                <div className="flex items-center gap-1 shrink-0">
-                  <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white group-hover:text-[#2563EB] transition-colors">
-                    {count}
+                <div className="flex items-baseline gap-2">
+                  <span className="font-mono text-[10px] tt-text-3">
+                    {String(i + 1).padStart(2, '0')}
                   </span>
-                  <span className="font-mono text-[9px] text-[#2563EB] font-semibold bg-[#EFF6FF] dark:bg-slate-700 px-1 py-0.2 rounded">
-                    {pct}%
-                  </span>
+                  <span className="text-xs font-medium tt-text tt-truncate">{s.label}</span>
+                  <span className="ml-auto font-mono text-sm tt-text tt-num">{count}</span>
+                </div>
+                <div className="tt-meter mt-2">
+                  <i style={{ width: `${Math.max(pct, count ? 3 : 0)}%` }} />
                 </div>
               </Link>
             );
@@ -401,124 +287,75 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 10-Second Rule Attention Queue (Zero Money) */}
-      <div id="intervention-queue-section" className="scroll-mt-6">
-      <Card
-        title="Tenders Requiring Immediate Intervention"
-        subtitle="Ranked by deadline proximity, missing statutory credentials, and compliance blockers"
-        headerAction={
-          <div className="flex flex-wrap items-center gap-1.5 justify-end">
-            <div className="flex items-center p-0.5 bg-[#F1F5F9] dark:bg-[#1E293B] rounded-lg text-xs overflow-x-auto max-w-full">
-              <button
-                onClick={() => handleFilterModeChange('ALL_TENDERS')}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                  filterMode === 'ALL_TENDERS'
-                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
-                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
-                }`}
-              >
-                All Tenders ({baseUrgentPool.length})
-              </button>
-              <button
-                onClick={() => handleFilterModeChange('ALL_URGENT')}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                  filterMode === 'ALL_URGENT'
-                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
-                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
-                }`}
-              >
-                All Urgent ({allUrgentCount})
-              </button>
-              <button
-                onClick={() => handleFilterModeChange('CLOSING_SOON')}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                  filterMode === 'CLOSING_SOON'
-                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
-                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
-                }`}
-              >
-                Closing &le; 4d ({closingSoonCount})
-              </button>
-              <button
-                onClick={() => handleFilterModeChange('BLOCKERS')}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                  filterMode === 'BLOCKERS'
-                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
-                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
-                }`}
-              >
-                Blockers ({blockersCount})
-              </button>
-              <button
-                onClick={() => handleFilterModeChange('MISSING_DOCS')}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                  filterMode === 'MISSING_DOCS'
-                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
-                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
-                }`}
-              >
-                Missing Docs ({missingDocsCount})
-              </button>
-              <button
-                onClick={() => handleFilterModeChange('LOW_READINESS')}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                  filterMode === 'LOW_READINESS'
-                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
-                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
-                }`}
-              >
-                Low Readiness ({lowReadinessCount})
-              </button>
-              <button
-                onClick={() => handleFilterModeChange('CRITICAL')}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                  filterMode === 'CRITICAL'
-                    ? 'bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-white shadow-xs font-semibold'
-                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
-                }`}
-              >
-                Critical ({criticalCount})
-              </button>
-            </div>
+      {/* Attention queue */}
+      <div id="attention-queue" className="tt-card overflow-hidden scroll-mt-6">
+        <div className="tt-card-head">
+          <div className="min-w-0">
+            <h3 className="tt-title">Needs attention</h3>
+            <p className="text-xs tt-text-3 mt-0.5">
+              Soonest deadline first, then missing statutory credentials and blockers
+            </p>
           </div>
-        }
-      >
-        {/* Interactive Filter Toolbar */}
-        <div className="flex flex-wrap items-center justify-between gap-2.5 px-5 py-2.5 bg-[#F8FAFC] dark:bg-[#0F172A] border-b border-[#CBD5E1] dark:border-slate-700 -mt-5 -mx-5 mb-0 text-xs">
-          <div className="flex flex-wrap items-center gap-2 flex-1 min-w-[280px]">
-            <div className="flex items-center gap-1 text-[#64748B] dark:text-slate-400 shrink-0 font-medium">
-              <Filter className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Filters:</span>
-            </div>
+          <Link to="/tenders" className="tt-btn tt-btn-sm ml-auto shrink-0">
+            View pipeline
+          </Link>
+        </div>
 
-            {/* Quick Search */}
-            <div className="relative flex-1 min-w-[160px] max-w-xs">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+        {/* Filters */}
+        <div className="tt-inset px-4 py-3 space-y-2.5">
+          <div className="flex flex-wrap gap-1.5">
+            {filters.map((f) => (
+              <button
+                key={f.mode}
+                type="button"
+                onClick={() => setMode(f.mode)}
+                aria-pressed={filterMode === f.mode}
+                className="tt-chip tt-focus"
+              >
+                {f.label}
+                <span className="tt-chip-n">{counts[f.mode]}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative">
+              <Search
+                className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                style={{ color: 'var(--text-muted)' }}
+              />
               <input
-                type="text"
-                placeholder="Search tenders..."
+                type="search"
                 value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full pl-8 pr-7 py-1 text-xs rounded-md border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white placeholder-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                placeholder="Search tenders"
+                className="tt-input tt-input-search w-56"
               />
               {searchQuery && (
                 <button
                   type="button"
-                  onClick={() => handleSearchChange('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white cursor-pointer"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 tt-text-3 hover:tt-text"
+                  aria-label="Clear search"
                 >
                   <X className="w-3 h-3" />
                 </button>
               )}
             </div>
 
-            {/* Stage Dropdown */}
             <select
               value={selectedStage}
-              onChange={(e) => handleStageChange(e.target.value)}
-              className="px-2 py-1 text-xs rounded-md border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+              onChange={(e) => {
+                setSelectedStage(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="tt-select"
+              aria-label="Filter by stage"
             >
-              <option value="ALL">All Stages</option>
+              <option value="ALL">All stages</option>
               {stages.map((s) => (
                 <option key={s.stage} value={s.stage}>
                   {s.label}
@@ -526,212 +363,190 @@ export const DashboardPage: React.FC = () => {
               ))}
             </select>
 
-            {/* Category Dropdown */}
             <select
               value={selectedCategory}
-              onChange={(e) => handleCategoryChange(e.target.value)}
-              className="px-2 py-1 text-xs rounded-md border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+              onChange={(e) => {
+                setSelectedCategory(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="tt-select"
+              aria-label="Filter by category"
             >
-              <option value="ALL">All Categories</option>
+              <option value="ALL">All categories</option>
               {categories.map((c) => (
                 <option key={c} value={c}>
                   {c}
                 </option>
               ))}
             </select>
-          </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
-            <span className="text-[11px] font-mono text-[#64748B] dark:text-slate-400">
-              Filtered: <strong className="text-[#0F172A] dark:text-white">{urgentQueue.length}</strong> of {baseUrgentPool.length}
+            <span className="text-[11px] tt-text-3 tt-num ml-auto">
+              {urgentQueue.length} of {baseUrgentPool.length}
             </span>
+
             {hasActiveFilters && (
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="flex items-center gap-1 text-[11px] font-semibold text-[#DC2626] dark:text-rose-400 hover:underline cursor-pointer"
-              >
+              <button type="button" onClick={resetFilters} className="tt-btn tt-btn-sm tt-btn-quiet">
                 <RotateCcw className="w-3 h-3" />
-                <span>Reset Filters</span>
+                <span>Reset</span>
               </button>
             )}
           </div>
         </div>
 
         {urgentQueue.length === 0 ? (
-          <div className="py-12 text-center space-y-2">
-            <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto opacity-80" />
-            <p className="text-sm font-semibold text-[#0F172A] dark:text-white">
-              No tenders matching current filters
-            </p>
-            <p className="text-xs text-[#64748B] dark:text-slate-400">
-              Try adjusting your search criteria or resetting filters.
-            </p>
-            <button
-              type="button"
-              onClick={resetFilters}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#2563EB] dark:text-blue-400 bg-[#EFF6FF] dark:bg-blue-950/40 rounded-lg hover:underline mt-2 cursor-pointer"
-            >
+          <div className="tt-empty">
+            <p className="tt-text font-medium text-sm">No tender matches these filters</p>
+            <p className="mt-1">Clear the search or pick another stage.</p>
+            <button type="button" onClick={resetFilters} className="tt-btn tt-btn-sm mt-3">
               <RotateCcw className="w-3 h-3" />
-              <span>Reset All Filters</span>
+              <span>Reset filters</span>
             </button>
           </div>
         ) : (
-          <div>
-            <div className="divide-y divide-[#E2E8F0] dark:divide-slate-700 -mx-5">
-              {paginatedTenders.map((tender) => (
-                <div
-                  key={tender.id}
-                  className="px-5 py-4 hover:bg-[#F8FAFC] dark:hover:bg-slate-800/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 group"
-                >
-                  {/* Left Details */}
-                  <div className="space-y-1.5 flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white bg-[#F1F5F9] dark:bg-slate-800 px-2 py-0.5 rounded border border-[#CBD5E1] dark:border-slate-700">
-                        {tender.id}
-                      </span>
-                      <span className="font-mono text-xs text-[#64748B] dark:text-slate-400">
-                        {tender.referenceNo}
-                      </span>
-                      <StatusBadge stage={tender.stage} />
-                      <UrgencyBadge
-                        daysRemaining={tender.daysRemaining}
-                        hoursRemaining={tender.hoursRemaining}
-                      />
-                      {tender.scannerConfidence && (
-                        <span className="text-[10px] font-mono text-[#64748B] dark:text-slate-400 bg-[#F8FAFC] dark:bg-slate-800 px-1.5 py-0.5 rounded border border-[#CBD5E1] dark:border-slate-700">
-                          Scanner {tender.scannerConfidence}%
+          <>
+            <div className="overflow-x-auto">
+              <table className="tt-table" style={{ minWidth: 760 }}>
+                <thead>
+                  <tr>
+                    <th>Tender</th>
+                    <th>Type</th>
+                    <th>Deadline</th>
+                    <th>Stage</th>
+                    <th style={{ width: 140 }}>Readiness</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedTenders.map((tender) => (
+                    <tr key={tender.id} className={rowSeverity(tender.daysRemaining)}>
+                      <td>
+                        <Link
+                          to={`/tenders/${tender.id}`}
+                          className="block font-medium tt-text tt-truncate hover:underline"
+                          style={{ maxWidth: '42ch' }}
+                          title={tender.title}
+                        >
+                          {tender.title}
+                        </Link>
+                        <div className="flex items-center gap-2 mt-0.5 text-[11px] tt-text-3 tt-truncate">
+                          <span className="font-mono">{tender.id}</span>
+                          {tender.organization && (
+                            <>
+                              <span>/</span>
+                              <span className="tt-truncate">{tender.organization}</span>
+                            </>
+                          )}
+                        </div>
+                        {tender.blockers.length > 0 && (
+                          <div
+                            className="inline-flex items-center gap-1.5 mt-1.5 text-[11px]"
+                            style={{ color: 'var(--crit)' }}
+                          >
+                            <i className="tt-dot tt-dot-crit" aria-hidden="true" />
+                            <span className="tt-truncate" style={{ maxWidth: '38ch' }}>
+                              {tender.blockers[0]}
+                            </span>
+                          </div>
+                        )}
+                      </td>
+                      <td>
+                        <span className="tt-tag">
+                          {tender.tenderType || tender.summary?.tenderType || 'RFP'}
                         </span>
-                      )}
-                    </div>
-
-                    <Link
-                      to={`/tenders/${tender.id}`}
-                      className="font-display font-semibold text-sm text-[#0F172A] dark:text-white hover:text-[#2563EB] dark:hover:text-blue-400 transition-colors block truncate"
-                    >
-                      {tender.title}
-                    </Link>
-
-                    <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1 text-xs text-[#64748B] dark:text-slate-400">
-                      {tender.organization && <span>{tender.organization}</span>}
-                      {tender.organization && tender.country && <span>•</span>}
-                      {tender.country && <span>{tender.country}</span>}
-                      {(tender.organization || tender.country) && <span>•</span>}
-                      <span className="inline-flex items-center gap-1 font-medium text-[#4338CA] dark:text-indigo-300 bg-[#EEF2FF] dark:bg-indigo-950/60 px-1.5 py-0.5 rounded border border-[#C7D2FE] dark:border-indigo-800 text-[11px]">
-                        <span className="text-[#6366F1] dark:text-indigo-400 font-bold">Type:</span>
-                        <span>{tender.tenderType || tender.summary?.tenderType || 'Request for Proposals (RFP)'}</span>
-                      </span>
-                      <span>•</span>
-                      <span className="font-semibold text-[#2563EB] dark:text-blue-400">
-                        {tender.category}
-                      </span>
-                      <span>•</span>
-                      <span>Lead: {tender.leadOwner.name}</span>
-                    </div>
-
-                    {tender.blockers.length > 0 && (
-                      <div className="flex items-center gap-1.5 text-xs text-[#DC2626] dark:text-rose-400 font-medium bg-[#FEF2F2] dark:bg-rose-950/40 px-2.5 py-1 rounded border border-[#FECACA] dark:border-rose-900/60 inline-flex">
-                        <FileWarning className="w-3.5 h-3.5 shrink-0" />
-                        <span>Blocker: {tender.blockers[0]}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Right Action & Readiness */}
-                  <div className="flex items-center gap-6 shrink-0 justify-between md:justify-end">
-                    <div className="w-28 text-right hidden sm:block">
-                      <span className="text-[11px] text-[#64748B] dark:text-slate-400 block mb-1">
-                        Readiness
-                      </span>
-                      <ReadinessBar score={tender.readinessScore} showLabel={true} />
-                    </div>
-
-                    <Link
-                      to={`/tenders/${tender.id}`}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-[#F1F5F9] dark:bg-slate-800 hover:bg-[#2563EB] dark:hover:bg-blue-600 hover:text-white text-[#0F172A] dark:text-white rounded-lg text-xs font-semibold border border-[#CBD5E1] dark:border-slate-700 transition-all group-hover:border-[#2563EB]"
-                    >
-                      <span>Resolve</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </Link>
-                  </div>
-                </div>
-              ))}
+                      </td>
+                      <td>
+                        <UrgencyBadge
+                          daysRemaining={tender.daysRemaining}
+                          hoursRemaining={tender.hoursRemaining}
+                        />
+                      </td>
+                      <td>
+                        <StatusBadge stage={tender.stage} />
+                      </td>
+                      <td>
+                        <ReadinessBar score={tender.readinessScore ?? 0} />
+                      </td>
+                      <td className="text-right">
+                        <Link to={`/tenders/${tender.id}`} className="tt-btn tt-btn-sm">
+                          <span>Open</span>
+                          <ArrowUpRight className="w-3 h-3" />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
-            {/* Pagination Controls Toolbar */}
-            {urgentQueue.length > 0 && (
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-3 -mx-5 -mb-5 bg-[#F8FAFC]/50 dark:bg-[#0F172A] border-t border-[#CBD5E1] dark:border-slate-700 text-xs">
-                {/* Page Summary & Items Per Page */}
-                <div className="flex items-center gap-3 text-[#64748B] dark:text-slate-400">
-                  <span>
-                    Showing <strong className="text-[#0F172A] dark:text-white">{Math.min((currentPage - 1) * pageSize + 1, urgentQueue.length)}</strong> to{' '}
-                    <strong className="text-[#0F172A] dark:text-white">
-                      {pageSize === -1 ? urgentQueue.length : Math.min(currentPage * pageSize, urgentQueue.length)}
-                    </strong> of <strong className="text-[#0F172A] dark:text-white">{urgentQueue.length}</strong> tenders
-                  </span>
-
-                  <div className="flex items-center gap-1.5 pl-3 border-l border-[#CBD5E1] dark:border-slate-700">
-                    <span className="text-[11px]">Show:</span>
-                    <select
-                      value={pageSize}
-                      onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                      className="px-2 py-0.5 text-xs rounded border border-[#CBD5E1] dark:border-slate-700 bg-white dark:bg-slate-900 text-[#0F172A] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
-                    >
-                      <option value={5}>5 per page</option>
-                      <option value={10}>10 per page</option>
-                      <option value={15}>15 per page</option>
-                      <option value={20}>20 per page</option>
-                      <option value={-1}>All ({urgentQueue.length})</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Navigation: Previous, Numbered Page Chips, Next */}
-                {pageSize !== -1 && totalPages > 1 && (
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                      disabled={currentPage === 1}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#CBD5E1] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
-                    >
-                      <ChevronLeft className="w-3.5 h-3.5" />
-                      <span>Previous</span>
-                    </button>
-
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                        <button
-                          key={pageNum}
-                          type="button"
-                          onClick={() => setCurrentPage(pageNum)}
-                          className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
-                            currentPage === pageNum
-                              ? 'bg-[#2563EB] text-white shadow-xs'
-                              : 'border border-[#E2E8F0] dark:border-slate-700 text-[#64748B] dark:text-slate-400 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white'
-                          }`}
-                        >
-                          {pageNum}
-                        </button>
-                      ))}
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                      disabled={currentPage === totalPages}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[#CBD5E1] dark:border-slate-700 text-xs font-semibold text-[#64748B] dark:text-slate-300 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 hover:text-[#0F172A] dark:hover:text-white disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
-                    >
-                      <span>Next</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                )}
+            {/* Pagination */}
+            <div
+              className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 text-xs tt-text-2"
+              style={{ borderTop: '1px solid var(--border-default)' }}
+            >
+              <div className="flex items-center gap-3">
+                <span>
+                  Showing{' '}
+                  <strong className="tt-text tt-num">
+                    {Math.min((currentPage - 1) * pageSize + 1, urgentQueue.length)}–
+                    {pageSize === -1
+                      ? urgentQueue.length
+                      : Math.min(currentPage * pageSize, urgentQueue.length)}
+                  </strong>{' '}
+                  of <strong className="tt-text tt-num">{urgentQueue.length}</strong>
+                </span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="tt-select"
+                  aria-label="Rows per page"
+                >
+                  <option value={8}>8 per page</option>
+                  <option value={15}>15 per page</option>
+                  <option value={25}>25 per page</option>
+                  <option value={-1}>All</option>
+                </select>
               </div>
-            )}
-          </div>
+
+              {pageSize !== -1 && totalPages > 1 && (
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="tt-btn tt-btn-sm"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Previous</span>
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => setCurrentPage(n)}
+                      aria-current={currentPage === n}
+                      className={`tt-btn tt-btn-sm ${currentPage === n ? 'tt-btn-primary' : ''}`}
+                      style={{ minWidth: 28, justifyContent: 'center' }}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="tt-btn tt-btn-sm"
+                  >
+                    <span>Next</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
         )}
-      </Card>
       </div>
     </div>
   );

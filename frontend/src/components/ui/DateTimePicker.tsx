@@ -39,42 +39,42 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
   return (
     <div className={`space-y-1.5 ${className}`}>
       <div className="flex items-center justify-between">
-        <label className="block text-xs font-semibold text-slate-900 dark:text-slate-200">
+        <label className="block text-xs font-semibold text-[var(--text-primary)]">
           {label}
         </label>
         {dateValue && (
-          <span className="text-[11px] font-mono text-blue-600 dark:text-blue-400">
+          <span className="text-[11px] font-mono text-[var(--accent)]">
             {dateValue} {formattedTimeDisplay && `@ ${formattedTimeDisplay}`}
           </span>
         )}
       </div>
       {sublabel && (
-        <p className="text-[11px] text-slate-500 dark:text-slate-400">{sublabel}</p>
+        <p className="text-[11px] text-[var(--text-secondary)]">{sublabel}</p>
       )}
 
       <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
         {/* Date Selector - Shorter and Compact */}
         <div className="w-full sm:w-[145px] shrink-0 relative">
-          <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+          <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-[var(--text-muted)]">
             <Calendar className="w-3.5 h-3.5" />
           </div>
           <input
             type="date"
             value={dateValue || ''}
             onChange={(e) => onDateChange(e.target.value)}
-            className="w-full pl-8 pr-2 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+            className="w-full pl-8 pr-2 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors"
           />
         </div>
 
         {/* Hour Selector */}
         <div className="w-[calc(50%-4px)] sm:w-[72px] shrink-0 relative">
-          <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-slate-400">
+          <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-[var(--text-muted)]">
             <Clock className="w-3 h-3" />
           </div>
           <select
             value={hourValue || ''}
             onChange={(e) => onHourChange(e.target.value)}
-            className="w-full pl-6 pr-1.5 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors cursor-pointer"
+            className="w-full pl-6 pr-1.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-mono text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors cursor-pointer"
             title="Hour (00-23)"
           >
             <option value="">HH</option>
@@ -91,7 +91,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
           <select
             value={minuteValue || ''}
             onChange={(e) => onMinuteChange(e.target.value)}
-            className="w-full px-2 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors cursor-pointer"
+            className="w-full px-2 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-mono text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors cursor-pointer"
             title="Minute (00-59)"
           >
             <option value="">MM</option>
@@ -105,13 +105,13 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
 
         {/* Timezone Selector - Maximally Wide */}
         <div className="w-full sm:flex-1 min-w-0 relative">
-          <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+          <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-[var(--text-muted)]">
             <Globe className="w-3.5 h-3.5" />
           </div>
           <select
             value={timezoneValue || 'BST'}
             onChange={(e) => onTimezoneChange(e.target.value)}
-            className="w-full pl-8 pr-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors truncate cursor-pointer"
+            className="w-full pl-8 pr-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors truncate cursor-pointer"
             title={`${selectedTz.label} (${selectedTz.offset})`}
           >
             {STANDARD_TIMEZONES.map((tz) => (

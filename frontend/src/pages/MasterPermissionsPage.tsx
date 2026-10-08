@@ -483,19 +483,19 @@ export const MasterPermissionsPage: React.FC = () => {
   if (!isSuperAdmin) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-6 text-center px-4">
-        <div className="w-20 h-20 rounded-2xl bg-[#FEF2F2] flex items-center justify-center shadow-sm">
-          <Lock className="w-10 h-10 text-[#DC2626]" />
+        <div className="w-20 h-20 rounded-2xl bg-[var(--crit-soft)] flex items-center justify-center shadow-sm">
+          <Lock className="w-10 h-10 text-[var(--crit)]" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-[#0F172A] mb-2">System Admin Access Only</h2>
-          <p className="text-sm text-[#64748B] max-w-sm">
-            The Access &amp; Permissions console is restricted to the <span className="font-semibold text-[#DC2626]">System Administrator</span> account.<br />
+          <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">System Admin Access Only</h2>
+          <p className="text-sm text-[var(--text-secondary)] max-w-sm">
+            The Access &amp; Permissions console is restricted to the <span className="font-semibold text-[var(--crit)]">System Administrator</span> account.<br />
             Please contact your System Admin to manage permissions.
           </p>
         </div>
-        <div className="flex items-center gap-2 px-4 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#64748B]">
-          <Shield className="w-3.5 h-3.5 text-[#2563EB]" />
-          <span>Logged in as: <span className="font-semibold text-[#0F172A]">{currentUser.name}</span> ({currentUser.role.replace(/_/g, ' ')})</span>
+        <div className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-secondary)]">
+          <Shield className="w-3.5 h-3.5 text-[var(--accent)]" />
+          <span>Logged in as: <span className="font-semibold text-[var(--text-primary)]">{currentUser.name}</span> ({currentUser.role.replace(/_/g, ' ')})</span>
         </div>
       </div>
     );
@@ -507,20 +507,20 @@ export const MasterPermissionsPage: React.FC = () => {
 
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
-            <span className="font-semibold text-[#0F172A]">Security &amp; Governance</span>
+          <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] mb-1">
+            <span className="font-semibold text-[var(--text-primary)]">Security &amp; Governance</span>
             <span>•</span>
             <span>JV Collaboration Protocol</span>
           </div>
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#2563EB] text-white flex items-center justify-center shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-[var(--accent)] text-[var(--accent-on)] flex items-center justify-center shadow-sm">
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
+              <h1 className="font-display text-2xl font-bold text-[var(--text-primary)] tracking-tight">
                 Access &amp; Permissions Control Center
               </h1>
-              <p className="text-xs text-[#64748B]">
+              <p className="text-xs text-[var(--text-secondary)]">
                 Centralized 4-layer authorization engine, partner permission ceilings, and immutable security audit trail.
               </p>
             </div>
@@ -529,45 +529,45 @@ export const MasterPermissionsPage: React.FC = () => {
 
         {/* Quick KPI Badges */}
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="px-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg shadow-2xs text-xs">
-            <span className="text-[#64748B] block text-[10px] font-medium">Standard Permissions</span>
-            <span className="font-mono font-bold text-[#0F172A] text-sm">20 Cataloged</span>
+          <div className="px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg shadow-2xs text-xs">
+            <span className="text-[var(--text-secondary)] block text-[10px] font-medium">Standard Permissions</span>
+            <span className="font-mono font-bold text-[var(--text-primary)] text-sm">20 Cataloged</span>
           </div>
-          <div className="px-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg shadow-2xs text-xs">
-            <span className="text-[#64748B] block text-[10px] font-medium">JV &amp; Partner Orgs</span>
-            <span className="font-mono font-bold text-[#2563EB] text-sm">{partners.length} Registered</span>
+          <div className="px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg shadow-2xs text-xs">
+            <span className="text-[var(--text-secondary)] block text-[10px] font-medium">JV &amp; Partner Orgs</span>
+            <span className="font-mono font-bold text-[var(--accent)] text-sm">{partners.length} Registered</span>
           </div>
-          <div className="px-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg shadow-2xs text-xs">
-            <span className="text-[#64748B] block text-[10px] font-medium">Security Suspensions</span>
-            <span className="font-mono font-bold text-[#DC2626] text-sm">{blocks.filter(b => b.is_active).length} Active</span>
+          <div className="px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg shadow-2xs text-xs">
+            <span className="text-[var(--text-secondary)] block text-[10px] font-medium">Security Suspensions</span>
+            <span className="font-mono font-bold text-[var(--crit)] text-sm">{blocks.filter(b => b.is_active).length} Active</span>
           </div>
         </div>
       </div>
 
       {!isSuperAdmin && (
-        <div className="p-3.5 bg-[#FFFBEB] border border-[#FDE68A] rounded-xl text-xs text-[#92400E] flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs">
+        <div className="p-3.5 bg-[var(--warn-soft)] border border-[var(--warn-line)] rounded-xl text-xs text-[var(--warn)] flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs">
           <div className="flex items-center gap-2">
-            <Lock className="w-4 h-4 text-[#D97706] shrink-0" />
+            <Lock className="w-4 h-4 text-[var(--warn)] shrink-0" />
             <span>
               <strong>Read-Only Governance Mode:</strong> You are authenticated as{' '}
               <strong>{currentUser.name}</strong> ({currentUser.role.replace('_', ' ')}). Modifying partner permission ceilings, role rules, and security suspensions is restricted to <strong>Super Admin</strong>.
             </span>
           </div>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white border border-[#FDE68A] text-[#B45309] font-bold shrink-0 self-start sm:self-auto">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--warn-line)] text-[var(--warn)] font-bold shrink-0 self-start sm:self-auto">
             Super Admin Required
           </span>
         </div>
       )}
 
       {/* Tabs Navigation Bar */}
-      <div className="flex items-center gap-1 border-b border-[#E2E8F0] overflow-x-auto pb-px">
+      <div className="flex items-center gap-1 border-b border-[var(--border-default)] overflow-x-auto pb-px">
         <button
           type="button"
           onClick={() => setActiveTab('simulator')}
           className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap ${
-            activeTab === 'simulator'
-              ? 'border-[#2563EB] text-[#2563EB] bg-white rounded-t-lg'
-              : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'simulator'
+ ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--bg-surface)] rounded-t-lg'
+              : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
           <PlayCircle className="w-4 h-4" />
@@ -578,9 +578,9 @@ export const MasterPermissionsPage: React.FC = () => {
           type="button"
           onClick={() => setActiveTab('partners')}
           className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap ${
-            activeTab === 'partners'
-              ? 'border-[#2563EB] text-[#2563EB] bg-white rounded-t-lg'
-              : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'partners'
+ ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--bg-surface)] rounded-t-lg'
+              : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
           <Building2 className="w-4 h-4" />
@@ -591,9 +591,9 @@ export const MasterPermissionsPage: React.FC = () => {
           type="button"
           onClick={() => setActiveTab('roles')}
           className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap ${
-            activeTab === 'roles'
-              ? 'border-[#2563EB] text-[#2563EB] bg-white rounded-t-lg'
-              : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'roles'
+ ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--bg-surface)] rounded-t-lg'
+              : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
           <ShieldCheck className="w-4 h-4" />
@@ -604,9 +604,9 @@ export const MasterPermissionsPage: React.FC = () => {
           type="button"
           onClick={() => setActiveTab('accounts')}
           className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap ${
-            activeTab === 'accounts'
-              ? 'border-[#2563EB] text-[#2563EB] bg-white rounded-t-lg'
-              : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'accounts'
+ ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--bg-surface)] rounded-t-lg'
+              : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -617,9 +617,9 @@ export const MasterPermissionsPage: React.FC = () => {
           type="button"
           onClick={() => setActiveTab('blocks')}
           className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap ${
-            activeTab === 'blocks'
-              ? 'border-[#2563EB] text-[#2563EB] bg-white rounded-t-lg'
-              : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'blocks'
+ ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--bg-surface)] rounded-t-lg'
+              : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
           <Lock className="w-4 h-4" />
@@ -630,9 +630,9 @@ export const MasterPermissionsPage: React.FC = () => {
           type="button"
           onClick={() => setActiveTab('audit')}
           className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap ${
-            activeTab === 'audit'
-              ? 'border-[#2563EB] text-[#2563EB] bg-white rounded-t-lg'
-              : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'audit'
+ ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--bg-surface)] rounded-t-lg'
+              : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
           <History className="w-4 h-4" />
@@ -652,7 +652,7 @@ export const MasterPermissionsPage: React.FC = () => {
             <div className="space-y-4 text-xs">
               {/* Subject Selector: Internal vs Partner */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Subject Type:
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -660,9 +660,9 @@ export const MasterPermissionsPage: React.FC = () => {
                     type="button"
                     onClick={() => setSimPartner('NONE')}
                     className={`p-2.5 rounded-lg border text-center font-semibold transition-all cursor-pointer ${
-                      simPartner === 'NONE'
-                        ? 'border-[#2563EB] bg-[#EFF6FF] text-[#1D4ED8]'
-                        : 'border-[#E2E8F0] bg-white text-[#64748B]'
+ simPartner === 'NONE'
+ ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
+                        : 'border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-secondary)]'
                     }`}
                   >
                     🏢 Internal NYK Staff
@@ -671,9 +671,9 @@ export const MasterPermissionsPage: React.FC = () => {
                     type="button"
                     onClick={() => setSimPartner(partners[0]?.id || 'ORG-APEX-01')}
                     className={`p-2.5 rounded-lg border text-center font-semibold transition-all cursor-pointer ${
-                      simPartner !== 'NONE'
-                        ? 'border-[#2563EB] bg-[#EFF6FF] text-[#1D4ED8]'
-                        : 'border-[#E2E8F0] bg-white text-[#64748B]'
+ simPartner !== 'NONE'
+ ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
+                        : 'border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-secondary)]'
                     }`}
                   >
                     🤝 External JV Partner
@@ -683,13 +683,13 @@ export const MasterPermissionsPage: React.FC = () => {
 
               {simPartner === 'NONE' ? (
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Internal User Profile:
                   </label>
                   <select
                     value={simUser}
                     onChange={(e) => setSimUser(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-medium text-[#0F172A] cursor-pointer"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-medium text-[var(--text-primary)] cursor-pointer"
                   >
                     {teamMembers.map((m) => (
                       <option key={m.id} value={m.id}>
@@ -700,13 +700,13 @@ export const MasterPermissionsPage: React.FC = () => {
                 </div>
               ) : (
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     External Partner Organization:
                   </label>
                   <select
                     value={simPartner}
                     onChange={(e) => setSimPartner(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-medium text-[#0F172A] cursor-pointer"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-medium text-[var(--text-primary)] cursor-pointer"
                   >
                     {partners.map((p) => (
                       <option key={p.id} value={p.id}>
@@ -719,13 +719,13 @@ export const MasterPermissionsPage: React.FC = () => {
 
               {/* Target Tender Context */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Tender Workspace Context:
                 </label>
                 <select
                   value={simTender}
                   onChange={(e) => setSimTender(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-medium text-[#0F172A] cursor-pointer"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-medium text-[var(--text-primary)] cursor-pointer"
                 >
                   <option value="">-- Global / No Tender --</option>
                   {tenders.map((t) => (
@@ -738,7 +738,7 @@ export const MasterPermissionsPage: React.FC = () => {
 
               {/* Target Resource ID (Optional) */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Specific Resource / Document ID (Optional):
                 </label>
                 <input
@@ -746,9 +746,9 @@ export const MasterPermissionsPage: React.FC = () => {
                   value={simResource}
                   onChange={(e) => setSimResource(e.target.value)}
                   placeholder="e.g. DOC-01 or DOC-CONFIDENTIAL-01"
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs font-mono text-[#0F172A]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded-lg text-xs font-mono text-[var(--text-primary)]"
                 />
-                <span className="text-[10px] text-[#94A3B8] block mt-1">
+                <span className="text-[10px] text-[var(--text-muted)] block mt-1">
                   Leave blank to test general tender-level access.
                 </span>
               </div>
@@ -756,32 +756,32 @@ export const MasterPermissionsPage: React.FC = () => {
               {/* Requested Action Permissions (Multi-Select) */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="block font-semibold text-[#0F172A] text-xs">
+                  <label className="block font-semibold text-[var(--text-primary)] text-xs">
                     Target Permissions to Evaluate:
                   </label>
                   <div className="flex items-center gap-1.5 text-[11px]">
-                    <span className="font-bold px-1.5 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] text-[10px]">
+                    <span className="font-bold px-1.5 py-0.5 rounded bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)] text-[10px]">
                       {selectedSimActions.length} Selected
                     </span>
                     <button
                       type="button"
                       onClick={handleSelectAllSimActions}
-                      className="font-semibold text-[#2563EB] hover:underline cursor-pointer"
+                      className="font-semibold text-[var(--accent)] hover:underline cursor-pointer"
                     >
                       Select All
                     </button>
-                    <span className="text-[#CBD5E1]">•</span>
+                    <span className="text-[var(--text-muted)]">•</span>
                     <button
                       type="button"
                       onClick={handleClearSimActions}
-                      className="font-semibold text-[#64748B] hover:text-[#0F172A] cursor-pointer"
+                      className="font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
                     >
                       Reset (*)
                     </button>
                   </div>
                 </div>
 
-                <div className="max-h-64 overflow-y-auto border border-[#CBD5E1] rounded-lg bg-[#F8FAFC] p-1.5 space-y-1 divide-y divide-[#E2E8F0]/60">
+                <div className="max-h-64 overflow-y-auto border border-[var(--border-strong)] rounded-lg bg-[var(--bg-subtle)] p-1.5 space-y-1 divide-y divide-[var(--border-default)]/60">
                   {STANDARD_PERMISSIONS.map((p) => {
                     const isSelected = selectedSimActions.includes(p.code);
                     const IconComponent = p.icon;
@@ -790,23 +790,23 @@ export const MasterPermissionsPage: React.FC = () => {
                         key={p.code}
                         onClick={() => toggleSimAction(p.code)}
                         className={`pt-1 first:pt-0 flex items-center justify-between p-1.5 rounded-md cursor-pointer transition-colors ${
-                          isSelected ? 'bg-white border border-[#BFDBFE] shadow-2xs' : 'hover:bg-white/80 border border-transparent'
-                        }`}
+ isSelected ? 'bg-[var(--bg-surface)] border border-[var(--accent-line)] shadow-2xs' : 'hover:bg-[var(--bg-surface)]/80 border border-transparent'
+ }`}
                       >
                         <div className="flex items-center gap-2 min-w-0 pr-2">
                           {isSelected ? (
-                            <CheckSquare className="w-4 h-4 text-[#2563EB] shrink-0" />
+                            <CheckSquare className="w-4 h-4 text-[var(--accent)] shrink-0" />
                           ) : (
-                            <Square className="w-4 h-4 text-[#94A3B8] shrink-0" />
+                            <Square className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
                           )}
-                          <IconComponent className={`w-3.5 h-3.5 shrink-0 ${p.sensitive ? 'text-[#DC2626]' : 'text-[#2563EB]'}`} />
+                          <IconComponent className={`w-3.5 h-3.5 shrink-0 ${p.sensitive ? 'text-[var(--crit)]' : 'text-[var(--accent)]'}`} />
                           <div className="min-w-0">
-                            <span className="text-xs font-semibold text-[#0F172A] block truncate leading-tight">{p.name}</span>
-                            <span className="font-mono text-[10px] text-[#64748B] block truncate leading-tight">{p.code}</span>
+                            <span className="text-xs font-semibold text-[var(--text-primary)] block truncate leading-tight">{p.name}</span>
+                            <span className="font-mono text-[10px] text-[var(--text-secondary)] block truncate leading-tight">{p.code}</span>
                           </div>
                         </div>
                         {p.sensitive && (
-                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] shrink-0">
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[var(--crit-soft)] text-[var(--crit)] border border-[var(--crit-line)] shrink-0">
                             Sensitive
                           </span>
                         )}
@@ -820,7 +820,7 @@ export const MasterPermissionsPage: React.FC = () => {
                 type="button"
                 disabled={isSimulating || selectedSimActions.length === 0}
                 onClick={handleRunDiagnostic}
-                className="w-full py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-xs rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-2.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed text-[var(--accent-on)] font-semibold text-xs rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 cursor-pointer"
               >
                 <PlayCircle className="w-4 h-4" />
                 <span>
@@ -847,32 +847,32 @@ export const MasterPermissionsPage: React.FC = () => {
                   key={p.id}
                   onClick={() => setSelectedPartnerForCeiling(p.id)}
                   className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                    isSelected
-                      ? 'border-[#2563EB] bg-[#EFF6FF]/40 shadow-xs'
-                      : 'border-[#E2E8F0] bg-white hover:border-[#CBD5E1]'
+ isSelected
+ ? 'border-[var(--accent)] bg-[var(--accent-soft)]/40 shadow-xs'
+                      : 'border-[var(--border-default)] bg-[var(--bg-surface)] hover:border-[var(--border-strong)]'
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center font-bold text-xs">
+                      <div className="w-8 h-8 rounded-lg bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center font-bold text-xs">
                         JV
                       </div>
                       <div>
-                        <h4 className="font-bold text-xs text-[#0F172A]">{p.name}</h4>
-                        <span className="font-mono text-[10px] text-[#64748B] block">{p.id} • {p.country}</span>
+                        <h4 className="font-bold text-xs text-[var(--text-primary)]">{p.name}</h4>
+                        <span className="font-mono text-[10px] text-[var(--text-secondary)] block">{p.id} • {p.country}</span>
                       </div>
                     </div>
 
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0]">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[var(--ok-soft)] text-[var(--ok)] border border-[var(--ok-line)]">
                       {p.status}
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-[#64748B] mt-2 line-clamp-2">{p.notes}</p>
+                  <p className="text-[11px] text-[var(--text-secondary)] mt-2 line-clamp-2">{p.notes}</p>
 
-                  <div className="mt-3 pt-3 border-t border-[#F1F5F9] flex items-center justify-between text-[11px] text-[#64748B]">
+                  <div className="mt-3 pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-[var(--text-secondary)]">
                     <span>Tenders Assigned: <strong>{p.assignments.length}</strong></span>
-                    <span className="text-[#2563EB] font-semibold hover:underline">
+                    <span className="text-[var(--accent)] font-semibold hover:underline">
                       {isSelected ? '✓ Managing Ceilings' : 'Click to Configure Ceilings →'}
                     </span>
                   </div>
@@ -891,7 +891,7 @@ export const MasterPermissionsPage: React.FC = () => {
                   type="button"
                   disabled={!isSuperAdmin}
                   onClick={() => handleSetAllCeilings(true)}
-                  className="px-2.5 py-1 text-xs font-semibold bg-[#EFF6FF] text-[#2563EB] hover:bg-[#DBEAFE] rounded-md border border-[#BFDBFE] transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-2.5 py-1 text-xs font-semibold bg-[var(--accent-soft)] text-[var(--accent)] hover:bg-[var(--accent-soft)] rounded-md border border-[var(--accent-line)] transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   title={isSuperAdmin ? "Grant ALLOW for all permissions to this partner" : "Ceiling modification restricted to Super Admin"}
                 >
                   <CheckCircle2 className="w-3.5 h-3.5" />
@@ -901,7 +901,7 @@ export const MasterPermissionsPage: React.FC = () => {
                   type="button"
                   disabled={!isSuperAdmin}
                   onClick={() => handleSetAllCeilings(false)}
-                  className="px-2.5 py-1 text-xs font-semibold bg-[#FEF2F2] text-[#DC2626] hover:bg-[#FEE2E2] rounded-md border border-[#FECACA] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-2.5 py-1 text-xs font-semibold bg-[var(--crit-soft)] text-[var(--crit)] hover:bg-[var(--crit-soft)] rounded-md border border-[var(--crit-line)] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   title={isSuperAdmin ? "Set all permissions to DENY for this partner" : "Ceiling modification restricted to Super Admin"}
                 >
                   <span>Deny All</span>
@@ -918,16 +918,16 @@ export const MasterPermissionsPage: React.FC = () => {
                   <div
                     key={perm.code}
                     className={`p-3 rounded-lg border text-xs flex items-center justify-between transition-all ${
-                      isAllowed
-                        ? 'border-[#E2E8F0] bg-white'
-                        : 'border-[#FECACA] bg-[#FEF2F2]/60'
+ isAllowed
+ ? 'border-[var(--border-default)] bg-[var(--bg-surface)]'
+                        : 'border-[var(--crit-line)] bg-[var(--crit-soft)]/60'
                     }`}
                   >
                     <div className="flex items-center gap-2 min-w-0 pr-2">
-                      <IconComponent className={`w-4 h-4 shrink-0 ${perm.sensitive ? 'text-[#DC2626]' : 'text-[#2563EB]'}`} />
+                      <IconComponent className={`w-4 h-4 shrink-0 ${perm.sensitive ? 'text-[var(--crit)]' : 'text-[var(--accent)]'}`} />
                       <div className="min-w-0">
-                        <span className="font-bold text-[#0F172A] block truncate">{perm.name}</span>
-                        <span className="font-mono text-[10px] text-[#64748B] block truncate">{perm.code}</span>
+                        <span className="font-bold text-[var(--text-primary)] block truncate">{perm.name}</span>
+                        <span className="font-mono text-[10px] text-[var(--text-secondary)] block truncate">{perm.code}</span>
                       </div>
                     </div>
 
@@ -936,9 +936,9 @@ export const MasterPermissionsPage: React.FC = () => {
                       disabled={!isSuperAdmin}
                       onClick={() => toggleCeiling(perm.code)}
                       className={`px-2.5 py-1 rounded text-[11px] font-bold transition-colors shrink-0 disabled:opacity-60 disabled:cursor-not-allowed ${
-                        isAllowed
-                          ? 'bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0] hover:bg-[#DCFCE7]'
-                          : 'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] hover:bg-[#FEE2E2]'
+ isAllowed
+ ? 'bg-[var(--ok-soft)] text-[var(--ok)] border border-[var(--ok-line)] hover:bg-[var(--ok-soft)]'
+                          : 'bg-[var(--crit-soft)] text-[var(--crit)] border border-[var(--crit-line)] hover:bg-[var(--crit-soft)]'
                       } ${isSuperAdmin ? 'cursor-pointer' : ''}`}
                       title={!isSuperAdmin ? "Ceiling modifications restricted to Super Admin" : undefined}
                     >
@@ -979,7 +979,7 @@ export const MasterPermissionsPage: React.FC = () => {
                     body: JSON.stringify(newRule),
                   }).catch(() => {});
                 }}
-                className="px-2.5 py-1 text-xs font-semibold bg-[#2563EB] text-white hover:bg-[#1D4ED8] rounded-md shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
+                className="px-2.5 py-1 text-xs font-semibold bg-[var(--accent)] text-[var(--accent-on)] hover:bg-[var(--accent-hover)] rounded-md shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
                 title="Grant full administrative wildcard access"
               >
                 <Plus className="w-3.5 h-3.5" />
@@ -991,7 +991,7 @@ export const MasterPermissionsPage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+                <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
                   <th className="py-2.5 px-3">Rule ID</th>
                   <th className="py-2.5 px-3">Subject (Who)</th>
                   <th className="py-2.5 px-3">Scope (Where)</th>
@@ -1000,27 +1000,27 @@ export const MasterPermissionsPage: React.FC = () => {
                   <th className="py-2.5 px-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F1F5F9]">
+              <tbody className="divide-y divide-[var(--border-subtle)]">
                 {rules.map((rule) => (
-                  <tr key={rule.id} className="hover:bg-[#F8FAFC] transition-colors">
-                    <td className="py-3 px-3 font-mono text-[11px] text-[#64748B]">#{rule.id}</td>
+                  <tr key={rule.id} className="hover:bg-[var(--bg-subtle)] transition-colors">
+                    <td className="py-3 px-3 font-mono text-[11px] text-[var(--text-secondary)]">#{rule.id}</td>
                     <td className="py-3 px-3">
-                      <span className="font-semibold text-[#0F172A]">{rule.subject_id}</span>
-                      <span className="text-[10px] text-[#94A3B8] block">{rule.subject_type}</span>
+                      <span className="font-semibold text-[var(--text-primary)]">{rule.subject_id}</span>
+                      <span className="text-[10px] text-[var(--text-muted)] block">{rule.subject_type}</span>
                     </td>
                     <td className="py-3 px-3 font-mono text-[11px]">
-                      <span className="px-1.5 py-0.5 rounded bg-[#F1F5F9] text-[#475569] font-bold">
+                      <span className="px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-[var(--text-secondary)] font-bold">
                         {rule.scope_type}
                       </span>
-                      {rule.scope_id && <span className="text-[#64748B] ml-1.5">({rule.scope_id})</span>}
+                      {rule.scope_id && <span className="text-[var(--text-secondary)] ml-1.5">({rule.scope_id})</span>}
                     </td>
-                    <td className="py-3 px-3 font-mono font-bold text-[#0F172A]">{rule.permission_code}</td>
+                    <td className="py-3 px-3 font-mono font-bold text-[var(--text-primary)]">{rule.permission_code}</td>
                     <td className="py-3 px-3">
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
-                          rule.effect === 'ALLOW'
-                            ? 'bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0]'
-                            : 'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]'
+ rule.effect === 'ALLOW'
+ ? 'bg-[var(--ok-soft)] text-[var(--ok)] border border-[var(--ok-line)]'
+                            : 'bg-[var(--crit-soft)] text-[var(--crit)] border border-[var(--crit-line)]'
                         }`}
                       >
                         {rule.effect}
@@ -1030,7 +1030,7 @@ export const MasterPermissionsPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setRules(rules.filter((r) => r.id !== rule.id))}
-                        className="text-[#94A3B8] hover:text-[#DC2626] p-1 transition-colors"
+                        className="text-[var(--text-muted)] hover:text-[var(--crit)] p-1 transition-colors"
                         title="Delete this rule"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -1057,7 +1057,7 @@ export const MasterPermissionsPage: React.FC = () => {
                 type="button"
                 disabled={!isSuperAdmin}
                 onClick={() => setIsAddUserModalOpen(true)}
-                className="px-3 py-1.5 text-xs font-semibold bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-1.5 text-xs font-semibold bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 title={isSuperAdmin ? "Provision a new user account" : "Account creation restricted to Super Admin"}
               >
                 <Plus className="w-3.5 h-3.5" />
@@ -1065,7 +1065,7 @@ export const MasterPermissionsPage: React.FC = () => {
               </button>
               <Link
                 to="/team"
-                className="px-2.5 py-1.5 text-xs font-semibold bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#334155] rounded-lg transition-colors flex items-center gap-1"
+                className="px-2.5 py-1.5 text-xs font-semibold bg-[var(--bg-subtle)] hover:bg-[var(--bg-muted)] text-[var(--text-secondary)] rounded-lg transition-colors flex items-center gap-1"
                 title="View Team Allocation & Workload Matrix"
               >
                 <span>Workload Matrix</span>
@@ -1077,7 +1077,7 @@ export const MasterPermissionsPage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+                <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
                   <th className="py-2.5 px-3">User</th>
                   <th className="py-2.5 px-3">Corporate Email</th>
                   <th className="py-2.5 px-3">Access Role</th>
@@ -1086,22 +1086,22 @@ export const MasterPermissionsPage: React.FC = () => {
                   <th className="py-2.5 px-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F1F5F9]">
+              <tbody className="divide-y divide-[var(--border-subtle)]">
                 {teamMembers.map((member) => {
                   const roleBadgeColors: Record<string, string> = {
-                    SUPER_ADMIN: 'bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]',
-                    BUSINESS_HEAD: 'bg-[#F3E8FF] text-[#7E22CE] border-[#D8B4FE]',
-                    EXECUTIVE_MANAGER: 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]',
-                    SENIOR_MANAGER: 'bg-[#FFFBEB] text-[#B45309] border-[#FDE68A]',
-                    TENDER_ANALYST: 'bg-[#F0FDF4] text-[#15803D] border-[#BBF7D0]',
+                    SUPER_ADMIN: 'bg-[var(--crit-soft)] text-[var(--crit)] border-[var(--crit-line)]',
+                    BUSINESS_HEAD: 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] border-[var(--border-default)]',
+                    EXECUTIVE_MANAGER: 'bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--accent-line)]',
+                    SENIOR_MANAGER: 'bg-[var(--warn-soft)] text-[var(--warn)] border-[var(--warn-line)]',
+                    TENDER_ANALYST: 'bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)]',
                   };
-                  const badgeStyle = roleBadgeColors[member.role] || 'bg-slate-100 text-slate-700 border-slate-200';
+                  const badgeStyle = roleBadgeColors[member.role] || 'bg-[var(--bg-subtle)] text-[var(--text-primary)] border-[var(--border-default)]';
 
                   return (
-                    <tr key={member.id} className="hover:bg-[#F8FAFC] transition-colors">
+                    <tr key={member.id} className="hover:bg-[var(--bg-subtle)] transition-colors">
                       <td className="py-3 px-3">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden ring-1 ring-[#CBD5E1]">
+                          <div className="w-8 h-8 rounded-full bg-[var(--accent)] text-[var(--accent-on)] flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden ring-1 ring-[var(--border-strong)]">
                             {member.profilePic ? (
                               <img src={member.profilePic} alt={member.name} className="w-full h-full object-cover" />
                             ) : (
@@ -1109,16 +1109,16 @@ export const MasterPermissionsPage: React.FC = () => {
                             )}
                           </div>
                           <div>
-                            <span className="font-semibold text-[#0F172A] block leading-tight">
+                            <span className="font-semibold text-[var(--text-primary)] block leading-tight">
                               {member.name}
                             </span>
-                            <span className="text-[10px] text-[#64748B] block">
+                            <span className="text-[10px] text-[var(--text-secondary)] block">
                               {member.title || member.role.replace(/_/g, ' ')}
                             </span>
                           </div>
                         </div>
                       </td>
-                      <td className="py-3 px-3 font-mono text-[11px] text-[#475569]">
+                      <td className="py-3 px-3 font-mono text-[11px] text-[var(--text-secondary)]">
                         {member.email}
                       </td>
                       <td className="py-3 px-3">
@@ -1126,16 +1126,16 @@ export const MasterPermissionsPage: React.FC = () => {
                           {member.role.replace(/_/g, ' ')}
                         </span>
                       </td>
-                      <td className="py-3 px-3 text-[#475569]">
+                      <td className="py-3 px-3 text-[var(--text-secondary)]">
                         {member.department || 'Bid Operations'}
                       </td>
-                      <td className="py-3 px-3 font-mono text-[#0F172A]">
+                      <td className="py-3 px-3 font-mono text-[var(--text-primary)]">
                         {member.maxCapacity || 5} concurrent bids
                       </td>
                       <td className="py-3 px-3 text-right">
                         <Link
                           to={`/profile/${member.id}`}
-                          className="px-2 py-1 bg-[#EFF6FF] hover:bg-[#DBEAFE] text-[#2563EB] rounded text-[11px] font-medium transition-colors inline-flex items-center gap-1"
+                          className="px-2 py-1 bg-[var(--accent-soft)] hover:bg-[var(--accent-soft)] text-[var(--accent)] rounded text-[11px] font-medium transition-colors inline-flex items-center gap-1"
                           title="View Personnel Dossier & CV"
                         >
                           <span>Dossier</span>
@@ -1163,19 +1163,19 @@ export const MasterPermissionsPage: React.FC = () => {
             {blocks.map((b) => (
               <div
                 key={b.id}
-                className="p-4 rounded-xl border border-[#FECACA] bg-[#FEF2F2]/60 flex items-start justify-between gap-3 text-xs"
+                className="p-4 rounded-xl border border-[var(--crit-line)] bg-[var(--crit-soft)]/60 flex items-start justify-between gap-3 text-xs"
               >
                 <div className="flex items-start gap-3">
-                  <ShieldAlert className="w-5 h-5 text-[#DC2626] shrink-0 mt-0.5" />
+                  <ShieldAlert className="w-5 h-5 text-[var(--crit)] shrink-0 mt-0.5" />
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-[#DC2626]">{b.block_type}</span>
-                      <span className="font-mono text-[10px] text-[#64748B]">
+                      <span className="font-bold text-[var(--crit)]">{b.block_type}</span>
+                      <span className="font-mono text-[10px] text-[var(--text-secondary)]">
                         Subject: {b.subject_type} ({b.subject_id})
                       </span>
                     </div>
-                    <p className="text-[11px] text-[#475569] mt-1">{b.reason}</p>
-                    <span className="text-[10px] font-mono text-[#94A3B8] block mt-1">
+                    <p className="text-[11px] text-[var(--text-secondary)] mt-1">{b.reason}</p>
+                    <span className="text-[10px] font-mono text-[var(--text-muted)] block mt-1">
                       Enforced since: {b.starts_at || '2026-09-01'}
                     </span>
                   </div>
@@ -1184,7 +1184,7 @@ export const MasterPermissionsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setBlocks(blocks.filter((bl) => bl.id !== b.id))}
-                  className="px-2.5 py-1 text-xs font-semibold bg-white border border-[#FECACA] text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg transition-colors"
+                  className="px-2.5 py-1 text-xs font-semibold bg-[var(--bg-surface)] border border-[var(--crit-line)] text-[var(--crit)] hover:bg-[var(--crit-soft)] rounded-lg transition-colors"
                 >
                   Deactivate Suspension
                 </button>
@@ -1203,12 +1203,12 @@ export const MasterPermissionsPage: React.FC = () => {
           subtitle="Immutable tamper-resistant log of every authorization evaluation, request ID, IP address, and exact denial reason code."
           headerAction={
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 bg-[#F8FAFC] border border-[#E2E8F0] px-2 py-1 rounded-lg text-xs">
-                <span className="text-[#64748B] font-medium">Filter:</span>
+              <div className="flex items-center gap-1 bg-[var(--bg-subtle)] border border-[var(--border-default)] px-2 py-1 rounded-lg text-xs">
+                <span className="text-[var(--text-secondary)] font-medium">Filter:</span>
                 <select
                   value={auditFilterDecision}
                   onChange={(e) => setAuditFilterDecision(e.target.value as any)}
-                  className="bg-transparent font-bold text-[#0F172A] focus:outline-none cursor-pointer"
+                  className="bg-transparent font-bold text-[var(--text-primary)] focus:outline-none cursor-pointer"
                 >
                   <option value="ALL">All Decisions</option>
                   <option value="ALLOW">ALLOW Only</option>
@@ -1217,13 +1217,13 @@ export const MasterPermissionsPage: React.FC = () => {
               </div>
 
               <div className="relative w-48">
-                <Search className="w-3.5 h-3.5 text-[#94A3B8] absolute left-2.5 top-1/2 -translate-y-1/2" />
+                <Search className="w-3.5 h-3.5 text-[var(--text-muted)] absolute left-2.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Search request ID, code..."
                   value={auditSearch}
                   onChange={(e) => setAuditSearch(e.target.value)}
-                  className="w-full pl-8 pr-2 py-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A]"
+                  className="w-full pl-8 pr-2 py-1 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)]"
                 />
               </div>
 
@@ -1232,10 +1232,10 @@ export const MasterPermissionsPage: React.FC = () => {
                 target="_blank"
                 rel="noreferrer"
                 download="authorization_audit_log.csv"
-                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-white border border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#0F172A] rounded-lg shadow-2xs transition-colors"
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-[var(--bg-surface)] border border-[var(--border-default)] hover:bg-[var(--bg-subtle)] text-[var(--text-primary)] rounded-lg shadow-2xs transition-colors"
                 title="Download complete audit ledger as CSV"
               >
-                <Download className="w-3.5 h-3.5 text-[#2563EB]" />
+                <Download className="w-3.5 h-3.5 text-[var(--accent)]" />
                 <span>Export CSV</span>
               </a>
 
@@ -1244,10 +1244,10 @@ export const MasterPermissionsPage: React.FC = () => {
                 target="_blank"
                 rel="noreferrer"
                 download="authorization_audit_log.json"
-                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-white border border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#0F172A] rounded-lg shadow-2xs transition-colors"
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-[var(--bg-surface)] border border-[var(--border-default)] hover:bg-[var(--bg-subtle)] text-[var(--text-primary)] rounded-lg shadow-2xs transition-colors"
                 title="Download complete audit ledger as JSON"
               >
-                <Download className="w-3.5 h-3.5 text-[#64748B]" />
+                <Download className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
                 <span>Export JSON</span>
               </a>
             </div>
@@ -1256,7 +1256,7 @@ export const MasterPermissionsPage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+                <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
                   <th className="py-2.5 px-3">Timestamp</th>
                   <th className="py-2.5 px-3">Request ID</th>
                   <th className="py-2.5 px-3">Subject / Partner</th>
@@ -1266,34 +1266,34 @@ export const MasterPermissionsPage: React.FC = () => {
                   <th className="py-2.5 px-3">Denial / Rule Reason</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F1F5F9]">
+              <tbody className="divide-y divide-[var(--border-subtle)]">
                 {filteredLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-[#F8FAFC] transition-colors font-mono text-[11px]">
-                    <td className="py-2.5 px-3 text-[#64748B] whitespace-nowrap">{log.created_at}</td>
-                    <td className="py-2.5 px-3 font-bold text-[#0F172A]">{log.request_id}</td>
-                    <td className="py-2.5 px-3 font-sans font-medium text-[#0F172A]">
+                  <tr key={log.id} className="hover:bg-[var(--bg-subtle)] transition-colors font-mono text-[11px]">
+                    <td className="py-2.5 px-3 text-[var(--text-secondary)] whitespace-nowrap">{log.created_at}</td>
+                    <td className="py-2.5 px-3 font-bold text-[var(--text-primary)]">{log.request_id}</td>
+                    <td className="py-2.5 px-3 font-sans font-medium text-[var(--text-primary)]">
                       {log.user_id || log.partner_organization_id || 'System'}
                     </td>
-                    <td className="py-2.5 px-3 text-[#475569]">{log.tender_id || 'N/A'}</td>
-                    <td className="py-2.5 px-3 font-bold text-[#0F172A]">{log.permission_code}</td>
+                    <td className="py-2.5 px-3 text-[var(--text-secondary)]">{log.tender_id || 'N/A'}</td>
+                    <td className="py-2.5 px-3 font-bold text-[var(--text-primary)]">{log.permission_code}</td>
                     <td className="py-2.5 px-3">
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          log.decision === 'ALLOW'
-                            ? 'bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0]'
-                            : 'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]'
+ log.decision === 'ALLOW'
+ ? 'bg-[var(--ok-soft)] text-[var(--ok)] border border-[var(--ok-line)]'
+                            : 'bg-[var(--crit-soft)] text-[var(--crit)] border border-[var(--crit-line)]'
                         }`}
                       >
                         {log.decision}
                       </span>
                     </td>
-                    <td className="py-2.5 px-3 font-sans text-xs text-[#64748B] max-w-xs truncate">
+                    <td className="py-2.5 px-3 font-sans text-xs text-[var(--text-secondary)] max-w-xs truncate">
                       {log.denial_reason_code ? (
-                        <span className="text-[#DC2626] font-mono text-[10px] font-bold block truncate">
+                        <span className="text-[var(--crit)] font-mono text-[10px] font-bold block truncate">
                           {log.denial_reason_code}
                         </span>
                       ) : (
-                        <span className="text-[#15803D] text-[10px] block">
+                        <span className="text-[var(--ok)] text-[10px] block">
                           Rule #{log.matched_rule_id || 'Base'} ({log.matched_rule_scope})
                         </span>
                       )}
@@ -1310,24 +1310,24 @@ export const MasterPermissionsPage: React.FC = () => {
       {/* MODAL: CREATE TEAM MEMBER PROFILE & ASSIGN ROLE                           */}
       {/* ========================================================================= */}
       {isAddUserModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9]">
+        <div className="tt-overlay items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center">
                   <Users className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-display text-sm font-bold text-[#0F172A]">
+                  <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
                     Provision New User Account
                   </h3>
-                  <p className="text-[11px] text-[#64748B]">Create account and assign access role</p>
+                  <p className="text-[11px] text-[var(--text-secondary)]">Create account and assign access role</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsAddUserModalOpen(false)}
-                className="text-[#94A3B8] hover:text-[#0F172A] p-1 cursor-pointer"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1335,35 +1335,35 @@ export const MasterPermissionsPage: React.FC = () => {
 
             <form onSubmit={handleCreateAccountSubmit} className="space-y-3.5 text-xs">
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">Full Name *</label>
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">Full Name *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Rachel Adams"
                   value={newUserName}
                   onChange={(e) => setNewUserName(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">Corporate Email</label>
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">Corporate Email</label>
                 <input
                   type="email"
                   placeholder="rachel.adams@company.com"
                   value={newUserEmail}
                   onChange={(e) => setNewUserEmail(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">Access Role *</label>
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">Access Role *</label>
                   <select
                     value={newUserRole}
                     onChange={(e) => setNewUserRole(e.target.value as UserRole)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     <option value="SUPER_ADMIN">Super Admin (System Authority)</option>
                     <option value="BUSINESS_HEAD">Business Head (Executive Lead)</option>
@@ -1374,24 +1374,24 @@ export const MasterPermissionsPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">Job Designation</label>
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">Job Designation</label>
                   <input
                     type="text"
                     placeholder="e.g. Solutions Lead"
                     value={newUserTitle}
                     onChange={(e) => setNewUserTitle(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block font-semibold text-[#0F172A]">Initial Login Password *</label>
+                  <label className="block font-semibold text-[var(--text-primary)]">Initial Login Password *</label>
                   <button
                     type="button"
                     onClick={generateRandomPassword}
-                    className="text-[10px] text-[#2563EB] hover:underline font-semibold cursor-pointer"
+                    className="text-[10px] text-[var(--accent)] hover:underline font-semibold cursor-pointer"
                   >
                     Generate Strong Password
                   </button>
@@ -1403,12 +1403,12 @@ export const MasterPermissionsPage: React.FC = () => {
                     value={newUserPassword}
                     onChange={(e) => setNewUserPassword(e.target.value)}
                     placeholder="e.g. Password123!"
-                    className="w-full pl-3 pr-9 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-mono focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full pl-3 pr-9 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] font-mono focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A] cursor-pointer"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -1417,40 +1417,40 @@ export const MasterPermissionsPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">Department</label>
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">Department</label>
                   <input
                     type="text"
                     placeholder="Bid Operations"
                     value={newUserDept}
                     onChange={(e) => setNewUserDept(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">Max Concurrent Tenders</label>
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">Max Concurrent Tenders</label>
                   <input
                     type="number"
                     min="1"
                     max="15"
                     value={newUserCapacity}
                     onChange={(e) => setNewUserCapacity(Number(e.target.value))}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-[#F1F5F9] flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsAddUserModalOpen(false)}
-                  className="px-3 py-1.5 text-xs text-[#64748B] hover:text-[#0F172A] cursor-pointer"
+                  className="px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
                 >
                   Create &amp; Provision Account
                 </button>
@@ -1464,62 +1464,62 @@ export const MasterPermissionsPage: React.FC = () => {
       {/* MODAL: CREDENTIALS DISPATCH MODAL                                         */}
       {/* ========================================================================= */}
       {createdCredentials && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full border border-[#E2E8F0] overflow-hidden">
-            <div className="p-5 bg-[#0F172A] text-white flex items-center justify-between">
+        <div className="fixed inset-0 bg-[var(--text-primary)]/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl shadow-2xl max-w-md w-full border border-[var(--border-default)] overflow-hidden">
+            <div className="p-5 bg-[var(--accent)] text-[var(--accent-on)] flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white shadow-sm">
+                <div className="w-8 h-8 rounded-lg bg-[var(--ok)] flex items-center justify-center text-[var(--accent-on)] shadow-sm">
                   <KeyRound className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="font-display font-bold text-sm">Account Provisioned Successfully</h3>
-                  <p className="text-[11px] text-[#94A3B8]">Credentials generated for designated user</p>
+                  <p className="text-[11px] text-[var(--text-muted)]">Credentials generated for designated user</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setCreatedCredentials(null)}
-                className="text-[#94A3B8] hover:text-white cursor-pointer"
+                className="text-[var(--text-muted)] hover:text-[var(--accent-on)] cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="p-5 space-y-4 text-xs">
-              <div className="p-3 bg-[#ECFDF5] border border-[#A7F3D0] rounded-lg text-[#065F46] space-y-1">
+              <div className="p-3 bg-[var(--ok-soft)] border border-[var(--ok-line)] rounded-lg text-[var(--ok)] space-y-1">
                 <div className="flex items-center gap-1.5 font-bold">
-                  <CheckCircle2 className="w-4 h-4 text-[#059669]" />
+                  <CheckCircle2 className="w-4 h-4 text-[var(--ok)]" />
                   <span>Ready for Delegated Login</span>
                 </div>
-                <p className="text-[11px] text-[#065F46] leading-relaxed">
+                <p className="text-[11px] text-[var(--ok)] leading-relaxed">
                   Share these credentials with the designated person so they can sign in to the TenderTracker Command Center.
                 </p>
               </div>
 
-              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg p-3 space-y-2">
-                <div className="flex justify-between items-center py-1 border-b border-[#E2E8F0]">
-                  <span className="text-[#64748B]">Designated Name:</span>
-                  <span className="font-bold text-[#0F172A]">{createdCredentials.name}</span>
+              <div className="bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg p-3 space-y-2">
+                <div className="flex justify-between items-center py-1 border-b border-[var(--border-default)]">
+                  <span className="text-[var(--text-secondary)]">Designated Name:</span>
+                  <span className="font-bold text-[var(--text-primary)]">{createdCredentials.name}</span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-[#E2E8F0]">
-                  <span className="text-[#64748B]">Assigned Role:</span>
-                  <span className="font-mono font-semibold px-2 py-0.5 rounded bg-white text-[#2563EB] border border-[#BFDBFE] text-[10px]">
+                <div className="flex justify-between items-center py-1 border-b border-[var(--border-default)]">
+                  <span className="text-[var(--text-secondary)]">Assigned Role:</span>
+                  <span className="font-mono font-semibold px-2 py-0.5 rounded bg-[var(--bg-surface)] text-[var(--accent)] border border-[var(--accent-line)] text-[10px]">
                     {createdCredentials.role.replace('_', ' ')}
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-[#E2E8F0]">
-                  <span className="text-[#64748B]">Login Email:</span>
-                  <span className="font-mono font-bold text-[#0F172A]">{createdCredentials.email}</span>
+                <div className="flex justify-between items-center py-1 border-b border-[var(--border-default)]">
+                  <span className="text-[var(--text-secondary)]">Login Email:</span>
+                  <span className="font-mono font-bold text-[var(--text-primary)]">{createdCredentials.email}</span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-[#E2E8F0]">
-                  <span className="text-[#64748B]">Initial Password:</span>
-                  <span className="font-mono font-bold text-[#DC2626] bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FECACA]">
+                <div className="flex justify-between items-center py-1 border-b border-[var(--border-default)]">
+                  <span className="text-[var(--text-secondary)]">Initial Password:</span>
+                  <span className="font-mono font-bold text-[var(--crit)] bg-[var(--crit-soft)] px-2 py-0.5 rounded border border-[var(--crit-line)]">
                     {createdCredentials.password}
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-1">
-                  <span className="text-[#64748B]">Login Portal:</span>
-                  <span className="font-mono text-[11px] text-[#2563EB]">https://tendertracker-app.centralindia.cloudapp.azure.com</span>
+                  <span className="text-[var(--text-secondary)]">Login Portal:</span>
+                  <span className="font-mono text-[11px] text-[var(--accent)]">https://tendertracker-app.centralindia.cloudapp.azure.com</span>
                 </div>
               </div>
 
@@ -1532,16 +1532,16 @@ export const MasterPermissionsPage: React.FC = () => {
                     setHasCopied(true);
                     setTimeout(() => setHasCopied(false), 2500);
                   }}
-                  className="flex-1 py-2 px-3 bg-white border border-[#CBD5E1] hover:bg-[#F1F5F9] rounded-lg font-semibold text-[#0F172A] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  className="flex-1 py-2 px-3 bg-[var(--bg-surface)] border border-[var(--border-strong)] hover:bg-[var(--bg-subtle)] rounded-lg font-semibold text-[var(--text-primary)] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                 >
                   {hasCopied ? (
                     <>
-                      <Check className="w-4 h-4 text-[#059669]" />
-                      <span className="text-[#059669]">Copied Credentials!</span>
+                      <Check className="w-4 h-4 text-[var(--ok)]" />
+                      <span className="text-[var(--ok)]">Copied Credentials!</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="w-4 h-4 text-[#64748B]" />
+                      <Copy className="w-4 h-4 text-[var(--text-secondary)]" />
                       <span>Copy Credentials</span>
                     </>
                   )}
@@ -1549,7 +1549,7 @@ export const MasterPermissionsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setCreatedCredentials(null)}
-                  className="py-2 px-4 bg-[#0F172A] hover:bg-[#1E293B] text-white font-semibold rounded-lg transition-colors cursor-pointer"
+                  className="py-2 px-4 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] font-semibold rounded-lg transition-colors cursor-pointer"
                 >
                   Done
                 </button>

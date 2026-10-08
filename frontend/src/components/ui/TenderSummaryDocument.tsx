@@ -14,14 +14,14 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
       : date || '';
 
   const Row = ({ label, value }: { label: string; value?: React.ReactNode }) => (
-    <tr className="border-b border-[#E8EDF2] last:border-0">
+    <tr className="border-b border-[var(--border-default)] last:border-0">
       <td
-        className="py-2.5 px-4 font-semibold text-[#1A2B4A] bg-[#F0F4F8] w-56 text-sm align-top border-r border-[#E8EDF2]"
+        className="py-2.5 px-4 font-semibold text-[var(--text-primary)] bg-[var(--bg-subtle)] w-56 text-sm align-top border-r border-[var(--border-default)]"
       >
         {label}
       </td>
-      <td className="py-2.5 px-4 text-[#2D3A4A] text-sm">
-        {value || <span className="text-[#9CA3AF] italic">Not specified in the available documents</span>}
+      <td className="py-2.5 px-4 text-[var(--text-secondary)] text-sm">
+        {value || <span className="text-[var(--text-muted)] italic">Not specified in the available documents</span>}
       </td>
     </tr>
   );
@@ -30,7 +30,7 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
     <section className="mb-6">
       <h2
         className="text-base font-bold mb-3"
-        style={{ color: '#1B4F9B', fontFamily: 'Georgia, serif' }}
+        style={{ color: 'var(--accent)', fontFamily: 'Georgia, serif' }}
       >
         {title}
       </h2>
@@ -40,7 +40,7 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
 
   const SubSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div className="mb-4">
-      <h3 className="text-sm font-bold mb-2" style={{ color: '#2563EB' }}>
+      <h3 className="text-sm font-bold mb-2" style={{ color: 'var(--accent)' }}>
         {title}
       </h3>
       {children}
@@ -53,8 +53,8 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
     return (
       <ul className="list-none space-y-1.5 pl-1">
         {filtered.map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm text-[#2D3A4A]">
-            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#4B5563] shrink-0" />
+          <li key={i} className="flex items-start gap-2 text-sm text-[var(--text-secondary)]">
+            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--bg-muted)] shrink-0" />
             <span className="leading-snug">{item}</span>
           </li>
         ))}
@@ -67,25 +67,25 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
 
   return (
     <div
-      className="max-w-4xl mx-auto py-10 px-8 sm:px-12 bg-white my-2 shadow-sm border border-[#E2E8F0] rounded-lg print:border-none print:shadow-none print:my-0 print:py-4 print:px-6"
+      className="max-w-4xl mx-auto py-10 px-8 sm:px-12 bg-[var(--bg-surface)] my-2 shadow-sm border border-[var(--border-default)] rounded-lg print:border-none print:shadow-none print:my-0 print:py-4 print:px-6"
       style={{ fontFamily: "'Segoe UI', Arial, sans-serif" }}
     >
       {/* Document Title Header */}
-      <div className="text-center mb-8 pb-4 border-b border-[#F1F5F9]">
+      <div className="text-center mb-8 pb-4 border-b border-[var(--border-subtle)]">
         <h1
           className="text-2xl font-bold tracking-widest uppercase mb-2"
-          style={{ color: '#1A2B4A', letterSpacing: '0.12em' }}
+          style={{ color: 'var(--text-primary)', letterSpacing: '0.12em' }}
         >
           Tender Summary
         </h1>
-        <p className="text-sm font-semibold" style={{ color: '#2D3A4A' }}>
+        <p className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>
           {displayId} | {displayTitle}
         </p>
       </div>
 
       {/* BASIC INFORMATION */}
       <Section title="Basic Information">
-        <table className="w-full border-collapse border border-[#C8D5E2]">
+        <table className="w-full border-collapse border border-[var(--border-strong)]">
           <tbody>
             <Row label="Country" value={tender.country} />
             <Row label="Project Name" value={s?.projectName} />
@@ -103,7 +103,7 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
                     href={tender.aiChatShareLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#1D4ED8] underline hover:text-[#1E40AF] font-mono text-xs break-all inline-flex items-center gap-1"
+                    className="text-[var(--accent)] underline hover:text-[var(--accent)] font-mono text-xs break-all inline-flex items-center gap-1"
                   >
                     <span>{tender.aiChatShareLink}</span>
                     <span className="no-underline text-xs">↗</span>
@@ -189,7 +189,7 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
         <Section title="Requirements">
           {s?.mainIdea && (
             <SubSection title="Main Idea">
-              <p className="text-sm text-[#2D3A4A] leading-relaxed mb-3">{s.mainIdea}</p>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-3">{s.mainIdea}</p>
             </SubSection>
           )}
 
@@ -240,9 +240,9 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
         <Section title="Financial Scenarios, Payment Schedule & Contract Rules">
           {/* Overview Grid */}
           <div className="mb-4 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-2.5 rounded">
-              <span className="text-[10px] uppercase font-bold text-[#64748B] block">Disbursement Model</span>
-              <span className="text-xs font-bold text-[#1E293B]">
+            <div className="bg-[var(--bg-subtle)] border border-[var(--border-default)] p-2.5 rounded">
+              <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)] block">Disbursement Model</span>
+              <span className="text-xs font-bold text-[var(--text-primary)]">
                 {fm.paymentScenario === 'MILESTONE_BASED'
                   ? 'Milestone-Based'
                   : fm.paymentScenario === 'ADVANCE_AND_MILESTONES'
@@ -254,29 +254,29 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
                   : 'Standard Delivery'}
               </span>
             </div>
-            <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-2.5 rounded">
-              <span className="text-[10px] uppercase font-bold text-[#64748B] block">Working Capital Risk</span>
+            <div className="bg-[var(--bg-subtle)] border border-[var(--border-default)] p-2.5 rounded">
+              <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)] block">Working Capital Risk</span>
               <span
                 className={`text-xs font-bold ${
-                  fm.workingCapitalRisk === 'LOW'
-                    ? 'text-emerald-700'
+ fm.workingCapitalRisk === 'LOW'
+                    ? 'text-[var(--ok)]'
                     : fm.workingCapitalRisk === 'HIGH'
-                    ? 'text-rose-700'
-                    : 'text-amber-700'
+                    ? 'text-[var(--crit)]'
+                    : 'text-[var(--warn)]'
                 }`}
               >
                 {fm.workingCapitalRisk || 'MEDIUM'} Risk
               </span>
             </div>
-            <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-2.5 rounded">
-              <span className="text-[10px] uppercase font-bold text-[#64748B] block">Advance Mobilization</span>
-              <span className="text-xs font-semibold text-[#1E293B]">
+            <div className="bg-[var(--bg-subtle)] border border-[var(--border-default)] p-2.5 rounded">
+              <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)] block">Advance Mobilization</span>
+              <span className="text-xs font-semibold text-[var(--text-primary)]">
                 {fm.advancePayment?.enabled ? `${fm.advancePayment.percentage}% Advance` : 'None (0%)'}
               </span>
             </div>
-            <div className="bg-[#F8FAFC] border border-[#E2E8F0] p-2.5 rounded">
-              <span className="text-[10px] uppercase font-bold text-[#64748B] block">Retention Deduction</span>
-              <span className="text-xs font-semibold text-[#1E293B]">
+            <div className="bg-[var(--bg-subtle)] border border-[var(--border-default)] p-2.5 rounded">
+              <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)] block">Retention Deduction</span>
+              <span className="text-xs font-semibold text-[var(--text-primary)]">
                 {fm.penaltiesAndDeductions?.retentionMoney?.enabled
                   ? `${fm.penaltiesAndDeductions.retentionMoney.percentage}% Retention`
                   : 'None'}
@@ -286,8 +286,8 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
 
           {/* Advance Payment SubSection */}
           {fm.advancePayment?.enabled && (
-            <div className="mb-4 bg-blue-50/50 border border-blue-200 rounded p-3 text-xs text-[#1E293B]">
-              <div className="font-bold text-[#1E40AF] mb-1">Advance Payment & Mobilization Terms</div>
+            <div className="mb-4 bg-[var(--accent-soft)]/50 border border-[var(--accent-line)] rounded p-3 text-xs text-[var(--text-primary)]">
+              <div className="font-bold text-[var(--accent)] mb-1">Advance Payment & Mobilization Terms</div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div>
                   Advance Ratio:{' '}
@@ -323,71 +323,71 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
           {/* Milestone Schedule Table */}
           {fm.milestones && fm.milestones.length > 0 && (
             <div className="mb-4 overflow-x-auto">
-              <div className="text-xs font-bold text-[#1A2B4A] mb-1.5">Milestone Payment Disbursement Schedule</div>
-              <table className="w-full border-collapse text-xs border border-[#C8D5E2]">
+              <div className="text-xs font-bold text-[var(--text-primary)] mb-1.5">Milestone Payment Disbursement Schedule</div>
+              <table className="w-full border-collapse text-xs border border-[var(--border-strong)]">
                 <thead>
-                  <tr style={{ backgroundColor: '#E8F0FB', color: '#1A2B4A' }}>
-                    <th className="py-2 px-2.5 text-left font-semibold border-b border-r border-[#C8D5E2] w-10">#</th>
-                    <th className="py-2 px-2.5 text-left font-semibold border-b border-r border-[#C8D5E2]">
+                  <tr style={{ backgroundColor: 'var(--bg-subtle)', color: 'var(--text-primary)' }}>
+                    <th className="py-2 px-2.5 text-left font-semibold border-b border-r border-[var(--border-strong)] w-10">#</th>
+                    <th className="py-2 px-2.5 text-left font-semibold border-b border-r border-[var(--border-strong)]">
                       Milestone / Deliverable
                     </th>
-                    <th className="py-2 px-2.5 text-left font-semibold border-b border-r border-[#C8D5E2]">
+                    <th className="py-2 px-2.5 text-left font-semibold border-b border-r border-[var(--border-strong)]">
                       Approval / Trigger Criteria
                     </th>
-                    <th className="py-2 px-2.5 text-right font-semibold border-b border-r border-[#C8D5E2] w-20">
+                    <th className="py-2 px-2.5 text-right font-semibold border-b border-r border-[var(--border-strong)] w-20">
                       Share %
                     </th>
-                    <th className="py-2 px-2.5 text-right font-semibold border-b border-r border-[#C8D5E2] w-28">
+                    <th className="py-2 px-2.5 text-right font-semibold border-b border-r border-[var(--border-strong)] w-28">
                       Net Amount
                     </th>
-                    <th className="py-2 px-2.5 text-center font-semibold border-b border-[#C8D5E2] w-28">
+                    <th className="py-2 px-2.5 text-center font-semibold border-b border-[var(--border-strong)] w-28">
                       Review / Payment
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {fm.milestones.map((m, idx) => (
-                    <tr key={m.id || idx} className="border-b border-[#E8EDF2] last:border-0 hover:bg-slate-50/50">
-                      <td className="py-2 px-2.5 text-[#64748B] border-r border-[#E8EDF2] font-mono text-center">
+                    <tr key={m.id || idx} className="border-b border-[var(--border-default)] last:border-0 hover:bg-[var(--bg-subtle)]/50">
+                      <td className="py-2 px-2.5 text-[var(--text-secondary)] border-r border-[var(--border-default)] font-mono text-center">
                         {m.milestoneNumber || idx + 1}
                       </td>
-                      <td className="py-2 px-2.5 text-[#1A2B4A] border-r border-[#E8EDF2] font-medium">
+                      <td className="py-2 px-2.5 text-[var(--text-primary)] border-r border-[var(--border-default)] font-medium">
                         <div>{m.name}</div>
                         {m.deliverable && (
-                          <div className="text-[11px] text-[#64748B] font-normal">{m.deliverable}</div>
+                          <div className="text-[11px] text-[var(--text-secondary)] font-normal">{m.deliverable}</div>
                         )}
                       </td>
-                      <td className="py-2 px-2.5 text-[#475569] border-r border-[#E8EDF2]">
+                      <td className="py-2 px-2.5 text-[var(--text-secondary)] border-r border-[var(--border-default)]">
                         {m.paymentTrigger ||
                           (m.approvalRequired
                             ? 'Client formal acceptance certificate'
                             : 'Standard completion')}
                       </td>
-                      <td className="py-2 px-2.5 text-right text-[#1A2B4A] border-r border-[#E8EDF2] font-semibold">
+                      <td className="py-2 px-2.5 text-right text-[var(--text-primary)] border-r border-[var(--border-default)] font-semibold">
                         {m.percentage}%
                       </td>
-                      <td className="py-2 px-2.5 text-right text-[#1A2B4A] border-r border-[#E8EDF2]">
+                      <td className="py-2 px-2.5 text-right text-[var(--text-primary)] border-r border-[var(--border-default)]">
                         {m.amount != null ? `${tender.currency || 'USD'} ${m.amount.toLocaleString()}` : '—'}
                       </td>
-                      <td className="py-2 px-2.5 text-center text-[#64748B]">
+                      <td className="py-2 px-2.5 text-center text-[var(--text-secondary)]">
                         {m.clientReviewDays || 14}d rev / {m.paymentProcessingDays || 30}d pay
                       </td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="bg-[#F1F5F9] font-semibold text-[#1A2B4A] border-t border-[#C8D5E2]">
-                    <td colSpan={3} className="py-2 px-2.5 text-right border-r border-[#C8D5E2]">
+                  <tr className="bg-[var(--bg-subtle)] font-semibold text-[var(--text-primary)] border-t border-[var(--border-strong)]">
+                    <td colSpan={3} className="py-2 px-2.5 text-right border-r border-[var(--border-strong)]">
                       Total Milestone Commitment:
                     </td>
-                    <td className="py-2 px-2.5 text-right border-r border-[#C8D5E2] text-blue-700 font-bold">
+                    <td className="py-2 px-2.5 text-right border-r border-[var(--border-strong)] text-[var(--accent)] font-bold">
                       {fm.milestones.reduce((acc, cur) => acc + (cur.percentage || 0), 0)}%
                     </td>
-                    <td className="py-2 px-2.5 text-right border-r border-[#C8D5E2] text-blue-700 font-bold">
+                    <td className="py-2 px-2.5 text-right border-r border-[var(--border-strong)] text-[var(--accent)] font-bold">
                       {tender.currency || 'USD'}{' '}
                       {fm.milestones.reduce((acc, cur) => acc + (cur.amount || 0), 0).toLocaleString()}
                     </td>
-                    <td className="py-2 px-2.5 text-center text-[#64748B]">—</td>
+                    <td className="py-2 px-2.5 text-center text-[var(--text-secondary)]">—</td>
                   </tr>
                 </tfoot>
               </table>
@@ -397,10 +397,10 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
           {/* SaaS & Recurring Revenue Section */}
           {fm.subscriptionModel &&
             (fm.subscriptionModel.calculatedTcv > 0 || fm.subscriptionModel.annualBaseFee > 0) && (
-              <div className="mb-4 bg-emerald-50/50 border border-emerald-200 rounded p-3 text-xs text-[#1E293B]">
-                <div className="font-bold text-emerald-800 mb-1.5 flex items-center justify-between">
+              <div className="mb-4 bg-[var(--ok-soft)]/50 border border-[var(--ok-line)] rounded p-3 text-xs text-[var(--text-primary)]">
+                <div className="font-bold text-[var(--ok)] mb-1.5 flex items-center justify-between">
                   <span>SaaS & Recurring Revenue Model</span>
-                  <span className="text-[11px] font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">
+                  <span className="text-[11px] font-semibold bg-[var(--ok-soft)] text-[var(--ok)] px-2 py-0.5 rounded">
                     TCV: {tender.currency || 'USD'}{' '}
                     {(fm.subscriptionModel.calculatedTcv || 0).toLocaleString()} | ACV:{' '}
                     {tender.currency || 'USD'}{' '}
@@ -437,14 +437,14 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
 
           {/* Deductions, Retentions & Penalties */}
           {fm.penaltiesAndDeductions && (
-            <div className="bg-[#F8FAFC] border border-[#C8D5E2] rounded p-3 text-xs">
-              <div className="font-bold text-[#1A2B4A] mb-2">
+            <div className="bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded p-3 text-xs">
+              <div className="font-bold text-[var(--text-primary)] mb-2">
                 Penalties, Liquidated Damages & Statutory Deductions
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="border-r border-[#E2E8F0] pr-2 last:border-0">
-                  <span className="font-semibold text-rose-700 block mb-0.5">Liquidated Damages (Delay)</span>
-                  <p className="text-[#475569] leading-tight">
+                <div className="border-r border-[var(--border-default)] pr-2 last:border-0">
+                  <span className="font-semibold text-[var(--crit)] block mb-0.5">Liquidated Damages (Delay)</span>
+                  <p className="text-[var(--text-secondary)] leading-tight">
                     {fm.penaltiesAndDeductions.liquidatedDamages?.rate || 0.5}%{' '}
                     {fm.penaltiesAndDeductions.liquidatedDamages?.frequency === 'PER_DAY'
                       ? 'per day'
@@ -453,9 +453,9 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
                     {fm.penaltiesAndDeductions.liquidatedDamages?.maxCapPercentage || 10}% of contract value.
                   </p>
                 </div>
-                <div className="border-r border-[#E2E8F0] pr-2 last:border-0">
-                  <span className="font-semibold text-amber-700 block mb-0.5">Retention Money</span>
-                  <p className="text-[#475569] leading-tight">
+                <div className="border-r border-[var(--border-default)] pr-2 last:border-0">
+                  <span className="font-semibold text-[var(--warn)] block mb-0.5">Retention Money</span>
+                  <p className="text-[var(--text-secondary)] leading-tight">
                     {fm.penaltiesAndDeductions.retentionMoney?.percentage || 5}% deducted from gross invoices.
                     Release:{' '}
                     {fm.penaltiesAndDeductions.retentionMoney?.releaseCondition ===
@@ -468,8 +468,8 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
                   </p>
                 </div>
                 <div>
-                  <span className="font-semibold text-slate-700 block mb-0.5">Statutory Withholding</span>
-                  <p className="text-[#475569] leading-tight">
+                  <span className="font-semibold text-[var(--text-primary)] block mb-0.5">Statutory Withholding</span>
+                  <p className="text-[var(--text-secondary)] leading-tight">
                     TDS (Tax): {fm.penaltiesAndDeductions.taxDeductionAtSourcePercent || 0}%, VDS (VAT):{' '}
                     {fm.penaltiesAndDeductions.vatDeductionAtSourcePercent || 0}%. Deducted directly by client
                     finance.
@@ -507,7 +507,7 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
       {(s?.submissionDocuments?.length ?? 0) > 0 && (
         <Section title="Documents Required in Submission">
           <BulletList items={s!.submissionDocuments} />
-          <p className="mt-3 text-xs italic text-[#475569]">
+          <p className="mt-3 text-xs italic text-[var(--text-secondary)]">
             Financial Proposal Submission Rule: The Financial Proposal must be submitted separately through the Commercial Section of the UNDP Quantum system.
           </p>
         </Section>
@@ -517,13 +517,13 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
       {(s?.personnel?.length ?? 0) > 0 && (
         <Section title="CV / Personnel Requirements">
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-sm mt-2 border border-[#C8D5E2]">
+            <table className="w-full border-collapse text-sm mt-2 border border-[var(--border-strong)]">
               <thead>
-                <tr style={{ backgroundColor: '#E8F0FB', color: '#1A2B4A' }}>
+                <tr style={{ backgroundColor: 'var(--bg-subtle)', color: 'var(--text-primary)' }}>
                   {['No.', 'Position', 'Minimum Qualification', 'Required Experience', 'Qty.'].map((h) => (
                     <th
                       key={h}
-                      className="py-2.5 px-3 text-left font-semibold border-b border-r border-[#C8D5E2] text-xs"
+                      className="py-2.5 px-3 text-left font-semibold border-b border-r border-[var(--border-strong)] text-xs"
                     >
                       {h}
                     </th>
@@ -532,12 +532,12 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
               </thead>
               <tbody>
                 {s!.personnel!.map((p, i) => (
-                  <tr key={i} className="border-b border-[#E8EDF2] last:border-0">
-                    <td className="py-2.5 px-3 text-[#4B5563] border-r border-[#E8EDF2] text-xs">{i + 1}</td>
-                    <td className="py-2.5 px-3 text-[#1A2B4A] border-r border-[#E8EDF2] text-xs font-medium">{p.position}</td>
-                    <td className="py-2.5 px-3 text-[#4B5563] border-r border-[#E8EDF2] text-xs">{p.qualification || 'Not specifically stated'}</td>
-                    <td className="py-2.5 px-3 text-[#4B5563] border-r border-[#E8EDF2] text-xs">{p.experience || 'Not specified'}</td>
-                    <td className="py-2.5 px-3 text-[#4B5563] text-xs">{p.qty || 'Not specified'}</td>
+                  <tr key={i} className="border-b border-[var(--border-default)] last:border-0">
+                    <td className="py-2.5 px-3 text-[var(--text-secondary)] border-r border-[var(--border-default)] text-xs">{i + 1}</td>
+                    <td className="py-2.5 px-3 text-[var(--text-primary)] border-r border-[var(--border-default)] text-xs font-medium">{p.position}</td>
+                    <td className="py-2.5 px-3 text-[var(--text-secondary)] border-r border-[var(--border-default)] text-xs">{p.qualification || 'Not specifically stated'}</td>
+                    <td className="py-2.5 px-3 text-[var(--text-secondary)] border-r border-[var(--border-default)] text-xs">{p.experience || 'Not specified'}</td>
+                    <td className="py-2.5 px-3 text-[var(--text-secondary)] text-xs">{p.qty || 'Not specified'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -583,26 +583,26 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
             {tender.importantClauses!.map((clause, idx) => (
               <div
                 key={clause.id || idx}
-                className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs space-y-1.5"
+                className="p-3 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs space-y-1.5"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-bold text-[#0F172A] text-sm">
+                  <span className="font-bold text-[var(--text-primary)] text-sm">
                     {clause.clause_title}
                   </span>
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                      clause.criticality === 'CRITICAL'
-                        ? 'bg-rose-100 text-rose-700'
+ clause.criticality === 'CRITICAL'
+                        ? 'bg-[var(--crit-soft)] text-[var(--crit)]'
                         : clause.criticality === 'HIGH'
-                        ? 'bg-amber-100 text-amber-700'
-                        : 'bg-sky-100 text-sky-700'
+                        ? 'bg-[var(--warn-soft)] text-[var(--warn)]'
+                        : 'bg-[var(--accent-soft)] text-[var(--accent)]'
                     }`}
                   >
                     {clause.criticality}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 text-[11px] text-[#2563EB] font-mono">
+                <div className="flex items-center gap-2 text-[11px] text-[var(--accent)] font-mono">
                   <span>📄 {clause.doc_file_name || 'Tender Dossier'}</span>
                   <span>•</span>
                   <span>Ref: {clause.doc_reference}</span>
@@ -615,13 +615,13 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
                 </div>
 
                 {clause.clause_text && (
-                  <p className="text-[#334155] italic border-l-2 border-[#94A3B8] pl-2.5 py-0.5">
+                  <p className="text-[var(--text-secondary)] italic border-l-2 border-[var(--border-strong)] pl-2.5 py-0.5">
                     “{clause.clause_text}”
                   </p>
                 )}
 
                 {clause.implication && (
-                  <div className="text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded p-1.5">
+                  <div className="text-[11px] bg-[var(--warn-soft)] border border-[var(--warn-line)] text-[var(--warn)] rounded p-1.5">
                     <span className="font-bold">Strategic Compliance Action: </span>
                     <span>{clause.implication}</span>
                   </div>
@@ -642,13 +642,13 @@ export const TenderSummaryDocument: React.FC<TenderSummaryDocumentProps> = ({ te
       {/* NOTES */}
       {s?.notes && (
         <Section title="Notes">
-          <p className="text-sm text-[#2D3A4A] leading-relaxed">{s.notes}</p>
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{s.notes}</p>
         </Section>
       )}
 
       {/* Document Footer */}
       <div
-        className="mt-10 pt-4 flex items-center justify-between text-[11px] border-t border-[#C8D5E2] text-[#9CA3AF]"
+        className="mt-10 pt-4 flex items-center justify-between text-[11px] border-t border-[var(--border-strong)] text-[var(--text-muted)]"
       >
         <span>Tender Summary | {displayId}</span>
         <span>{displayTitle}</span>

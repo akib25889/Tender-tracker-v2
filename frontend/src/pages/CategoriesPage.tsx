@@ -19,34 +19,34 @@ import { useCategoriesQuery, useTendersQuery } from '../hooks/useTenderQueries';
 import { TenderCategory } from '../types/tender';
 
 const COLOR_OPTIONS = [
-  { label: 'Blue', value: 'blue', dot: 'bg-blue-500' },
-  { label: 'Purple', value: 'purple', dot: 'bg-purple-500' },
-  { label: 'Emerald', value: 'emerald', dot: 'bg-emerald-500' },
-  { label: 'Amber', value: 'amber', dot: 'bg-amber-500' },
-  { label: 'Rose', value: 'rose', dot: 'bg-rose-500' },
-  { label: 'Teal', value: 'teal', dot: 'bg-teal-500' },
-  { label: 'Indigo', value: 'indigo', dot: 'bg-indigo-500' },
-  { label: 'Cyan', value: 'cyan', dot: 'bg-cyan-500' },
+  { label: 'Blue', value: 'blue', dot: 'bg-[var(--accent)]' },
+  { label: 'Purple', value: 'purple', dot: 'bg-[var(--bg-subtle)]' },
+  { label: 'Emerald', value: 'emerald', dot: 'bg-[var(--ok)]' },
+  { label: 'Amber', value: 'amber', dot: 'bg-[var(--warn)]' },
+  { label: 'Rose', value: 'rose', dot: 'bg-[var(--crit)]' },
+  { label: 'Teal', value: 'teal', dot: 'bg-[var(--ok)]' },
+  { label: 'Indigo', value: 'indigo', dot: 'bg-[var(--bg-subtle)]' },
+  { label: 'Cyan', value: 'cyan', dot: 'bg-[var(--accent)]' },
 ];
 
 export const getBadgeClasses = (color?: string) => {
   switch (color) {
     case 'purple':
-      return 'bg-purple-50 text-purple-700 border-purple-200';
+      return 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] border-[var(--border-default)]';
     case 'emerald':
-      return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      return 'bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)]';
     case 'amber':
-      return 'bg-amber-50 text-amber-700 border-amber-200';
+      return 'bg-[var(--warn-soft)] text-[var(--warn)] border-[var(--warn-line)]';
     case 'rose':
-      return 'bg-rose-50 text-rose-700 border-rose-200';
+      return 'bg-[var(--crit-soft)] text-[var(--crit)] border-[var(--crit-line)]';
     case 'teal':
-      return 'bg-teal-50 text-teal-700 border-teal-200';
+      return 'bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)]';
     case 'indigo':
-      return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+      return 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] border-[var(--border-default)]';
     case 'cyan':
-      return 'bg-cyan-50 text-cyan-700 border-cyan-200';
+      return 'bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--accent-line)]';
     default:
-      return 'bg-blue-50 text-blue-700 border-blue-200';
+      return 'bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--accent-line)]';
   }
 };
 
@@ -241,16 +241,16 @@ export const CategoriesPage: React.FC = () => {
       {notification && (
         <div
           className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-semibold shadow-xs transition-all ${
-            notification.type === 'success'
-              ? 'bg-[#ECFDF5] border-[#A7F3D0] text-[#065F46]'
-              : 'bg-rose-50 border-rose-200 text-rose-800'
+ notification.type === 'success'
+ ? 'bg-[var(--ok-soft)] border-[var(--ok-line)] text-[var(--ok)]'
+              : 'bg-[var(--crit-soft)] border-[var(--crit-line)] text-[var(--crit)]'
           }`}
         >
           <div className="flex items-center gap-2">
             {notification.type === 'success' ? (
-              <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+              <Check className="w-4 h-4 text-[var(--ok)] shrink-0" />
             ) : (
-              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+              <AlertCircle className="w-4 h-4 text-[var(--crit)] shrink-0" />
             )}
             <span>{notification.message}</span>
           </div>
@@ -267,15 +267,15 @@ export const CategoriesPage: React.FC = () => {
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
+          <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] mb-1">
             <span>Tools &amp; Addons</span>
             <span>•</span>
-            <span className="font-semibold text-[#0F172A]">Taxonomy Management</span>
+            <span className="font-semibold text-[var(--text-primary)]">Taxonomy Management</span>
           </div>
-          <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
+          <h1 className="font-display text-2xl font-bold text-[var(--text-primary)] tracking-tight">
             Scope of Work (SOW) Corporate Categories
           </h1>
-          <p className="text-xs text-[#64748B] mt-0.5">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             Database-backed enterprise categories assigned to tenders across all pipeline gates.
           </p>
         </div>
@@ -283,7 +283,7 @@ export const CategoriesPage: React.FC = () => {
         <button
           type="button"
           onClick={handleOpenAdd}
-          className="flex items-center gap-1.5 px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+          className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Category</span>
@@ -292,91 +292,91 @@ export const CategoriesPage: React.FC = () => {
 
       {/* KPI Stats Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-xs flex items-center justify-between">
+        <div className="bg-[var(--bg-surface)] p-4 rounded-xl border border-[var(--border-default)] shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+            <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider block">
               Total Categories
             </span>
-            <span className="font-display text-2xl font-bold text-[#0F172A] mt-1 block">
+            <span className="font-display text-2xl font-bold text-[var(--text-primary)] mt-1 block">
               {stats.total}
             </span>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+          <div className="w-10 h-10 rounded-lg bg-[var(--accent-soft)] flex items-center justify-center text-[var(--accent)]">
             <Tags className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-xs flex items-center justify-between">
+        <div className="bg-[var(--bg-surface)] p-4 rounded-xl border border-[var(--border-default)] shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+            <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider block">
               Assigned in Pipeline
             </span>
-            <span className="font-display text-2xl font-bold text-emerald-600 mt-1 block">
+            <span className="font-display text-2xl font-bold text-[var(--ok)] mt-1 block">
               {stats.inUse}
             </span>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+          <div className="w-10 h-10 rounded-lg bg-[var(--ok-soft)] flex items-center justify-center text-[var(--ok)]">
             <FolderGit2 className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-xs flex items-center justify-between">
+        <div className="bg-[var(--bg-surface)] p-4 rounded-xl border border-[var(--border-default)] shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+            <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider block">
               Unassigned Taxonomies
             </span>
-            <span className="font-display text-2xl font-bold text-[#64748B] mt-1 block">
+            <span className="font-display text-2xl font-bold text-[var(--text-secondary)] mt-1 block">
               {stats.unused}
             </span>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500">
+          <div className="w-10 h-10 rounded-lg bg-[var(--bg-subtle)] flex items-center justify-center text-[var(--text-secondary)]">
             <Layers className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-xs flex items-center justify-between">
+        <div className="bg-[var(--bg-surface)] p-4 rounded-xl border border-[var(--border-default)] shadow-xs flex items-center justify-between">
           <div className="min-w-0 pr-2">
-            <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider block">
+            <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider block">
               Top Pipeline Sector
             </span>
-            <span className="font-display text-sm font-bold text-[#0F172A] mt-1 truncate block" title={stats.topCat}>
+            <span className="font-display text-sm font-bold text-[var(--text-primary)] mt-1 truncate block" title={stats.topCat}>
               {stats.topCat}
             </span>
-            <span className="text-[10px] text-[#64748B] block mt-0.5">
+            <span className="text-[10px] text-[var(--text-secondary)] block mt-0.5">
               {stats.maxCount} active tender{stats.maxCount === 1 ? '' : 's'}
             </span>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 shrink-0">
+          <div className="w-10 h-10 rounded-lg bg-[var(--bg-subtle)] flex items-center justify-center text-[var(--text-secondary)] shrink-0">
             <Sparkles className="w-5 h-5" />
           </div>
         </div>
       </div>
 
       {/* Main Categories Card */}
-      <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-xs overflow-hidden">
+      <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] shadow-xs overflow-hidden">
         {/* Card Header & Controls */}
-        <div className="p-4 border-b border-[#E2E8F0] bg-[#F8FAFC]/50 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div className="text-xs text-[#64748B]">
+        <div className="p-4 border-b border-[var(--border-default)] bg-[var(--bg-subtle)]/50 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="text-xs text-[var(--text-secondary)]">
             Total registered categories in database:{' '}
-            <strong className="text-[#0F172A] text-sm">{categories.length}</strong>
+            <strong className="text-[var(--text-primary)] text-sm">{categories.length}</strong>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             {/* Search Input */}
             <div className="relative">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
               <input
                 type="text"
                 placeholder="Search categories..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-8 pr-3 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] placeholder-[#94A3B8] focus:outline-hidden focus:ring-1 focus:ring-[#2563EB] w-48 sm:w-60"
+                className="pl-8 pr-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:ring-1 focus:ring-[var(--accent)] w-48 sm:w-60"
               />
               {searchTerm && (
                 <button
                   type="button"
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A]"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -384,14 +384,14 @@ export const CategoriesPage: React.FC = () => {
             </div>
 
             {/* Filter Pills */}
-            <div className="flex items-center bg-[#E2E8F0]/60 p-0.5 rounded-lg text-xs">
+            <div className="flex items-center bg-[var(--bg-muted)]/60 p-0.5 rounded-lg text-xs">
               <button
                 type="button"
                 onClick={() => setFilterUsage('ALL')}
                 className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all ${
-                  filterUsage === 'ALL'
-                    ? 'bg-white text-[#0F172A] shadow-xs'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+ filterUsage === 'ALL'
+ ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-xs'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 All ({categories.length})
@@ -400,9 +400,9 @@ export const CategoriesPage: React.FC = () => {
                 type="button"
                 onClick={() => setFilterUsage('IN_USE')}
                 className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all ${
-                  filterUsage === 'IN_USE'
-                    ? 'bg-white text-[#0F172A] shadow-xs'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+ filterUsage === 'IN_USE'
+ ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-xs'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 In Use ({stats.inUse})
@@ -411,9 +411,9 @@ export const CategoriesPage: React.FC = () => {
                 type="button"
                 onClick={() => setFilterUsage('UNUSED')}
                 className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all ${
-                  filterUsage === 'UNUSED'
-                    ? 'bg-white text-[#0F172A] shadow-xs'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+ filterUsage === 'UNUSED'
+ ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-xs'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 Unused ({stats.unused})
@@ -426,20 +426,20 @@ export const CategoriesPage: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B] font-semibold">
+              <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[var(--text-secondary)] font-semibold">
                 <th className="py-3 px-4 w-64">Category Name</th>
                 <th className="py-3 px-4">Scope &amp; Description</th>
                 <th className="py-3 px-4 text-center w-28">Tenders</th>
                 <th className="py-3 px-4 text-right w-24">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F1F5F9]">
+            <tbody className="divide-y divide-[var(--border-subtle)]">
               {filteredCategories.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="py-12 text-center text-[#64748B]">
-                    <Tags className="w-8 h-8 text-[#CBD5E1] mx-auto mb-2" />
-                    <p className="font-semibold text-[#0F172A]">No categories found</p>
-                    <p className="text-[11px] text-[#94A3B8] mt-0.5">
+                  <td colSpan={4} className="py-12 text-center text-[var(--text-secondary)]">
+                    <Tags className="w-8 h-8 text-[var(--text-muted)] mx-auto mb-2" />
+                    <p className="font-semibold text-[var(--text-primary)]">No categories found</p>
+                    <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
                       {searchTerm
                         ? 'Try adjusting your search criteria.'
                         : 'Click "Add New Category" above to register your first corporate category.'}
@@ -450,13 +450,13 @@ export const CategoriesPage: React.FC = () => {
                 filteredCategories.map((cat) => {
                   const inUseCount = tenders.filter((t) => t.category === cat.name).length;
                   return (
-                    <tr key={cat.id} className="hover:bg-[#F8FAFC] transition-colors group">
+                    <tr key={cat.id} className="hover:bg-[var(--bg-subtle)] transition-colors group">
                       {/* Category Name & Badge */}
                       <td className="py-3 px-4">
                         <span
                           className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold border transition-all ${getBadgeClasses(
-                            cat.color_badge
-                          )}`}
+ cat.color_badge
+ )}`}
                         >
                           <span className="w-2 h-2 rounded-full bg-current opacity-85 shrink-0" />
                           <span className="truncate">{cat.name}</span>
@@ -464,11 +464,11 @@ export const CategoriesPage: React.FC = () => {
                       </td>
 
                       {/* Scope & Description */}
-                      <td className="py-3 px-4 text-[#475569] text-xs">
+                      <td className="py-3 px-4 text-[var(--text-secondary)] text-xs">
                         {cat.description ? (
                           <span className="line-clamp-2 leading-relaxed">{cat.description}</span>
                         ) : (
-                          <span className="text-[#94A3B8] italic">Imported from active tenders.</span>
+                          <span className="text-[var(--text-muted)] italic">Imported from active tenders.</span>
                         )}
                       </td>
 
@@ -477,14 +477,14 @@ export const CategoriesPage: React.FC = () => {
                         {inUseCount > 0 ? (
                           <Link
                             to={`/tenders?category=${encodeURIComponent(cat.name)}`}
-                            className="inline-flex items-center gap-1 font-mono text-xs font-bold px-2.5 py-0.5 rounded-md bg-[#EFF6FF] text-[#2563EB] hover:bg-[#DBEAFE] hover:text-[#1D4ED8] transition-colors"
+                            className="inline-flex items-center gap-1 font-mono text-xs font-bold px-2.5 py-0.5 rounded-md bg-[var(--accent-soft)] text-[var(--accent)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)] transition-colors"
                             title={`View ${inUseCount} tender(s) in ${cat.name}`}
                           >
                             <span>{inUseCount}</span>
                             <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                           </Link>
                         ) : (
-                          <span className="font-mono text-xs font-semibold text-[#94A3B8] px-2 py-0.5">
+                          <span className="font-mono text-xs font-semibold text-[var(--text-muted)] px-2 py-0.5">
                             0
                           </span>
                         )}
@@ -497,7 +497,7 @@ export const CategoriesPage: React.FC = () => {
                             type="button"
                             onClick={() => handleOpenEdit(cat)}
                             title="Edit Category"
-                            className="p-1.5 rounded-lg text-[#64748B] hover:text-[#2563EB] hover:bg-[#EFF6FF] transition-colors cursor-pointer"
+                            className="p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent-soft)] transition-colors cursor-pointer"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
@@ -511,9 +511,9 @@ export const CategoriesPage: React.FC = () => {
                             }
                             disabled={inUseCount > 0}
                             className={`p-1.5 rounded-lg transition-colors ${
-                              inUseCount > 0
-                                ? 'text-[#CBD5E1] cursor-not-allowed opacity-50'
-                                : 'text-[#64748B] hover:text-rose-600 hover:bg-rose-50 cursor-pointer'
+ inUseCount > 0
+ ? 'text-[var(--text-muted)] cursor-not-allowed opacity-50'
+                                : 'text-[var(--text-secondary)] hover:text-[var(--crit)] hover:bg-[var(--crit-soft)] cursor-pointer'
                             }`}
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -531,19 +531,19 @@ export const CategoriesPage: React.FC = () => {
 
       {/* Add / Edit Category Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl shadow-xl border border-[#E2E8F0] max-w-lg w-full overflow-hidden">
-            <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
+        <div className="tt-overlay items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl shadow-xl border border-[var(--border-default)] max-w-lg w-full overflow-hidden">
+            <div className="px-5 py-4 border-b border-[var(--border-default)] flex items-center justify-between bg-[var(--bg-subtle)]">
               <div className="flex items-center gap-2">
-                <Tags className="w-4 h-4 text-[#2563EB]" />
-                <h3 className="font-bold text-sm text-[#0F172A]">
+                <Tags className="w-4 h-4 text-[var(--accent)]" />
+                <h3 className="font-bold text-sm text-[var(--text-primary)]">
                   {editingCategory ? 'Edit Category' : 'Create New Category'}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#E2E8F0]/50 transition-colors"
+                className="p-1 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-muted)]/50 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -551,28 +551,28 @@ export const CategoriesPage: React.FC = () => {
 
             <form onSubmit={handleSaveCategory} className="p-5 space-y-4 text-xs">
               {formError && (
-                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                <div className="p-3 bg-[var(--crit-soft)] border border-[var(--crit-line)] text-[var(--crit)] rounded-lg flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-[var(--crit)]" />
                   <span>{formError}</span>
                 </div>
               )}
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
-                  Category Name <span className="text-rose-500">*</span>
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
+                  Category Name <span className="text-[var(--crit)]">*</span>
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. Cloud & Cyber Security"
                   value={catName}
                   onChange={(e) => setCatName(e.target.value)}
-                  className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-hidden focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-hidden focus:ring-1 focus:ring-[var(--accent)]"
                   autoFocus
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1.5">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1.5">
                   Badge Theme Color
                 </label>
                 <div className="flex items-center gap-2 flex-wrap">
@@ -582,9 +582,9 @@ export const CategoriesPage: React.FC = () => {
                       type="button"
                       onClick={() => setCatColor(c.value)}
                       className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
-                        catColor === c.value
-                          ? 'ring-2 ring-offset-1 ring-[#2563EB] font-bold border-transparent'
-                          : 'border-[#E2E8F0] opacity-75 hover:opacity-100'
+ catColor === c.value
+ ? 'ring-2 ring-offset-1 ring-[var(--accent)] font-bold border-transparent'
+                          : 'border-[var(--border-default)] opacity-75 hover:opacity-100'
                       } ${getBadgeClasses(c.value)}`}
                     >
                       <span className={`w-2 h-2 rounded-full ${c.dot}`} />
@@ -595,7 +595,7 @@ export const CategoriesPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Scope &amp; Description (Optional)
                 </label>
                 <textarea
@@ -603,22 +603,22 @@ export const CategoriesPage: React.FC = () => {
                   placeholder="e.g. Cloud migration, FedRAMP/ISO 27001 architectures, perimeter security, and SOC operations."
                   value={catDesc}
                   onChange={(e) => setCatDesc(e.target.value)}
-                  className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:outline-hidden focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-hidden focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#F1F5F9]">
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-3 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#475569] rounded-lg font-semibold transition-colors"
+                  className="px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] hover:bg-[var(--bg-subtle)] text-[var(--text-secondary)] rounded-lg font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg font-semibold shadow-xs transition-colors disabled:opacity-50"
+                  className="px-4 py-1.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg font-semibold shadow-xs transition-colors disabled:opacity-50"
                 >
                   {isSubmitting ? 'Saving...' : editingCategory ? 'Update Category' : 'Create Category'}
                 </button>
@@ -630,29 +630,29 @@ export const CategoriesPage: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {deletingCat && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl shadow-xl border border-[#E2E8F0] max-w-md w-full p-5 space-y-4">
+        <div className="tt-overlay items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl shadow-xl border border-[var(--border-default)] max-w-md w-full p-5 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-full bg-[var(--crit-soft)] text-[var(--crit)] flex items-center justify-center shrink-0">
                 <Trash2 className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-sm text-[#0F172A]">Delete Category</h3>
-                <p className="text-xs text-[#64748B] mt-0.5">
-                  Are you sure you want to delete <strong className="text-[#0F172A]">"{deletingCat.name}"</strong>?
+                <h3 className="font-bold text-sm text-[var(--text-primary)]">Delete Category</h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                  Are you sure you want to delete <strong className="text-[var(--text-primary)]">"{deletingCat.name}"</strong>?
                 </p>
               </div>
             </div>
 
-            <p className="text-xs text-[#64748B] bg-[#F8FAFC] p-3 rounded-lg border border-[#E2E8F0]">
+            <p className="text-xs text-[var(--text-secondary)] bg-[var(--bg-subtle)] p-3 rounded-lg border border-[var(--border-default)]">
               This category has 0 linked tenders and can be safely removed. This action cannot be undone.
             </p>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#F1F5F9]">
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[var(--border-subtle)]">
               <button
                 type="button"
                 onClick={() => setDeletingCat(null)}
-                className="px-3 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#475569] rounded-lg text-xs font-semibold transition-colors"
+                className="px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] hover:bg-[var(--bg-subtle)] text-[var(--text-secondary)] rounded-lg text-xs font-semibold transition-colors"
               >
                 Cancel
               </button>
@@ -660,7 +660,7 @@ export const CategoriesPage: React.FC = () => {
                 type="button"
                 onClick={handleConfirmDelete}
                 disabled={isSubmitting}
-                className="px-4 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors disabled:opacity-50"
+                className="px-4 py-1.5 bg-[var(--crit)] hover:bg-[var(--crit)] text-[var(--accent-on)] rounded-lg text-xs font-semibold shadow-xs transition-colors disabled:opacity-50"
               >
                 {isSubmitting ? 'Deleting...' : 'Confirm Delete'}
               </button>

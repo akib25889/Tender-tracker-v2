@@ -185,25 +185,25 @@ export const UploadDocumentModal: React.FC = () => {
   const effectiveFolder = uploadFolderTarget || (isJvTender ? '02A_jv_partner_credentials' : '02_company_statutory_documents');
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-[#E2E8F0] dark:border-slate-800 overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F5F9] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-800/60">
+    <div className="tt-overlay items-center justify-center p-4 animate-fadeIn">
+      <div className="w-full max-w-lg bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-default)] overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-subtle)] bg-[var(--bg-subtle)]">
           <div>
-            <h3 className="font-display text-base font-bold text-[#0F172A] dark:text-white flex items-center gap-2">
+            <h3 className="font-display text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
               <span>Upload Vault Document</span>
               {isJvTender && (
-                <span className="px-2 py-0.5 text-[10px] font-bold bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 rounded-full">
+                <span className="px-2 py-0.5 text-[10px] font-bold bg-[var(--bg-subtle)] text-[var(--text-secondary)] border border-[var(--border-default)] rounded-full">
                   ⭐ JV Workflow Active
                 </span>
               )}
             </h3>
-            <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
               Secure upload to local SSD with entity namespace &amp; automatic SHA-256 stamp
             </p>
           </div>
           <button
             onClick={handleClose}
-            className="p-1 rounded-lg text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white hover:bg-[#E2E8F0] dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="p-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-muted)] transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -213,11 +213,11 @@ export const UploadDocumentModal: React.FC = () => {
           {/* Target Folder with JV Prioritization */}
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="block font-semibold text-[#0F172A] dark:text-slate-200">
+              <label className="block font-semibold text-[var(--text-primary)]">
                 Target Vault Directory *
               </label>
               {isJvTender && (
-                <span className="text-[10px] font-bold text-purple-700 dark:text-purple-400">
+                <span className="text-[10px] font-bold text-[var(--text-secondary)]">
                   JV Folders Suggested First
                 </span>
               )}
@@ -226,32 +226,32 @@ export const UploadDocumentModal: React.FC = () => {
               <select
                 value={effectiveFolder}
                 onChange={(e) => handleFolderChange(e.target.value)}
-                className="w-full pl-8 pr-3 py-2 bg-[#F8FAFC] dark:bg-slate-800/80 border border-[#E2E8F0] dark:border-slate-700 rounded-lg font-medium text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2563EB] cursor-pointer"
+                className="w-full pl-8 pr-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-medium text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] cursor-pointer"
               >
                 {allFolders.map((f) => (
-                  <option key={f.name} value={f.name} className="dark:bg-slate-900 dark:text-slate-100">
+                  <option key={f.name} value={f.name} className="">
                     📁 {f.label} (/{f.name}/)
                   </option>
                 ))}
               </select>
-              <Folder className="w-4 h-4 text-[#2563EB] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Folder className="w-4 h-4 text-[var(--accent)] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
           </div>
 
           {/* Owning Company & Entity Disambiguation */}
-          <div className="p-3 bg-[#F8FAFC] dark:bg-slate-800/40 rounded-xl border border-[#E2E8F0] dark:border-slate-800 space-y-2.5">
+          <div className="p-3 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-default)] space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-[#0F172A] dark:text-slate-200 uppercase tracking-wider">
+              <span className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider">
                 Owning Company / Entity Disambiguation
               </span>
-              <span className="text-[10px] font-semibold text-[#64748B] dark:text-slate-400">
+              <span className="text-[10px] font-semibold text-[var(--text-secondary)]">
                 Prevents identical name collision
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div>
-                <label className="block text-[11px] font-semibold text-[#64748B] dark:text-slate-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                   Entity Role
                 </label>
                 <select
@@ -262,16 +262,16 @@ export const UploadDocumentModal: React.FC = () => {
                     if (role === 'JV_PARTNER') setCompanyName(jvPartnerName);
                     else if (role === 'LEAD_BIDDER') setCompanyName(leadCompanyName);
                   }}
-                  className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-800 border border-[#CBD5E1] dark:border-slate-700 rounded-lg font-bold text-[#0F172A] dark:text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg font-bold text-[var(--text-primary)] text-xs focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 >
-                  <option value="JV_PARTNER" className="dark:bg-slate-900">⭐ JV Partner</option>
-                  <option value="LEAD_BIDDER" className="dark:bg-slate-900">🏛️ Lead Bidder (Self)</option>
-                  <option value="SUBCONTRACTOR" className="dark:bg-slate-900">🔧 Subcontractor / Other</option>
+                  <option value="JV_PARTNER" className="">⭐ JV Partner</option>
+                  <option value="LEAD_BIDDER" className="">🏛️ Lead Bidder (Self)</option>
+                  <option value="SUBCONTRACTOR" className="">🔧 Subcontractor / Other</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-[#64748B] dark:text-slate-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                   Company Name *
                 </label>
                 <input
@@ -280,13 +280,13 @@ export const UploadDocumentModal: React.FC = () => {
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder="e.g. DataCore Systems Ltd"
-                  className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-800 border border-[#CBD5E1] dark:border-slate-700 rounded-lg font-medium text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg font-medium text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
             </div>
 
-            <div className="text-[10px] text-[#64748B] dark:text-slate-400 font-mono pt-1 border-t border-[#E2E8F0] dark:border-slate-800">
-              Physical HDD Path: storage/tenders/{tender?.id || '{TDR-ID}'}/{effectiveFolder}/<span className="text-[#2563EB] dark:text-blue-400 font-bold">[{safeCompanySlug}]</span>/
+            <div className="text-[10px] text-[var(--text-secondary)] font-mono pt-1 border-t border-[var(--border-default)]">
+              Physical HDD Path: storage/tenders/{tender?.id || '{TDR-ID}'}/{effectiveFolder}/<span className="text-[var(--accent)] font-bold">[{safeCompanySlug}]</span>/
             </div>
           </div>
 
@@ -294,11 +294,11 @@ export const UploadDocumentModal: React.FC = () => {
           {tender?.requirements && tender.requirements.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block font-semibold text-[#0F172A] dark:text-slate-200">
+                <label className="block font-semibold text-[var(--text-primary)]">
                   Link to Compliance Requirement
                 </label>
                 {selectedRequirementId && (
-                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                  <span className="text-[10px] font-bold text-[var(--ok)]">
                     ✓ Clears requirement on upload
                   </span>
                 )}
@@ -312,7 +312,7 @@ export const UploadDocumentModal: React.FC = () => {
                     setFileName(`${matchedReq.title.replace(/[^a-zA-Z0-9_\-\.]/g, '_')}.pdf`);
                   }
                 }}
-                className="w-full px-3 py-2 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-xs font-medium text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2563EB] cursor-pointer"
+                className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] cursor-pointer"
               >
                 <option value="">None (General Vault Document)</option>
                 {tender.requirements.map((r) => (
@@ -325,7 +325,7 @@ export const UploadDocumentModal: React.FC = () => {
           )}
 
           <div>
-            <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+            <label className="block font-semibold text-[var(--text-primary)] mb-1">
               Document / File Title *
             </label>
             <input
@@ -334,7 +334,7 @@ export const UploadDocumentModal: React.FC = () => {
               placeholder="e.g. Trade_License_2026.pdf"
               value={fileName}
               onChange={(e) => setFileName(e.target.value)}
-              className="w-full px-3 py-2 bg-[#F8FAFC] dark:bg-slate-800 border border-[#E2E8F0] dark:border-slate-700 rounded-lg text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
             />
           </div>
 
@@ -354,57 +354,57 @@ export const UploadDocumentModal: React.FC = () => {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             className={`border-2 border-dashed rounded-xl p-5 text-center transition-all cursor-pointer ${
-              isDragging
-                ? 'border-[#2563EB] bg-[#EFF6FF] dark:bg-blue-950/40 ring-2 ring-[#2563EB]/30'
+ isDragging
+                ? 'border-[var(--accent)] bg-[var(--accent-soft)] ring-2 ring-[var(--accent)]/30'
                 : selectedFile
-                ? 'border-[#10B981] bg-[#F0FDF4] dark:bg-emerald-950/30'
-                : 'border-[#CBD5E1] dark:border-slate-700 hover:border-[#2563EB] dark:hover:border-blue-500 bg-[#F8FAFC] dark:bg-slate-800/50'
+                ? 'border-[var(--ok-line)] bg-[var(--ok-soft)]'
+                : 'border-[var(--border-strong)] hover:border-[var(--accent)] bg-[var(--bg-subtle)]'
             }`}
           >
             {selectedFile ? (
               <div className="flex flex-col items-center gap-1.5 animate-fadeIn">
-                <div className="w-10 h-10 rounded-full bg-[#D1FAE5] dark:bg-emerald-900/50 text-[#059669] dark:text-emerald-400 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-[var(--ok-soft)] text-[var(--ok)] flex items-center justify-center">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
-                <span className="font-bold text-[#0F172A] dark:text-white block max-w-full truncate px-4">
+                <span className="font-bold text-[var(--text-primary)] block max-w-full truncate px-4">
                   {selectedFile.name}
                 </span>
-                <span className="text-[11px] text-[#059669] dark:text-emerald-400 font-mono font-medium">
+                <span className="text-[11px] text-[var(--ok)] font-mono font-medium">
                   {formatBytes(selectedFile.size)} • Click or drop another file to replace
                 </span>
               </div>
             ) : (
               <div className="flex flex-col items-center">
-                <UploadCloud className="w-7 h-7 text-[#2563EB] mb-1.5" />
-                <span className="font-semibold text-[#0F172A] dark:text-slate-200 block">
+                <UploadCloud className="w-7 h-7 text-[var(--accent)] mb-1.5" />
+                <span className="font-semibold text-[var(--text-primary)] block">
                   Drag file here or click to browse
                 </span>
-                <span className="text-[10px] text-[#94A3B8] dark:text-slate-400 mt-0.5 block">
+                <span className="text-[10px] text-[var(--text-muted)] mt-0.5 block">
                   PDF, DOCX, XLSX, or ZIP up to 100MB
                 </span>
               </div>
             )}
           </div>
 
-          <div className="p-2.5 bg-[#F0FDF4] dark:bg-emerald-950/30 rounded-lg border border-[#BBF7D0] dark:border-emerald-800/50 flex items-center gap-2 text-[#15803D] dark:text-emerald-400">
+          <div className="p-2.5 bg-[var(--ok-soft)] rounded-lg border border-[var(--ok-line)] flex items-center gap-2 text-[var(--ok)]">
             <ShieldCheck className="w-4 h-4 shrink-0" />
             <span className="text-[11px] leading-tight">
               Cryptographic SHA-256 checksum will be stamped immediately under company folder.
             </span>
           </div>
 
-          <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#F1F5F9] dark:border-slate-800">
+          <div className="pt-2 flex items-center justify-end gap-2 border-t border-[var(--border-subtle)]">
             <button
               type="button"
               onClick={handleClose}
-              className="px-4 py-2 border border-[#E2E8F0] dark:border-slate-700 text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white rounded-lg font-semibold transition-colors cursor-pointer"
+              className="px-4 py-2 border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-lg font-semibold transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isUploading}
-              className="flex items-center gap-1.5 px-4 py-2 bg-[#2563EB] disabled:opacity-60 text-white rounded-lg font-semibold hover:bg-[#1D4ED8] transition-colors shadow-sm cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent)] disabled:opacity-60 text-[var(--accent-on)] rounded-lg font-semibold hover:bg-[var(--accent-hover)] transition-colors shadow-sm cursor-pointer"
             >
               <FileCheck className="w-3.5 h-3.5" />
               <span>{isUploading ? 'Sealing & Uploading...' : 'Seal & Upload'}</span>

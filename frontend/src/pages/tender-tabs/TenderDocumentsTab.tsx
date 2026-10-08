@@ -31,27 +31,27 @@ const ACCESS_STYLES: Record<
 > = {
   ALL_TEAM: {
     label: '🌐 All Team',
-    bg: 'bg-[#F0FDF4]',
-    text: 'text-[#15803D]',
-    border: 'border-[#BBF7D0]',
+    bg: 'bg-[var(--ok-soft)]',
+    text: 'text-[var(--ok)]',
+    border: 'border-[var(--ok-line)]',
   },
   MANAGEMENT_ONLY: {
     label: '🛡️ Management',
-    bg: 'bg-[#EFF6FF]',
-    text: 'text-[#1D4ED8]',
-    border: 'border-[#BFDBFE]',
+    bg: 'bg-[var(--accent-soft)]',
+    text: 'text-[var(--accent)]',
+    border: 'border-[var(--accent-line)]',
   },
   RESTRICTED_FINANCE: {
     label: '🔒 Finance/Legal',
-    bg: 'bg-[#FFFBEB]',
-    text: 'text-[#B45309]',
-    border: 'border-[#FDE68A]',
+    bg: 'bg-[var(--warn-soft)]',
+    text: 'text-[var(--warn)]',
+    border: 'border-[var(--warn-line)]',
   },
   EXECUTIVE_ONLY: {
     label: '👑 Executive',
-    bg: 'bg-[#FEF2F2]',
-    text: 'text-[#B91C1C]',
-    border: 'border-[#FECACA]',
+    bg: 'bg-[var(--crit-soft)]',
+    text: 'text-[var(--crit)]',
+    border: 'border-[var(--crit-line)]',
   },
 };
 
@@ -318,7 +318,7 @@ export const TenderDocumentsTab: React.FC = () => {
       {/* Top Header Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
         <div>
-          <h2 className="font-display text-lg font-bold text-[#0F172A]">
+          <h2 className="font-display text-lg font-bold text-[var(--text-primary)]">
             Tender Document Vault
           </h2>
         </div>
@@ -331,7 +331,7 @@ export const TenderDocumentsTab: React.FC = () => {
               setSelectedReusableDocId('');
               setIsLinkModalOpen(true);
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#EFF6FF] border border-[#BFDBFE] text-[#1D4ED8] text-xs font-semibold rounded-lg hover:bg-[#DBEAFE] shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent-soft)] border border-[var(--accent-line)] text-[var(--accent)] text-xs font-semibold rounded-lg hover:bg-[var(--accent-soft)] shadow-xs transition-colors"
             title="Import or reference an existing reusable master document from the company repository"
           >
             <LinkIcon className="w-3.5 h-3.5" />
@@ -342,9 +342,9 @@ export const TenderDocumentsTab: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsCreateFolderModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#CBD5E1] text-[#0F172A] text-xs font-semibold rounded-lg hover:bg-[#F8FAFC] shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] text-[var(--text-primary)] text-xs font-semibold rounded-lg hover:bg-[var(--bg-subtle)] shadow-xs transition-colors"
           >
-            <FolderPlus className="w-3.5 h-3.5 text-[#2563EB]" />
+            <FolderPlus className="w-3.5 h-3.5 text-[var(--accent)]" />
             <span>Create Folder</span>
           </button>
 
@@ -359,10 +359,10 @@ export const TenderDocumentsTab: React.FC = () => {
                 tender.documents
               )
             }
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#CBD5E1] text-[#0F172A] text-xs font-semibold rounded-lg hover:bg-[#F8FAFC] shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] text-[var(--text-primary)] text-xs font-semibold rounded-lg hover:bg-[var(--bg-subtle)] shadow-xs transition-colors"
             title="Download entire tender vault across all folders as a structured ZIP package"
           >
-            <Archive className="w-3.5 h-3.5 text-[#2563EB]" />
+            <Archive className="w-3.5 h-3.5 text-[var(--accent)]" />
             <span>Download All as ZIP</span>
           </button>
 
@@ -377,10 +377,10 @@ export const TenderDocumentsTab: React.FC = () => {
               setReqDocDueDate('T-48h');
               setIsRequestDocModalOpen(true);
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-300 text-amber-900 text-xs font-semibold rounded-lg hover:bg-amber-100 shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] text-[var(--text-primary)] text-xs font-semibold rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
             title="Send an official deliverable request for a missing document to a partner or team member"
           >
-            <Send className="w-3.5 h-3.5 text-amber-700" />
+            <Send className="w-3.5 h-3.5 text-[var(--text-muted)]" />
             <span>Request Document from Partner</span>
           </button>
 
@@ -388,7 +388,7 @@ export const TenderDocumentsTab: React.FC = () => {
           <button
             type="button"
             onClick={() => handleOpenUpload(folders[0]?.name || '03_technical_proposal')}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] text-white text-xs font-semibold rounded-lg hover:bg-[#1D4ED8] shadow-sm transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent)] text-[var(--accent-on)] text-xs font-semibold rounded-lg hover:bg-[var(--accent-hover)] shadow-sm transition-colors"
           >
             <Upload className="w-3.5 h-3.5" />
             <span>Upload Document</span>
@@ -398,15 +398,15 @@ export const TenderDocumentsTab: React.FC = () => {
 
       {/* Feedback Toast Notification */}
       {reuploadFeedbackToast && (
-        <div className="p-3 bg-emerald-50 border border-emerald-300 text-emerald-900 rounded-xl text-xs font-semibold flex items-center justify-between shadow-sm animate-fadeIn">
+        <div className="p-3 bg-[var(--ok-soft)] border border-[var(--ok-line)] text-[var(--ok)] rounded-xl text-xs font-semibold flex items-center justify-between shadow-sm animate-fadeIn">
           <div className="flex items-center gap-2">
-            <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+            <Check className="w-4 h-4 text-[var(--ok)] shrink-0" />
             <span>{reuploadFeedbackToast}</span>
           </div>
           <button
             type="button"
             onClick={() => setReuploadFeedbackToast(null)}
-            className="text-emerald-700 hover:text-emerald-900 p-1"
+            className="text-[var(--ok)] hover:text-[var(--ok)] p-1"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -423,9 +423,9 @@ export const TenderDocumentsTab: React.FC = () => {
           return (
             <Card
               key={f.name}
-              className={`hover:border-[#CBD5E1] transition-all cursor-pointer group relative ${
-                isSelected
-                  ? 'border-[#2563EB] ring-2 ring-[#2563EB]/20 bg-[#F8FAFC]'
+              className={`hover:border-[var(--border-strong)] transition-all cursor-pointer group relative ${
+ isSelected
+                  ? 'border-[var(--accent)] ring-2 ring-[var(--accent)]/20 bg-[var(--bg-subtle)]'
                   : ''
               }`}
             >
@@ -438,29 +438,29 @@ export const TenderDocumentsTab: React.FC = () => {
                   <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
                     <div
                       className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors shrink-0 ${
-                        isSelected
-                          ? 'bg-[#2563EB] text-white'
-                          : 'bg-[#EFF6FF] text-[#2563EB] group-hover:bg-[#2563EB] group-hover:text-white'
+ isSelected
+                          ? 'bg-[var(--accent)] text-[var(--accent-on)]'
+                          : 'bg-[var(--accent-soft)] text-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:text-[var(--accent-on)]'
                       }`}
                     >
                       <Folder className="w-5 h-5" />
                     </div>
                     <div className="min-w-0 flex-1 overflow-hidden">
-                      <h4 className="text-xs font-bold text-[#0F172A] leading-tight truncate" title={f.label}>
+                      <h4 className="text-xs font-bold text-[var(--text-primary)] leading-tight truncate" title={f.label}>
                         {f.label}
                       </h4>
                     </div>
                   </div>
 
                   {isSelected && (
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] shrink-0">
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)] shrink-0">
                       <Check className="w-3 h-3" />
                       <span>Active</span>
                     </span>
                   )}
                 </div>
 
-                <div className="flex items-center justify-between text-[11px] text-[#64748B] pt-3 mt-3 border-t border-[#F1F5F9]">
+                <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)] pt-3 mt-3 border-t border-[var(--border-subtle)]">
                   <span className="font-semibold">
                     {folderFiles.length} file{folderFiles.length === 1 ? '' : 's'} inside
                   </span>
@@ -476,24 +476,24 @@ export const TenderDocumentsTab: React.FC = () => {
                           tender.documents
                         );
                       }}
-                      className="inline-flex items-center gap-1 text-[#2563EB] hover:underline font-semibold cursor-pointer"
+                      className="inline-flex items-center gap-1 text-[var(--accent)] hover:underline font-semibold cursor-pointer"
                       title={`Download ${f.label} as ZIP archive`}
                     >
                       <Download className="w-3 h-3" />
                       <span>ZIP</span>
                     </button>
-                    <span className="text-[#CBD5E1]">•</span>
+                    <span className="text-[var(--text-muted)]">•</span>
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleOpenUpload(f.name);
                       }}
-                      className="text-[#2563EB] hover:underline font-semibold cursor-pointer"
+                      className="text-[var(--accent)] hover:underline font-semibold cursor-pointer"
                     >
                       + Upload
                     </button>
-                    <span className="text-[#CBD5E1]">•</span>
+                    <span className="text-[var(--text-muted)]">•</span>
                     <button
                       type="button"
                       onClick={(e) => {
@@ -501,12 +501,12 @@ export const TenderDocumentsTab: React.FC = () => {
                         setFolderToEdit({ name: f.name, label: f.label });
                         setEditFolderLabel(f.label);
                       }}
-                      className="text-slate-600 dark:text-slate-400 hover:text-[#2563EB] hover:underline font-semibold cursor-pointer"
+                      className="text-[var(--text-secondary)] hover:text-[var(--accent)] hover:underline font-semibold cursor-pointer"
                       title={`Edit folder name`}
                     >
                       Edit
                     </button>
-                    <span className="text-[#CBD5E1]">•</span>
+                    <span className="text-[var(--text-muted)]">•</span>
                     <button
                       type="button"
                       onClick={(e) => {
@@ -517,7 +517,7 @@ export const TenderDocumentsTab: React.FC = () => {
                           fileCount: folderFiles.length,
                         });
                       }}
-                      className="text-slate-500 dark:text-slate-400 hover:text-[#DC2626] hover:underline font-semibold cursor-pointer"
+                      className="text-[var(--text-secondary)] hover:text-[var(--crit)] hover:underline font-semibold cursor-pointer"
                       title={`Delete folder`}
                     >
                       Delete
@@ -543,7 +543,7 @@ export const TenderDocumentsTab: React.FC = () => {
             <button
               type="button"
               onClick={() => setActiveFolderFilter('ALL')}
-              className="text-xs text-[#2563EB] font-semibold hover:underline bg-[#EFF6FF] px-2.5 py-1 rounded-md border border-[#BFDBFE]"
+              className="text-xs text-[var(--accent)] font-semibold hover:underline bg-[var(--accent-soft)] px-2.5 py-1 rounded-md border border-[var(--accent-line)]"
             >
               Show All Folders
             </button>
@@ -551,17 +551,17 @@ export const TenderDocumentsTab: React.FC = () => {
         }
       >
         {/* Entity / Company Disambiguation Filter Bar */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-2 border-b border-[#F1F5F9]">
-          <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mr-1 shrink-0">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-2 border-b border-[var(--border-subtle)]">
+          <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mr-1 shrink-0">
             Entity Filter:
           </span>
           <button
             type="button"
             onClick={() => setCompanyFilter('ALL')}
             className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-              companyFilter === 'ALL'
-                ? 'bg-[#0F172A] text-white shadow-xs'
-                : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A]'
+ companyFilter === 'ALL'
+                ? 'bg-[var(--accent)] text-[var(--accent-on)] shadow-xs'
+                : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             All Entities ({tender.documents.length})
@@ -571,13 +571,13 @@ export const TenderDocumentsTab: React.FC = () => {
               type="button"
               onClick={() => setCompanyFilter('JV')}
               className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 transition-colors ${
-                companyFilter === 'JV'
-                  ? 'bg-purple-700 text-white shadow-xs'
-                  : 'bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100'
+ companyFilter === 'JV'
+                  ? 'bg-[var(--bg-subtle)] text-[var(--accent-on)] shadow-xs'
+                  : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] border border-[var(--border-default)] hover:bg-[var(--bg-subtle)]'
               }`}
             >
               <span>⭐ JV: {jvPartnerName}</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/25 font-bold">
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[var(--bg-surface)]/25 font-bold">
                 {tender.documents.filter((d) => d.isJvPartner || d.companyRole === 'JV_PARTNER').length}
               </span>
             </button>
@@ -586,13 +586,13 @@ export const TenderDocumentsTab: React.FC = () => {
             type="button"
             onClick={() => setCompanyFilter('LEAD')}
             className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 transition-colors ${
-              companyFilter === 'LEAD'
-                ? 'bg-blue-700 text-white shadow-xs'
-                : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'
+ companyFilter === 'LEAD'
+                ? 'bg-[var(--accent)] text-[var(--accent-on)] shadow-xs'
+                : 'bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)] hover:bg-[var(--accent-soft)]'
             }`}
           >
             <span>🏛️ Lead: {leadCompanyName}</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/25 font-bold">
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[var(--bg-surface)]/25 font-bold">
               {tender.documents.filter((d) => !d.isJvPartner && d.companyRole !== 'JV_PARTNER').length}
             </span>
           </button>
@@ -601,7 +601,7 @@ export const TenderDocumentsTab: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+              <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
                 <th className="py-2.5 px-3">File Name &amp; Owning Entity</th>
                 <th className="py-2.5 px-3 w-56">Target Folder (Move / Assign)</th>
                 <th className="py-2.5 px-3 w-44">Access Permission Scope</th>
@@ -609,10 +609,10 @@ export const TenderDocumentsTab: React.FC = () => {
                 <th className="py-2.5 px-3 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F1F5F9]">
+            <tbody className="divide-y divide-[var(--border-subtle)]">
               {displayedDocs.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-xs text-[#94A3B8]">
+                  <td colSpan={5} className="py-8 text-center text-xs text-[var(--text-muted)]">
                     No files found for this filter. Click <strong>"+ Upload here"</strong> or <strong>"Link Master Library File"</strong> above to add files.
                   </td>
                 </tr>
@@ -624,14 +624,14 @@ export const TenderDocumentsTab: React.FC = () => {
                   const isJvDoc = doc.isJvPartner || doc.companyRole === 'JV_PARTNER';
 
                   return (
-                    <tr key={doc.id} className="hover:bg-[#F8FAFC] transition-colors">
-                      <td className="py-3 px-3 font-medium text-[#0F172A] max-w-sm">
+                    <tr key={doc.id} className="hover:bg-[var(--bg-subtle)] transition-colors">
+                      <td className="py-3 px-3 font-medium text-[var(--text-primary)] max-w-sm">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <FileText className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
+                          <FileText className="w-3.5 h-3.5 text-[var(--accent)] shrink-0" />
                           <button
                             type="button"
                             onClick={() => setPreviewDoc(doc)}
-                            className="font-semibold text-[#0F172A] hover:text-[#2563EB] hover:underline text-left cursor-pointer"
+                            className="font-semibold text-[var(--text-primary)] hover:text-[var(--accent)] hover:underline text-left cursor-pointer"
                             title="Click to preview document in browser"
                           >
                             {doc.name}
@@ -639,12 +639,12 @@ export const TenderDocumentsTab: React.FC = () => {
 
                           {/* Status Badge */}
                           {doc.status === 'ACTION_REQUIRED' ? (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-300 animate-pulse">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-[var(--warn-soft)] text-[var(--warn)] border border-[var(--warn-line)] animate-pulse">
                               <AlertTriangle className="w-2.5 h-2.5" />
                               <span>Action Required</span>
                             </span>
                           ) : doc.status === 'PENDING_REVIEW' ? (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-800 border border-blue-300">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)]">
                               <Clock className="w-2.5 h-2.5" />
                               <span>Under Review</span>
                             </span>
@@ -652,17 +652,17 @@ export const TenderDocumentsTab: React.FC = () => {
 
                           {/* Owning Entity Disambiguation Badge */}
                           {isJvDoc ? (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-[var(--bg-subtle)] text-[var(--text-secondary)] border border-[var(--border-default)]">
                               ⭐ JV: {doc.companyName || jvPartnerName}
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)]">
                               🏛️ Lead: {doc.companyName || leadCompanyName}
                             </span>
                           )}
 
                           {doc.isReusableLink && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE]">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)]">
                               <LinkIcon className="w-2.5 h-2.5" />
                               <span>Master Link</span>
                             </span>
@@ -671,21 +671,21 @@ export const TenderDocumentsTab: React.FC = () => {
 
                         {/* Action Required Feedback Callout */}
                         {doc.status === 'ACTION_REQUIRED' && (
-                          <div className="w-full mt-2 p-2.5 bg-amber-50/90 border border-amber-300 rounded-lg text-amber-900 text-[11px] space-y-1">
+                          <div className="w-full mt-2 p-2.5 bg-[var(--warn-soft)]/90 border border-[var(--warn-line)] rounded-lg text-[var(--warn)] text-[11px] space-y-1">
                             <div className="flex items-center justify-between gap-1">
-                              <span className="font-bold flex items-center gap-1 text-amber-900">
-                                <AlertTriangle className="w-3 h-3 text-amber-600 shrink-0" />
+                              <span className="font-bold flex items-center gap-1 text-[var(--warn)]">
+                                <AlertTriangle className="w-3 h-3 text-[var(--warn)] shrink-0" />
                                 <span>Re-Upload Requested</span>
                               </span>
-                              <span className="text-[10px] font-mono font-bold bg-amber-200/90 px-1.5 py-0.5 rounded text-amber-900">
+                              <span className="text-[10px] font-mono font-bold bg-[var(--warn-soft)]/90 px-1.5 py-0.5 rounded text-[var(--warn)]">
                                 Due: {doc.actionDueDate || 'T-48h'}
                               </span>
                             </div>
                             {doc.actionComment && (
-                              <p className="text-[11px] text-amber-900 bg-white/70 p-1.5 rounded border border-amber-200 leading-tight">
+                              <p className="text-[11px] text-[var(--warn)] bg-[var(--bg-surface)]/70 p-1.5 rounded border border-[var(--warn-line)] leading-tight">
                                 "{doc.actionComment}"
                                 {doc.requestedBy && (
-                                  <span className="not-italic text-[9.5px] text-amber-700 font-semibold block mt-1">
+                                  <span className="not-italic text-[9.5px] text-[var(--warn)] font-semibold block mt-1">
                                     — Requested by {doc.requestedBy}
                                   </span>
                                 )}
@@ -702,7 +702,7 @@ export const TenderDocumentsTab: React.FC = () => {
                           onChange={(e) =>
                             moveDocumentFolder(tender.id, doc.id, e.target.value)
                           }
-                          className="w-full px-2 py-1 bg-[#F8FAFC] border border-[#CBD5E1] rounded text-xs font-medium text-[#0F172A] hover:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] cursor-pointer"
+                          className="w-full px-2 py-1 bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded text-xs font-medium text-[var(--text-primary)] hover:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] cursor-pointer"
                           title="Click to reassign/move this document to another folder"
                         >
                           {folders.map((f) => (
@@ -735,9 +735,9 @@ export const TenderDocumentsTab: React.FC = () => {
                         </select>
                       </td>
 
-                      <td className="py-3 px-3 text-[#64748B] whitespace-nowrap">
+                      <td className="py-3 px-3 text-[var(--text-secondary)] whitespace-nowrap">
                         <div>{doc.uploadedAt}</div>
-                        <div className="text-[10px] text-[#94A3B8] font-mono">{doc.revision} • {doc.size}</div>
+                        <div className="text-[10px] text-[var(--text-muted)] font-mono">{doc.revision} • {doc.size}</div>
                       </td>
 
                       <td className="py-3 px-3 text-right">
@@ -753,9 +753,9 @@ export const TenderDocumentsTab: React.FC = () => {
                                 setReuploadDueDate(doc.actionDueDate || 'T-48h');
                               }}
                               className={`p-1.5 rounded-lg border transition-colors shadow-2xs ${
-                                doc.status === 'ACTION_REQUIRED'
-                                  ? 'text-amber-700 bg-amber-100 border-amber-300 hover:bg-amber-200'
-                                  : 'text-[#64748B] bg-white border-[#E2E8F0] hover:text-amber-700 hover:bg-amber-50 hover:border-amber-300'
+ doc.status === 'ACTION_REQUIRED'
+                                  ? 'text-[var(--warn)] bg-[var(--warn-soft)] border-[var(--warn-line)] hover:bg-[var(--warn-soft)]'
+                                  : 'text-[var(--text-secondary)] bg-[var(--bg-surface)] border-[var(--border-default)] hover:text-[var(--warn)] hover:bg-[var(--warn-soft)] hover:border-[var(--warn-line)]'
                               }`}
                               title={
                                 doc.status === 'ACTION_REQUIRED'
@@ -771,7 +771,7 @@ export const TenderDocumentsTab: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={() => setDocToResolve(doc)}
-                                className="inline-flex items-center gap-1 px-2 py-1 bg-[#0F172A] hover:bg-[#1E293B] text-white rounded text-[10px] font-bold shadow-2xs transition-colors shrink-0"
+                                className="inline-flex items-center gap-1 px-2 py-1 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded text-[10px] font-bold shadow-2xs transition-colors shrink-0"
                                 title="Upload certified revision to resolve this action request"
                               >
                                 <Upload className="w-3 h-3" />
@@ -783,7 +783,7 @@ export const TenderDocumentsTab: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => setPreviewDoc(doc)}
-                              className="p-1.5 text-[#0F172A] bg-white border border-[#CBD5E1] hover:bg-[#0F172A] hover:text-white rounded-lg transition-colors shadow-2xs cursor-pointer"
+                              className="p-1.5 text-[var(--text-primary)] bg-[var(--bg-surface)] border border-[var(--border-strong)] hover:bg-[var(--accent)] hover:text-[var(--accent-on)] rounded-lg transition-colors shadow-2xs cursor-pointer"
                               title="Preview document in browser (PDF, DOCX, XLSX, Images)"
                             >
                               <Eye className="w-3.5 h-3.5" />
@@ -794,7 +794,7 @@ export const TenderDocumentsTab: React.FC = () => {
                               onClick={() =>
                                 setActiveDocForShare({ tenderId: tender.id, doc })
                               }
-                              className="p-1.5 text-[#2563EB] bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-lg transition-colors shadow-2xs"
+                              className="p-1.5 text-[var(--accent)] bg-[var(--accent-soft)] border border-[var(--accent-line)] hover:bg-[var(--accent-soft)] rounded-lg transition-colors shadow-2xs"
                               title="Share document link"
                             >
                               <Share2 className="w-3.5 h-3.5" />
@@ -807,10 +807,10 @@ export const TenderDocumentsTab: React.FC = () => {
                                 link.download = doc.name;
                                 link.click();
                               }}
-                              className="p-1.5 text-[#0F172A] bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] rounded-lg transition-colors shadow-2xs"
+                              className="p-1.5 text-[var(--text-primary)] bg-[var(--bg-surface)] border border-[var(--border-default)] hover:bg-[var(--bg-subtle)] rounded-lg transition-colors shadow-2xs"
                               title="Download file"
                             >
-                              <Download className="w-3.5 h-3.5 text-[#64748B]" />
+                              <Download className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
                             </button>
                             <button
                               type="button"
@@ -819,7 +819,7 @@ export const TenderDocumentsTab: React.FC = () => {
                                   deleteDocument(tender.id, doc.id);
                                 }
                               }}
-                              className="p-1.5 text-[#DC2626] bg-white dark:bg-slate-800 border border-[#FECACA] dark:border-rose-900/50 hover:bg-[#FEF2F2] dark:hover:bg-rose-950/40 rounded-lg transition-colors shadow-2xs cursor-pointer"
+                              className="p-1.5 text-[var(--crit)] bg-[var(--bg-surface)] border border-[var(--crit-line)] hover:bg-[var(--crit-soft)] rounded-lg transition-colors shadow-2xs cursor-pointer"
                               title="Delete file from vault"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -827,7 +827,7 @@ export const TenderDocumentsTab: React.FC = () => {
                           </div>
                         ) : (
                           <span
-                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] rounded-lg cursor-not-allowed"
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-[var(--crit)] bg-[var(--crit-soft)] border border-[var(--crit-line)] rounded-lg cursor-not-allowed"
                             title="Access Restricted: Requires management clearance"
                           >
                             <Lock className="w-3 h-3" />
@@ -846,19 +846,19 @@ export const TenderDocumentsTab: React.FC = () => {
 
       {/* Modal: Create New Folder */}
       {isCreateFolderModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="w-full max-w-md bg-white rounded-xl shadow-2xl border border-[#E2E8F0] overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F5F9] bg-[#F8FAFC]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--accent)]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="w-full max-w-md bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-default)] overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-subtle)] bg-[var(--bg-subtle)]">
               <div className="flex items-center gap-2">
-                <FolderPlus className="w-5 h-5 text-[#2563EB]" />
-                <h3 className="font-display text-base font-bold text-[#0F172A]">
+                <FolderPlus className="w-5 h-5 text-[var(--accent)]" />
+                <h3 className="font-display text-base font-bold text-[var(--text-primary)]">
                   Create Vault Folder
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsCreateFolderModalOpen(false)}
-                className="text-[#94A3B8] hover:text-[#0F172A]"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -866,7 +866,7 @@ export const TenderDocumentsTab: React.FC = () => {
 
             <form onSubmit={handleCreateFolder} className="p-6 space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Folder Name / Title *
                 </label>
                 <input
@@ -882,38 +882,38 @@ export const TenderDocumentsTab: React.FC = () => {
                       `${prefix}_${e.target.value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_')}`
                     );
                   }}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Directory Path / Folder Slug (Local SSD storage)
                 </label>
-                <div className="flex items-center gap-2 p-2 bg-[#F1F5F9] rounded-lg border border-[#E2E8F0] font-mono text-[11px] text-[#0F172A]">
-                  <Folder className="w-4 h-4 text-[#2563EB]" />
+                <div className="flex items-center gap-2 p-2 bg-[var(--bg-subtle)] rounded-lg border border-[var(--border-default)] font-mono text-[11px] text-[var(--text-primary)]">
+                  <Folder className="w-4 h-4 text-[var(--accent)]" />
                   <span>/{newFolderName || '07_custom_folder'}/</span>
                 </div>
-                <span className="text-[10px] text-[#64748B] mt-1 block font-mono">
+                <span className="text-[10px] text-[var(--text-secondary)] mt-1 block font-mono">
                   Location: storage/tenders/{tender.id}/{newFolderName || '07_custom_folder'}/
                 </span>
               </div>
 
-              <div className="p-3 bg-[#EFF6FF] rounded-lg border border-[#BFDBFE] text-[11px] text-[#1D4ED8]">
+              <div className="p-3 bg-[var(--accent-soft)] rounded-lg border border-[var(--accent-line)] text-[11px] text-[var(--accent)]">
                 <strong>Folder Routing Note:</strong> Once created, you can immediately upload documents into this folder, link master files, or reassign existing documents from the table below.
               </div>
 
-              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#F1F5F9]">
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => setIsCreateFolderModalOpen(false)}
-                  className="px-4 py-2 border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] rounded-lg font-semibold transition-colors"
+                  className="px-4 py-2 border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-lg font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] text-white rounded-lg font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg font-semibold hover:bg-[var(--accent-hover)] transition-colors shadow-sm"
                 >
                   <FolderPlus className="w-3.5 h-3.5" />
                   <span>Create Vault Folder</span>
@@ -926,19 +926,19 @@ export const TenderDocumentsTab: React.FC = () => {
 
       {/* Modal: Link Master Reusable Document to Project Folder */}
       {isLinkModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl border border-[#E2E8F0] overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F5F9] bg-[#F8FAFC]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--accent)]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="w-full max-w-lg bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-default)] overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-subtle)] bg-[var(--bg-subtle)]">
               <div className="flex items-center gap-2">
-                <LinkIcon className="w-5 h-5 text-[#2563EB]" />
-                <h3 className="font-display text-base font-bold text-[#0F172A]">
+                <LinkIcon className="w-5 h-5 text-[var(--accent)]" />
+                <h3 className="font-display text-base font-bold text-[var(--text-primary)]">
                   Link Master Library Document to Proposal
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsLinkModalOpen(false)}
-                className="p-1 rounded-lg text-[#94A3B8] hover:text-[#0F172A]"
+                className="p-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -947,13 +947,13 @@ export const TenderDocumentsTab: React.FC = () => {
             <form onSubmit={handleLinkReusable} className="p-6 space-y-4 text-xs">
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block font-semibold text-[#0F172A]">
+                  <label className="block font-semibold text-[var(--text-primary)]">
                     Select Master Document to Reference *
                   </label>
                   <select
                     value={linkFilterCategory}
                     onChange={(e) => setLinkFilterCategory(e.target.value)}
-                    className="text-[10px] bg-[#F1F5F9] border border-[#CBD5E1] rounded px-1.5 py-0.5 text-[#0F172A]"
+                    className="text-[10px] bg-[var(--bg-subtle)] border border-[var(--border-strong)] rounded px-1.5 py-0.5 text-[var(--text-primary)]"
                   >
                     <option value="ALL">All Categories</option>
                     <option value="Company Statutory">Company Statutory</option>
@@ -965,7 +965,7 @@ export const TenderDocumentsTab: React.FC = () => {
                   </select>
                 </div>
 
-                <div className="max-h-48 overflow-y-auto space-y-1.5 border border-[#E2E8F0] rounded-lg p-2 bg-[#F8FAFC]">
+                <div className="max-h-48 overflow-y-auto space-y-1.5 border border-[var(--border-default)] rounded-lg p-2 bg-[var(--bg-subtle)]">
                   {reusableDocuments
                     .filter(
                       (d) =>
@@ -989,36 +989,36 @@ export const TenderDocumentsTab: React.FC = () => {
                           key={d.id}
                           onClick={() => hasAccess && setSelectedReusableDocId(d.id)}
                           className={`p-2 rounded-lg border text-left cursor-pointer transition-all flex items-start justify-between gap-2 ${
-                            isSelected
-                              ? 'bg-[#EFF6FF] border-[#2563EB] ring-1 ring-[#2563EB]'
+ isSelected
+                              ? 'bg-[var(--accent-soft)] border-[var(--accent)] ring-1 ring-[var(--accent)]'
                               : hasAccess
-                              ? 'bg-white border-[#E2E8F0] hover:border-[#CBD5E1]'
-                              : 'bg-[#F1F5F9] border-[#E2E8F0] opacity-50 cursor-not-allowed'
+                              ? 'bg-[var(--bg-surface)] border-[var(--border-default)] hover:border-[var(--border-strong)]'
+                              : 'bg-[var(--bg-subtle)] border-[var(--border-default)] opacity-50 cursor-not-allowed'
                           }`}
                         >
                           <div className="min-w-0 flex-1">
-                            <span className="font-semibold text-[#0F172A] block truncate">
+                            <span className="font-semibold text-[var(--text-primary)] block truncate">
                               {d.name}
                             </span>
                             <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
-                              <span className="text-[10px] text-[#64748B]">
+                              <span className="text-[10px] text-[var(--text-secondary)]">
                                 {d.category} • {d.size}
                               </span>
                               {isJv ? (
-                                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[var(--bg-subtle)] text-[var(--text-secondary)] border border-[var(--border-default)]">
                                   ⭐ JV: {d.companyName || 'JV Partner'}
                                 </span>
                               ) : (
-                                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)]">
                                   🏛️ Lead: {d.companyName || 'Lead Bidder'}
                                 </span>
                               )}
                             </div>
                           </div>
                           {hasAccess ? (
-                            isSelected && <Check className="w-4 h-4 text-[#2563EB] shrink-0 mt-1" />
+                            isSelected && <Check className="w-4 h-4 text-[var(--accent)] shrink-0 mt-1" />
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#DC2626] bg-[#FEF2F2] px-1.5 py-0.5 rounded">
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[var(--crit)] bg-[var(--crit-soft)] px-1.5 py-0.5 rounded">
                               <Lock className="w-2.5 h-2.5" />
                               <span>Restricted</span>
                             </span>
@@ -1030,13 +1030,13 @@ export const TenderDocumentsTab: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Destination Proposal Folder *
                 </label>
                 <select
                   value={linkTargetFolder}
                   onChange={(e) => setLinkTargetFolder(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs font-semibold text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 >
                   {folders.map((f) => (
                     <option key={f.name} value={f.name}>
@@ -1046,22 +1046,22 @@ export const TenderDocumentsTab: React.FC = () => {
                 </select>
               </div>
 
-              <div className="p-3 bg-[#F0FDF4] rounded-lg border border-[#BBF7D0] text-[11px] text-[#15803D]">
+              <div className="p-3 bg-[var(--ok-soft)] rounded-lg border border-[var(--ok-line)] text-[11px] text-[var(--ok)]">
                 <strong>Zero-Redundancy Link:</strong> This creates a cryptographic reference to the master file. Any future updates to the master file will automatically stay synced.
               </div>
 
-              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#F1F5F9]">
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => setIsLinkModalOpen(false)}
-                  className="px-4 py-2 border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] rounded-lg font-semibold transition-colors"
+                  className="px-4 py-2 border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-lg font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={!selectedReusableDocId}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-[#2563EB] text-white rounded-lg font-semibold hover:bg-[#1D4ED8] disabled:opacity-50 transition-colors shadow-sm"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg font-semibold hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors shadow-sm"
                 >
                   <LinkIcon className="w-3.5 h-3.5" />
                   <span>Link into Folder</span>
@@ -1074,18 +1074,18 @@ export const TenderDocumentsTab: React.FC = () => {
 
       {/* Modal: Edit Folder */}
       {folderToEdit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-[#E2E8F0] dark:border-slate-800 p-6 max-w-md w-full shadow-2xl space-y-4 animate-scaleIn">
-            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9] dark:border-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--accent)]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-default)] p-6 max-w-md w-full shadow-2xl space-y-4 animate-scaleIn">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-200 dark:border-blue-900/40">
+                <div className="w-10 h-10 rounded-xl bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center border border-[var(--accent-line)]">
                   <Folder className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-display text-sm font-bold text-[#0F172A] dark:text-slate-100">
+                  <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
                     Edit Folder Details
                   </h3>
-                  <p className="text-xs text-[#64748B] dark:text-slate-400">
+                  <p className="text-xs text-[var(--text-secondary)]">
                     Rename display title for this vault folder
                   </p>
                 </div>
@@ -1093,7 +1093,7 @@ export const TenderDocumentsTab: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setFolderToEdit(null)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg"
+                className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] p-1 rounded-lg"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1109,7 +1109,7 @@ export const TenderDocumentsTab: React.FC = () => {
               className="space-y-3.5 text-xs"
             >
               <div>
-                <label className="block font-semibold text-[#0F172A] dark:text-slate-200 mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Folder Display Label *
                 </label>
                 <input
@@ -1118,34 +1118,34 @@ export const TenderDocumentsTab: React.FC = () => {
                   value={editFolderLabel}
                   onChange={(e) => setEditFolderLabel(e.target.value)}
                   placeholder="e.g. JV Partner Credentials"
-                  className="w-full px-3.5 py-2 bg-white dark:bg-slate-800 border border-[#CBD5E1] dark:border-slate-700 rounded-xl text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-xl text-xs text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                   autoFocus
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-500 dark:text-slate-400 mb-1">
+                <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                   Internal Vault Path Slug (Read-only)
                 </label>
-                <div className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/60 font-mono text-[11px] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60">
+                <div className="px-3.5 py-2 rounded-xl bg-[var(--bg-subtle)] font-mono text-[11px] text-[var(--text-secondary)] border border-[var(--border-default)]">
                   /{folderToEdit.name}/
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1">
+                <p className="text-[10px] text-[var(--text-muted)] mt-1">
                   The directory name on the disk vault is preserved to ensure hash and document link integrity.
                 </p>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9] dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => setFolderToEdit(null)}
-                  className="px-3.5 py-1.5 rounded-xl border border-[#E2E8F0] dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition-colors"
+                  className="px-3.5 py-1.5 rounded-xl border border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold transition-colors shadow-xs"
+                  className="px-4 py-1.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] font-semibold transition-colors shadow-xs"
                 >
                   Save Changes
                 </button>
@@ -1157,41 +1157,41 @@ export const TenderDocumentsTab: React.FC = () => {
 
       {/* Modal: Confirm Delete Folder */}
       {folderToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="flex items-center gap-3 text-[#DC2626]">
-              <div className="w-10 h-10 rounded-full bg-[#FEF2F2] border border-[#FECACA] flex items-center justify-center shrink-0">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--accent)]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center gap-3 text-[var(--crit)]">
+              <div className="w-10 h-10 rounded-full bg-[var(--crit-soft)] border border-[var(--crit-line)] flex items-center justify-center shrink-0">
                 <Trash2 className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-display text-sm font-bold text-[#0F172A]">
+                <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
                   Delete Vault Folder
                 </h3>
-                <p className="text-xs text-[#64748B]">Confirm removal from proposal structure</p>
+                <p className="text-xs text-[var(--text-secondary)]">Confirm removal from proposal structure</p>
               </div>
             </div>
 
-            <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs space-y-1">
-              <span className="font-bold text-[#0F172A] block">
+            <div className="p-3 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs space-y-1">
+              <span className="font-bold text-[var(--text-primary)] block">
                 Folder: {folderToDelete.label}
               </span>
-              <span className="font-mono text-[11px] text-[#64748B] block">
+              <span className="font-mono text-[11px] text-[var(--text-secondary)] block">
                 /{folderToDelete.name}/
               </span>
               {folderToDelete.fileCount > 0 ? (
-                <p className="text-[#B45309] font-medium pt-1 text-[11px] leading-relaxed">
+                <p className="text-[var(--warn)] font-medium pt-1 text-[11px] leading-relaxed">
                   ⚠️ This folder contains {folderToDelete.fileCount} file(s). To protect proposal integrity, these files will be safely moved to "Original RFP Notices & Addenda".
                 </p>
               ) : (
-                <p className="text-[#64748B] pt-1 text-[11px]">This folder is empty.</p>
+                <p className="text-[var(--text-secondary)] pt-1 text-[11px]">This folder is empty.</p>
               )}
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#F1F5F9] text-xs">
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[var(--border-subtle)] text-xs">
               <button
                 type="button"
                 onClick={() => setFolderToDelete(null)}
-                className="px-3.5 py-1.5 rounded-lg border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] font-semibold transition-colors"
+                className="px-3.5 py-1.5 rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors"
               >
                 Cancel
               </button>
@@ -1204,7 +1204,7 @@ export const TenderDocumentsTab: React.FC = () => {
                   }
                   setFolderToDelete(null);
                 }}
-                className="px-4 py-1.5 rounded-lg bg-[#DC2626] text-white font-semibold hover:bg-[#B91C1C] shadow-sm transition-colors"
+                className="px-4 py-1.5 rounded-lg bg-[var(--crit)] text-[var(--accent-on)] font-semibold hover:bg-[var(--crit)] shadow-sm transition-colors"
               >
                 Delete Folder
               </button>
@@ -1215,18 +1215,18 @@ export const TenderDocumentsTab: React.FC = () => {
 
       {/* Modal 1: Request Document Revision & Re-Upload */}
       {selectedDocForReupload && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl border border-[#E2E8F0] overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F5F9] bg-[#FFFBEB]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--accent)]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="w-full max-w-lg bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-default)] overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-subtle)] bg-[var(--warn-soft)]">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-[#FEF3C7] text-[#D97706]">
+                <div className="p-2 rounded-lg bg-[var(--warn-soft)] text-[var(--warn)]">
                   <RotateCcw className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-display text-base font-bold text-[#92400E]">
+                  <h3 className="font-display text-base font-bold text-[var(--warn)]">
                     Request Document Revision &amp; Re-Upload
                   </h3>
-                  <p className="text-xs text-[#B45309]">
+                  <p className="text-xs text-[var(--warn)]">
                     Flag this file and notify the partner with compliance revision instructions
                   </p>
                 </div>
@@ -1234,7 +1234,7 @@ export const TenderDocumentsTab: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSelectedDocForReupload(null)}
-                className="text-[#94A3B8] hover:text-[#0F172A] p-1 rounded-lg hover:bg-white transition-colors"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 rounded-lg hover:bg-[var(--bg-surface)] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1242,16 +1242,16 @@ export const TenderDocumentsTab: React.FC = () => {
 
             <form onSubmit={handleSendReuploadRequest} className="p-6 space-y-4 text-xs">
               {/* Target File Info */}
-              <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg space-y-1.5">
+              <div className="p-3 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-[#0F172A] text-xs truncate max-w-xs">
+                  <span className="font-bold text-[var(--text-primary)] text-xs truncate max-w-xs">
                     {selectedDocForReupload.name}
                   </span>
-                  <span className="font-mono text-[10px] font-bold bg-[#E2E8F0] text-[#475569] px-1.5 py-0.5 rounded">
+                  <span className="font-mono text-[10px] font-bold bg-[var(--bg-muted)] text-[var(--text-secondary)] px-1.5 py-0.5 rounded">
                     {selectedDocForReupload.revision}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-[11px] text-[#64748B]">
+                <div className="flex items-center gap-2 text-[11px] text-[var(--text-secondary)]">
                   <span>Entity: <strong>{selectedDocForReupload.companyName || leadCompanyName}</strong></span>
                   <span>•</span>
                   <span>Folder: <strong>{folders.find(f => f.name === selectedDocForReupload.folder)?.label || selectedDocForReupload.folder}</strong></span>
@@ -1260,13 +1260,13 @@ export const TenderDocumentsTab: React.FC = () => {
 
               {/* Defect / Reason */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Primary Defect / Re-Upload Reason:
                 </label>
                 <select
                   value={reuploadReason}
                   onChange={(e) => setReuploadReason(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-medium text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#F59E0B]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-medium text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--warn)]"
                 >
                   <option value="Missing Auditor Stamp">Missing CA Auditor Seal &amp; Stamp on Pages</option>
                   <option value="Illegible / Low Resolution Scan">Illegible / Low Resolution Scan (&lt;300 DPI)</option>
@@ -1280,7 +1280,7 @@ export const TenderDocumentsTab: React.FC = () => {
 
               {/* Feedback Comment */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Reviewer Feedback &amp; Action Instructions:
                 </label>
                 <textarea
@@ -1289,13 +1289,13 @@ export const TenderDocumentsTab: React.FC = () => {
                   placeholder="Explain exactly what needs fixing (e.g. Page 4 requires physical signature and official seal of the external chartered accountant. Please re-scan at 300 DPI and upload)."
                   rows={4}
                   required
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#F59E0B] resize-none leading-relaxed"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--warn)] resize-none leading-relaxed"
                 />
               </div>
 
               {/* Urgency Due Window */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1.5">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1.5">
                   Resolution SLA / Due Window:
                 </label>
                 <div className="grid grid-cols-4 gap-2">
@@ -1310,9 +1310,9 @@ export const TenderDocumentsTab: React.FC = () => {
                       type="button"
                       onClick={() => setReuploadDueDate(sla.value)}
                       className={`py-1.5 px-2 rounded-lg border text-[11px] font-semibold text-center transition-all ${
-                        reuploadDueDate === sla.value
-                          ? 'bg-[#FEF3C7] border-[#F59E0B] text-[#92400E] shadow-2xs font-bold'
-                          : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:bg-white'
+ reuploadDueDate === sla.value
+                          ? 'bg-[var(--warn-soft)] border-[var(--warn)] text-[var(--warn)] shadow-2xs font-bold'
+                          : 'bg-[var(--bg-subtle)] border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface)]'
                       }`}
                     >
                       {sla.label}
@@ -1322,26 +1322,26 @@ export const TenderDocumentsTab: React.FC = () => {
               </div>
 
               {/* Notice */}
-              <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-lg text-[11px] text-amber-800 flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <div className="p-3 bg-[var(--warn-soft)]/70 border border-[var(--warn-line)] rounded-lg text-[11px] text-[var(--warn)] flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-[var(--warn)] shrink-0 mt-0.5" />
                 <span>
                   This document's status will be marked as <strong>ACTION REQUIRED</strong>. An alert banner will appear in the partner portal and dashboard until a certified revision is submitted.
                 </span>
               </div>
 
               {/* Modal Actions */}
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => setSelectedDocForReupload(null)}
-                  className="px-4 py-2 border border-[#CBD5E1] text-[#64748B] font-semibold rounded-lg hover:text-[#0F172A] hover:bg-[#F8FAFC] transition-colors"
+                  className="px-4 py-2 border border-[var(--border-strong)] text-[var(--text-secondary)] font-semibold rounded-lg hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingReupload || !reuploadComment.trim()}
-                  className="px-4 py-2 bg-[#D97706] hover:bg-[#B45309] text-white font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                  className="px-4 py-2 bg-[var(--warn)] hover:bg-[var(--warn)] text-[var(--accent-on)] font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>{isSubmittingReupload ? 'Sending Request...' : 'Dispatch Re-Upload Request'}</span>
@@ -1354,18 +1354,18 @@ export const TenderDocumentsTab: React.FC = () => {
 
       {/* Modal 2: Request Missing Document from Partner */}
       {isRequestDocModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl border border-[#E2E8F0] overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F5F9] bg-[#F8FAFC]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--accent)]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="w-full max-w-lg bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-default)] overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-subtle)] bg-[var(--bg-subtle)]">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+                <div className="p-2 rounded-lg bg-[var(--accent-soft)] text-[var(--accent)]">
                   <Send className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-display text-base font-bold text-[#0F172A]">
+                  <h3 className="font-display text-base font-bold text-[var(--text-primary)]">
                     Request Missing Document from Partner
                   </h3>
-                  <p className="text-xs text-[#64748B]">
+                  <p className="text-xs text-[var(--text-secondary)]">
                     Send a formal deliverable request for statutory credentials, forms, or technical diagrams
                   </p>
                 </div>
@@ -1373,7 +1373,7 @@ export const TenderDocumentsTab: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsRequestDocModalOpen(false)}
-                className="text-[#94A3B8] hover:text-[#0F172A] p-1 rounded-lg hover:bg-[#F1F5F9] transition-colors"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 rounded-lg hover:bg-[var(--bg-subtle)] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1382,13 +1382,13 @@ export const TenderDocumentsTab: React.FC = () => {
             <form onSubmit={handleSendNewDocumentRequest} className="p-6 space-y-4 text-xs">
               {/* Target Entity / Partner */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Assign To Entity / JV Partner:
                 </label>
                 <select
                   value={reqDocCompany}
                   onChange={(e) => setReqDocCompany(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-medium text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-medium text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 >
                   <option value={leadCompanyName}>🏛️ Lead Bidder ({leadCompanyName})</option>
                   <option value={jvPartnerName}>⭐ JV Partner ({jvPartnerName})</option>
@@ -1404,7 +1404,7 @@ export const TenderDocumentsTab: React.FC = () => {
 
               {/* Document Title */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Required Document Title:
                 </label>
                 <input
@@ -1413,19 +1413,19 @@ export const TenderDocumentsTab: React.FC = () => {
                   onChange={(e) => setReqDocTitle(e.target.value)}
                   placeholder="e.g. Manufacturer Authorization Form (MAF) - Cisco Systems"
                   required
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               {/* Target Vault Folder */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Target Vault Folder:
                 </label>
                 <select
                   value={reqDocFolder}
                   onChange={(e) => setReqDocFolder(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-medium text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-medium text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 >
                   {folders.map((f) => (
                     <option key={f.name} value={f.name}>
@@ -1437,7 +1437,7 @@ export const TenderDocumentsTab: React.FC = () => {
 
               {/* Detailed Instructions */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Instructions &amp; Compliance Specifications:
                 </label>
                 <textarea
@@ -1446,13 +1446,13 @@ export const TenderDocumentsTab: React.FC = () => {
                   placeholder="e.g. Letter must be printed on official manufacturer letterhead, specifically referencing this tender number, and signed by an authorized regional director."
                   rows={3}
                   required
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] resize-none leading-relaxed"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] resize-none leading-relaxed"
                 />
               </div>
 
               {/* SLA Due Window */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1.5">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1.5">
                   Resolution SLA / Due Window:
                 </label>
                 <div className="grid grid-cols-4 gap-2">
@@ -1467,9 +1467,9 @@ export const TenderDocumentsTab: React.FC = () => {
                       type="button"
                       onClick={() => setReqDocDueDate(sla.value)}
                       className={`py-1.5 px-2 rounded-lg border text-[11px] font-semibold text-center transition-all ${
-                        reqDocDueDate === sla.value
-                          ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-2xs font-bold'
-                          : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:bg-white'
+ reqDocDueDate === sla.value
+                          ? 'bg-[var(--accent-soft)] border-[var(--accent)] text-[var(--accent)] shadow-2xs font-bold'
+                          : 'bg-[var(--bg-subtle)] border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface)]'
                       }`}
                     >
                       {sla.label}
@@ -1479,18 +1479,18 @@ export const TenderDocumentsTab: React.FC = () => {
               </div>
 
               {/* Modal Actions */}
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => setIsRequestDocModalOpen(false)}
-                  className="px-4 py-2 border border-[#CBD5E1] text-[#64748B] font-semibold rounded-lg hover:text-[#0F172A] hover:bg-[#F8FAFC] transition-colors"
+                  className="px-4 py-2 border border-[var(--border-strong)] text-[var(--text-secondary)] font-semibold rounded-lg hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingNewReq || !reqDocTitle.trim()}
-                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                  className="px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>{isSubmittingNewReq ? 'Sending...' : 'Send Request'}</span>
@@ -1503,18 +1503,18 @@ export const TenderDocumentsTab: React.FC = () => {
 
       {/* Modal 3: Upload Certified Revision to Resolve Request */}
       {docToResolve && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="w-full max-w-md bg-white rounded-xl shadow-2xl border border-[#E2E8F0] overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F5F9] bg-[#F8FAFC]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--accent)]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="w-full max-w-md bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-default)] overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-subtle)] bg-[var(--bg-subtle)]">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600">
+                <div className="p-2 rounded-lg bg-[var(--ok-soft)] text-[var(--ok)]">
                   <Upload className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-display text-base font-bold text-[#0F172A]">
+                  <h3 className="font-display text-base font-bold text-[var(--text-primary)]">
                     Upload Revised Document
                   </h3>
-                  <p className="text-xs text-[#64748B]">
+                  <p className="text-xs text-[var(--text-secondary)]">
                     Resolve action request for {docToResolve.name}
                   </p>
                 </div>
@@ -1525,7 +1525,7 @@ export const TenderDocumentsTab: React.FC = () => {
                   setDocToResolve(null);
                   setResolveFile(null);
                 }}
-                className="text-[#94A3B8] hover:text-[#0F172A] p-1 rounded-lg hover:bg-[#F1F5F9] transition-colors"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 rounded-lg hover:bg-[var(--bg-subtle)] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1534,7 +1534,7 @@ export const TenderDocumentsTab: React.FC = () => {
             <form onSubmit={handleResolveUpload} className="p-6 space-y-4 text-xs">
               {/* Reviewer instructions prompt */}
               {docToResolve.actionComment && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-[11px] space-y-1">
+                <div className="p-3 bg-[var(--warn-soft)] border border-[var(--warn-line)] rounded-lg text-[var(--warn)] text-[11px] space-y-1">
                   <span className="font-bold block">Reviewer Instructions:</span>
                   <p className="italic">"{docToResolve.actionComment}"</p>
                 </div>
@@ -1542,7 +1542,7 @@ export const TenderDocumentsTab: React.FC = () => {
 
               {/* File input */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Select Certified Revision File (PDF / Office):
                 </label>
                 <input
@@ -1553,13 +1553,13 @@ export const TenderDocumentsTab: React.FC = () => {
                       setResolveFile(e.target.files[0]);
                     }
                   }}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)]"
                 />
               </div>
 
               {/* Resolution Note */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Resolution Note / Auditor Changes Summary:
                 </label>
                 <textarea
@@ -1567,26 +1567,26 @@ export const TenderDocumentsTab: React.FC = () => {
                   onChange={(e) => setResolveComment(e.target.value)}
                   placeholder="e.g. Certified stamp affixed on page 4 by statutory auditor. Re-scanned at 300 DPI."
                   rows={2}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] resize-none"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] resize-none"
                 />
               </div>
 
               {/* Modal Actions */}
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => {
                     setDocToResolve(null);
                     setResolveFile(null);
                   }}
-                  className="px-4 py-2 border border-[#CBD5E1] text-[#64748B] font-semibold rounded-lg hover:text-[#0F172A] hover:bg-[#F8FAFC] transition-colors"
+                  className="px-4 py-2 border border-[var(--border-strong)] text-[var(--text-secondary)] font-semibold rounded-lg hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingResolve || !resolveFile}
-                  className="px-4 py-2 bg-[#0F172A] hover:bg-[#1E293B] text-white font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                  className="px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
                 >
                   <Upload className="w-3.5 h-3.5" />
                   <span>{isSubmittingResolve ? 'Uploading...' : 'Submit Revision (v1.1)'}</span>

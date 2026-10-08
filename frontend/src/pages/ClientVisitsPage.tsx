@@ -44,37 +44,37 @@ const STATUS_CONFIG: Record<
 > = {
   SCHEDULED: {
     label: 'Scheduled',
-    badgeClass: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-400 dark:border-blue-800',
+    badgeClass: 'bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--accent-line)]',
     borderClass: 'border-l-blue-500',
     icon: Calendar,
   },
   CHECKED_IN: {
     label: 'Checked-In (Active)',
-    badgeClass: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-400 dark:border-amber-800 animate-pulse',
+    badgeClass: 'bg-[var(--warn-soft)] text-[var(--warn)] border-[var(--warn-line)] animate-pulse',
     borderClass: 'border-l-amber-500',
     icon: UserCheck,
   },
   COMPLETED: {
     label: 'Completed',
-    badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-400 dark:border-emerald-800',
+    badgeClass: 'bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)]',
     borderClass: 'border-l-emerald-500',
     icon: CheckCircle2,
   },
   CANCELLED: {
     label: 'Cancelled',
-    badgeClass: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/50 dark:text-rose-400 dark:border-rose-800',
+    badgeClass: 'bg-[var(--crit-soft)] text-[var(--crit)] border-[var(--crit-line)]',
     borderClass: 'border-l-rose-500',
     icon: AlertCircle,
   },
   RESCHEDULED: {
     label: 'Rescheduled',
-    badgeClass: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/50 dark:text-purple-400 dark:border-purple-800',
+    badgeClass: 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] border-[var(--border-default)]',
     borderClass: 'border-l-purple-500',
     icon: Clock3,
   },
   NO_SHOW: {
     label: 'No Show',
-    badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
+    badgeClass: 'bg-[var(--bg-subtle)] text-[var(--text-primary)] border-[var(--border-strong)]',
     borderClass: 'border-l-slate-400',
     icon: AlertCircle,
   },
@@ -91,11 +91,11 @@ const FORMAT_LABELS: Record<VisitType, { label: string; icon: any }> = {
 };
 
 const SENTIMENT_LABELS: Record<VisitSentiment, { label: string; color: string }> = {
-  VERY_POSITIVE: { label: 'Very Positive', color: 'text-emerald-600 dark:text-emerald-400' },
-  POSITIVE: { label: 'Positive', color: 'text-blue-600 dark:text-blue-400' },
-  NEUTRAL: { label: 'Neutral', color: 'text-slate-600 dark:text-slate-400' },
-  CONCERNED: { label: 'Concerned', color: 'text-amber-600 dark:text-amber-400' },
-  CRITICAL: { label: 'Critical Issues', color: 'text-rose-600 dark:text-rose-400' },
+  VERY_POSITIVE: { label: 'Very Positive', color: 'text-[var(--ok)]' },
+  POSITIVE: { label: 'Positive', color: 'text-[var(--accent)]' },
+  NEUTRAL: { label: 'Neutral', color: 'text-[var(--text-secondary)]' },
+  CONCERNED: { label: 'Concerned', color: 'text-[var(--warn)]' },
+  CRITICAL: { label: 'Critical Issues', color: 'text-[var(--crit)]' },
 };
 
 export const ClientVisitsPage: React.FC = () => {
@@ -247,14 +247,14 @@ export const ClientVisitsPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-blue-600/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center font-bold">
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="font-display text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+              <h1 className="font-display text-2xl font-bold text-[var(--text-primary)] tracking-tight">
                 Client Visitors &amp; Meeting Hub
               </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                 Centralized registry for client stakeholder visits, pre-bid briefing sessions, and strategic meeting minutes
               </p>
             </div>
@@ -269,9 +269,9 @@ export const ClientVisitsPage: React.FC = () => {
               setModalMode('LOG_PAST');
               setIsModalOpen(true);
             }}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-subtle)] text-[var(--text-primary)] text-xs font-semibold transition-colors cursor-pointer"
           >
-            <FileText className="w-4 h-4 text-slate-500" />
+            <FileText className="w-4 h-4 text-[var(--text-secondary)]" />
             <span>Log Completed Visit / MoM</span>
           </button>
 
@@ -281,7 +281,7 @@ export const ClientVisitsPage: React.FC = () => {
               setModalMode('SCHEDULE');
               setIsModalOpen(true);
             }}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent)] text-[var(--accent-on)] text-xs font-semibold shadow-sm transition-colors cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Schedule Meeting</span>
@@ -291,95 +291,95 @@ export const ClientVisitsPage: React.FC = () => {
 
       {/* KPI Summary Ribbon */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-4 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
+        <Card className="p-4 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-xl shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-medium text-[var(--text-secondary)]">
                 Upcoming Meetings
               </span>
-              <div className="font-display text-2xl font-bold text-slate-900 dark:text-white mt-1">
+              <div className="font-display text-2xl font-bold text-[var(--text-primary)] mt-1">
                 {metrics.upcoming}
               </div>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center">
               <Calendar className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-blue-600 dark:text-blue-400 font-medium">
+          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[var(--accent)] font-medium">
             <Clock3 className="w-3.5 h-3.5" />
             <span>Scheduled &amp; Confirmed</span>
           </div>
         </Card>
 
-        <Card className="p-4 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
+        <Card className="p-4 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-xl shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-medium text-[var(--text-secondary)]">
                 Today&apos;s Visits &amp; Check-Ins
               </span>
-              <div className="font-display text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1">
+              <div className="font-display text-2xl font-bold text-[var(--warn)] mt-1">
                 {metrics.today}
               </div>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[var(--warn-soft)] text-[var(--warn)] flex items-center justify-center">
               <UserCheck className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-amber-600 dark:text-amber-400 font-medium">
+          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[var(--warn)] font-medium">
             <span>Live reception check-ins</span>
           </div>
         </Card>
 
-        <Card className="p-4 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
+        <Card className="p-4 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-xl shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-medium text-[var(--text-secondary)]">
                 Completed Engagements
               </span>
-              <div className="font-display text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+              <div className="font-display text-2xl font-bold text-[var(--ok)] mt-1">
                 {metrics.completed}
               </div>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[var(--ok-soft)] text-[var(--ok)] flex items-center justify-center">
               <CheckCircle2 className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[var(--ok)] font-medium">
             <span>MoM &amp; Notes Logged</span>
           </div>
         </Card>
 
-        <Card className="p-4 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
+        <Card className="p-4 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-xl shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-medium text-[var(--text-secondary)]">
                 Pending Action Items
               </span>
-              <div className="font-display text-2xl font-bold text-purple-600 dark:text-purple-400 mt-1">
+              <div className="font-display text-2xl font-bold text-[var(--text-secondary)] mt-1">
                 {metrics.openActions}
               </div>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[var(--bg-subtle)] text-[var(--text-secondary)] flex items-center justify-center">
               <ListTodo className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-purple-600 dark:text-purple-400 font-medium">
+          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[var(--text-secondary)] font-medium">
             <span>Follow-up deliverables</span>
           </div>
         </Card>
       </div>
 
       {/* Control Bar: Search, Category Filters, & View Toggle */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white dark:bg-[#0F172A] p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-[var(--bg-surface)] p-3 rounded-2xl border border-[var(--border-default)] shadow-xs">
         {/* Search */}
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+          <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3" />
           <input
             type="text"
             placeholder="Search by client, visitor, host, subject, or tender ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full pl-10 pr-4 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
           />
         </div>
 
@@ -397,9 +397,9 @@ export const ClientVisitsPage: React.FC = () => {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                activeTab === tab.id
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+ activeTab === tab.id
+ ? 'bg-[var(--accent)] text-[var(--accent-on)] shadow-xs'
+                  : 'text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)]'
               }`}
             >
               {tab.label}
@@ -408,13 +408,13 @@ export const ClientVisitsPage: React.FC = () => {
         </div>
 
         {/* View Toggle */}
-        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800 self-end md:self-auto shrink-0">
+        <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded-xl border border-[var(--border-default)] self-end md:self-auto shrink-0">
           <button
             onClick={() => setViewMode('CARDS')}
             className={`p-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
-              viewMode === 'CARDS'
-                ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs'
-                : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+ viewMode === 'CARDS'
+ ? 'bg-[var(--bg-surface)] text-[var(--accent)] shadow-xs'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
             title="Card / Timeline View"
           >
@@ -423,9 +423,9 @@ export const ClientVisitsPage: React.FC = () => {
           <button
             onClick={() => setViewMode('TABLE')}
             className={`p-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
-              viewMode === 'TABLE'
-                ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs'
-                : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+ viewMode === 'TABLE'
+ ? 'bg-[var(--bg-surface)] text-[var(--accent)] shadow-xs'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
             title="Detailed Table View"
           >
@@ -433,7 +433,7 @@ export const ClientVisitsPage: React.FC = () => {
           </button>
           <button
             onClick={() => refetch()}
-            className="p-1.5 rounded-lg text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer"
+            className="p-1.5 rounded-lg text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
             title="Refresh"
           >
             <RefreshCw className="w-4 h-4" />
@@ -443,16 +443,16 @@ export const ClientVisitsPage: React.FC = () => {
 
       {/* Main Content Area */}
       {isLoading ? (
-        <div className="p-12 text-center text-slate-400 dark:text-slate-500 text-sm animate-pulse">
+        <div className="p-12 text-center text-[var(--text-muted)] text-sm animate-pulse">
           Loading client visitor records...
         </div>
       ) : filteredVisits.length === 0 ? (
-        <div className="p-12 text-center bg-white dark:bg-[#0F172A] rounded-2xl border border-slate-200 dark:border-slate-800">
-          <Users className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-          <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm">
+        <div className="p-12 text-center bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-default)]">
+          <Users className="w-12 h-12 text-[var(--text-muted)] mx-auto mb-3" />
+          <h3 className="font-bold text-[var(--text-primary)] text-sm">
             No client visits match your criteria
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+          <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-sm mx-auto">
             Schedule upcoming stakeholder briefings or log walk-in visitor minutes to start building your client engagement timeline.
           </p>
           <div className="mt-4 flex justify-center gap-2">
@@ -462,7 +462,7 @@ export const ClientVisitsPage: React.FC = () => {
                 setModalMode('SCHEDULE');
                 setIsModalOpen(true);
               }}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+              className="px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent)] text-[var(--accent-on)] rounded-xl text-xs font-semibold shadow-sm transition-colors cursor-pointer"
             >
               Schedule First Visit
             </button>
@@ -480,7 +480,7 @@ export const ClientVisitsPage: React.FC = () => {
             return (
               <Card
                 key={visit.id}
-                className={`p-5 bg-white dark:bg-[#0F172A] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs border-l-4 ${statusInfo.borderClass} flex flex-col justify-between hover:shadow-md transition-shadow relative`}
+                className={`p-5 bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-default)] shadow-xs border-l-4 ${statusInfo.borderClass} flex flex-col justify-between hover:shadow-md transition-shadow relative`}
               >
                 {/* Card Top: Title & Badges */}
                 <div>
@@ -491,8 +491,8 @@ export const ClientVisitsPage: React.FC = () => {
                           <StatusIcon className="w-3 h-3" />
                           <span>{statusInfo.label}</span>
                         </span>
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                          <FormatIcon className="w-3 h-3 text-slate-500" />
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[var(--bg-subtle)] text-[var(--text-primary)]">
+                          <FormatIcon className="w-3 h-3 text-[var(--text-secondary)]" />
                           <span>{formatInfo.label}</span>
                         </span>
                         {visit.sentiment_outcome && (
@@ -501,14 +501,14 @@ export const ClientVisitsPage: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      <h3 className="font-display font-bold text-sm text-slate-900 dark:text-white leading-snug">
+                      <h3 className="font-display font-bold text-sm text-[var(--text-primary)] leading-snug">
                         {visit.title}
                       </h3>
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400">
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--accent)]">
                         <Building2 className="w-3.5 h-3.5 shrink-0" />
                         <span className="truncate">{visit.client_organization}</span>
                         {visit.tender_id && (
-                          <span className="text-[11px] font-mono text-slate-400 dark:text-slate-500">
+                          <span className="text-[11px] font-mono text-[var(--text-muted)]">
                             ({visit.tender_id})
                           </span>
                         )}
@@ -523,14 +523,14 @@ export const ClientVisitsPage: React.FC = () => {
                           setModalMode('EDIT');
                           setIsModalOpen(true);
                         }}
-                        className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] rounded-lg transition-colors cursor-pointer"
                         title="Edit Record"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDeleteVisit(visit.id)}
-                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 text-[var(--text-muted)] hover:text-[var(--crit)] hover:bg-[var(--crit-soft)] rounded-lg transition-colors cursor-pointer"
                         title="Delete Record"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -539,9 +539,9 @@ export const ClientVisitsPage: React.FC = () => {
                   </div>
 
                   {/* Date & Logistics Info */}
-                  <div className="mt-3.5 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800/80">
+                  <div className="mt-3.5 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[var(--text-secondary)] bg-[var(--bg-subtle)] p-3 rounded-xl border border-[var(--border-default)]">
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <Calendar className="w-3.5 h-3.5 text-[var(--text-muted)] shrink-0" />
                       <span className="font-mono text-[11px]">
                         {formatDateTime(visit.scheduled_start)}
                       </span>
@@ -553,15 +553,15 @@ export const ClientVisitsPage: React.FC = () => {
                           href={visit.meeting_link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-semibold hover:underline truncate"
+                          className="flex items-center gap-1.5 text-[var(--accent)] font-semibold hover:underline truncate"
                         >
                           <Video className="w-3.5 h-3.5 shrink-0" />
                           <span className="truncate">Join Video Conference</span>
                           <ExternalLink className="w-3 h-3 shrink-0" />
                         </a>
                       ) : (
-                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 truncate">
-                          <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <div className="flex items-center gap-1.5 text-[var(--text-secondary)] truncate">
+                          <MapPin className="w-3.5 h-3.5 text-[var(--text-muted)] shrink-0" />
                           <span className="truncate">{visit.location_or_room || 'Main Boardroom'}</span>
                         </div>
                       )}
@@ -571,19 +571,19 @@ export const ClientVisitsPage: React.FC = () => {
                   {/* Visitor & Host Profile */}
                   <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                      <span className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">
                         Primary Visitor
                       </span>
-                      <div className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
+                      <div className="font-semibold text-[var(--text-primary)] mt-0.5">
                         {visit.visitor_name}
                       </div>
                       {visit.visitor_designation && (
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                        <div className="text-[11px] text-[var(--text-secondary)] truncate">
                           {visit.visitor_designation}
                         </div>
                       )}
                       {(visit.visitor_phone || visit.visitor_email) && (
-                        <div className="flex items-center gap-2 mt-1 text-[11px] text-slate-500">
+                        <div className="flex items-center gap-2 mt-1 text-[11px] text-[var(--text-secondary)]">
                           {visit.visitor_phone && (
                             <span className="flex items-center gap-1">
                               <Phone className="w-3 h-3" /> {visit.visitor_phone}
@@ -594,13 +594,13 @@ export const ClientVisitsPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                      <span className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">
                         Internal Host
                       </span>
-                      <div className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
+                      <div className="font-semibold text-[var(--text-primary)] mt-0.5">
                         {visit.internal_host_name || 'Assigned Host'}
                       </div>
-                      <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                      <div className="text-[11px] text-[var(--text-secondary)]">
                         {visit.internal_host_role || 'Staff'}
                       </div>
                     </div>
@@ -608,8 +608,8 @@ export const ClientVisitsPage: React.FC = () => {
 
                   {/* Accompanying Delegation (if any) */}
                   {visit.accompanying_persons && visit.accompanying_persons.length > 0 && (
-                    <div className="mt-2.5 text-[11px] text-slate-600 dark:text-slate-400 bg-slate-50/70 dark:bg-slate-900/40 px-2.5 py-1.5 rounded-lg">
-                      <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    <div className="mt-2.5 text-[11px] text-[var(--text-secondary)] bg-[var(--bg-subtle)]/70 px-2.5 py-1.5 rounded-lg">
+                      <span className="font-semibold text-[var(--text-primary)]">
                         Delegation ({visit.accompanying_persons.length}):{' '}
                       </span>
                       {visit.accompanying_persons.map((p) => p.name).join(', ')}
@@ -618,15 +618,15 @@ export const ClientVisitsPage: React.FC = () => {
 
                   {/* Agenda / Discussion Notes */}
                   {visit.agenda && (
-                    <div className="mt-2.5 text-xs text-slate-600 dark:text-slate-400">
-                      <span className="font-semibold text-slate-700 dark:text-slate-300">Agenda: </span>
+                    <div className="mt-2.5 text-xs text-[var(--text-secondary)]">
+                      <span className="font-semibold text-[var(--text-primary)]">Agenda: </span>
                       <span className="line-clamp-2">{visit.agenda}</span>
                     </div>
                   )}
 
                   {visit.discussion_notes && (
-                    <div className="mt-2 text-xs bg-blue-50/50 dark:bg-blue-950/20 p-2.5 rounded-xl border border-blue-100 dark:border-blue-900/40 text-slate-700 dark:text-slate-300">
-                      <div className="text-[10px] uppercase font-bold text-blue-700 dark:text-blue-400 mb-1">
+                    <div className="mt-2 text-xs bg-[var(--accent-soft)]/50 p-2.5 rounded-xl border border-[var(--accent-line)] text-[var(--text-primary)]">
+                      <div className="text-[10px] uppercase font-bold text-[var(--accent)] mb-1">
                         Meeting Minutes / MoM
                       </div>
                       <p className="line-clamp-3 text-xs leading-relaxed">{visit.discussion_notes}</p>
@@ -636,26 +636,26 @@ export const ClientVisitsPage: React.FC = () => {
                   {/* Action Items List */}
                   {visit.action_items && visit.action_items.length > 0 && (
                     <div className="mt-3 space-y-1.5">
-                      <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                      <div className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">
                         Action Items ({visit.action_items.filter((a) => a.is_done).length}/{visit.action_items.length})
                       </div>
                       <div className="space-y-1">
                         {visit.action_items.map((item, idx) => (
                           <label
                             key={idx}
-                            className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900/80 p-1 rounded-lg cursor-pointer transition-colors"
+                            className="flex items-center gap-2 text-xs text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] p-1 rounded-lg cursor-pointer transition-colors"
                           >
                             <input
                               type="checkbox"
                               checked={item.is_done}
                               onChange={() => handleToggleActionItem(visit, idx)}
-                              className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                              className="rounded border-[var(--border-strong)] text-[var(--accent)] focus:ring-[var(--accent)]"
                             />
-                            <span className={item.is_done ? 'line-through text-slate-400' : 'font-medium'}>
+                            <span className={item.is_done ? 'line-through text-[var(--text-muted)]' : 'font-medium'}>
                               {item.task}
                             </span>
                             {item.deadline && (
-                              <span className="ml-auto text-[10px] font-mono text-slate-400">
+                              <span className="ml-auto text-[10px] font-mono text-[var(--text-muted)]">
                                 {item.deadline}
                               </span>
                             )}
@@ -667,8 +667,8 @@ export const ClientVisitsPage: React.FC = () => {
                 </div>
 
                 {/* Card Bottom: Status Transitions & Triggers */}
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
-                  <div className="text-[11px] text-slate-400">
+                <div className="mt-4 pt-3 border-t border-[var(--border-default)] flex items-center justify-between gap-2">
+                  <div className="text-[11px] text-[var(--text-muted)]">
                     ID: <span className="font-mono">{visit.id}</span>
                   </div>
 
@@ -676,7 +676,7 @@ export const ClientVisitsPage: React.FC = () => {
                     {visit.status === 'SCHEDULED' && (
                       <button
                         onClick={() => handlePatchStatus(visit.id, 'CHECKED_IN')}
-                        className="flex items-center gap-1 px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                        className="flex items-center gap-1 px-3 py-1 bg-[var(--warn)] hover:bg-[var(--warn)] text-[var(--accent-on)] rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
                       >
                         <UserCheck className="w-3.5 h-3.5" />
                         <span>Reception Check-In</span>
@@ -690,7 +690,7 @@ export const ClientVisitsPage: React.FC = () => {
                           setModalMode('LOG_PAST');
                           setIsModalOpen(true);
                         }}
-                        className="flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                        className="flex items-center gap-1 px-3 py-1 bg-[var(--ok)] hover:bg-[var(--ok)] text-[var(--accent-on)] rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         <span>Complete &amp; MoM</span>
@@ -704,7 +704,7 @@ export const ClientVisitsPage: React.FC = () => {
                           setModalMode('EDIT');
                           setIsModalOpen(true);
                         }}
-                        className="flex items-center gap-1 px-2.5 py-1 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+                        className="flex items-center gap-1 px-2.5 py-1 text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] rounded-lg text-xs font-medium transition-colors cursor-pointer"
                       >
                         <FileText className="w-3.5 h-3.5" />
                         <span>View / Edit Minutes</span>
@@ -718,10 +718,10 @@ export const ClientVisitsPage: React.FC = () => {
         </div>
       ) : (
         /* Detailed Table View */
-        <div className="bg-white dark:bg-[#0F172A] rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+        <div className="bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-default)] overflow-hidden shadow-xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-900/90 text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-200 dark:border-slate-800">
+              <thead className="bg-[var(--bg-subtle)] text-[var(--text-secondary)] font-semibold border-b border-[var(--border-default)]">
                 <tr>
                   <th className="py-3 px-4">Status &amp; Format</th>
                   <th className="py-3 px-4">Meeting Title &amp; Client</th>
@@ -732,52 +732,52 @@ export const ClientVisitsPage: React.FC = () => {
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+              <tbody className="divide-y divide-[var(--border-default)] text-[var(--text-primary)]">
                 {filteredVisits.map((visit) => {
                   const statusInfo = STATUS_CONFIG[visit.status || 'SCHEDULED'];
                   const formatInfo = FORMAT_LABELS[visit.visit_type || 'IN_PERSON_OFFICE'];
 
                   return (
-                    <tr key={visit.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                    <tr key={visit.id} className="hover:bg-[var(--bg-subtle)]/80 transition-colors">
                       <td className="py-3 px-4">
                         <div className="space-y-1">
                           <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${statusInfo.badgeClass}`}>
                             {statusInfo.label}
                           </span>
-                          <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                          <div className="text-[11px] text-[var(--text-secondary)]">
                             {formatInfo.label}
                           </div>
                         </div>
                       </td>
                       <td className="py-3 px-4 max-w-xs">
-                        <div className="font-bold text-slate-900 dark:text-white leading-tight">
+                        <div className="font-bold text-[var(--text-primary)] leading-tight">
                           {visit.title}
                         </div>
-                        <div className="text-blue-600 dark:text-blue-400 font-medium text-[11px] mt-0.5">
+                        <div className="text-[var(--accent)] font-medium text-[11px] mt-0.5">
                           {visit.client_organization}
                         </div>
                         {visit.tender_id && (
-                          <div className="text-[10px] font-mono text-slate-400">
+                          <div className="text-[10px] font-mono text-[var(--text-muted)]">
                             Tender: {visit.tender_id}
                           </div>
                         )}
                       </td>
                       <td className="py-3 px-4">
-                        <div className="font-semibold text-slate-900 dark:text-white">
+                        <div className="font-semibold text-[var(--text-primary)]">
                           {visit.visitor_name}
                         </div>
-                        <div className="text-[11px] text-slate-500">
+                        <div className="text-[11px] text-[var(--text-secondary)]">
                           {visit.visitor_designation || 'Visitor'}
                         </div>
                         {visit.visitor_email && (
-                          <div className="text-[10px] text-slate-400">{visit.visitor_email}</div>
+                          <div className="text-[10px] text-[var(--text-muted)]">{visit.visitor_email}</div>
                         )}
                       </td>
                       <td className="py-3 px-4">
-                        <div className="font-medium text-slate-900 dark:text-white">
+                        <div className="font-medium text-[var(--text-primary)]">
                           {visit.internal_host_name || 'Assigned Host'}
                         </div>
-                        <div className="text-[11px] text-slate-500">
+                        <div className="text-[11px] text-[var(--text-secondary)]">
                           {visit.internal_host_role || 'Staff'}
                         </div>
                       </td>
@@ -785,7 +785,7 @@ export const ClientVisitsPage: React.FC = () => {
                         <div className="font-mono text-[11px]">
                           {formatDateTime(visit.scheduled_start)}
                         </div>
-                        <div className="text-[11px] text-slate-500 truncate max-w-[150px]">
+                        <div className="text-[11px] text-[var(--text-secondary)] truncate max-w-[150px]">
                           {visit.meeting_link ? 'Virtual Conference' : visit.location_or_room || 'Main Boardroom'}
                         </div>
                       </td>
@@ -795,7 +795,7 @@ export const ClientVisitsPage: React.FC = () => {
                             {SENTIMENT_LABELS[visit.sentiment_outcome]?.label}
                           </span>
                         ) : (
-                          <span className="text-slate-400">—</span>
+                          <span className="text-[var(--text-muted)]">—</span>
                         )}
                       </td>
                       <td className="py-3 px-4 text-right">
@@ -803,7 +803,7 @@ export const ClientVisitsPage: React.FC = () => {
                           {visit.status === 'SCHEDULED' && (
                             <button
                               onClick={() => handlePatchStatus(visit.id, 'CHECKED_IN')}
-                              className="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[11px] font-semibold cursor-pointer"
+                              className="px-2 py-1 bg-[var(--warn)] hover:bg-[var(--warn)] text-[var(--accent-on)] rounded-lg text-[11px] font-semibold cursor-pointer"
                             >
                               Check-In
                             </button>
@@ -814,14 +814,14 @@ export const ClientVisitsPage: React.FC = () => {
                               setModalMode('EDIT');
                               setIsModalOpen(true);
                             }}
-                            className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer"
+                            className="p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] rounded-lg cursor-pointer"
                             title="Edit"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteVisit(visit.id)}
-                            className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg cursor-pointer"
+                            className="p-1 text-[var(--text-muted)] hover:text-[var(--crit)] hover:bg-[var(--crit-soft)] rounded-lg cursor-pointer"
                             title="Delete"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

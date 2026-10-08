@@ -39,16 +39,16 @@ export const TenderTasksTab: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-display text-lg font-bold text-[#0F172A]">
+          <h2 className="font-display text-lg font-bold text-[var(--text-primary)]">
             Tender Task Board
           </h2>
-          <p className="text-xs text-[#64748B]">
+          <p className="text-xs text-[var(--text-secondary)]">
             Interactive cross-department workload tracking for bid proposal completion
           </p>
         </div>
         <button
           onClick={() => setIsAddTaskOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0F172A] text-white text-xs font-semibold rounded-lg hover:bg-[#1E293B] shadow-sm transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent)] text-[var(--accent-on)] text-xs font-semibold rounded-lg hover:bg-[var(--accent-hover)] shadow-sm transition-colors"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Add Task</span>
@@ -61,13 +61,13 @@ export const TenderTasksTab: React.FC = () => {
           return (
             <div
               key={col.id}
-              className="bg-[#F1F5F9] p-3 rounded-lg flex flex-col gap-3 min-h-[450px]"
+              className="bg-[var(--bg-subtle)] p-3 rounded-lg flex flex-col gap-3 min-h-[450px]"
             >
               <div className="flex items-center justify-between px-1">
-                <span className="font-semibold text-xs text-[#0F172A]">
+                <span className="font-semibold text-xs text-[var(--text-primary)]">
                   {col.title}
                 </span>
-                <span className="font-mono text-xs font-bold text-[#64748B] bg-white px-2 py-0.5 rounded border border-[#E2E8F0]">
+                <span className="font-mono text-xs font-bold text-[var(--text-secondary)] bg-[var(--bg-surface)] px-2 py-0.5 rounded border border-[var(--border-default)]">
                   {colTasks.length}
                 </span>
               </div>
@@ -80,38 +80,38 @@ export const TenderTasksTab: React.FC = () => {
                   return (
                     <div
                       key={task.id}
-                      className="bg-white p-3 rounded-lg border border-[#E2E8F0] shadow-sm space-y-2 hover:border-[#CBD5E1] transition-colors"
+                      className="bg-[var(--bg-surface)] p-3 rounded-lg border border-[var(--border-default)] shadow-sm space-y-2 hover:border-[var(--border-strong)] transition-colors"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-[10px] font-bold text-[#64748B]">
+                        <span className="font-mono text-[10px] font-bold text-[var(--text-secondary)]">
                           {task.id}
                         </span>
                         <span
                           className={`text-[9px] font-bold px-1.5 py-0.2 rounded font-mono ${
-                            task.priority === 'CRITICAL'
-                              ? 'bg-[#FEF2F2] text-[#B91C1C]'
+ task.priority === 'CRITICAL'
+                              ? 'bg-[var(--crit-soft)] text-[var(--crit)]'
                               : task.priority === 'HIGH'
-                              ? 'bg-[#FFFBEB] text-[#B45309]'
-                              : 'bg-[#F1F5F9] text-[#64748B]'
+                              ? 'bg-[var(--warn-soft)] text-[var(--warn)]'
+                              : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)]'
                           }`}
                         >
                           {task.priority}
                         </span>
                       </div>
 
-                      <h4 className="text-xs font-semibold text-[#0F172A] leading-snug">
+                      <h4 className="text-xs font-semibold text-[var(--text-primary)] leading-snug">
                         {task.title}
                       </h4>
 
-                      <div className="flex items-center justify-between text-[11px] text-[#64748B] pt-1 border-t border-[#F8FAFC]">
+                      <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)] pt-1 border-t border-[var(--border-subtle)]">
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <User className="w-3 h-3 text-[#94A3B8] shrink-0" />
+                          <User className="w-3 h-3 text-[var(--text-muted)] shrink-0" />
                           <select
                             value={task.assignee}
                             onChange={(e) =>
                               assignTask(tender.id, task.id, e.target.value)
                             }
-                            className="bg-transparent text-[11px] font-medium text-[#0F172A] border-none p-0 cursor-pointer hover:text-[#2563EB] truncate max-w-[110px]"
+                            className="bg-transparent text-[11px] font-medium text-[var(--text-primary)] border-none p-0 cursor-pointer hover:text-[var(--accent)] truncate max-w-[110px]"
                             title="Click to reassign task"
                           >
                             {teamMembers.map((m) => (
@@ -121,18 +121,18 @@ export const TenderTasksTab: React.FC = () => {
                             ))}
                           </select>
                         </div>
-                        <span className="font-mono text-[10px] text-[#DC2626] font-semibold flex items-center gap-1 shrink-0">
+                        <span className="font-mono text-[10px] text-[var(--crit)] font-semibold flex items-center gap-1 shrink-0">
                           <Clock className="w-3 h-3" />
                           {task.deadline}
                         </span>
                       </div>
 
                       {/* Quick Move Controls */}
-                      <div className="flex items-center justify-between pt-1 border-t border-[#F1F5F9]">
+                      <div className="flex items-center justify-between pt-1 border-t border-[var(--border-subtle)]">
                         {prevStatus ? (
                           <button
                             onClick={() => moveTask(tender.id, task.id, prevStatus)}
-                            className="text-[10px] text-[#64748B] hover:text-[#0F172A] flex items-center gap-0.5"
+                            className="text-[10px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-0.5"
                           >
                             <ArrowLeft className="w-3 h-3" />
                             <span>Back</span>
@@ -142,13 +142,13 @@ export const TenderTasksTab: React.FC = () => {
                         {nextStatus ? (
                           <button
                             onClick={() => moveTask(tender.id, task.id, nextStatus)}
-                            className="text-[10px] text-[#2563EB] hover:text-[#1D4ED8] font-semibold flex items-center gap-0.5 ml-auto"
+                            className="text-[10px] text-[var(--accent)] hover:text-[var(--accent)] font-semibold flex items-center gap-0.5 ml-auto"
                           >
                             <span>Move</span>
                             <ArrowRight className="w-3 h-3" />
                           </button>
                         ) : (
-                          <span className="text-[10px] text-[#16A34A] font-semibold flex items-center gap-0.5 ml-auto">
+                          <span className="text-[10px] text-[var(--ok)] font-semibold flex items-center gap-0.5 ml-auto">
                             <CheckCircle2 className="w-3 h-3" />
                             <span>Done</span>
                           </span>

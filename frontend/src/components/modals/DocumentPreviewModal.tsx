@@ -251,44 +251,44 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
   const isJvDoc = doc.isJvPartner || doc.companyRole === 'JV_PARTNER';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 bg-[#0F172A]/80 backdrop-blur-xs animate-fadeIn">
+    <div className="tt-overlay items-center justify-center p-3 md:p-6 animate-fadeIn">
       <div
-        className={`bg-white rounded-2xl shadow-2xl border border-[#E2E8F0] flex flex-col overflow-hidden transition-all duration-300 ${
-          isFullscreen ? 'w-full h-full fixed inset-0 rounded-none' : 'w-full max-w-6xl h-[92vh]'
+        className={`bg-[var(--bg-surface)] rounded-2xl shadow-2xl border border-[var(--border-default)] flex flex-col overflow-hidden transition-all duration-300 ${
+ isFullscreen ? 'w-full h-full fixed inset-0 rounded-none' : 'w-full max-w-6xl h-[92vh]'
         }`}
       >
         {/* Top Header & Metadata Console */}
-        <div className="bg-[#0F172A] text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-[#1E293B] shrink-0">
+        <div className="bg-[var(--accent)] text-[var(--accent-on)] px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border-strong)] shrink-0">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-[#1E293B] flex items-center justify-center text-[#38BDF8] shrink-0 font-bold text-xs uppercase border border-[#334155]">
+            <div className="w-9 h-9 rounded-xl bg-[var(--accent-hover)] flex items-center justify-center text-[var(--accent)] shrink-0 font-bold text-xs uppercase border border-[var(--border-strong)]">
               {fileExt}
             </div>
 
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="text-sm font-bold text-white truncate max-w-md" title={doc.name}>
+                <h3 className="text-sm font-bold text-[var(--accent-on)] truncate max-w-md" title={doc.name}>
                   {doc.name}
                 </h3>
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#1E293B] text-[#94A3B8] border border-[#334155]">
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[var(--accent-hover)] text-[var(--text-muted)] border border-[var(--border-strong)]">
                   {doc.revision || 'v1.0'}
                 </span>
                 {isJvDoc ? (
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-950 text-purple-300 border border-purple-800">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[var(--bg-subtle)] text-[var(--text-secondary)] border border-[var(--border-default)]">
                     ⭐ JV Partner: {doc.companyName || 'Consortium Partner'}
                   </span>
                 ) : (
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-950 text-blue-300 border border-blue-800">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[var(--accent)] text-[var(--accent)] border border-[var(--accent)]">
                     🏛️ Prime Bidder: {doc.companyName || 'Lead Entity'}
                   </span>
                 )}
                 {doc.folder && (
-                  <span className="text-[11px] text-[#94A3B8] font-mono">
+                  <span className="text-[11px] text-[var(--text-muted)] font-mono">
                     /{doc.folder}/
                   </span>
                 )}
               </div>
 
-              <div className="flex items-center gap-3 text-[11px] text-[#94A3B8] mt-0.5 font-mono">
+              <div className="flex items-center gap-3 text-[11px] text-[var(--text-muted)] mt-0.5 font-mono">
                 <span>{doc.size || '2.4 MB'}</span>
                 <span>•</span>
                 <span>Uploaded: {doc.uploadedAt || '2026-09-08'}</span>
@@ -298,12 +298,12 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                     <button
                       type="button"
                       onClick={handleCopyHash}
-                      className="hover:text-white flex items-center gap-1 transition-colors text-[10px]"
+                      className="hover:text-[var(--accent-on)] flex items-center gap-1 transition-colors text-[10px]"
                       title="Copy SHA-256 integrity hash"
                     >
                       <span>SHA-256: {doc.sha256.substring(0, 10)}...</span>
                       {copiedHash ? (
-                        <Check className="w-3 h-3 text-[#22C55E]" />
+                        <Check className="w-3 h-3 text-[var(--ok)]" />
                       ) : (
                         <Copy className="w-3 h-3" />
                       )}
@@ -318,22 +318,22 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
           <div className="flex items-center gap-2 shrink-0">
             {/* Zoom Controls for Images & Lightbox */}
             {['png', 'jpg', 'jpeg', 'webp', 'svg', 'gif'].includes(fileExt) && (
-              <div className="flex items-center bg-[#1E293B] rounded-lg p-0.5 border border-[#334155] mr-1">
+              <div className="flex items-center bg-[var(--accent-hover)] rounded-lg p-0.5 border border-[var(--border-strong)] mr-1">
                 <button
                   type="button"
                   onClick={() => setZoomLevel((z) => Math.max(25, z - 25))}
-                  className="p-1.5 text-[#94A3B8] hover:text-white rounded hover:bg-[#334155] transition-colors"
+                  className="p-1.5 text-[var(--text-muted)] hover:text-[var(--accent-on)] rounded hover:bg-[var(--accent-hover)] transition-colors"
                   title="Zoom Out"
                 >
                   <ZoomOut className="w-3.5 h-3.5" />
                 </button>
-                <span className="text-[10px] font-mono font-bold px-2 text-white">
+                <span className="text-[10px] font-mono font-bold px-2 text-[var(--accent-on)]">
                   {zoomLevel}%
                 </span>
                 <button
                   type="button"
                   onClick={() => setZoomLevel((z) => Math.min(300, z + 25))}
-                  className="p-1.5 text-[#94A3B8] hover:text-white rounded hover:bg-[#334155] transition-colors"
+                  className="p-1.5 text-[var(--text-muted)] hover:text-[var(--accent-on)] rounded hover:bg-[var(--accent-hover)] transition-colors"
                   title="Zoom In"
                 >
                   <ZoomIn className="w-3.5 h-3.5" />
@@ -341,7 +341,7 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setRotation((r) => (r + 90) % 360)}
-                  className="p-1.5 text-[#94A3B8] hover:text-white rounded hover:bg-[#334155] transition-colors border-l border-[#334155] ml-0.5"
+                  className="p-1.5 text-[var(--text-muted)] hover:text-[var(--accent-on)] rounded hover:bg-[var(--accent-hover)] transition-colors border-l border-[var(--border-strong)] ml-0.5"
                   title="Rotate 90° Clockwise"
                 >
                   <RotateCw className="w-3.5 h-3.5" />
@@ -354,7 +354,7 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
               <button
                 type="button"
                 onClick={onRequestReupload}
-                className="flex items-center gap-1 px-2.5 py-1.5 bg-[#1E293B] hover:bg-amber-950 text-amber-300 hover:border-amber-700 border border-[#334155] rounded-lg text-xs font-semibold transition-colors"
+                className="flex items-center gap-1 px-2.5 py-1.5 bg-[var(--accent-hover)] hover:bg-[var(--warn)] text-[var(--warn)] hover:border-[var(--warn)] border border-[var(--border-strong)] rounded-lg text-xs font-semibold transition-colors"
                 title="Request document re-upload with reviewer comments"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -367,7 +367,7 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
               <button
                 type="button"
                 onClick={onShare}
-                className="flex items-center gap-1 px-2.5 py-1.5 bg-[#1E293B] hover:bg-[#2563EB] text-white border border-[#334155] rounded-lg text-xs font-semibold transition-colors"
+                className="flex items-center gap-1 px-2.5 py-1.5 bg-[var(--accent-hover)] hover:bg-[var(--accent)] text-[var(--accent-on)] border border-[var(--border-strong)] rounded-lg text-xs font-semibold transition-colors"
                 title="Generate secure document share link"
               >
                 <Share2 className="w-3.5 h-3.5" />
@@ -379,7 +379,7 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
             <button
               type="button"
               onClick={handleDownload}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-xs font-bold transition-all shadow-sm cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg text-xs font-bold transition-all shadow-sm cursor-pointer"
               title="Download clean original file"
             >
               <Download className="w-3.5 h-3.5" />
@@ -390,7 +390,7 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
             <button
               type="button"
               onClick={() => setIsFullscreen(!isFullscreen)}
-              className="p-1.5 text-[#94A3B8] hover:text-white hover:bg-[#1E293B] rounded-lg transition-colors"
+              className="p-1.5 text-[var(--text-muted)] hover:text-[var(--accent-on)] hover:bg-[var(--accent-hover)] rounded-lg transition-colors"
               title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
             >
               {isFullscreen ? (
@@ -404,7 +404,7 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 text-[#94A3B8] hover:text-white hover:bg-[#EF4444] rounded-lg transition-colors ml-1"
+              className="p-1.5 text-[var(--text-muted)] hover:text-[var(--accent-on)] hover:bg-[var(--crit)] rounded-lg transition-colors ml-1"
               title="Close Preview (Esc)"
             >
               <X className="w-4 h-4" />
@@ -413,20 +413,20 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
         </div>
 
         {/* Multi-Format Document Canvas Viewport */}
-        <div className="flex-1 min-h-0 bg-[#F1F5F9] overflow-auto relative">
+        <div className="flex-1 min-h-0 bg-[var(--bg-subtle)] overflow-auto relative">
           {contentLoading && (
-            <div className="absolute inset-x-0 top-0 z-20 bg-blue-50 px-4 py-2 text-center text-xs font-semibold text-blue-800">
+            <div className="absolute inset-x-0 top-0 z-20 bg-[var(--accent-soft)] px-4 py-2 text-center text-xs font-semibold text-[var(--accent)]">
               Loading original file for browser preview...
             </div>
           )}
           {contentError && (
-            <div className="absolute inset-x-0 top-0 z-20 bg-amber-50 px-4 py-2 text-center text-xs font-semibold text-amber-900">
+            <div className="absolute inset-x-0 top-0 z-20 bg-[var(--warn-soft)] px-4 py-2 text-center text-xs font-semibold text-[var(--warn)]">
               {contentError}
             </div>
           )}
           {/* 1. PDF VIEWER ENGINE (Native Browser Engine) */}
           {fileExt === 'pdf' && (
-            <div className="w-full h-full flex flex-col bg-[#525659]">
+            <div className="w-full h-full flex flex-col bg-[var(--bg-muted)]">
               {previewUrl ? (
                 <iframe
                   src={`${previewUrl}#toolbar=1&navpanes=1&statusbar=1&view=FitH`}
@@ -437,85 +437,85 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                 /* High-Fidelity Simulated In-Browser PDF Viewport Canvas */
                 <div className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col items-center gap-6">
                   {/* Page 1 */}
-                  <div className="w-full max-w-4xl bg-white shadow-xl rounded-sm p-10 md:p-14 text-[#0F172A] space-y-6 font-serif border border-[#CBD5E1] relative">
-                    <div className="flex items-start justify-between border-b-2 border-[#0F172A] pb-4">
+                  <div className="w-full max-w-4xl bg-[var(--bg-surface)] shadow-xl rounded-sm p-10 md:p-14 text-[var(--text-primary)] space-y-6 font-serif border border-[var(--border-strong)] relative">
+                    <div className="flex items-start justify-between border-b-2 border-[var(--accent)] pb-4">
                       <div>
-                        <span className="font-sans text-xs uppercase tracking-widest text-[#64748B] font-bold block">
+                        <span className="font-sans text-xs uppercase tracking-widest text-[var(--text-secondary)] font-bold block">
                           Government Procurement Authority • Division of IT &amp; Works
                         </span>
-                        <h1 className="font-sans text-xl font-bold text-[#0F172A] mt-1">
+                        <h1 className="font-sans text-xl font-bold text-[var(--text-primary)] mt-1">
                           OFFICIAL TENDER SCHEDULE &amp; COMPLIANCE CLAUSES
                         </h1>
-                        <span className="font-mono text-xs text-[#2563EB] font-bold">
+                        <span className="font-mono text-xs text-[var(--accent)] font-bold">
                           Document Ref: {tenderId} / SEC-V / {doc.name.toUpperCase()}
                         </span>
                       </div>
-                      <div className="text-right font-sans text-xs text-[#64748B]">
-                        <div className="font-bold text-[#0F172A]">Page 1 of 3</div>
+                      <div className="text-right font-sans text-xs text-[var(--text-secondary)]">
+                        <div className="font-bold text-[var(--text-primary)]">Page 1 of 3</div>
                         <div>Date: {doc.uploadedAt || '2026-09-08'}</div>
                         <div>Revision: {doc.revision || 'v1.0'}</div>
                       </div>
                     </div>
 
-                    <div className="space-y-4 text-xs leading-relaxed text-[#334155]">
-                      <h2 className="font-sans text-sm font-bold text-[#0F172A] uppercase border-b border-[#E2E8F0] pb-1">
+                    <div className="space-y-4 text-xs leading-relaxed text-[var(--text-secondary)]">
+                      <h2 className="font-sans text-sm font-bold text-[var(--text-primary)] uppercase border-b border-[var(--border-default)] pb-1">
                         1. Statutory Scope of Work &amp; Mandatory Qualifications
                       </h2>
                       <p>
                         The Bidder (including Joint Venture or Consortium Partners) shall supply, configure, integrate, and maintain an enterprise-grade automated clearinghouse platform compliant with high-availability disaster recovery SLAs of 99.999%. All submitted credentials and bank guarantees shall be verified against statutory issuing authorities.
                       </p>
 
-                      <h2 className="font-sans text-sm font-bold text-[#0F172A] uppercase border-b border-[#E2E8F0] pb-1 pt-2">
+                      <h2 className="font-sans text-sm font-bold text-[var(--text-primary)] uppercase border-b border-[var(--border-default)] pb-1 pt-2">
                         2. Key Technical Specifications &amp; Compliance Matrix
                       </h2>
-                      <table className="w-full border-collapse border border-[#CBD5E1] text-[11px] font-sans my-3">
+                      <table className="w-full border-collapse border border-[var(--border-strong)] text-[11px] font-sans my-3">
                         <thead>
-                          <tr className="bg-[#F8FAFC]">
-                            <th className="border border-[#CBD5E1] p-2 text-left">Clause</th>
-                            <th className="border border-[#CBD5E1] p-2 text-left">Statutory Requirement</th>
-                            <th className="border border-[#CBD5E1] p-2 text-center w-28">Compliance</th>
+                          <tr className="bg-[var(--bg-subtle)]">
+                            <th className="border border-[var(--border-strong)] p-2 text-left">Clause</th>
+                            <th className="border border-[var(--border-strong)] p-2 text-left">Statutory Requirement</th>
+                            <th className="border border-[var(--border-strong)] p-2 text-center w-28">Compliance</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            <td className="border border-[#CBD5E1] p-2 font-mono font-bold">ITB 14.1</td>
-                            <td className="border border-[#CBD5E1] p-2">Zero-Downtime Multi-Region Active Database Clustering</td>
-                            <td className="border border-[#CBD5E1] p-2 text-center text-[#16A34A] font-bold">COMPLIED</td>
+                            <td className="border border-[var(--border-strong)] p-2 font-mono font-bold">ITB 14.1</td>
+                            <td className="border border-[var(--border-strong)] p-2">Zero-Downtime Multi-Region Active Database Clustering</td>
+                            <td className="border border-[var(--border-strong)] p-2 text-center text-[var(--ok)] font-bold">COMPLIED</td>
                           </tr>
                           <tr>
-                            <td className="border border-[#CBD5E1] p-2 font-mono font-bold">ITB 14.2</td>
-                            <td className="border border-[#CBD5E1] p-2">FIPS 140-2 Level 3 Hardware Security Module (HSM) Cryptography</td>
-                            <td className="border border-[#CBD5E1] p-2 text-center text-[#16A34A] font-bold">COMPLIED</td>
+                            <td className="border border-[var(--border-strong)] p-2 font-mono font-bold">ITB 14.2</td>
+                            <td className="border border-[var(--border-strong)] p-2">FIPS 140-2 Level 3 Hardware Security Module (HSM) Cryptography</td>
+                            <td className="border border-[var(--border-strong)] p-2 text-center text-[var(--ok)] font-bold">COMPLIED</td>
                           </tr>
                           <tr>
-                            <td className="border border-[#CBD5E1] p-2 font-mono font-bold">ITB 14.3</td>
-                            <td className="border border-[#CBD5E1] p-2">Automated ISO 20022 Financial Transaction Clearing Gateway</td>
-                            <td className="border border-[#CBD5E1] p-2 text-center text-[#16A34A] font-bold">COMPLIED</td>
+                            <td className="border border-[var(--border-strong)] p-2 font-mono font-bold">ITB 14.3</td>
+                            <td className="border border-[var(--border-strong)] p-2">Automated ISO 20022 Financial Transaction Clearing Gateway</td>
+                            <td className="border border-[var(--border-strong)] p-2 text-center text-[var(--ok)] font-bold">COMPLIED</td>
                           </tr>
                         </tbody>
                       </table>
 
-                      <p className="pt-2 text-[11px] text-[#64748B]">
+                      <p className="pt-2 text-[11px] text-[var(--text-secondary)]">
                         [End of Page 1 • Tender Document Vault SHA-256 Checked]
                       </p>
                     </div>
                   </div>
 
                   {/* Page 2 */}
-                  <div className="w-full max-w-4xl bg-white shadow-xl rounded-sm p-10 md:p-14 text-[#0F172A] space-y-6 font-serif border border-[#CBD5E1] relative">
-                    <div className="flex items-start justify-between border-b border-[#CBD5E1] pb-3 font-sans text-xs text-[#64748B]">
+                  <div className="w-full max-w-4xl bg-[var(--bg-surface)] shadow-xl rounded-sm p-10 md:p-14 text-[var(--text-primary)] space-y-6 font-serif border border-[var(--border-strong)] relative">
+                    <div className="flex items-start justify-between border-b border-[var(--border-strong)] pb-3 font-sans text-xs text-[var(--text-secondary)]">
                       <span>{doc.name} — Technical Volume</span>
-                      <span className="font-bold text-[#0F172A]">Page 2 of 3</span>
+                      <span className="font-bold text-[var(--text-primary)]">Page 2 of 3</span>
                     </div>
 
-                    <div className="space-y-4 text-xs leading-relaxed text-[#334155]">
-                      <h2 className="font-sans text-sm font-bold text-[#0F172A] uppercase border-b border-[#E2E8F0] pb-1">
+                    <div className="space-y-4 text-xs leading-relaxed text-[var(--text-secondary)]">
+                      <h2 className="font-sans text-sm font-bold text-[var(--text-primary)] uppercase border-b border-[var(--border-default)] pb-1">
                         3. Commercial Schedule &amp; Milestone Releases
                       </h2>
                       <p>
                         Invoices shall be processed within thirty (30) business days following issuance of the formal Acceptance Certificate by the Client’s Representative. A retention of 10% shall be held during the warranty liability period.
                       </p>
-                      <div className="p-3 bg-[#F8FAFC] rounded border border-[#E2E8F0] font-mono text-[11px] text-[#334155]">
+                      <div className="p-3 bg-[var(--bg-subtle)] rounded border border-[var(--border-default)] font-mono text-[11px] text-[var(--text-secondary)]">
                         Document Verification Digest: {doc.sha256 || 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'}
                       </div>
                     </div>
@@ -527,12 +527,12 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
 
           {/* 2. SPREADSHEET & EXCEL / CSV ENGINE (SheetJS xlsx) */}
           {['xlsx', 'xls', 'csv'].includes(fileExt) && (
-            <div className="w-full h-full flex flex-col bg-white">
+            <div className="w-full h-full flex flex-col bg-[var(--bg-surface)]">
               {/* Sheet Controls & Search Bar */}
-              <div className="bg-[#F8FAFC] border-b border-[#E2E8F0] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0">
+              <div className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0">
                 <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-                  <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider flex items-center gap-1 mr-1">
-                    <FileSpreadsheet className="w-3.5 h-3.5 text-[#16A34A]" />
+                  <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-1 mr-1">
+                    <FileSpreadsheet className="w-3.5 h-3.5 text-[var(--ok)]" />
                     <span>Worksheets:</span>
                   </span>
                   {sheetNames.map((name, idx) => (
@@ -541,9 +541,9 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                       type="button"
                       onClick={() => setActiveSheetIndex(idx)}
                       className={`px-3 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition-all ${
-                        activeSheetIndex === idx
-                          ? 'bg-[#16A34A] text-white shadow-xs'
-                          : 'bg-white text-[#475569] border border-[#CBD5E1] hover:bg-[#F1F5F9]'
+ activeSheetIndex === idx
+                          ? 'bg-[var(--ok)] text-[var(--accent-on)] shadow-xs'
+                          : 'bg-[var(--bg-surface)] text-[var(--text-secondary)] border border-[var(--border-strong)] hover:bg-[var(--bg-subtle)]'
                       }`}
                     >
                       {name}
@@ -552,20 +552,20 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                 </div>
 
                 <div className="relative w-64">
-                  <Search className="w-3.5 h-3.5 text-[#94A3B8] absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <Search className="w-3.5 h-3.5 text-[var(--text-muted)] absolute left-2.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     placeholder="Search table rows..."
                     value={sheetSearch}
                     onChange={(e) => setSheetSearch(e.target.value)}
-                    className="w-full pl-8 pr-3 py-1 text-xs border border-[#CBD5E1] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#16A34A] bg-white"
+                    className="w-full pl-8 pr-3 py-1 text-xs border border-[var(--border-strong)] rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--ok)] bg-[var(--bg-surface)]"
                   />
                 </div>
               </div>
 
               {/* Tabular Grid */}
               <div className="flex-1 overflow-auto p-4">
-                <table className="w-full border-collapse text-xs border border-[#E2E8F0]">
+                <table className="w-full border-collapse text-xs border border-[var(--border-default)]">
                   <tbody>
                     {filteredSheetRows.map((row, rIdx) => {
                       const isHeader = rIdx === 0;
@@ -573,25 +573,25 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                         <tr
                           key={rIdx}
                           className={`${
-                            isHeader
-                              ? 'bg-[#0F172A] text-white font-bold sticky top-0 z-10'
+ isHeader
+                              ? 'bg-[var(--accent)] text-[var(--accent-on)] font-bold sticky top-0 z-10'
                               : rIdx % 2 === 0
-                              ? 'bg-white hover:bg-[#F8FAFC]'
-                              : 'bg-[#F8FAFC] hover:bg-[#F1F5F9]'
-                          } transition-colors divide-x divide-[#E2E8F0]`}
+                              ? 'bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)]'
+                              : 'bg-[var(--bg-subtle)] hover:bg-[var(--bg-subtle)]'
+                          } transition-colors divide-x divide-[var(--border-default)]`}
                         >
-                          <td className="py-2 px-3 text-[10px] font-mono text-[#94A3B8] text-center w-12 bg-black/5 shrink-0 select-none">
+                          <td className="py-2 px-3 text-[10px] font-mono text-[var(--text-muted)] text-center w-12 bg-[var(--text-primary)]/5 shrink-0 select-none">
                             {isHeader ? '#' : rIdx}
                           </td>
                           {row.map((cell, cIdx) => (
                             <td
                               key={cIdx}
                               className={`py-2 px-3 ${
-                                isHeader
-                                  ? 'font-bold text-white'
+ isHeader
+                                  ? 'font-bold text-[var(--accent-on)]'
                                   : String(cell).startsWith('$') || !isNaN(Number(cell))
-                                  ? 'font-mono text-right font-medium text-[#0F172A]'
-                                  : 'text-[#334155]'
+                                  ? 'font-mono text-right font-medium text-[var(--text-primary)]'
+                                  : 'text-[var(--text-secondary)]'
                               }`}
                             >
                               {cell !== undefined && cell !== null ? String(cell) : '—'}
@@ -604,7 +604,7 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                 </table>
               </div>
 
-              <div className="px-4 py-2 bg-[#F8FAFC] border-t border-[#E2E8F0] text-[11px] text-[#64748B] flex items-center justify-between">
+              <div className="px-4 py-2 bg-[var(--bg-subtle)] border-t border-[var(--border-default)] text-[11px] text-[var(--text-secondary)] flex items-center justify-between">
                 <span>
                   Showing {filteredSheetRows.length - 1} rows in worksheet:{' '}
                   <strong>{sheetNames[activeSheetIndex] || 'Sheet1'}</strong>
@@ -618,7 +618,7 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
           {['docx', 'doc', 'rtf'].includes(fileExt) && (
             <div className="w-full h-full overflow-y-auto p-6 md:p-10 flex flex-col items-center">
               {docxLoading && (
-                <div className="text-xs text-[#64748B] mb-4 animate-pulse">
+                <div className="text-xs text-[var(--text-secondary)] mb-4 animate-pulse">
                   Parsing Word XML Document...
                 </div>
               )}
@@ -626,42 +626,42 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
               {/* docx-preview rendering target container */}
               <div
                 ref={docxContainerRef}
-                className="w-full max-w-4xl bg-white shadow-xl rounded-lg p-8 md:p-12 text-[#0F172A] border border-[#CBD5E1]"
+                className="w-full max-w-4xl bg-[var(--bg-surface)] shadow-xl rounded-lg p-8 md:p-12 text-[var(--text-primary)] border border-[var(--border-strong)]"
               >
                 {(!documentContent || docxError) && (
                   <div className="space-y-6 font-sans">
-                    <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-4">
+                    <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-4">
                       <div>
-                        <span className="text-[11px] font-bold text-[#2563EB] uppercase tracking-wider">
+                        <span className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-wider">
                           Technical Proposal Volume • Section 3
                         </span>
-                        <h2 className="text-xl font-bold text-[#0F172A] mt-1">
+                        <h2 className="text-xl font-bold text-[var(--text-primary)] mt-1">
                           {doc.name.replace(/\.[^/.]+$/, '')}
                         </h2>
                       </div>
-                      <div className="text-right text-xs text-[#64748B]">
-                        <span className="px-2 py-0.5 rounded bg-[#F1F5F9] font-mono font-bold text-[#0F172A]">
+                      <div className="text-right text-xs text-[var(--text-secondary)]">
+                        <span className="px-2 py-0.5 rounded bg-[var(--bg-subtle)] font-mono font-bold text-[var(--text-primary)]">
                           DOCX Preview
                         </span>
                       </div>
                     </div>
 
-                    <div className="space-y-4 text-xs text-[#334155] leading-relaxed">
-                      <h3 className="text-sm font-bold text-[#0F172A] border-b border-[#F1F5F9] pb-1">
+                    <div className="space-y-4 text-xs text-[var(--text-secondary)] leading-relaxed">
+                      <h3 className="text-sm font-bold text-[var(--text-primary)] border-b border-[var(--border-subtle)] pb-1">
                         1. Executive Summary &amp; Proposed Architecture
                       </h3>
                       <p>
                         Our consortium presents a hardened, cloud-native clearinghouse topology engineered to handle multi-agency procurement and financial transactions with sub-second finality. The solution implements end-to-end encryption, HSM key signing, and automated cross-datacenter failover.
                       </p>
 
-                      <h3 className="text-sm font-bold text-[#0F172A] border-b border-[#F1F5F9] pb-1 pt-2">
+                      <h3 className="text-sm font-bold text-[var(--text-primary)] border-b border-[var(--border-subtle)] pb-1 pt-2">
                         2. Key Personnel Deployment Plan (Form Tech-2)
                       </h3>
                       <p>
                         The project will be led by certified enterprise architects and commercial directors with over 15 years of government procurement experience. All personnel credentials have been verified and appended in Appendix A.
                       </p>
 
-                      <h3 className="text-sm font-bold text-[#0F172A] border-b border-[#F1F5F9] pb-1 pt-2">
+                      <h3 className="text-sm font-bold text-[var(--text-primary)] border-b border-[var(--border-subtle)] pb-1 pt-2">
                         3. Risk Mitigation &amp; Defect Liability Warranty
                       </h3>
                       <p>
@@ -669,7 +669,7 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                       </p>
                     </div>
 
-                    <div className="pt-6 border-t border-[#E2E8F0] flex items-center justify-between text-[11px] text-[#64748B]">
+                    <div className="pt-6 border-t border-[var(--border-default)] flex items-center justify-between text-[11px] text-[var(--text-secondary)]">
                       <span>Document ID: {doc.id}</span>
                       <span>Verified Client Engine • docx-preview</span>
                     </div>
@@ -681,9 +681,9 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
 
           {/* 4. HIGH-RESOLUTION IMAGE & LIGHTBOX CANVAS */}
           {['png', 'jpg', 'jpeg', 'webp', 'svg', 'gif'].includes(fileExt) && (
-            <div className="w-full h-full overflow-auto flex items-center justify-center p-6 bg-[#0B0F19]">
+            <div className="w-full h-full overflow-auto flex items-center justify-center p-6 bg-[var(--bg-canvas)]">
               <div
-                className="transition-transform duration-200 shadow-2xl rounded-lg overflow-hidden border border-[#334155] bg-white max-w-full"
+                className="transition-transform duration-200 shadow-2xl rounded-lg overflow-hidden border border-[var(--border-strong)] bg-[var(--bg-surface)] max-w-full"
                 style={{
                   transform: `scale(${zoomLevel / 100}) rotate(${rotation}deg)`,
                 }}
@@ -696,13 +696,13 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                   />
                 ) : (
                   /* High-Fidelity Scanned Bank Guarantee / Document Graphic Placeholder */
-                  <div className="w-[600px] h-[420px] p-8 flex flex-col justify-between bg-gradient-to-br from-[#FFFDF9] to-[#F9F6F0] text-[#1E293B] border-4 border-[#94A3B8] select-none">
-                    <div className="flex items-start justify-between border-b-2 border-[#1E293B] pb-3">
+                  <div className="w-[600px] h-[420px] p-8 flex flex-col justify-between bg-[var(--bg-surface)] text-[var(--text-primary)] border-4 border-[var(--border-strong)] select-none">
+                    <div className="flex items-start justify-between border-b-2 border-[var(--border-strong)] pb-3">
                       <div>
-                        <div className="text-[10px] font-bold tracking-widest text-[#B45309] uppercase">
+                        <div className="text-[10px] font-bold tracking-widest text-[var(--warn)] uppercase">
                           Official Statutory Document &amp; Bank Guarantee
                         </div>
-                        <div className="text-base font-bold font-serif text-[#0F172A]">
+                        <div className="text-base font-bold font-serif text-[var(--text-primary)]">
                           IRREVOCABLE BID SECURITY GUARANTEE
                         </div>
                       </div>
@@ -712,18 +712,18 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                       </div>
                     </div>
 
-                    <div className="space-y-2 text-[11px] font-serif leading-relaxed text-[#334155]">
+                    <div className="space-y-2 text-[11px] font-serif leading-relaxed text-[var(--text-secondary)]">
                       <p>
                         We hereby unconditionally guarantee payment to the Procuring Entity of an amount up to <strong>USD $125,000.00</strong> upon receipt of their first written demand certifying that the Bidder has breached statutory tender obligations.
                       </p>
                     </div>
 
-                    <div className="flex items-end justify-between border-t border-[#CBD5E1] pt-4 font-sans text-[10px] text-[#64748B]">
+                    <div className="flex items-end justify-between border-t border-[var(--border-strong)] pt-4 font-sans text-[10px] text-[var(--text-secondary)]">
                       <div>
-                        <div className="font-bold text-[#0F172A]">Authorized Officer Signature</div>
+                        <div className="font-bold text-[var(--text-primary)]">Authorized Officer Signature</div>
                         <div>National Commercial Bank PLC</div>
                       </div>
-                      <div className="w-16 h-16 rounded-full border-2 border-dashed border-[#DC2626] text-[#DC2626] flex items-center justify-center font-bold text-[9px] uppercase -rotate-12">
+                      <div className="w-16 h-16 rounded-full border-2 border-dashed border-[var(--crit)] text-[var(--crit)] flex items-center justify-center font-bold text-[9px] uppercase -rotate-12">
                         Official Seal
                       </div>
                     </div>
@@ -735,9 +735,9 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
 
           {/* 5. PLAIN TEXT & CODE / LOG CANVAS */}
           {['txt', 'json', 'xml', 'md', 'log'].includes(fileExt) && (
-            <div className="w-full h-full bg-[#0F172A] p-6 text-white font-mono text-xs overflow-auto">
+            <div className="w-full h-full bg-[var(--accent)] p-6 text-[var(--accent-on)] font-mono text-xs overflow-auto">
               <div className="max-w-5xl mx-auto space-y-4">
-                <div className="flex items-center justify-between border-b border-[#334155] pb-2 text-[#94A3B8]">
+                <div className="flex items-center justify-between border-b border-[var(--border-strong)] pb-2 text-[var(--text-muted)]">
                   <span>{doc.name}</span>
                   <button
                     type="button"
@@ -750,20 +750,20 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                       setCopiedText(true);
                       setTimeout(() => setCopiedText(false), 2000);
                     }}
-                    className="flex items-center gap-1 text-[11px] text-white hover:text-[#38BDF8]"
+                    className="flex items-center gap-1 text-[11px] text-[var(--accent-on)] hover:text-[var(--accent)]"
                   >
-                    {copiedText ? <Check className="w-3.5 h-3.5 text-[#22C55E]" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedText ? <Check className="w-3.5 h-3.5 text-[var(--ok)]" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedText ? 'Copied' : 'Copy All Text'}</span>
                   </button>
                 </div>
-                <div className="text-[#38BDF8] leading-relaxed select-text whitespace-pre-wrap">
+                <div className="text-[var(--accent)] leading-relaxed select-text whitespace-pre-wrap">
                   {(typeof documentContent === 'string'
                     ? documentContent
                     : `// Tender Document Manifest\n// File: ${doc.name}\n// Category: ${doc.folder || 'Technical Volume'}\n// Size: ${doc.size || '2.4 MB'}\n// Checksum SHA-256: ${doc.sha256 || 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'}\n\n[SECTION 1: COMPLIANCE DECLARATION]\nSTATUS: FULLY COMPLIANT\nAUTHORIZED BY: BID OPERATIONS DIRECTOR\nTIMESTAMP: ${doc.uploadedAt || '2026-09-08T01:45:00Z'}`)
                     .split('\n')
                     .map((line, index) => (
                       <div key={index} className="flex">
-                        <span className="mr-4 w-10 shrink-0 select-none text-right text-[#64748B]">{index + 1}</span>
+                        <span className="mr-4 w-10 shrink-0 select-none text-right text-[var(--text-secondary)]">{index + 1}</span>
                         <span>{line || ' '}</span>
                       </div>
                     ))}
@@ -774,23 +774,23 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
 
           {/* 6. ARCHIVE / ZIP MANIFEST INSPECTOR */}
           {['zip', 'rar', 'tar', 'gz', '7z'].includes(fileExt) && (
-            <div className="w-full h-full p-8 bg-white flex flex-col items-center overflow-auto">
+            <div className="w-full h-full p-8 bg-[var(--bg-surface)] flex flex-col items-center overflow-auto">
               <div className="w-full max-w-3xl space-y-4">
-                <div className="flex items-center gap-3 p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl">
-                  <Archive className="w-8 h-8 text-[#2563EB]" />
+                <div className="flex items-center gap-3 p-4 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl">
+                  <Archive className="w-8 h-8 text-[var(--accent)]" />
                   <div>
-                    <h3 className="text-sm font-bold text-[#0F172A]">{doc.name}</h3>
-                    <p className="text-xs text-[#64748B]">
+                    <h3 className="text-sm font-bold text-[var(--text-primary)]">{doc.name}</h3>
+                    <p className="text-xs text-[var(--text-secondary)]">
                       Compressed Bid Package • Contains 6 verified internal technical volumes
                     </p>
                   </div>
                 </div>
 
-                <div className="border border-[#E2E8F0] rounded-xl overflow-hidden text-xs">
-                  <div className="bg-[#F8FAFC] px-4 py-2.5 font-bold text-[#64748B] border-b border-[#E2E8F0] text-[11px] uppercase tracking-wider">
+                <div className="border border-[var(--border-default)] rounded-xl overflow-hidden text-xs">
+                  <div className="bg-[var(--bg-subtle)] px-4 py-2.5 font-bold text-[var(--text-secondary)] border-b border-[var(--border-default)] text-[11px] uppercase tracking-wider">
                     Internal Archive Contents
                   </div>
-                  <div className="divide-y divide-[#F1F5F9]">
+                  <div className="divide-y divide-[var(--border-subtle)]">
                     {[
                       { name: '01_Technical_Proposal_Volume.pdf', size: '1.8 MB', date: '2026-09-05' },
                       { name: '02_Bill_of_Quantities_Financial.xlsx', size: '420 KB', date: '2026-09-06' },
@@ -799,12 +799,12 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                       { name: '05_Bank_Guarantee_EMD_Scanned.png', size: '640 KB', date: '2026-09-07' },
                       { name: '06_Key_Personnel_CV_Dossiers.pdf', size: '980 KB', date: '2026-09-07' },
                     ].map((item, idx) => (
-                      <div key={idx} className="px-4 py-3 flex items-center justify-between hover:bg-[#F8FAFC]">
+                      <div key={idx} className="px-4 py-3 flex items-center justify-between hover:bg-[var(--bg-subtle)]">
                         <div className="flex items-center gap-2.5">
-                          <FileText className="w-4 h-4 text-[#2563EB]" />
-                          <span className="font-semibold text-[#0F172A]">{item.name}</span>
+                          <FileText className="w-4 h-4 text-[var(--accent)]" />
+                          <span className="font-semibold text-[var(--text-primary)]">{item.name}</span>
                         </div>
-                        <div className="flex items-center gap-4 text-xs font-mono text-[#64748B]">
+                        <div className="flex items-center gap-4 text-xs font-mono text-[var(--text-secondary)]">
                           <span>{item.size}</span>
                           <span>{item.date}</span>
                         </div>
@@ -818,15 +818,15 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
         </div>
 
         {/* Bottom Status Bar */}
-        <div className="bg-[#F8FAFC] px-5 py-2.5 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-3 text-xs text-[#64748B] shrink-0 font-mono">
+        <div className="bg-[var(--bg-subtle)] px-5 py-2.5 border-t border-[var(--border-default)] flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--text-secondary)] shrink-0 font-mono">
           <div className="flex items-center gap-2">
-            <FileCheck className="w-4 h-4 text-[#16A34A]" />
+            <FileCheck className="w-4 h-4 text-[var(--ok)]" />
             <span>Storage Path: storage/tenders/{tenderId}/{doc.folder || 'documents'}/{doc.name}</span>
           </div>
           <div className="flex items-center gap-3 text-[11px]">
             <span>Engine: Native Browser Viewport + docx-preview + SheetJS</span>
             <span>•</span>
-            <span className="text-[#16A34A] font-bold">Original File Integrity Verified</span>
+            <span className="text-[var(--ok)] font-bold">Original File Integrity Verified</span>
           </div>
         </div>
       </div>

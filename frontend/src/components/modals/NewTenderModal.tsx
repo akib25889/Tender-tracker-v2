@@ -620,41 +620,41 @@ export const NewTenderModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-[#0F172A]/70 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-4xl max-h-[92vh] bg-white rounded-xl shadow-2xl border border-[#CBD5E1] flex flex-col overflow-hidden">
+    <div className="tt-overlay items-center justify-center p-3 sm:p-5 animate-fadeIn">
+      <div className="w-full max-w-4xl max-h-[92vh] bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-strong)] flex flex-col overflow-hidden">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC] shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-default)] bg-[var(--bg-subtle)] shrink-0">
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-bold text-[#2563EB] bg-[#EFF6FF] px-2 py-0.5 rounded border border-[#BFDBFE]">
+              <span className="font-mono text-xs font-bold text-[var(--accent)] bg-[var(--accent-soft)] px-2 py-0.5 rounded border border-[var(--accent-line)]">
                 Tender Summary Template
               </span>
-              <span className="text-xs text-[#64748B]">•</span>
-              <span className="text-xs text-[#64748B]">
+              <span className="text-xs text-[var(--text-secondary)]">•</span>
+              <span className="text-xs text-[var(--text-secondary)]">
                 Curated Intake Specification
               </span>
             </div>
-            <h3 className="font-display text-lg font-bold text-[#0F172A] mt-0.5">
+            <h3 className="font-display text-lg font-bold text-[var(--text-primary)] mt-0.5">
               Register New Tender Opportunity
             </h3>
           </div>
           <button
             onClick={() => setIsNewTenderModalOpen(false)}
-            className="p-1.5 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#E2E8F0] transition-colors"
+            className="p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-muted)] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Step Navigation Bar */}
-        <div className="flex items-center border-b border-[#E2E8F0] bg-white px-6 overflow-x-auto shrink-0">
+        <div className="flex items-center border-b border-[var(--border-default)] bg-[var(--bg-surface)] px-6 overflow-x-auto shrink-0">
           <button
             type="button"
             onClick={() => setActiveTab('BASIC')}
             className={`flex items-center gap-2 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-              activeTab === 'BASIC'
-                ? 'border-[#2563EB] text-[#2563EB]'
-                : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'BASIC'
+                ? 'border-[var(--accent)] text-[var(--accent)]'
+                : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -665,9 +665,9 @@ export const NewTenderModal: React.FC = () => {
             type="button"
             onClick={() => setActiveTab('SCOPE')}
             className={`flex items-center gap-2 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-              activeTab === 'SCOPE'
-                ? 'border-[#2563EB] text-[#2563EB]'
-                : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'SCOPE'
+                ? 'border-[var(--accent)] text-[var(--accent)]'
+                : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             <FileCheck2 className="w-3.5 h-3.5" />
@@ -678,9 +678,9 @@ export const NewTenderModal: React.FC = () => {
             type="button"
             onClick={() => setActiveTab('FINANCIAL')}
             className={`flex items-center gap-2 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-              activeTab === 'FINANCIAL'
-                ? 'border-[#2563EB] text-[#2563EB]'
-                : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'FINANCIAL'
+                ? 'border-[var(--accent)] text-[var(--accent)]'
+                : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             <CreditCard className="w-3.5 h-3.5" />
@@ -691,9 +691,9 @@ export const NewTenderModal: React.FC = () => {
             type="button"
             onClick={() => setActiveTab('ELIGIBILITY')}
             className={`flex items-center gap-2 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-              activeTab === 'ELIGIBILITY'
-                ? 'border-[#2563EB] text-[#2563EB]'
-                : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'ELIGIBILITY'
+                ? 'border-[var(--accent)] text-[var(--accent)]'
+                : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             <Briefcase className="w-3.5 h-3.5" />
@@ -704,9 +704,9 @@ export const NewTenderModal: React.FC = () => {
             type="button"
             onClick={() => setActiveTab('STAFFING')}
             className={`flex items-center gap-2 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-              activeTab === 'STAFFING'
-                ? 'border-[#2563EB] text-[#2563EB]'
-                : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'STAFFING'
+                ? 'border-[var(--accent)] text-[var(--accent)]'
+                : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -717,9 +717,9 @@ export const NewTenderModal: React.FC = () => {
             type="button"
             onClick={() => setActiveTab('RISKS')}
             className={`flex items-center gap-2 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-              activeTab === 'RISKS'
-                ? 'border-[#2563EB] text-[#2563EB]'
-                : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'RISKS'
+                ? 'border-[var(--accent)] text-[var(--accent)]'
+                : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             <AlertTriangle className="w-3.5 h-3.5" />
@@ -730,9 +730,9 @@ export const NewTenderModal: React.FC = () => {
             type="button"
             onClick={() => setActiveTab('CLAUSES')}
             className={`flex items-center gap-2 py-3 px-3 text-xs font-bold border-b-2 whitespace-nowrap transition-colors ${
-              activeTab === 'CLAUSES'
-                ? 'border-[#2563EB] text-[#2563EB]'
-                : 'border-transparent text-[#64748B] hover:text-[#0F172A]'
+ activeTab === 'CLAUSES'
+                ? 'border-[var(--accent)] text-[var(--accent)]'
+                : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -747,7 +747,7 @@ export const NewTenderModal: React.FC = () => {
             <div className="space-y-5 animate-fadeIn">
               {/* Classification Pills */}
               <div>
-                <label className="block font-bold text-[#0F172A] mb-1.5">
+                <label className="block font-bold text-[var(--text-primary)] mb-1.5">
                   Tender Domain Classification
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -757,9 +757,9 @@ export const NewTenderModal: React.FC = () => {
                       type="button"
                       onClick={() => setClassification(c)}
                       className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                        classification === c
-                          ? 'bg-[#0F172A] text-white shadow-sm ring-2 ring-[#0F172A]/20'
-                          : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A] hover:bg-[#E2E8F0]'
+ classification === c
+                          ? 'bg-[var(--accent)] text-[var(--accent-on)] shadow-sm ring-2 ring-[var(--accent)]/20'
+                          : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-muted)]'
                       }`}
                     >
                       {c}
@@ -771,7 +771,7 @@ export const NewTenderModal: React.FC = () => {
               {/* Title & Project Name */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Tender Title
                   </label>
                   <input
@@ -779,12 +779,12 @@ export const NewTenderModal: React.FC = () => {
                     placeholder="Full statutory title from notice"
                     value={tenderTitle}
                     onChange={(e) => setTenderTitle(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Project Name
                   </label>
                   <input
@@ -792,7 +792,7 @@ export const NewTenderModal: React.FC = () => {
                     placeholder="Short or programmatic name"
                     value={projectName}
                     onChange={(e) => setProjectName(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
@@ -800,7 +800,7 @@ export const NewTenderModal: React.FC = () => {
               {/* Tender ID & Reference No */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Tender ID
                   </label>
                   <input
@@ -808,12 +808,12 @@ export const NewTenderModal: React.FC = () => {
                     placeholder="e.g. TDR-2026-BD-102"
                     value={tenderId}
                     onChange={(e) => setTenderId(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-mono text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Reference No.
                   </label>
                   <input
@@ -821,12 +821,12 @@ export const NewTenderModal: React.FC = () => {
                     placeholder="e.g. RFP/2026/0441"
                     value={referenceNo}
                     onChange={(e) => setReferenceNo(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg font-mono text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg font-mono text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Procurement Portal
                   </label>
                   <input
@@ -834,12 +834,12 @@ export const NewTenderModal: React.FC = () => {
                     placeholder="e.g. e-GP, UNGM, World Bank"
                     value={portal}
                     onChange={(e) => setPortal(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Country / Territory
                   </label>
                   <input
@@ -847,7 +847,7 @@ export const NewTenderModal: React.FC = () => {
                     placeholder="e.g. Bangladesh"
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
@@ -855,7 +855,7 @@ export const NewTenderModal: React.FC = () => {
               {/* Client & SOW Category */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Client / Issuing Organization
                   </label>
                   <input
@@ -863,13 +863,13 @@ export const NewTenderModal: React.FC = () => {
                     placeholder="e.g. Ministry of Land / World Bank / UNDP"
                     value={client}
                     onChange={(e) => setClient(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block font-semibold text-[#0F172A]">
+                    <label className="block font-semibold text-[var(--text-primary)]">
                       Scope of Work (SOW) Category
                     </label>
                     <button
@@ -883,7 +883,7 @@ export const NewTenderModal: React.FC = () => {
                           setCategory('');
                         }
                       }}
-                      className="text-[11px] font-semibold text-[#2563EB] hover:underline"
+                      className="text-[11px] font-semibold text-[var(--accent)] hover:underline"
                     >
                       {isCustomCategory ? '← Choose Existing' : '+ New Category'}
                     </button>
@@ -897,7 +897,7 @@ export const NewTenderModal: React.FC = () => {
                         placeholder="e.g. Industrial IoT & SCADA, Renewable Energy..."
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
-                        className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#2563EB] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--accent)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
                   ) : (
@@ -911,7 +911,7 @@ export const NewTenderModal: React.FC = () => {
                           setCategory(e.target.value);
                         }
                       }}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                     >
                       <option value="">-- Select Scope of Work Category --</option>
                       {availableCategories.map((cat) => (
@@ -922,7 +922,7 @@ export const NewTenderModal: React.FC = () => {
                       {!availableCategories.includes(category) && category && (
                         <option value={category}>{category}</option>
                       )}
-                      <option value="__CUSTOM__" className="font-bold text-[#2563EB]">
+                      <option value="__CUSTOM__" className="font-bold text-[var(--accent)]">
                         + Add New Custom Category...
                       </option>
                     </select>
@@ -931,9 +931,9 @@ export const NewTenderModal: React.FC = () => {
               </div>
 
               {/* AI Chat & Document Knowledge Share Link */}
-              <div className="p-3.5 bg-violet-50/70 dark:bg-violet-950/25 rounded-xl border border-violet-200 dark:border-violet-800/40 space-y-1.5 transition-colors">
-                <label className="block text-xs font-bold text-violet-950 dark:text-violet-200 flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0" />
+              <div className="p-3.5 bg-[var(--bg-subtle)]/70 rounded-xl border border-[var(--border-default)] space-y-1.5 transition-colors">
+                <label className="block text-xs font-bold text-[var(--text-secondary)] flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
                   <span>AI Chat &amp; Document Knowledge Link (ChatGPT / Claude / NotebookLM / Gemini)</span>
                 </label>
                 <input
@@ -941,33 +941,33 @@ export const NewTenderModal: React.FC = () => {
                   placeholder="e.g. https://chatgpt.com/share/67a213ff... or https://notebooklm.google.com/notebook/..."
                   value={aiChatShareLink}
                   onChange={(e) => setAiChatShareLink(e.target.value)}
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900/90 border border-violet-200 dark:border-violet-800/60 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-hidden focus:ring-1 focus:ring-violet-500 focus:border-violet-500 font-mono transition-colors"
+                  className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-hidden focus:ring-1 focus:ring-[var(--border-default)] focus:border-[var(--border-default)] font-mono transition-colors"
                 />
-                <p className="text-[11px] text-[#64748B] dark:text-slate-400">
+                <p className="text-[11px] text-[var(--text-secondary)]">
                   Optional: Link an external AI conversation or notebook where documents have been pre-loaded to avoid uploading files again.
                 </p>
               </div>
 
               {/* Currency & Financial Valuation */}
-              <div className="p-3.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
+              <div className="p-3.5 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-default)] space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                  <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                     Currency &amp; Financial Valuation
                   </span>
-                  <span className="text-[11px] font-mono font-bold text-[#2563EB] bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100 shadow-sm">
+                  <span className="text-[11px] font-mono font-bold text-[var(--accent)] bg-[var(--accent-soft)] px-2.5 py-0.5 rounded-full border border-[var(--accent-line)] shadow-sm">
                     {formatBdtPreview(liveBdtValue)}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Tender Currency
                     </label>
                     <select
                       value={tenderCurrency}
                       onChange={(e) => handleCurrencyChange(e.target.value)}
-                      className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg font-bold text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg font-bold text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                     >
                       <option value="USD">USD ($)</option>
                       <option value="BDT">BDT (৳)</option>
@@ -979,7 +979,7 @@ export const NewTenderModal: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Net Value ({tenderCurrency})
                     </label>
                     <input
@@ -989,12 +989,12 @@ export const NewTenderModal: React.FC = () => {
                       value={estimatedValue}
                       onChange={(e) => setEstimatedValue(e.target.value)}
                       placeholder="e.g. 2500000"
-                      className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg font-mono font-bold text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg font-mono font-bold text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Rate vs BDT (At that time)
                     </label>
                     <input
@@ -1004,34 +1004,34 @@ export const NewTenderModal: React.FC = () => {
                       value={tenderCurrency === 'BDT' ? '1.0' : exchangeRateToBdt}
                       onChange={(e) => setExchangeRateToBdt(e.target.value)}
                       placeholder="e.g. 122.00"
-                      className={`w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg font-mono text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB] ${
-                        tenderCurrency === 'BDT' ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''
+                      className={`w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg font-mono text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] ${
+ tenderCurrency === 'BDT' ? 'opacity-60 cursor-not-allowed bg-[var(--bg-subtle)]' : ''
                       }`}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Rate Fixation Date
                     </label>
                     <input
                       type="date"
                       value={exchangeRateDate}
                       onChange={(e) => setExchangeRateDate(e.target.value)}
-                      className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between text-[11px] text-[#64748B] pt-1.5 border-t border-[#E2E8F0]">
+                <div className="flex flex-wrap items-center justify-between text-[11px] text-[var(--text-secondary)] pt-1.5 border-t border-[var(--border-default)]">
                   <span>
                     {tenderCurrency === 'BDT'
                       ? 'Local currency tender (1.0 conversion factor to BDT).'
                       : `Historical conversion rate of that time: 1 ${tenderCurrency} = ৳${exchangeRateToBdt || '122.00'} BDT`}
                   </span>
-                  <span className="font-semibold text-slate-700">
+                  <span className="font-semibold text-[var(--text-primary)]">
                     Total Equivalent:{' '}
-                    <span className="text-[#2563EB] font-mono">
+                    <span className="text-[var(--accent)] font-mono">
                       ৳{Math.round(liveBdtValue).toLocaleString()} BDT
                     </span>
                   </span>
@@ -1039,15 +1039,15 @@ export const NewTenderModal: React.FC = () => {
               </div>
 
               {/* Procurement Governance & Sourcing Attributes (Req #21) */}
-              <div className="p-4 bg-[#F8FAFC] dark:bg-slate-800/40 rounded-xl border border-[#E2E8F0] dark:border-slate-700/60 space-y-3">
-                <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-slate-700/60 pb-2">
+              <div className="p-4 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-default)] space-y-3">
+                <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-[#2563EB] dark:text-blue-400" />
-                    <span className="text-xs font-bold text-[#0F172A] dark:text-slate-100 uppercase tracking-wider">
+                    <ShieldCheck className="w-4 h-4 text-[var(--accent)]" />
+                    <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Procurement Governance &amp; Sourcing Framework
                     </span>
                   </div>
-                  <span className="text-[10px] font-mono font-bold text-[#2563EB] dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800/60">
+                  <span className="text-[10px] font-mono font-bold text-[var(--accent)] bg-[var(--accent-soft)] px-2 py-0.5 rounded border border-[var(--accent-line)]">
                     Statutory Governance
                   </span>
                 </div>
@@ -1056,7 +1056,7 @@ export const NewTenderModal: React.FC = () => {
                   {/* Tender Type */}
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
+                      <label className="block text-[11px] font-semibold text-[var(--text-primary)]">
                         Tender Type
                       </label>
                       <button
@@ -1065,7 +1065,7 @@ export const NewTenderModal: React.FC = () => {
                           setIsCustomTenderType(!isCustomTenderType);
                           if (isCustomTenderType && !tenderType) setTenderType(STANDARD_TENDER_TYPES[0]);
                         }}
-                        className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
+                        className="text-[10px] font-semibold text-[var(--accent)] hover:underline"
                       >
                         {isCustomTenderType ? '← Select Preset' : '+ Custom Type'}
                       </button>
@@ -1076,7 +1076,7 @@ export const NewTenderModal: React.FC = () => {
                         placeholder="e.g. Turnkey EPC, Framework Call-off..."
                         value={tenderType}
                         onChange={(e) => setTenderType(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--accent)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     ) : (
                       <select
@@ -1089,7 +1089,7 @@ export const NewTenderModal: React.FC = () => {
                             setTenderType(e.target.value);
                           }
                         }}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       >
                         <option value="">-- Select Tender Type --</option>
                         {STANDARD_TENDER_TYPES.map((t) => (
@@ -1100,7 +1100,7 @@ export const NewTenderModal: React.FC = () => {
                         {!STANDARD_TENDER_TYPES.includes(tenderType as any) && tenderType && (
                           <option value={tenderType}>{tenderType}</option>
                         )}
-                        <option value="__CUSTOM__" className="font-bold text-[#2563EB]">
+                        <option value="__CUSTOM__" className="font-bold text-[var(--accent)]">
                           + Add Custom Tender Type...
                         </option>
                       </select>
@@ -1109,12 +1109,12 @@ export const NewTenderModal: React.FC = () => {
 
                   {/* Originating EOI Selector (Rendered when RFP mode is active) */}
                   {tenderType === 'Request for Proposals (RFP)' && (
-                    <div className="sm:col-span-2 p-3 bg-blue-50/70 border border-blue-200 rounded-xl space-y-2">
+                    <div className="sm:col-span-2 p-3 bg-[var(--accent-soft)]/70 border border-[var(--accent-line)] rounded-xl space-y-2">
                       <div className="flex items-center justify-between">
-                        <label className="block text-[11px] font-bold text-[#1E40AF] flex items-center gap-1.5">
+                        <label className="block text-[11px] font-bold text-[var(--accent)] flex items-center gap-1.5">
                           <span>🔗 Originating EOI (Optional — 2-Stage Procurement Flow)</span>
                         </label>
-                        <span className="text-[10px] font-semibold text-[#2563EB] bg-blue-100/80 px-2 py-0.5 rounded">
+                        <span className="text-[10px] font-semibold text-[var(--accent)] bg-[var(--accent-soft)]/80 px-2 py-0.5 rounded">
                           {parentEoiId ? 'EOI-Linked RFP' : 'Direct RFP Modality'}
                         </span>
                       </div>
@@ -1141,7 +1141,7 @@ export const NewTenderModal: React.FC = () => {
                             }
                           }
                         }}
-                        className="w-full px-2.5 py-1.5 bg-white border border-blue-300 rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--accent-line)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       >
                         <option value="">-- Direct RFP (Open Tender / No EOI Required) --</option>
                         {eligibleParentEois.map((eoi) => (
@@ -1150,7 +1150,7 @@ export const NewTenderModal: React.FC = () => {
                           </option>
                         ))}
                       </select>
-                      <p className="text-[10px] text-[#3B82F6]">
+                      <p className="text-[10px] text-[var(--accent)]">
                         {parentEoiId
                           ? `Linked to Parent EOI #${parentEoiId}. Organization, country, and statutory references are synchronized.`
                           : 'Direct RFP: Organizations can publish RFPs directly without any prior EOI stage required.'}
@@ -1161,7 +1161,7 @@ export const NewTenderModal: React.FC = () => {
                   {/* Budget Type */}
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
+                      <label className="block text-[11px] font-semibold text-[var(--text-primary)]">
                         Budget Type
                       </label>
                       <button
@@ -1170,7 +1170,7 @@ export const NewTenderModal: React.FC = () => {
                           setIsCustomBudgetType(!isCustomBudgetType);
                           if (isCustomBudgetType && !budgetType) setBudgetType(STANDARD_BUDGET_TYPES[0]);
                         }}
-                        className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
+                        className="text-[10px] font-semibold text-[var(--accent)] hover:underline"
                       >
                         {isCustomBudgetType ? '← Select Preset' : '+ Custom Budget'}
                       </button>
@@ -1181,7 +1181,7 @@ export const NewTenderModal: React.FC = () => {
                         placeholder="e.g. Special Trust Fund, Sovereign Loan..."
                         value={budgetType}
                         onChange={(e) => setBudgetType(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--accent)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     ) : (
                       <select
@@ -1194,7 +1194,7 @@ export const NewTenderModal: React.FC = () => {
                             setBudgetType(e.target.value);
                           }
                         }}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       >
                         <option value="">-- Select Budget Type --</option>
                         {STANDARD_BUDGET_TYPES.map((b) => (
@@ -1205,7 +1205,7 @@ export const NewTenderModal: React.FC = () => {
                         {!STANDARD_BUDGET_TYPES.includes(budgetType as any) && budgetType && (
                           <option value={budgetType}>{budgetType}</option>
                         )}
-                        <option value="__CUSTOM__" className="font-bold text-[#2563EB] dark:text-blue-400">
+                        <option value="__CUSTOM__" className="font-bold text-[var(--accent)]">
                           + Add Custom Budget Type...
                         </option>
                       </select>
@@ -1215,7 +1215,7 @@ export const NewTenderModal: React.FC = () => {
                   {/* Source of Fund */}
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
+                      <label className="block text-[11px] font-semibold text-[var(--text-primary)]">
                         Source of Fund (Financier)
                       </label>
                       <button
@@ -1224,7 +1224,7 @@ export const NewTenderModal: React.FC = () => {
                           setIsCustomSourceOfFund(!isCustomSourceOfFund);
                           if (isCustomSourceOfFund && !sourceOfFund) setSourceOfFund(STANDARD_SOURCE_OF_FUNDS[0]);
                         }}
-                        className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
+                        className="text-[10px] font-semibold text-[var(--accent)] hover:underline"
                       >
                         {isCustomSourceOfFund ? '← Select Preset' : '+ Custom Source'}
                       </button>
@@ -1235,7 +1235,7 @@ export const NewTenderModal: React.FC = () => {
                         placeholder="e.g. Islamic Development Bank (IsDB)..."
                         value={sourceOfFund}
                         onChange={(e) => setSourceOfFund(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--accent)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     ) : (
                       <select
@@ -1248,7 +1248,7 @@ export const NewTenderModal: React.FC = () => {
                             setSourceOfFund(e.target.value);
                           }
                         }}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       >
                         <option value="">-- Select Source of Fund --</option>
                         {STANDARD_SOURCE_OF_FUNDS.map((s) => (
@@ -1259,7 +1259,7 @@ export const NewTenderModal: React.FC = () => {
                         {!STANDARD_SOURCE_OF_FUNDS.includes(sourceOfFund as any) && sourceOfFund && (
                           <option value={sourceOfFund}>{sourceOfFund}</option>
                         )}
-                        <option value="__CUSTOM__" className="font-bold text-[#2563EB] dark:text-blue-400">
+                        <option value="__CUSTOM__" className="font-bold text-[var(--accent)]">
                           + Add Custom Source of Fund...
                         </option>
                       </select>
@@ -1269,7 +1269,7 @@ export const NewTenderModal: React.FC = () => {
                   {/* Procurement Method */}
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
+                      <label className="block text-[11px] font-semibold text-[var(--text-primary)]">
                         Procurement Method
                       </label>
                       <button
@@ -1278,7 +1278,7 @@ export const NewTenderModal: React.FC = () => {
                           setIsCustomProcurementMethod(!isCustomProcurementMethod);
                           if (isCustomProcurementMethod && !procurementMethod) setProcurementMethod(STANDARD_PROCUREMENT_METHODS[0]);
                         }}
-                        className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
+                        className="text-[10px] font-semibold text-[var(--accent)] hover:underline"
                       >
                         {isCustomProcurementMethod ? '← Select Preset' : '+ Custom Method'}
                       </button>
@@ -1289,7 +1289,7 @@ export const NewTenderModal: React.FC = () => {
                         placeholder="e.g. Two-Envelope with Reverse Auction..."
                         value={procurementMethod}
                         onChange={(e) => setProcurementMethod(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--accent)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     ) : (
                       <select
@@ -1302,7 +1302,7 @@ export const NewTenderModal: React.FC = () => {
                             setProcurementMethod(e.target.value);
                           }
                         }}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       >
                         <option value="">-- Select Procurement Method --</option>
                         {STANDARD_PROCUREMENT_METHODS.map((m) => (
@@ -1313,7 +1313,7 @@ export const NewTenderModal: React.FC = () => {
                         {!STANDARD_PROCUREMENT_METHODS.includes(procurementMethod as any) && procurementMethod && (
                           <option value={procurementMethod}>{procurementMethod}</option>
                         )}
-                        <option value="__CUSTOM__" className="font-bold text-[#2563EB] dark:text-blue-400">
+                        <option value="__CUSTOM__" className="font-bold text-[var(--accent)]">
                           + Add Custom Method...
                         </option>
                       </select>
@@ -1323,7 +1323,7 @@ export const NewTenderModal: React.FC = () => {
                   {/* Evaluation Method */}
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="block text-[11px] font-semibold text-[#0F172A] dark:text-slate-200">
+                      <label className="block text-[11px] font-semibold text-[var(--text-primary)]">
                         Evaluation Method
                       </label>
                       <button
@@ -1332,7 +1332,7 @@ export const NewTenderModal: React.FC = () => {
                           setIsCustomEvaluationMethod(!isCustomEvaluationMethod);
                           if (isCustomEvaluationMethod && !evaluationMethod) setEvaluationMethod(STANDARD_EVALUATION_METHODS[0]);
                         }}
-                        className="text-[10px] font-semibold text-[#2563EB] dark:text-blue-400 hover:underline"
+                        className="text-[10px] font-semibold text-[var(--accent)] hover:underline"
                       >
                         {isCustomEvaluationMethod ? '← Select Preset' : '+ Custom Method'}
                       </button>
@@ -1343,7 +1343,7 @@ export const NewTenderModal: React.FC = () => {
                         placeholder="e.g. Quality & Cost Based Selection (QCBS)..."
                         value={evaluationMethod}
                         onChange={(e) => setEvaluationMethod(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#2563EB] dark:border-blue-500 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 placeholder:text-[#94A3B8] dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--accent)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     ) : (
                       <select
@@ -1356,7 +1356,7 @@ export const NewTenderModal: React.FC = () => {
                             setEvaluationMethod(e.target.value);
                           }
                         }}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-[#CBD5E1] dark:border-slate-700 rounded-lg text-xs text-[#0F172A] dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       >
                         <option value="">-- Select Evaluation Method --</option>
                         {STANDARD_EVALUATION_METHODS.map((m) => (
@@ -1367,7 +1367,7 @@ export const NewTenderModal: React.FC = () => {
                         {!STANDARD_EVALUATION_METHODS.includes(evaluationMethod as any) && evaluationMethod && (
                           <option value={evaluationMethod}>{evaluationMethod}</option>
                         )}
-                        <option value="__CUSTOM__" className="font-bold text-[#2563EB] dark:text-blue-400">
+                        <option value="__CUSTOM__" className="font-bold text-[var(--accent)]">
                           + Add Custom Method...
                         </option>
                       </select>
@@ -1377,27 +1377,27 @@ export const NewTenderModal: React.FC = () => {
               </div>
 
               {/* Procuring Authority Officer & Helpline Details */}
-              <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
-                <div className="flex items-center gap-2 border-b border-[#E2E8F0] pb-2">
-                  <UserCheck className="w-4 h-4 text-[#2563EB]" />
-                  <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+              <div className="p-4 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-default)] space-y-3">
+                <div className="flex items-center gap-2 border-b border-[var(--border-default)] pb-2">
+                  <UserCheck className="w-4 h-4 text-[var(--accent)]" />
+                  <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                     Procuring Authority Contact &amp; Helpdesk Information
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Procurement Officer / Manager */}
-                  <div className="p-3.5 bg-white rounded-xl border border-[#E2E8F0] shadow-2xs space-y-2.5">
+                  <div className="p-3.5 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] shadow-2xs space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
-                        <UserCheck className="w-3.5 h-3.5 text-[#2563EB]" />
+                      <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <UserCheck className="w-3.5 h-3.5 text-[var(--accent)]" />
                         Procurement Manager / Officer
                       </span>
-                      <span className="text-[10px] text-[#64748B] font-mono">Official Contact</span>
+                      <span className="text-[10px] text-[var(--text-secondary)] font-mono">Official Contact</span>
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Officer Full Name
                       </label>
                       <input
@@ -1405,12 +1405,12 @@ export const NewTenderModal: React.FC = () => {
                         placeholder="e.g. Engr. Rafiqul Islam"
                         value={procurementManagerName}
                         onChange={(e) => setProcurementManagerName(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Official Designation / Title
                       </label>
                       <input
@@ -1418,13 +1418,13 @@ export const NewTenderModal: React.FC = () => {
                         placeholder="e.g. Superintending Engineer (Procurement)"
                         value={procurementManagerDesignation}
                         onChange={(e) => setProcurementManagerDesignation(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div>
-                        <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                           Direct Phone / Mobile
                         </label>
                         <input
@@ -1432,12 +1432,12 @@ export const NewTenderModal: React.FC = () => {
                           placeholder="e.g. +880 1711-234567"
                           value={procurementManagerPhone}
                           onChange={(e) => setProcurementManagerPhone(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                        <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                           Official Email
                         </label>
                         <input
@@ -1445,24 +1445,24 @@ export const NewTenderModal: React.FC = () => {
                           placeholder="e.g. rafiqul@dtca.gov.bd"
                           value={procurementManagerEmail}
                           onChange={(e) => setProcurementManagerEmail(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                          className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* Tender Helpline & Support Desk */}
-                  <div className="p-3.5 bg-white rounded-xl border border-[#E2E8F0] shadow-2xs space-y-2.5">
+                  <div className="p-3.5 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] shadow-2xs space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#0F172A] flex items-center gap-1.5">
-                        <Headphones className="w-3.5 h-3.5 text-[#2563EB]" />
+                      <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <Headphones className="w-3.5 h-3.5 text-[var(--accent)]" />
                         Tender Helpline &amp; Support Desk
                       </span>
-                      <span className="text-[10px] text-[#64748B] font-mono">Portal Support</span>
+                      <span className="text-[10px] text-[var(--text-secondary)] font-mono">Portal Support</span>
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Helpline Number / Hotline
                       </label>
                       <input
@@ -1470,12 +1470,12 @@ export const NewTenderModal: React.FC = () => {
                         placeholder="e.g. +880 2 9568741 or 16123"
                         value={helplinePhone}
                         onChange={(e) => setHelplinePhone(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Support Desk Email
                       </label>
                       <input
@@ -1483,12 +1483,12 @@ export const NewTenderModal: React.FC = () => {
                         placeholder="e.g. helpdesk@eprocure.gov.bd"
                         value={helplineEmail}
                         onChange={(e) => setHelplineEmail(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                      <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                         Desk Operating Hours
                       </label>
                       <input
@@ -1496,7 +1496,7 @@ export const NewTenderModal: React.FC = () => {
                         placeholder="e.g. 09:00 AM - 05:00 PM BST (Sun-Thu)"
                         value={helplineHours}
                         onChange={(e) => setHelplineHours(e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                        className="w-full px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                       />
                     </div>
                   </div>
@@ -1505,13 +1505,13 @@ export const NewTenderModal: React.FC = () => {
 
               {/* Operational Priority */}
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Operational Priority
                 </label>
                 <select
                   value={priority}
                   onChange={(e) => setPriority(e.target.value as TenderPriority)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 >
                   <option value="CRITICAL">CRITICAL (Closing &lt; 48h / Tier 1)</option>
                   <option value="HIGH">HIGH Priority</option>
@@ -1522,7 +1522,7 @@ export const NewTenderModal: React.FC = () => {
 
               {/* Published Date & Submission Cutoff Time Pickers */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-3 bg-slate-50/50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-800">
+                <div className="p-3 bg-[var(--bg-subtle)]/50 rounded-xl border border-[var(--border-default)]">
                   <DateTimePicker
                     label="Notice / Published Date & Time"
                     sublabel="Official issue date, time, and timezone of tender announcement"
@@ -1540,7 +1540,7 @@ export const NewTenderModal: React.FC = () => {
                   />
                 </div>
 
-                <div className="p-3 bg-slate-50/50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-800">
+                <div className="p-3 bg-[var(--bg-subtle)]/50 rounded-xl border border-[var(--border-default)]">
                   <DateTimePicker
                     label="Last Date (Submission Deadline) & Cutoff Time"
                     sublabel="Official submission closing deadline and local cutoff time"
@@ -1572,46 +1572,46 @@ export const NewTenderModal: React.FC = () => {
             <div className="space-y-5 animate-fadeIn">
               {/* Main Idea */}
               <div>
-                <label className="block font-bold text-[#0F172A] mb-1">
+                <label className="block font-bold text-[var(--text-primary)] mb-1">
                   Main Scope &amp; Concept Idea
                 </label>
-                <p className="text-[11px] text-[#64748B] mb-1.5">
+                <p className="text-[11px] text-[var(--text-secondary)] mb-1.5">
                   Executive summary of what the tender entails, client objectives, and key deliverables.
                 </p>
                 <textarea
                   rows={3}
                   value={mainIdea}
                   onChange={(e) => setMainIdea(e.target.value)}
-                  className="w-full p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full p-3 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               {/* Commercial Requirements Grid */}
               {/* Tender Schedule / Form Buy Panel */}
-              <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
-                <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2">
-                  <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider flex items-center gap-1.5">
-                    <FileText className="w-3.5 h-3.5 text-[#2563EB]" />
+              <div className="p-4 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-default)] space-y-3">
+                <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
+                  <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 text-[var(--accent)]" />
                     Tender Schedule / Form Purchase Terms
                   </span>
-                  <span className="text-[10px] text-[#64748B] font-mono">Form Buy &amp; Procurement Fee</span>
+                  <span className="text-[10px] text-[var(--text-secondary)] font-mono">Form Buy &amp; Procurement Fee</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Schedule Buy Deadline
                     </label>
                     <input
                       type="date"
                       value={schedulePurchaseDeadline}
                       onChange={(e) => setSchedulePurchaseDeadline(e.target.value)}
-                      className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-[var(--text-primary)] text-xs focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Tender Document / Form Fee
                     </label>
                     <input
@@ -1619,18 +1619,18 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. ৳2,000 or Free on e-GP"
                       value={tenderDocPrice}
                       onChange={(e) => setTenderDocPrice(e.target.value)}
-                      className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-[var(--text-primary)] text-xs focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Schedule Payment Method
                     </label>
                     <select
                       value={schedulePurchaseMethod}
                       onChange={(e) => setSchedulePurchaseMethod(e.target.value)}
-                      className="w-full px-2.5 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-[var(--text-primary)] text-xs focus:ring-1 focus:ring-[var(--accent)]"
                     >
                       <option value="">-- Select Payment Method --</option>
                       <option value="ONLINE_EGP">Online e-GP Payment Gateway</option>
@@ -1643,22 +1643,22 @@ export const NewTenderModal: React.FC = () => {
               </div>
 
               {/* Tender Security Deposit & Smart 2.5% Reverse Budget Calculator */}
-              <div className="p-4 bg-gradient-to-br from-[#EFF6FF]/60 to-[#F8FAFC] dark:from-slate-800/60 dark:to-slate-900 rounded-xl border border-[#BFDBFE] dark:border-slate-700 space-y-4">
-                <div className="flex flex-wrap items-center justify-between border-b border-[#BFDBFE] dark:border-slate-700 pb-2.5 gap-2">
+              <div className="p-4 bg-gradient-to-br from-[var(--accent-soft)]/60 to-[var(--bg-subtle)] rounded-xl border border-[var(--accent-line)] space-y-4">
+                <div className="flex flex-wrap items-center justify-between border-b border-[var(--accent-line)] pb-2.5 gap-2">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-[#2563EB] dark:text-blue-400" />
-                    <span className="text-xs font-bold text-[#0F172A] dark:text-slate-100 uppercase tracking-wider">
+                    <ShieldCheck className="w-4 h-4 text-[var(--accent)]" />
+                    <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                       Tender Security / Earnest Money Deposit (EMD)
                     </span>
                   </div>
-                  <span className="text-[10px] font-semibold bg-[#DBEAFE] dark:bg-blue-900/40 text-[#1D4ED8] dark:text-blue-300 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-semibold bg-[var(--accent-soft)] text-[var(--accent)] px-2 py-0.5 rounded-full">
                     Standard Guideline: ~2.5% of Budget
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Security Deposit Amount ({tenderCurrency})
                     </label>
                     <input
@@ -1668,18 +1668,18 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. 50000"
                       value={tenderSecurityAmount}
                       onChange={(e) => setTenderSecurityAmount(e.target.value)}
-                      className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg font-mono font-bold text-[#0F172A] text-sm focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg font-mono font-bold text-[var(--text-primary)] text-sm focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Security Instrument / Method
                     </label>
                     <select
                       value={tenderSecurityMethod}
                       onChange={(e) => setTenderSecurityMethod(e.target.value)}
-                      className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-[var(--text-primary)] text-xs focus:ring-1 focus:ring-[var(--accent)]"
                     >
                       <option value="">-- Select Security Instrument --</option>
                       <option value="BANK_GUARANTEE">Bank Guarantee (BG)</option>
@@ -1690,7 +1690,7 @@ export const NewTenderModal: React.FC = () => {
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Security Description / Specific Bank Requirements
                     </label>
                     <input
@@ -1698,16 +1698,16 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. Irrevocable unconditional Bank Guarantee valid for 148 days from scheduled opening"
                       value={tenderSecurity}
                       onChange={(e) => setTenderSecurity(e.target.value)}
-                      className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[#0F172A] text-xs focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-[var(--text-primary)] text-xs focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
                 </div>
 
                 {/* Interactive % Estimator & Reverse Budget Calculator */}
-                <div className="p-3.5 bg-white rounded-xl border border-[#93C5FD] shadow-xs space-y-3">
+                <div className="p-3.5 bg-[var(--bg-surface)] rounded-xl border border-[var(--accent-line)] shadow-xs space-y-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#1E40AF]">
-                      <Calculator className="w-4 h-4 text-[#2563EB]" />
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--accent)]">
+                      <Calculator className="w-4 h-4 text-[var(--accent)]" />
                       <span>Security Deposit % &amp; Reverse Budget Estimator</span>
                     </div>
                     <div className="flex items-center gap-1">
@@ -1717,9 +1717,9 @@ export const NewTenderModal: React.FC = () => {
                           type="button"
                           onClick={() => setSecurityPercent(pct)}
                           className={`px-2 py-1 rounded text-[11px] font-semibold transition-colors ${
-                            securityPercent === pct
-                              ? 'bg-[#2563EB] text-white'
-                              : 'bg-[#F1F5F9] text-[#475569] hover:bg-[#E2E8F0]'
+ securityPercent === pct
+                              ? 'bg-[var(--accent)] text-[var(--accent-on)]'
+                              : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-muted)]'
                           }`}
                         >
                           {pct}%
@@ -1728,21 +1728,21 @@ export const NewTenderModal: React.FC = () => {
                     </div>
                   </div>
 
-                  <p className="text-[11px] text-[#64748B] leading-relaxed">
+                  <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
                     In many tenders, procuring entities state the exact <strong>Security Deposit</strong> amount but keep the total budget unstated. 
                     Since security is typically set at <strong>{securityPercent}%</strong>, you can calculate the estimated budget from the security deposit, or vice versa.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                     {/* Reverse Estimator: From Security to Budget */}
-                    <div className="p-2.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-1.5">
-                      <div className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">
+                    <div className="p-2.5 bg-[var(--bg-subtle)] rounded-lg border border-[var(--border-default)] space-y-1.5">
+                      <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
                         Reverse Mode: Implied Budget from Security
                       </div>
-                      <div className="text-xs text-[#0F172A]">
+                      <div className="text-xs text-[var(--text-primary)]">
                         Security ({tenderSecurityAmount ? Number(tenderSecurityAmount).toLocaleString() : '0'} {tenderCurrency}) ÷ {securityPercent}% =
                       </div>
-                      <div className="font-mono text-sm font-extrabold text-[#2563EB]">
+                      <div className="font-mono text-sm font-extrabold text-[var(--accent)]">
                         {impliedBudgetFromSecurity > 0
                           ? `≈ ${tenderCurrency === 'BDT' ? '৳' : '$'}${Math.round(impliedBudgetFromSecurity).toLocaleString()} ${tenderCurrency}`
                           : 'Enter security deposit above'}
@@ -1751,7 +1751,7 @@ export const NewTenderModal: React.FC = () => {
                         <button
                           type="button"
                           onClick={handleApplyCalculatedBudget}
-                          className="mt-1 w-full py-1.5 px-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-[11px] font-bold rounded flex items-center justify-center gap-1 transition-colors"
+                          className="mt-1 w-full py-1.5 px-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] text-[11px] font-bold rounded flex items-center justify-center gap-1 transition-colors"
                         >
                           <span>⚡ Set Estimated Budget to {tenderCurrency === 'BDT' ? '৳' : '$'}{Math.round(impliedBudgetFromSecurity).toLocaleString()}</span>
                           <ArrowRight className="w-3 h-3" />
@@ -1760,14 +1760,14 @@ export const NewTenderModal: React.FC = () => {
                     </div>
 
                     {/* Forward Mode: From Budget to Security */}
-                    <div className="p-2.5 bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] space-y-1.5">
-                      <div className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">
+                    <div className="p-2.5 bg-[var(--bg-subtle)] rounded-lg border border-[var(--border-default)] space-y-1.5">
+                      <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
                         Forward Mode: Security from Estimated Budget
                       </div>
-                      <div className="text-xs text-[#0F172A]">
+                      <div className="text-xs text-[var(--text-primary)]">
                         Budget ({estimatedValue ? Number(estimatedValue).toLocaleString() : '0'} {tenderCurrency}) × {securityPercent}% =
                       </div>
-                      <div className="font-mono text-sm font-extrabold text-[#16A34A]">
+                      <div className="font-mono text-sm font-extrabold text-[var(--ok)]">
                         {impliedSecurityFromBudget > 0
                           ? `≈ ${tenderCurrency === 'BDT' ? '৳' : '$'}${Math.round(impliedSecurityFromBudget).toLocaleString()} ${tenderCurrency}`
                           : 'Enter estimated budget'}
@@ -1776,7 +1776,7 @@ export const NewTenderModal: React.FC = () => {
                         <button
                           type="button"
                           onClick={handleApplyCalculatedSecurity}
-                          className="mt-1 w-full py-1.5 px-2 bg-[#16A34A] hover:bg-[#15803D] text-white text-[11px] font-bold rounded flex items-center justify-center gap-1 transition-colors"
+                          className="mt-1 w-full py-1.5 px-2 bg-[var(--ok)] hover:bg-[var(--ok)] text-[var(--accent-on)] text-[11px] font-bold rounded flex items-center justify-center gap-1 transition-colors"
                         >
                           <span>Set Security Amount ({tenderCurrency === 'BDT' ? '৳' : '$'}{Math.round(impliedSecurityFromBudget).toLocaleString()})</span>
                           <Check className="w-3 h-3" />
@@ -1790,7 +1790,7 @@ export const NewTenderModal: React.FC = () => {
               {/* Contract & Performance Security */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-[#475569] mb-1">
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                     Contract / Service Period
                   </label>
                   <input
@@ -1798,12 +1798,12 @@ export const NewTenderModal: React.FC = () => {
                     placeholder="e.g. 12 Months Implementation + 24 Months O&M"
                     value={contractPeriod}
                     onChange={(e) => setContractPeriod(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#475569] mb-1">
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                     Performance Security Guarantee
                   </label>
                   <input
@@ -1811,7 +1811,7 @@ export const NewTenderModal: React.FC = () => {
                     placeholder="e.g. 10% of Contract Value"
                     value={performanceSecurity}
                     onChange={(e) => setPerformanceSecurity(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                   />
                 </div>
               </div>
@@ -1819,7 +1819,7 @@ export const NewTenderModal: React.FC = () => {
               {/* Technical Requirements Lines */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="font-bold text-[#0F172A]">
+                  <label className="font-bold text-[var(--text-primary)]">
                     Technical Requirements (Key Deliverables)
                   </label>
                   <button
@@ -1827,7 +1827,7 @@ export const NewTenderModal: React.FC = () => {
                     onClick={() =>
                       handleAddStringItem(technicalReqs, setTechnicalReqs, '')
                     }
-                    className="text-[#2563EB] hover:underline font-semibold flex items-center gap-1"
+                    className="text-[var(--accent)] hover:underline font-semibold flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add Requirement</span>
@@ -1848,14 +1848,14 @@ export const NewTenderModal: React.FC = () => {
                             setTechnicalReqs
                           )
                         }
-                        className="flex-1 px-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                        className="flex-1 px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                       />
                       <button
                         type="button"
                         onClick={() =>
                           handleRemoveStringItem(idx, technicalReqs, setTechnicalReqs)
                         }
-                        className="p-1.5 text-[#94A3B8] hover:text-[#DC2626]"
+                        className="p-1.5 text-[var(--text-muted)] hover:text-[var(--crit)]"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -1867,7 +1867,7 @@ export const NewTenderModal: React.FC = () => {
               {/* Software / Tech Mentioned */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="font-bold text-[#0F172A]">
+                  <label className="font-bold text-[var(--text-primary)]">
                     Software &amp; Technology Stack Mentioned
                   </label>
                   <button
@@ -1879,7 +1879,7 @@ export const NewTenderModal: React.FC = () => {
                         ''
                       )
                     }
-                    className="text-[#2563EB] hover:underline font-semibold flex items-center gap-1"
+                    className="text-[var(--accent)] hover:underline font-semibold flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add Technology</span>
@@ -1900,7 +1900,7 @@ export const NewTenderModal: React.FC = () => {
                             setTechnologyMentioned
                           )
                         }
-                        className="flex-1 px-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                        className="flex-1 px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                       />
                       <button
                         type="button"
@@ -1911,7 +1911,7 @@ export const NewTenderModal: React.FC = () => {
                             setTechnologyMentioned
                           )
                         }
-                        className="p-1.5 text-[#94A3B8] hover:text-[#DC2626]"
+                        className="p-1.5 text-[var(--text-muted)] hover:text-[var(--crit)]"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -1923,7 +1923,7 @@ export const NewTenderModal: React.FC = () => {
               {/* Operational & SLA Reqs */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="font-bold text-[#0F172A]">
+                  <label className="font-bold text-[var(--text-primary)]">
                     Operational &amp; Maintenance Requirements
                   </label>
                   <button
@@ -1935,7 +1935,7 @@ export const NewTenderModal: React.FC = () => {
                         ''
                       )
                     }
-                    className="text-[#2563EB] hover:underline font-semibold flex items-center gap-1"
+                    className="text-[var(--accent)] hover:underline font-semibold flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add SLA / Ops Line</span>
@@ -1956,7 +1956,7 @@ export const NewTenderModal: React.FC = () => {
                             setOperationalReqs
                           )
                         }
-                        className="flex-1 px-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                        className="flex-1 px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                       />
                       <button
                         type="button"
@@ -1967,7 +1967,7 @@ export const NewTenderModal: React.FC = () => {
                             setOperationalReqs
                           )
                         }
-                        className="p-1.5 text-[#94A3B8] hover:text-[#DC2626]"
+                        className="p-1.5 text-[var(--text-muted)] hover:text-[var(--crit)]"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -1994,12 +1994,12 @@ export const NewTenderModal: React.FC = () => {
           {activeTab === 'ELIGIBILITY' && (
             <div className="space-y-5 animate-fadeIn">
               <div>
-                <h4 className="font-bold text-[#0F172A] mb-2 pb-1 border-b border-[#F1F5F9]">
+                <h4 className="font-bold text-[var(--text-primary)] mb-2 pb-1 border-b border-[var(--border-subtle)]">
                   Key Eligibility &amp; Statutory Qualifications
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       General Experience
                     </label>
                     <input
@@ -2007,12 +2007,12 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. Minimum 5 years in IT sector"
                       value={generalExperience}
                       onChange={(e) => setGeneralExperience(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Similar Experience (Contracts)
                     </label>
                     <input
@@ -2020,12 +2020,12 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. At least 2 similar scale cloud projects"
                       value={similarExperience}
                       onChange={(e) => setSimilarExperience(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Similar Project Minimum Value
                     </label>
                     <input
@@ -2033,12 +2033,12 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. Single contract of BDT 15 Crore"
                       value={similarProjectValue}
                       onChange={(e) => setSimilarProjectValue(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Average Annual Turnover
                     </label>
                     <input
@@ -2046,12 +2046,12 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. BDT 30 Crore over last 3 years"
                       value={avgTurnover}
                       onChange={(e) => setAvgTurnover(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Financial Resources / Liquid Assets
                     </label>
                     <input
@@ -2059,12 +2059,12 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. Credit facility of BDT 2 Crore"
                       value={financialResources}
                       onChange={(e) => setFinancialResources(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Required Quality Certifications
                     </label>
                     <input
@@ -2072,13 +2072,13 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. ISO 9001, ISO 27001, CMMI Level 3"
                       value={certification}
                       onChange={(e) => setCertification(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
                 </div>
 
                 <div className="mt-4">
-                  <label className="block font-semibold text-[#475569] mb-1">
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                     Local Presence / Domicile Requirements
                   </label>
                   <input
@@ -2086,19 +2086,19 @@ export const NewTenderModal: React.FC = () => {
                     placeholder="e.g. Registered office in Dhaka with 24/7 support personnel"
                     value={localPresence}
                     onChange={(e) => setLocalPresence(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                   />
                 </div>
               </div>
 
               {/* JV & Consortium Rules */}
               <div>
-                <h4 className="font-bold text-[#0F172A] mb-2 pb-1 border-b border-[#F1F5F9]">
+                <h4 className="font-bold text-[var(--text-primary)] mb-2 pb-1 border-b border-[var(--border-subtle)]">
                   Joint Venture (JV) &amp; Consortium Guidelines
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       JV Participation Status
                     </label>
                     <input
@@ -2106,12 +2106,12 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="Allowed / Not Allowed / Max 3 Partners"
                       value={jvParticipation}
                       onChange={(e) => setJvParticipation(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Lead Member Rules
                     </label>
                     <input
@@ -2119,12 +2119,12 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. Must satisfy min 50% of financial criteria"
                       value={leadMember}
                       onChange={(e) => setLeadMember(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Member Qualification Sharing
                     </label>
                     <input
@@ -2132,12 +2132,12 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. Each partner must hold 25% experience"
                       value={memberRules}
                       onChange={(e) => setMemberRules(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-[#475569] mb-1">
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                       Local Partner Mandate
                     </label>
                     <input
@@ -2145,13 +2145,13 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. Mandatory local firm partnership"
                       value={localPartner}
                       onChange={(e) => setLocalPartner(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                      className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                     />
                   </div>
                 </div>
 
                 <div className="mt-4">
-                  <label className="block font-semibold text-[#475569] mb-1">
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">
                     JV Agreement &amp; Legal Deed Requirement
                   </label>
                   <input
@@ -2159,7 +2159,7 @@ export const NewTenderModal: React.FC = () => {
                     placeholder="e.g. Formally notarized JV agreement defining profit/loss split"
                     value={jvAgreement}
                     onChange={(e) => setJvAgreement(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                   />
                 </div>
               </div>
@@ -2173,10 +2173,10 @@ export const NewTenderModal: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <div>
-                    <label className="font-bold text-[#0F172A] block">
+                    <label className="font-bold text-[var(--text-primary)] block">
                       Documents Required in Submission Package
                     </label>
-                    <span className="text-[11px] text-[#64748B]">
+                    <span className="text-[11px] text-[var(--text-secondary)]">
                       Automatically generates compliance checklist and vault audit placeholders
                     </span>
                   </div>
@@ -2185,7 +2185,7 @@ export const NewTenderModal: React.FC = () => {
                     onClick={() =>
                       handleAddStringItem(documents, setDocuments, '')
                     }
-                    className="text-[#2563EB] hover:underline font-semibold flex items-center gap-1"
+                    className="text-[var(--accent)] hover:underline font-semibold flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add Document</span>
@@ -2206,14 +2206,14 @@ export const NewTenderModal: React.FC = () => {
                             setDocuments
                           )
                         }
-                        className="flex-1 px-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                        className="flex-1 px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                       />
                       <button
                         type="button"
                         onClick={() =>
                           handleRemoveStringItem(idx, documents, setDocuments)
                         }
-                        className="p-1.5 text-[#94A3B8] hover:text-[#DC2626]"
+                        className="p-1.5 text-[var(--text-muted)] hover:text-[var(--crit)]"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -2226,27 +2226,27 @@ export const NewTenderModal: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <div>
-                    <label className="font-bold text-[#0F172A] block">
+                    <label className="font-bold text-[var(--text-primary)] block">
                       CV / Key Personnel Requirements
                     </label>
-                    <span className="text-[11px] text-[#64748B]">
+                    <span className="text-[11px] text-[var(--text-secondary)]">
                       Stated staff positions, qualifications, and minimum experience
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={handleAddPersonnel}
-                    className="text-[#2563EB] hover:underline font-semibold flex items-center gap-1"
+                    className="text-[var(--accent)] hover:underline font-semibold flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add Key Position</span>
                   </button>
                 </div>
 
-                <div className="overflow-x-auto border border-[#E2E8F0] rounded-lg">
+                <div className="overflow-x-auto border border-[var(--border-default)] rounded-lg">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B]">
+                      <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[11px] font-semibold text-[var(--text-secondary)]">
                         <th className="p-2">Position Title</th>
                         <th className="p-2">Min. Qualification</th>
                         <th className="p-2">Required Experience</th>
@@ -2254,9 +2254,9 @@ export const NewTenderModal: React.FC = () => {
                         <th className="p-2 w-10"></th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#F1F5F9]">
+                    <tbody className="divide-y divide-[var(--border-subtle)]">
                       {personnel.map((p, idx) => (
-                        <tr key={idx} className="hover:bg-[#F8FAFC]">
+                        <tr key={idx} className="hover:bg-[var(--bg-subtle)]">
                           <td className="p-1.5">
                             <input
                               type="text"
@@ -2267,7 +2267,7 @@ export const NewTenderModal: React.FC = () => {
                                 updated[idx].position = e.target.value;
                                 setPersonnel(updated);
                               }}
-                              className="w-full px-2 py-1 bg-white border border-[#E2E8F0] rounded text-xs"
+                              className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded text-xs"
                             />
                           </td>
                           <td className="p-1.5">
@@ -2280,7 +2280,7 @@ export const NewTenderModal: React.FC = () => {
                                 updated[idx].qualification = e.target.value;
                                 setPersonnel(updated);
                               }}
-                              className="w-full px-2 py-1 bg-white border border-[#E2E8F0] rounded text-xs"
+                              className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded text-xs"
                             />
                           </td>
                           <td className="p-1.5">
@@ -2293,7 +2293,7 @@ export const NewTenderModal: React.FC = () => {
                                 updated[idx].experience = e.target.value;
                                 setPersonnel(updated);
                               }}
-                              className="w-full px-2 py-1 bg-white border border-[#E2E8F0] rounded text-xs"
+                              className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded text-xs"
                             />
                           </td>
                           <td className="p-1.5">
@@ -2306,14 +2306,14 @@ export const NewTenderModal: React.FC = () => {
                                 updated[idx].qty = e.target.value;
                                 setPersonnel(updated);
                               }}
-                              className="w-full px-2 py-1 bg-white border border-[#E2E8F0] rounded text-xs text-center font-mono"
+                              className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded text-xs text-center font-mono"
                             />
                           </td>
                           <td className="p-1.5 text-center">
                             <button
                               type="button"
                               onClick={() => handleRemovePersonnel(idx)}
-                              className="text-[#94A3B8] hover:text-[#DC2626]"
+                              className="text-[var(--text-muted)] hover:text-[var(--crit)]"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -2329,35 +2329,35 @@ export const NewTenderModal: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <div>
-                    <label className="font-bold text-[#0F172A] block">
+                    <label className="font-bold text-[var(--text-primary)] block">
                       Hardware &amp; Equipment Specifications
                     </label>
-                    <span className="text-[11px] text-[#64748B]">
+                    <span className="text-[11px] text-[var(--text-secondary)]">
                       Physical appliances, edge nodes, or server hardware requirements
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={handleAddHardware}
-                    className="text-[#2563EB] hover:underline font-semibold flex items-center gap-1"
+                    className="text-[var(--accent)] hover:underline font-semibold flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add Hardware</span>
                   </button>
                 </div>
 
-                <div className="overflow-x-auto border border-[#E2E8F0] rounded-lg">
+                <div className="overflow-x-auto border border-[var(--border-default)] rounded-lg">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B]">
+                      <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[11px] font-semibold text-[var(--text-secondary)]">
                         <th className="p-2">Hardware / Equipment</th>
                         <th className="p-2">Functional Purpose</th>
                         <th className="p-2 w-10"></th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#F1F5F9]">
+                    <tbody className="divide-y divide-[var(--border-subtle)]">
                       {hardware.map((h, idx) => (
-                        <tr key={idx} className="hover:bg-[#F8FAFC]">
+                        <tr key={idx} className="hover:bg-[var(--bg-subtle)]">
                           <td className="p-1.5">
                             <input
                               type="text"
@@ -2368,7 +2368,7 @@ export const NewTenderModal: React.FC = () => {
                                 updated[idx].equipment = e.target.value;
                                 setHardware(updated);
                               }}
-                              className="w-full px-2 py-1 bg-white border border-[#E2E8F0] rounded text-xs"
+                              className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded text-xs"
                             />
                           </td>
                           <td className="p-1.5">
@@ -2381,14 +2381,14 @@ export const NewTenderModal: React.FC = () => {
                                 updated[idx].purpose = e.target.value;
                                 setHardware(updated);
                               }}
-                              className="w-full px-2 py-1 bg-white border border-[#E2E8F0] rounded text-xs"
+                              className="w-full px-2 py-1 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded text-xs"
                             />
                           </td>
                           <td className="p-1.5 text-center">
                             <button
                               type="button"
                               onClick={() => handleRemoveHardware(idx)}
-                              className="text-[#94A3B8] hover:text-[#DC2626]"
+                              className="text-[var(--text-muted)] hover:text-[var(--crit)]"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -2406,54 +2406,54 @@ export const NewTenderModal: React.FC = () => {
           {activeTab === 'RISKS' && (
             <div className="space-y-6 animate-fadeIn">
               {/* Key Procurement & Project Milestones Schedule (Req #20) */}
-              <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] space-y-3">
-                <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2">
-                  <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-[#2563EB]" />
+              <div className="p-4 bg-[var(--bg-subtle)] rounded-xl border border-[var(--border-default)] space-y-3">
+                <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
+                  <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-[var(--accent)]" />
                     Key Procurement &amp; Project Milestones Schedule
                   </span>
-                  <span className="text-[10px] text-[#64748B] font-mono">Full Lifecycle Dates (Req #20)</span>
+                  <span className="text-[10px] text-[var(--text-secondary)] font-mono">Full Lifecycle Dates (Req #20)</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Clarification Deadline
                     </label>
                     <input
                       type="date"
                       value={clarificationDeadline}
                       onChange={(e) => setClarificationDeadline(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Tender Document / Bid Opening Date
                     </label>
                     <input
                       type="date"
                       value={openingDate}
                       onChange={(e) => setOpeningDate(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs font-bold text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs font-bold text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Contract Signing Date
                     </label>
                     <input
                       type="date"
                       value={contractSigningDate}
                       onChange={(e) => setContractSigningDate(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Work / Project Start Date (W.O.)
                     </label>
                     <input
@@ -2463,12 +2463,12 @@ export const NewTenderModal: React.FC = () => {
                         setWorkStartDate(e.target.value);
                         setContractStart(e.target.value);
                       }}
-                      className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Possible / Execution Period
                     </label>
                     <input
@@ -2476,24 +2476,24 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. 180 Days / 12 Months"
                       value={possiblePeriod}
                       onChange={(e) => setPossiblePeriod(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Product / System Handover Date
                     </label>
                     <input
                       type="date"
                       value={productHandoverDate}
                       onChange={(e) => setProductHandoverDate(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs font-bold text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs font-bold text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
 
                   <div className="sm:col-span-3">
-                    <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
                       Support &amp; Maintenance Period (O&amp;M / Warranty)
                     </label>
                     <input
@@ -2501,7 +2501,7 @@ export const NewTenderModal: React.FC = () => {
                       placeholder="e.g. 24 Months Comprehensive O&M + 24/7 Helpline SLA"
                       value={maintenancePeriod}
                       onChange={(e) => setMaintenancePeriod(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A] focus:ring-1 focus:ring-[#2563EB]"
+                      className="w-full px-2.5 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)] focus:ring-1 focus:ring-[var(--accent)]"
                     />
                   </div>
                 </div>
@@ -2511,17 +2511,17 @@ export const NewTenderModal: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <div>
-                    <label className="font-bold text-[#0F172A] block">
+                    <label className="font-bold text-[var(--text-primary)] block">
                       Key Risks / Important Points
                     </label>
-                    <span className="text-[11px] text-[#64748B]">
+                    <span className="text-[11px] text-[var(--text-secondary)]">
                       Critical items flagged for executive attention and proposal clearance
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={handleAddRisk}
-                    className="text-[#2563EB] hover:underline font-semibold flex items-center gap-1"
+                    className="text-[var(--accent)] hover:underline font-semibold flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add Risk Point</span>
@@ -2540,7 +2540,7 @@ export const NewTenderModal: React.FC = () => {
                             | 'Analyst Observation';
                           setRisks(updated);
                         }}
-                        className="px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs font-semibold text-[#0F172A] shrink-0"
+                        className="px-2.5 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs font-semibold text-[var(--text-primary)] shrink-0"
                       >
                         <option value="Tender Requirement">Tender Requirement</option>
                         <option value="Analyst Observation">Analyst Observation</option>
@@ -2554,12 +2554,12 @@ export const NewTenderModal: React.FC = () => {
                           updated[idx].text = e.target.value;
                           setRisks(updated);
                         }}
-                        className="flex-1 px-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                        className="flex-1 px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                       />
                       <button
                         type="button"
                         onClick={() => handleRemoveRisk(idx)}
-                        className="p-1.5 text-[#94A3B8] hover:text-[#DC2626]"
+                        className="p-1.5 text-[var(--text-muted)] hover:text-[var(--crit)]"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -2571,7 +2571,7 @@ export const NewTenderModal: React.FC = () => {
               {/* Important for Management */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="font-bold text-[#0F172A]">
+                  <label className="font-bold text-[var(--text-primary)]">
                     Important for Management (Highlights)
                   </label>
                   <button
@@ -2579,7 +2579,7 @@ export const NewTenderModal: React.FC = () => {
                     onClick={() =>
                       handleAddStringItem(management, setManagement, '')
                     }
-                    className="text-[#2563EB] hover:underline font-semibold flex items-center gap-1"
+                    className="text-[var(--accent)] hover:underline font-semibold flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add Point</span>
@@ -2600,14 +2600,14 @@ export const NewTenderModal: React.FC = () => {
                             setManagement
                           )
                         }
-                        className="flex-1 px-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A]"
+                        className="flex-1 px-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)]"
                       />
                       <button
                         type="button"
                         onClick={() =>
                           handleRemoveStringItem(idx, management, setManagement)
                         }
-                        className="p-1.5 text-[#94A3B8] hover:text-[#DC2626]"
+                        className="p-1.5 text-[var(--text-muted)] hover:text-[var(--crit)]"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -2618,7 +2618,7 @@ export const NewTenderModal: React.FC = () => {
 
               {/* Internal Notes */}
               <div>
-                <label className="block font-bold text-[#0F172A] mb-1">
+                <label className="block font-bold text-[var(--text-primary)] mb-1">
                   Internal Remarks &amp; Debrief Notes
                 </label>
                 <textarea
@@ -2626,7 +2626,7 @@ export const NewTenderModal: React.FC = () => {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Context, clarifications from pre-bid meeting, or internal remarks..."
-                  className="w-full p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full p-3 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
             </div>
@@ -2643,7 +2643,7 @@ export const NewTenderModal: React.FC = () => {
           )}
 
           {/* Modal Footer Controls */}
-          <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between shrink-0 bg-white">
+          <div className="pt-4 border-t border-[var(--border-default)] flex items-center justify-between shrink-0 bg-[var(--bg-surface)]">
             <div className="flex items-center gap-2">
               {activeTab !== 'BASIC' && (
                 <button
@@ -2669,7 +2669,7 @@ export const NewTenderModal: React.FC = () => {
                     const idx = tabs.indexOf(activeTab);
                     if (idx > 0) setActiveTab(tabs[idx - 1]);
                   }}
-                  className="flex items-center gap-1 px-3 py-2 border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] rounded-lg font-semibold hover:bg-[#F8FAFC] transition-colors"
+                  className="flex items-center gap-1 px-3 py-2 border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-lg font-semibold hover:bg-[var(--bg-subtle)] transition-colors"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   <span>Previous</span>
@@ -2700,7 +2700,7 @@ export const NewTenderModal: React.FC = () => {
                     const idx = tabs.indexOf(activeTab);
                     if (idx < tabs.length - 1) setActiveTab(tabs[idx + 1]);
                   }}
-                  className="flex items-center gap-1 px-3 py-2 bg-[#F1F5F9] border border-[#E2E8F0] text-[#0F172A] hover:bg-[#E2E8F0] rounded-lg font-semibold transition-colors"
+                  className="flex items-center gap-1 px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] text-[var(--text-primary)] hover:bg-[var(--bg-muted)] rounded-lg font-semibold transition-colors"
                 >
                   <span>Next</span>
                   <ChevronRight className="w-4 h-4" />
@@ -2712,13 +2712,13 @@ export const NewTenderModal: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsNewTenderModalOpen(false)}
-                className="px-4 py-2 border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] rounded-lg font-semibold hover:bg-[#F8FAFC] transition-colors"
+                className="px-4 py-2 border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-lg font-semibold hover:bg-[var(--bg-subtle)] transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 bg-[#0F172A] text-white rounded-lg font-semibold hover:bg-[#1E293B] shadow-sm transition-colors flex items-center gap-1.5"
+                className="px-5 py-2 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg font-semibold hover:bg-[var(--accent-hover)] shadow-sm transition-colors flex items-center gap-1.5"
               >
                 <span>Register Tender Entry</span>
               </button>

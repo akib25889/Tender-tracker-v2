@@ -56,56 +56,56 @@ export const MyTasksPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
+          <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] mb-1">
             <span>Workload Console</span>
             <span>•</span>
-            <span className="font-semibold text-[#0F172A]">Cross-Tender Execution</span>
+            <span className="font-semibold text-[var(--text-primary)]">Cross-Tender Execution</span>
           </div>
-          <h1 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
+          <h1 className="font-display text-2xl font-bold text-[var(--text-primary)] tracking-tight">
             My Operational Tasks
           </h1>
-          <p className="text-xs text-[#64748B] mt-0.5">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             Centralized checklist of all assigned deliverables across {tenders.length} active tender proposals.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-xs font-medium">
-          <span className="text-[#64748B]">Showing:</span>
-          <span className="font-mono font-bold text-[#2563EB]">
+        <div className="flex items-center gap-3 bg-[var(--bg-surface)] px-3 py-1.5 rounded-lg border border-[var(--border-default)] text-xs font-medium">
+          <span className="text-[var(--text-secondary)]">Showing:</span>
+          <span className="font-mono font-bold text-[var(--accent)]">
             {filteredTasks.length} Tasks
           </span>
-          <span className="text-[#CBD5E1]">|</span>
-          <span className="text-[#64748B]">Completed:</span>
-          <span className="font-mono font-bold text-[#16A34A]">
+          <span className="text-[var(--text-muted)]">|</span>
+          <span className="text-[var(--text-secondary)]">Completed:</span>
+          <span className="font-mono font-bold text-[var(--ok)]">
             {allTasks.filter((t) => t.status === 'DONE').length} / {allTasks.length}
           </span>
         </div>
       </div>
 
       {/* Filter & Search */}
-      <div className="bg-white p-3.5 rounded-xl border border-[#E2E8F0] shadow-sm space-y-3">
+      <div className="bg-[var(--bg-surface)] p-3.5 rounded-xl border border-[var(--border-default)] shadow-sm space-y-3">
         <div className="flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-4 h-4" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search deliverables, tender ID, client..."
-              className="w-full pl-9 pr-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+              className="w-full pl-9 pr-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
             />
           </div>
 
           <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
             {/* Quick Assignee View Buttons */}
-            <div className="flex items-center bg-[#F1F5F9] p-1 rounded-lg gap-1">
+            <div className="flex items-center bg-[var(--bg-subtle)] p-1 rounded-lg gap-1">
               <button
                 type="button"
                 onClick={() => setAssigneeFilter('ME')}
                 className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
-                  assigneeFilter === 'ME'
-                    ? 'bg-white text-[#2563EB] shadow-xs'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+ assigneeFilter === 'ME'
+ ? 'bg-[var(--bg-surface)] text-[var(--accent)] shadow-xs'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
                 title={`Filter tasks assigned to ${currentUser.name}`}
               >
@@ -117,9 +117,9 @@ export const MyTasksPage: React.FC = () => {
                 type="button"
                 onClick={() => setAssigneeFilter('ALL')}
                 className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
-                  assigneeFilter === 'ALL'
-                    ? 'bg-white text-[#0F172A] shadow-xs'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+ assigneeFilter === 'ALL'
+ ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-xs'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
                 title="Show tasks across all team members"
               >
@@ -128,9 +128,9 @@ export const MyTasksPage: React.FC = () => {
             </div>
 
             {/* Filter by Specific Team Member Name */}
-            <div className="flex items-center gap-1.5 bg-[#F8FAFC] border border-[#E2E8F0] px-2.5 py-1 rounded-lg text-xs">
-              <Users className="w-3.5 h-3.5 text-[#64748B]" />
-              <span className="text-[#64748B] font-medium whitespace-nowrap">Filter by Name:</span>
+            <div className="flex flex-wrap items-center gap-1.5 min-w-0 bg-[var(--bg-subtle)] border border-[var(--border-default)] px-2.5 py-1 rounded-lg text-xs">
+              <Users className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+              <span className="text-[var(--text-secondary)] font-medium whitespace-nowrap">Filter by Name:</span>
               <select
                 value={assigneeFilter === 'ME' || assigneeFilter === 'ALL' ? '' : assigneeFilter}
                 onChange={(e) => {
@@ -138,7 +138,7 @@ export const MyTasksPage: React.FC = () => {
                     setAssigneeFilter(e.target.value);
                   }
                 }}
-                className="bg-transparent text-xs font-semibold text-[#0F172A] border-none focus:outline-none cursor-pointer"
+                className="bg-transparent text-xs font-semibold text-[var(--text-primary)] border-none focus:outline-none cursor-pointer"
               >
                 <option value="">Select team member...</option>
                 {teamMembers.map((m) => (
@@ -151,7 +151,7 @@ export const MyTasksPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setAssigneeFilter('ALL')}
-                  className="text-[#94A3B8] hover:text-[#DC2626] ml-1 text-xs font-bold"
+                  className="text-[var(--text-muted)] hover:text-[var(--crit)] ml-1 text-xs font-bold"
                   title="Clear name filter"
                 >
                   ✕
@@ -162,18 +162,18 @@ export const MyTasksPage: React.FC = () => {
         </div>
 
         {/* Status Filter Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pt-2 border-t border-[#F1F5F9]">
-          <Filter className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
-          <span className="text-xs text-[#64748B] font-medium mr-1">Status:</span>
+        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[var(--border-subtle)]">
+          <Filter className="w-3.5 h-3.5 text-[var(--text-secondary)] shrink-0" />
+          <span className="text-xs text-[var(--text-secondary)] font-medium mr-1">Status:</span>
           {['ALL', 'TODO', 'IN_PROGRESS', 'REVIEW', 'DONE'].map((s) => (
             <button
               key={s}
               type="button"
               onClick={() => setFilterStatus(s)}
               className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
-                filterStatus === s
-                  ? 'bg-[#0F172A] text-white font-semibold'
-                  : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A]'
+ filterStatus === s
+ ? 'bg-[var(--accent)] text-[var(--accent-on)] font-semibold'
+                  : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               {s === 'ALL' ? 'All Statuses' : s.replace('_', ' ')}
@@ -182,7 +182,7 @@ export const MyTasksPage: React.FC = () => {
 
           {/* Active Filter Badge */}
           {assigneeFilter !== 'ALL' && (
-            <span className="ml-auto text-[11px] font-semibold text-[#2563EB] bg-[#EFF6FF] px-2.5 py-0.5 rounded-full border border-[#BFDBFE] whitespace-nowrap">
+            <span className="ml-auto text-[11px] font-semibold text-[var(--accent)] bg-[var(--accent-soft)] px-2.5 py-0.5 rounded-full border border-[var(--accent-line)] whitespace-nowrap">
               Filtered: {assigneeFilter === 'ME' ? `My Tasks (${currentUser.name})` : assigneeFilter}
             </span>
           )}
@@ -194,7 +194,7 @@ export const MyTasksPage: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+              <tr className="bg-[var(--bg-subtle)] border-b border-[var(--border-default)] text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
                 <th className="py-2.5 px-3 w-10">Done</th>
                 <th className="py-2.5 px-3">Task Deliverable</th>
                 <th className="py-2.5 px-3">Associated Tender</th>
@@ -205,10 +205,10 @@ export const MyTasksPage: React.FC = () => {
                 <th className="py-2.5 px-3 text-right">Workspace</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F1F5F9]">
+            <tbody className="divide-y divide-[var(--border-subtle)]">
               {filteredTasks.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-6 text-center text-xs text-[#94A3B8]">
+                  <td colSpan={8} className="py-6 text-center text-xs text-[var(--text-muted)]">
                     No deliverables found matching filter criteria.
                   </td>
                 </tr>
@@ -218,47 +218,47 @@ export const MyTasksPage: React.FC = () => {
                   return (
                     <tr
                       key={`${task.tenderId}-${task.id}`}
-                      className={`hover:bg-[#F8FAFC] transition-colors ${
-                        isDone ? 'opacity-60 bg-[#F8FAFC]/50' : ''
-                      }`}
+                      className={`hover:bg-[var(--bg-subtle)] transition-colors ${
+ isDone ? 'opacity-60 bg-[var(--bg-subtle)]/50' : ''
+ }`}
                     >
                       <td className="py-3 px-3">
                         <button
                           onClick={() =>
                             handleToggleDone(task.tenderId, task.id, task.status)
                           }
-                          className="text-[#64748B] hover:text-[#16A34A] transition-colors"
+                          className="text-[var(--text-secondary)] hover:text-[var(--ok)] transition-colors"
                         >
                           {isDone ? (
-                            <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
+                            <CheckCircle2 className="w-4 h-4 text-[var(--ok)]" />
                           ) : (
-                            <Square className="w-4 h-4 text-[#CBD5E1]" />
+                            <Square className="w-4 h-4 text-[var(--text-muted)]" />
                           )}
                         </button>
                       </td>
 
-                      <td className="py-3 px-3 font-semibold text-[#0F172A] max-w-sm">
-                        <span className={isDone ? 'line-through text-[#94A3B8]' : ''}>
+                      <td className="py-3 px-3 font-semibold text-[var(--text-primary)] max-w-sm">
+                        <span className={isDone ? 'line-through text-[var(--text-muted)]' : ''}>
                           {task.title}
                         </span>
                       </td>
 
-                      <td className="py-3 px-3 max-w-xs truncate font-medium text-[#475569]">
+                      <td className="py-3 px-3 max-w-xs truncate font-medium text-[var(--text-secondary)]">
                         <Link
                           to={`/tenders/${task.tenderId}`}
-                          className="hover:text-[#2563EB] truncate block"
+                          className="hover:text-[var(--accent)] truncate block"
                         >
                           {task.tenderId}: {task.tenderTitle}
                         </Link>
                       </td>
 
-                      <td className="py-3 px-3 text-[#475569]">
+                      <td className="py-3 px-3 text-[var(--text-secondary)]">
                         <select
                           value={task.assignee}
                           onChange={(e) =>
                             assignTask(task.tenderId, task.id, e.target.value)
                           }
-                          className="bg-transparent text-xs font-medium text-[#0F172A] border border-transparent hover:border-[#CBD5E1] rounded px-1.5 py-0.5 cursor-pointer hover:bg-[#F8FAFC] transition-colors"
+                          className="bg-transparent text-xs font-medium text-[var(--text-primary)] border border-transparent hover:border-[var(--border-strong)] rounded px-1.5 py-0.5 cursor-pointer hover:bg-[var(--bg-subtle)] transition-colors"
                           title="Click to reassign team member"
                         >
                           {teamMembers.map((m) => (
@@ -272,29 +272,29 @@ export const MyTasksPage: React.FC = () => {
                       <td className="py-3 px-3">
                         <span
                           className={`text-[9px] font-bold px-1.5 py-0.5 rounded font-mono ${
-                            task.priority === 'CRITICAL'
-                              ? 'bg-[#FEF2F2] text-[#B91C1C]'
+ task.priority === 'CRITICAL'
+ ? 'bg-[var(--crit-soft)] text-[var(--crit)]'
                               : task.priority === 'HIGH'
-                              ? 'bg-[#FFFBEB] text-[#B45309]'
-                              : 'bg-[#F1F5F9] text-[#64748B]'
+                              ? 'bg-[var(--warn-soft)] text-[var(--warn)]'
+                              : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)]'
                           }`}
                         >
                           {task.priority}
                         </span>
                       </td>
 
-                      <td className="py-3 px-3 font-mono text-[10px] font-semibold text-[#64748B]">
+                      <td className="py-3 px-3 font-mono text-[10px] font-semibold text-[var(--text-secondary)]">
                         {task.status}
                       </td>
 
-                      <td className="py-3 px-3 font-mono text-[10px] text-[#DC2626] font-semibold">
+                      <td className="py-3 px-3 font-mono text-[10px] text-[var(--crit)] font-semibold">
                         {task.deadline}
                       </td>
 
                       <td className="py-3 px-3 text-right">
                         <Link
                           to={`/tenders/${task.tenderId}/tasks`}
-                          className="inline-flex items-center gap-1 text-[11px] text-[#2563EB] font-semibold hover:underline"
+                          className="inline-flex items-center gap-1 text-[11px] text-[var(--accent)] font-semibold hover:underline"
                         >
                           <span>Board</span>
                           <ArrowRight className="w-3 h-3" />

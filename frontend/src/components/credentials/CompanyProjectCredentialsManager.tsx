@@ -56,17 +56,17 @@ const CredentialField: React.FC<CredentialFieldProps> = ({
   const isCopied = copiedId === id;
 
   return (
-    <div className="group relative bg-[#F8FAFC] hover:bg-[#F1F5F9]/80 border border-[#E2E8F0] hover:border-[#CBD5E1] rounded-lg p-2.5 transition-all">
+    <div className="group relative bg-[var(--bg-subtle)] hover:bg-[var(--bg-subtle)]/80 border border-[var(--border-default)] hover:border-[var(--border-strong)] rounded-lg p-2.5 transition-all">
       {/* Top Header on top of field with Copy, Edit, Delete toolbar */}
-      <div className="flex items-center justify-between gap-2 mb-1.5 pb-1 border-b border-[#E2E8F0]/70">
+      <div className="flex items-center justify-between gap-2 mb-1.5 pb-1 border-b border-[var(--border-default)]/70">
         <div className="flex items-center gap-1.5 min-w-0">
-          <span className="text-[11px] font-semibold text-[#475569] uppercase tracking-wide truncate">
+          <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wide truncate">
             {isEditing && isCustom ? (
               <input
                 type="text"
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
-                className="bg-white border border-[#2563EB] rounded px-1.5 py-0.5 text-xs text-[#0F172A] font-bold outline-none"
+                className="bg-[var(--bg-surface)] border border-[var(--accent)] rounded px-1.5 py-0.5 text-xs text-[var(--text-primary)] font-bold outline-none"
                 placeholder="Field Name"
               />
             ) : (
@@ -74,7 +74,7 @@ const CredentialField: React.FC<CredentialFieldProps> = ({
             )}
           </span>
           {isCustom && (
-            <span className="text-[9px] font-bold px-1.5 py-0.2 bg-blue-50 text-blue-700 border border-blue-200 rounded shrink-0">
+            <span className="text-[9px] font-bold px-1.5 py-0.2 bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)] rounded shrink-0">
               Custom
             </span>
           )}
@@ -87,9 +87,9 @@ const CredentialField: React.FC<CredentialFieldProps> = ({
             type="button"
             onClick={() => onCopy(value)}
             className={`p-1 rounded transition-colors ${
-              isCopied
-                ? 'bg-emerald-50 text-emerald-600'
-                : 'text-[#64748B] hover:text-[#0F172A] hover:bg-white'
+ isCopied
+                ? 'bg-[var(--ok-soft)] text-[var(--ok)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]'
             }`}
             title="Copy field value to clipboard"
           >
@@ -104,9 +104,9 @@ const CredentialField: React.FC<CredentialFieldProps> = ({
               else setIsEditing(true);
             }}
             className={`p-1 rounded transition-colors ${
-              isEditing
-                ? 'bg-blue-600 text-white'
-                : 'text-[#64748B] hover:text-[#2563EB] hover:bg-white'
+ isEditing
+                ? 'bg-[var(--accent)] text-[var(--accent-on)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--bg-surface)]'
             }`}
             title={isEditing ? 'Save changes' : 'Edit field name and value'}
           >
@@ -117,7 +117,7 @@ const CredentialField: React.FC<CredentialFieldProps> = ({
           <button
             type="button"
             onClick={() => onDelete(id)}
-            className="p-1 rounded text-[#64748B] hover:text-red-600 hover:bg-white transition-colors"
+            className="p-1 rounded text-[var(--text-secondary)] hover:text-[var(--crit)] hover:bg-[var(--bg-surface)] transition-colors"
             title={isCustom ? 'Delete custom field' : 'Clear field value'}
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -132,26 +132,26 @@ const CredentialField: React.FC<CredentialFieldProps> = ({
             type="text"
             value={editVal}
             onChange={(e) => setEditVal(e.target.value)}
-            className="w-full bg-white border border-[#2563EB] rounded px-2 py-1 text-xs text-[#0F172A] font-medium outline-none focus:ring-1 focus:ring-[#2563EB]"
+            className="w-full bg-[var(--bg-surface)] border border-[var(--accent)] rounded px-2 py-1 text-xs text-[var(--text-primary)] font-medium outline-none focus:ring-1 focus:ring-[var(--accent)]"
             placeholder="Field value"
             autoFocus
           />
           <button
             type="button"
             onClick={handleSave}
-            className="px-2 py-1 bg-[#2563EB] text-white rounded text-[10px] font-bold hover:bg-[#1D4ED8]"
+            className="px-2 py-1 bg-[var(--accent)] text-[var(--accent-on)] rounded text-[10px] font-bold hover:bg-[var(--accent-hover)]"
           >
             Save
           </button>
         </div>
       ) : (
-        <div className="font-medium text-xs text-[#0F172A] break-words">
-          {value || <span className="text-[#94A3B8] italic font-normal">Not specified</span>}
+        <div className="font-medium text-xs text-[var(--text-primary)] break-words">
+          {value || <span className="text-[var(--text-muted)] italic font-normal">Not specified</span>}
         </div>
       )}
 
       {isCopied && (
-        <span className="absolute right-2 -bottom-2.5 px-1.5 py-0.5 bg-emerald-600 text-white rounded text-[9px] font-bold shadow-xs animate-fadeIn">
+        <span className="absolute right-2 -bottom-2.5 px-1.5 py-0.5 bg-[var(--ok)] text-[var(--accent-on)] rounded text-[9px] font-bold shadow-xs animate-fadeIn">
           Copied!
         </span>
       )}
@@ -317,15 +317,15 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
       {/* Header & Company Switcher */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
+          <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] mb-1">
             <span>Corporate Repository</span>
             <span>•</span>
-            <span className="font-semibold text-[#0F172A]">Company Experience Dossiers</span>
+            <span className="font-semibold text-[var(--text-primary)]">Company Experience Dossiers</span>
           </div>
-          <h2 className="font-display text-2xl font-bold text-[#0F172A] tracking-tight">
+          <h2 className="font-display text-2xl font-bold text-[var(--text-primary)] tracking-tight">
             Company Past Projects &amp; Performance Credentials
           </h2>
-          <p className="text-xs text-[#64748B] mt-0.5">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             Store verified project details with Work Order (WO) and Completion Certificate (CC) uploads. Add dynamic custom fields and attach past experience credentials into any tender submission proposal.
           </p>
         </div>
@@ -333,7 +333,7 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
         <button
           type="button"
           onClick={() => setIsAddProjectModalOpen(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm self-start sm:self-auto"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg text-xs font-semibold hover:bg-[var(--accent-hover)] transition-colors shadow-sm self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Add Project Credential</span>
@@ -341,16 +341,16 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
       </div>
 
       {/* Filter and Company Selector Bar */}
-      <div className="bg-white p-3.5 rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="bg-[var(--bg-surface)] p-3.5 rounded-xl border border-[var(--border-default)] shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
         {/* Company Pills */}
         <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto">
           <button
             type="button"
             onClick={() => setSelectedCompany('PrimeTech Ltd')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              selectedCompany === 'PrimeTech Ltd'
-                ? 'bg-[#0F172A] text-white shadow-xs'
-                : 'bg-[#F8FAFC] text-[#64748B] hover:text-[#0F172A] border border-[#E2E8F0]'
+ selectedCompany === 'PrimeTech Ltd'
+                ? 'bg-[var(--accent)] text-[var(--accent-on)] shadow-xs'
+                : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-default)]'
             }`}
           >
             <Building2 className="w-3.5 h-3.5" />
@@ -361,9 +361,9 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
             type="button"
             onClick={() => setSelectedCompany('DataCore Systems Ltd')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              selectedCompany === 'DataCore Systems Ltd'
-                ? 'bg-amber-600 text-white shadow-xs'
-                : 'bg-[#F8FAFC] text-[#64748B] hover:text-[#0F172A] border border-[#E2E8F0]'
+ selectedCompany === 'DataCore Systems Ltd'
+                ? 'bg-[var(--warn)] text-[var(--accent-on)] shadow-xs'
+                : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-default)]'
             }`}
           >
             <Award className="w-3.5 h-3.5" />
@@ -374,9 +374,9 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
             type="button"
             onClick={() => setSelectedCompany('ALL')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              selectedCompany === 'ALL'
-                ? 'bg-[#2563EB] text-white font-semibold'
-                : 'bg-[#F8FAFC] text-[#64748B] hover:text-[#0F172A] border border-[#E2E8F0]'
+ selectedCompany === 'ALL'
+                ? 'bg-[var(--accent)] text-[var(--accent-on)] font-semibold'
+                : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-default)]'
             }`}
           >
             All Companies ({companyProjects.length})
@@ -385,13 +385,13 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
 
         {/* Search Bar */}
         <div className="relative w-full md:w-80">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-4 h-4" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search projects, client, custom fields..."
-            className="w-full pl-9 pr-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+            className="w-full pl-9 pr-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
           />
         </div>
       </div>
@@ -399,15 +399,15 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
       {/* Projects List */}
       {filteredProjects.length === 0 ? (
         <Card className="p-8 text-center space-y-3">
-          <Briefcase className="w-10 h-10 text-[#94A3B8] mx-auto" />
-          <h3 className="font-bold text-sm text-[#0F172A]">No Project Credentials Found</h3>
-          <p className="text-xs text-[#64748B] max-w-md mx-auto">
+          <Briefcase className="w-10 h-10 text-[var(--text-muted)] mx-auto" />
+          <h3 className="font-bold text-sm text-[var(--text-primary)]">No Project Credentials Found</h3>
+          <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto">
             No past project experience has been cataloged for {selectedCompany}. Click "Add Project Credential" to register completed projects with Work Order and Completion Certificate uploads.
           </p>
           <button
             type="button"
             onClick={() => setIsAddProjectModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B]"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg text-xs font-semibold hover:bg-[var(--accent-hover)]"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Create First Project Dossier</span>
@@ -418,43 +418,43 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="bg-white rounded-xl border border-[#E2E8F0] p-5 shadow-sm space-y-4 hover:border-[#CBD5E1] transition-colors"
+              className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] p-5 shadow-sm space-y-4 hover:border-[var(--border-strong)] transition-colors"
             >
               {/* Project Card Header */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-[#F1F5F9]">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-display font-bold text-base text-[#0F172A]">
+                    <span className="font-display font-bold text-base text-[var(--text-primary)]">
                       {project.projectTitle}
                     </span>
                     {project.companyRole === 'JV_PARTNER' ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[var(--warn-soft)] text-[var(--warn)] border border-[var(--warn-line)]">
                         ⭐ JV Partner: {project.companyName}
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[var(--bg-subtle)] text-[var(--text-primary)] border border-[var(--border-default)]">
                         🏛️ Lead Bidder: {project.companyName}
                       </span>
                     )}
-                    <span className="text-[10px] font-mono text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded">
+                    <span className="text-[10px] font-mono text-[var(--text-secondary)] bg-[var(--bg-subtle)] px-2 py-0.5 rounded">
                       ID: {project.id}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-3 text-xs text-[#64748B] flex-wrap">
+                  <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)] flex-wrap">
                     <div className="flex items-center gap-1">
-                      <Building2 className="w-3.5 h-3.5 text-[#94A3B8]" />
-                      <span className="font-medium text-[#0F172A]">{project.clientName}</span>
+                      <Building2 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                      <span className="font-medium text-[var(--text-primary)]">{project.clientName}</span>
                     </div>
                     <span>•</span>
-                    <div className="flex items-center gap-1 font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[11px]">
+                    <div className="flex items-center gap-1 font-mono font-bold text-[var(--ok)] bg-[var(--ok-soft)] px-2 py-0.5 rounded border border-[var(--ok-line)] text-[11px]">
                       <span>
                         {project.currency} {project.contractValue.toLocaleString()}
                       </span>
                     </div>
                     <span>•</span>
                     <div className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-[#94A3B8]" />
+                      <Calendar className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                       <span>
                         {project.startDate || 'N/A'} → {project.completionDate || 'N/A'}
                       </span>
@@ -474,7 +474,7 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                         setTargetFolder('02_company_statutory_documents');
                       }
                     }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] text-white rounded-lg text-xs font-semibold hover:bg-[#1D4ED8] transition-colors shadow-2xs"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent)] text-[var(--accent-on)] rounded-lg text-xs font-semibold hover:bg-[var(--accent-hover)] transition-colors shadow-2xs"
                     title="Attach this project credential into a tender submission"
                   >
                     <LinkIcon className="w-3.5 h-3.5" />
@@ -488,7 +488,7 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                         deleteCompanyProject(project.id);
                       }
                     }}
-                    className="p-1.5 text-[#94A3B8] hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-1.5 text-[var(--text-muted)] hover:text-[var(--crit)] hover:bg-[var(--crit-soft)] rounded-lg transition-colors"
                     title="Delete project credential"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -499,13 +499,13 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
               {/* Core Project Details Fields Grid with Top Toolbar on Each Field */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
+                  <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
                     Project Details &amp; Custom Fields
                   </span>
                   <button
                     type="button"
                     onClick={() => setProjectForCustomField(project)}
-                    className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-[#2563EB] hover:text-[#1D4ED8] bg-[#EFF6FF] hover:bg-[#DBEAFE] rounded border border-[#BFDBFE] transition-colors"
+                    className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-[var(--accent)] hover:text-[var(--accent)] bg-[var(--accent-soft)] hover:bg-[var(--accent-soft)] rounded border border-[var(--accent-line)] transition-colors"
                   >
                     <Plus className="w-3 h-3" />
                     <span>Add Custom Field</span>
@@ -586,36 +586,36 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
               </div>
 
               {/* Work Order and Completion Certificate Upload Cards */}
-              <div className="pt-2 border-t border-[#F1F5F9]">
-                <span className="text-xs font-bold text-[#0F172A] uppercase tracking-wider block mb-2.5">
+              <div className="pt-2 border-t border-[var(--border-subtle)]">
+                <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider block mb-2.5">
                   Attached Formal Proofs (Work Order &amp; Completion Certificate)
                 </span>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                   {/* Work Order Card */}
-                  <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex flex-col justify-between space-y-3">
+                  <div className="p-3.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl flex flex-col justify-between space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-start gap-2.5">
-                        <div className="p-2 rounded-lg bg-blue-50 text-blue-600 shrink-0">
+                        <div className="p-2 rounded-lg bg-[var(--accent-soft)] text-[var(--accent)] shrink-0">
                           <FileText className="w-5 h-5" />
                         </div>
                         <div>
-                          <span className="text-xs font-bold text-[#0F172A] block">
+                          <span className="text-xs font-bold text-[var(--text-primary)] block">
                             Work Order (WO) / Signed Contract
                           </span>
-                          <span className="text-[11px] text-[#64748B]">
+                          <span className="text-[11px] text-[var(--text-secondary)]">
                             Official appointment award or PO copy
                           </span>
                         </div>
                       </div>
 
                       {project.workOrderFilename ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[var(--ok)] bg-[var(--ok-soft)] px-2 py-0.5 rounded border border-[var(--ok-line)]">
                           <CheckCircle2 className="w-3 h-3" />
                           Attached
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[var(--warn)] bg-[var(--warn-soft)] px-2 py-0.5 rounded border border-[var(--warn-line)]">
                           <AlertCircle className="w-3 h-3" />
                           Pending Upload
                         </span>
@@ -623,11 +623,11 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                     </div>
 
                     {project.workOrderFilename ? (
-                      <div className="p-2 bg-white rounded-lg border border-[#E2E8F0] text-xs space-y-1">
-                        <div className="font-semibold text-[#0F172A] truncate">
+                      <div className="p-2 bg-[var(--bg-surface)] rounded-lg border border-[var(--border-default)] text-xs space-y-1">
+                        <div className="font-semibold text-[var(--text-primary)] truncate">
                           {project.workOrderFilename}
                         </div>
-                        <div className="flex items-center gap-2 text-[10px] font-mono text-[#64748B]">
+                        <div className="flex items-center gap-2 text-[10px] font-mono text-[var(--text-secondary)]">
                           <span>Size: {project.workOrderSize || 'Unknown'}</span>
                           {project.workOrderSha256 && (
                             <>
@@ -641,7 +641,7 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
 
                     {/* Work Order File Upload Input */}
                     <div>
-                      <label className="flex items-center justify-center gap-2 px-3 py-2 bg-white hover:bg-[#F1F5F9] border border-[#CBD5E1] border-dashed rounded-lg text-xs font-semibold text-[#2563EB] cursor-pointer transition-colors">
+                      <label className="flex items-center justify-center gap-2 px-3 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)] border border-[var(--border-strong)] border-dashed rounded-lg text-xs font-semibold text-[var(--accent)] cursor-pointer transition-colors">
                         <Upload className="w-3.5 h-3.5" />
                         <span>{project.workOrderFilename ? 'Replace Work Order File' : 'Upload Work Order PDF'}</span>
                         <input
@@ -658,29 +658,29 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                   </div>
 
                   {/* Completion Certificate Card */}
-                  <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex flex-col justify-between space-y-3">
+                  <div className="p-3.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl flex flex-col justify-between space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-start gap-2.5">
-                        <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 shrink-0">
+                        <div className="p-2 rounded-lg bg-[var(--ok-soft)] text-[var(--ok)] shrink-0">
                           <FileCheck2 className="w-5 h-5" />
                         </div>
                         <div>
-                          <span className="text-xs font-bold text-[#0F172A] block">
+                          <span className="text-xs font-bold text-[var(--text-primary)] block">
                             Completion / Performance Certificate (CC)
                           </span>
-                          <span className="text-[11px] text-[#64748B]">
+                          <span className="text-[11px] text-[var(--text-secondary)]">
                             Employer sign-off or final acceptance sheet
                           </span>
                         </div>
                       </div>
 
                       {project.completionCertFilename ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[var(--ok)] bg-[var(--ok-soft)] px-2 py-0.5 rounded border border-[var(--ok-line)]">
                           <CheckCircle2 className="w-3 h-3" />
                           Attached
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[var(--warn)] bg-[var(--warn-soft)] px-2 py-0.5 rounded border border-[var(--warn-line)]">
                           <AlertCircle className="w-3 h-3" />
                           Pending Upload
                         </span>
@@ -688,11 +688,11 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                     </div>
 
                     {project.completionCertFilename ? (
-                      <div className="p-2 bg-white rounded-lg border border-[#E2E8F0] text-xs space-y-1">
-                        <div className="font-semibold text-[#0F172A] truncate">
+                      <div className="p-2 bg-[var(--bg-surface)] rounded-lg border border-[var(--border-default)] text-xs space-y-1">
+                        <div className="font-semibold text-[var(--text-primary)] truncate">
                           {project.completionCertFilename}
                         </div>
-                        <div className="flex items-center gap-2 text-[10px] font-mono text-[#64748B]">
+                        <div className="flex items-center gap-2 text-[10px] font-mono text-[var(--text-secondary)]">
                           <span>Size: {project.completionCertSize || 'Unknown'}</span>
                           {project.completionCertSha256 && (
                             <>
@@ -706,7 +706,7 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
 
                     {/* Completion Certificate File Upload Input */}
                     <div>
-                      <label className="flex items-center justify-center gap-2 px-3 py-2 bg-white hover:bg-[#F1F5F9] border border-[#CBD5E1] border-dashed rounded-lg text-xs font-semibold text-emerald-700 cursor-pointer transition-colors">
+                      <label className="flex items-center justify-center gap-2 px-3 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)] border border-[var(--border-strong)] border-dashed rounded-lg text-xs font-semibold text-[var(--ok)] cursor-pointer transition-colors">
                         <Upload className="w-3.5 h-3.5" />
                         <span>{project.completionCertFilename ? 'Replace Certificate File' : 'Upload Completion Certificate PDF'}</span>
                         <input
@@ -730,19 +730,19 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
 
       {/* Modal: Add Project Credential */}
       {isAddProjectModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-lg w-full shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--accent)]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] p-6 max-w-lg w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-[#2563EB]" />
-                <h3 className="font-display text-sm font-bold text-[#0F172A]">
+                <Briefcase className="w-5 h-5 text-[var(--accent)]" />
+                <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
                   Add Project Experience Credential
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsAddProjectModalOpen(false)}
-                className="text-[#94A3B8] hover:text-[#0F172A]"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -750,7 +750,7 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
 
             <form onSubmit={handleCreateProject} className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Project Title / Contract Name *
                 </label>
                 <input
@@ -759,13 +759,13 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                   placeholder="e.g. National High-Speed Transmission Backbone Network Phase-III"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Client / Procuring Entity *
                   </label>
                   <input
@@ -774,18 +774,18 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                     placeholder="e.g. Bangladesh Telecommunications Company"
                     value={newClient}
                     onChange={(e) => setNewClient(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Owning Entity Role
                   </label>
                   <select
                     value={newCompanyRole}
                     onChange={(e) => setNewCompanyRole(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     <option value="LEAD_BIDDER">🏛️ Lead Bidder ({selectedCompany})</option>
                     <option value="JV_PARTNER">⭐ JV Partner ({selectedCompany})</option>
@@ -796,7 +796,7 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
 
               <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-2">
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Contract / Work Order Value *
                   </label>
                   <input
@@ -805,18 +805,18 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                     placeholder="45000000"
                     value={newValue}
                     onChange={(e) => setNewValue(e.target.value === '' ? '' : Number(e.target.value))}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Currency
                   </label>
                   <select
                     value={newCurrency}
                     onChange={(e) => setNewCurrency(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     <option value="BDT">BDT (৳)</option>
                     <option value="USD">USD ($)</option>
@@ -827,32 +827,32 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Start Date
                   </label>
                   <input
                     type="date"
                     value={newStartDate}
                     onChange={(e) => setNewStartDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Completion Date
                   </label>
                   <input
                     type="date"
                     value={newCompletionDate}
                     onChange={(e) => setNewCompletionDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Contractor Execution Role
                 </label>
                 <input
@@ -860,25 +860,25 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                   placeholder="e.g. Prime EPC Contractor / Joint Venture Partner (40%)"
                   value={newRole}
                   onChange={(e) => setNewRole(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
-              <div className="p-3 bg-[#EFF6FF] border border-[#BFDBFE] rounded-lg text-[11px] text-[#1D4ED8]">
+              <div className="p-3 bg-[var(--accent-soft)] border border-[var(--accent-line)] rounded-lg text-[11px] text-[var(--accent)]">
                 <strong>Persistent Archive:</strong> After creating the project dossier, you can upload its Work Order and Completion Certificate files and add unlimited custom fields.
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => setIsAddProjectModalOpen(false)}
-                  className="px-3.5 py-1.5 rounded-lg border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] font-semibold transition-colors"
+                  className="px-3.5 py-1.5 rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#0F172A] text-white font-semibold hover:bg-[#1E293B] shadow-sm transition-colors"
+                  className="px-4 py-1.5 rounded-lg bg-[var(--accent)] text-[var(--accent-on)] font-semibold hover:bg-[var(--accent-hover)] shadow-sm transition-colors"
                 >
                   Save Project Credential
                 </button>
@@ -890,36 +890,36 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
 
       {/* Modal: Add Custom Field */}
       {projectForCustomField && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--accent)]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
-                <Plus className="w-5 h-5 text-[#2563EB]" />
-                <h3 className="font-display text-sm font-bold text-[#0F172A]">
+                <Plus className="w-5 h-5 text-[var(--accent)]" />
+                <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
                   Add Custom Field to Project
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setProjectForCustomField(null)}
-                className="text-[#94A3B8] hover:text-[#0F172A]"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleAddCustomField} className="space-y-3.5 text-xs">
-              <div className="p-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs">
-                <span className="text-[10px] text-[#64748B] uppercase font-bold block">
+              <div className="p-2.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs">
+                <span className="text-[10px] text-[var(--text-secondary)] uppercase font-bold block">
                   Target Project:
                 </span>
-                <span className="font-bold text-[#0F172A] block truncate mt-0.5">
+                <span className="font-bold text-[var(--text-primary)] block truncate mt-0.5">
                   {projectForCustomField.projectTitle}
                 </span>
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Field Name / Label *
                 </label>
                 <input
@@ -928,12 +928,12 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                   placeholder="e.g. Supervising Consultant, JV Share %, FIDIC Clause"
                   value={customFieldName}
                   onChange={(e) => setCustomFieldName(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-medium focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] font-medium focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
                   Field Value *
                 </label>
                 <textarea
@@ -942,21 +942,21 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                   placeholder="e.g. SMEC International Pty Ltd, 40% Share, Clause 14.1"
                   value={customFieldValue}
                   onChange={(e) => setCustomFieldValue(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-medium focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                  className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] font-medium focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => setProjectForCustomField(null)}
-                  className="px-3.5 py-1.5 rounded-lg border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] font-semibold transition-colors"
+                  className="px-3.5 py-1.5 rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#2563EB] text-white font-semibold hover:bg-[#1D4ED8] shadow-sm transition-colors"
+                  className="px-4 py-1.5 rounded-lg bg-[var(--accent)] text-[var(--accent-on)] font-semibold hover:bg-[var(--accent-hover)] shadow-sm transition-colors"
                 >
                   Create Field
                 </button>
@@ -968,55 +968,55 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
 
       {/* Modal: Use in Tender Submission */}
       {projectToLink && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--accent)]/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
-                <LinkIcon className="w-5 h-5 text-[#2563EB]" />
-                <h3 className="font-display text-sm font-bold text-[#0F172A]">
+                <LinkIcon className="w-5 h-5 text-[var(--accent)]" />
+                <h3 className="font-display text-sm font-bold text-[var(--text-primary)]">
                   Attach Project Credential to Tender Proposal
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setProjectToLink(null)}
-                className="text-[#94A3B8] hover:text-[#0F172A]"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {linkSuccessMsg ? (
-              <div className="p-4 bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl text-center space-y-2">
-                <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto" />
-                <p className="text-xs font-bold text-[#15803D]">{linkSuccessMsg}</p>
+              <div className="p-4 bg-[var(--ok-soft)] border border-[var(--ok-line)] rounded-xl text-center space-y-2">
+                <CheckCircle2 className="w-8 h-8 text-[var(--ok)] mx-auto" />
+                <p className="text-xs font-bold text-[var(--ok)]">{linkSuccessMsg}</p>
               </div>
             ) : (
               <form onSubmit={handleLinkToTender} className="space-y-3.5 text-xs">
-                <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg">
-                  <span className="text-[10px] text-[#64748B] uppercase font-bold tracking-wider block">
+                <div className="p-3 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg">
+                  <span className="text-[10px] text-[var(--text-secondary)] uppercase font-bold tracking-wider block">
                     Selected Past Experience Credential:
                   </span>
-                  <span className="font-semibold text-xs text-[#0F172A] block mt-0.5">
+                  <span className="font-semibold text-xs text-[var(--text-primary)] block mt-0.5">
                     {projectToLink.projectTitle}
                   </span>
-                  <div className="flex items-center gap-2 mt-1 text-[11px] text-[#64748B]">
+                  <div className="flex items-center gap-2 mt-1 text-[11px] text-[var(--text-secondary)]">
                     <span>Client: {projectToLink.clientName}</span>
                     <span>•</span>
-                    <span className="font-semibold text-[#0F172A]">
+                    <span className="font-semibold text-[var(--text-primary)]">
                       {projectToLink.currency} {projectToLink.contractValue.toLocaleString()}
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Select Target Tender Opportunity *
                   </label>
                   <select
                     value={targetTenderId}
                     onChange={(e) => setTargetTenderId(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-medium focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] font-medium focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     {tenders.map((t) => (
                       <option key={t.id} value={t.id}>
@@ -1027,16 +1027,16 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-[#0F172A] mb-1">
+                  <label className="block font-semibold text-[var(--text-primary)] mb-1">
                     Destination Vault Folder in Proposal *
                   </label>
                   <select
                     value={targetFolder}
                     onChange={(e) => setTargetFolder(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[#0F172A] font-medium focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                    className="w-full px-3 py-2 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] font-medium focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   >
                     {projectToLink.companyRole === 'JV_PARTNER' && (
-                      <option value="02A_jv_partner_credentials" className="font-bold text-amber-700 bg-amber-50">
+                      <option value="02A_jv_partner_credentials" className="font-bold text-[var(--warn)] bg-[var(--warn-soft)]">
                         ⭐ 02A JV Partner Credentials &amp; Agreements
                       </option>
                     )}
@@ -1052,7 +1052,7 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                   </select>
                 </div>
 
-                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-[11px] text-emerald-800 space-y-1">
+                <div className="p-3 bg-[var(--ok-soft)] border border-[var(--ok-line)] rounded-lg text-[11px] text-[var(--ok)] space-y-1">
                   <strong>Automatic Package Bundling:</strong>
                   <ul className="list-disc pl-4 space-y-0.5 mt-1">
                     <li>Work Order PDF ({projectToLink.workOrderFilename || 'Pending upload'})</li>
@@ -1061,17 +1061,17 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
                   </ul>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1F5F9]">
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--border-subtle)]">
                   <button
                     type="button"
                     onClick={() => setProjectToLink(null)}
-                    className="px-3.5 py-1.5 rounded-lg border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] font-semibold transition-colors"
+                    className="px-3.5 py-1.5 rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-lg bg-[#2563EB] text-white font-semibold hover:bg-[#1D4ED8] shadow-sm transition-colors"
+                    className="px-4 py-1.5 rounded-lg bg-[var(--accent)] text-[var(--accent-on)] font-semibold hover:bg-[var(--accent-hover)] shadow-sm transition-colors"
                   >
                     Attach to Proposal
                   </button>

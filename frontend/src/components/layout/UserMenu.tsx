@@ -4,40 +4,17 @@ import { useTenders } from '../../context/TenderContext';
 import { UserRole } from '../../types/tender';
 import { ChevronDown, User, LogOut, Bell, Settings } from 'lucide-react';
 
-const ROLE_BADGES: Record<
-  UserRole,
-  { label: string; bg: string; text: string; border: string }
-> = {
-  SUPER_ADMIN: {
-    label: 'Super Admin',
-    bg: 'bg-[#FEF2F2] dark:bg-red-950/40',
-    text: 'text-[#DC2626] dark:text-red-400',
-    border: 'border-[#FECACA] dark:border-red-900',
-  },
-  BUSINESS_HEAD: {
-    label: 'Business Head',
-    bg: 'bg-[#F3E8FF] dark:bg-purple-950/40',
-    text: 'text-[#7E22CE] dark:text-purple-400',
-    border: 'border-[#D8B4FE] dark:border-purple-900',
-  },
-  EXECUTIVE_MANAGER: {
-    label: 'Executive Manager',
-    bg: 'bg-[#EFF6FF] dark:bg-blue-950/40',
-    text: 'text-[#1D4ED8] dark:text-blue-400',
-    border: 'border-[#BFDBFE] dark:border-blue-900',
-  },
-  SENIOR_MANAGER: {
-    label: 'Senior Manager',
-    bg: 'bg-[#FFFBEB] dark:bg-amber-950/40',
-    text: 'text-[#B45309] dark:text-amber-400',
-    border: 'border-[#FDE68A] dark:border-amber-900',
-  },
-  TENDER_ANALYST: {
-    label: 'Tender Analyst',
-    bg: 'bg-[#F0FDF4] dark:bg-emerald-950/40',
-    text: 'text-[#15803D] dark:text-emerald-400',
-    border: 'border-[#BBF7D0] dark:border-emerald-900',
-  },
+/**
+ * A role is an identity, not a status, so every badge is neutral. Colour in
+ * this app means urgency or outcome; spending five hues on job titles was
+ * what made a single header row carry four competing accents.
+ */
+const ROLE_LABELS: Record<UserRole, string> = {
+  SUPER_ADMIN: 'Super admin',
+  BUSINESS_HEAD: 'Business head',
+  EXECUTIVE_MANAGER: 'Executive manager',
+  SENIOR_MANAGER: 'Senior manager',
+  TENDER_ANALYST: 'Tender analyst',
 };
 
 export const UserMenu: React.FC = () => {
@@ -56,7 +33,16 @@ export const UserMenu: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const badge = ROLE_BADGES[currentUser.role] || ROLE_BADGES.SUPER_ADMIN;
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
+
+  const roleLabel = ROLE_LABELS[currentUser.role] || ROLE_LABELS.SUPER_ADMIN;
+  const initials = currentUser.avatar || currentUser.name?.slice(0, 2).toUpperCase() || 'U';
 
   const handleSignOut = () => {
     setIsOpen(false);
@@ -64,108 +50,80 @@ export const UserMenu: React.FC = () => {
     navigate('/login');
   };
 
+  const avatar = (size: string, text: string) => (
+    <div className={`tt-avatar ${size} ${text}`}>
+      {currentUser.profilePic ? (
+        <img src={currentUser.profilePic} alt={currentUser.name} className="w-full h-full object-cover" />
+      ) : (
+        initials
+      )}
+    </div>
+  );
+
   return (
     <div className="relative" ref={menuRef}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-slate-700 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer"
-        title="Account & User Menu"
+        aria-expanded={isOpen}
+        aria-haspopup="menu"
+        className="tt-btn tt-focus gap-2"
+        title="Account menu"
       >
-        <div className="w-6 h-6 rounded-full bg-[#0F172A] text-white flex items-center justify-center text-[10px] font-bold shrink-0 overflow-hidden ring-1 ring-[#CBD5E1] dark:ring-slate-600">
-          {currentUser.profilePic ? (
-            <img src={currentUser.profilePic} alt={currentUser.name} className="w-full h-full object-cover" />
-          ) : (
-            currentUser.avatar || currentUser.name?.slice(0, 2).toUpperCase() || 'U'
-          )}
-        </div>
-
-        <div className="hidden lg:flex flex-col text-left">
-          <span className="text-xs font-semibold text-[#0F172A] dark:text-slate-100 leading-tight">
-            {currentUser.name || 'User Profile'}
-          </span>
-          <span
-            className={`text-[9px] font-bold px-1.5 py-0.2 rounded border inline-block mt-0.5 ${badge.bg} ${badge.text} ${badge.border}`}
-          >
-            {badge.label}
-          </span>
-        </div>
-
-        <ChevronDown className={`w-3.5 h-3.5 text-[#94A3B8] transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        {avatar('w-6 h-6', 'text-[10px]')}
+        <span className="hidden lg:flex flex-col text-left leading-tight">
+          <span className="text-xs font-medium tt-text">{currentUser.name || 'User profile'}</span>
+          <span className="text-[10px] tt-text-3">{roleLabel}</span>
+        </span>
+        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 rounded-xl bg-white dark:bg-slate-900 shadow-xl border border-[#E2E8F0] dark:border-slate-700 z-50 py-1 divide-y divide-[#F1F5F9] dark:divide-slate-800 animate-fadeIn text-xs">
-          {/* User Profile Header */}
-          <div className="p-3 bg-[#F8FAFC] dark:bg-slate-800/60">
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full bg-[#0F172A] text-white flex items-center justify-center text-xs font-bold shrink-0">
-                {currentUser.profilePic ? (
-                  <img src={currentUser.profilePic} alt={currentUser.name} className="w-full h-full object-cover" />
-                ) : (
-                  currentUser.avatar || currentUser.name?.slice(0, 2).toUpperCase() || 'U'
-                )}
-              </div>
+        <div className="absolute right-0 mt-2 w-64 tt-menu z-50 overflow-hidden" role="menu">
+          <div className="tt-menu-head">
+            <div className="flex items-center gap-2.5">
+              {avatar('w-9 h-9', 'text-xs')}
               <div className="min-w-0 flex-1">
-                <p className="font-bold text-xs text-[#0F172A] dark:text-white truncate">
-                  {currentUser.name || 'Authenticated User'}
+                <p className="text-xs font-medium tt-text tt-truncate">
+                  {currentUser.name || 'Authenticated user'}
                 </p>
-                <p className="text-[11px] text-[#64748B] dark:text-slate-400 font-mono truncate">
+                <p className="text-[11px] tt-text-3 font-mono tt-truncate">
                   {currentUser.email || 'user@tendertracker.com'}
                 </p>
               </div>
             </div>
             <div className="mt-2 flex items-center gap-2">
-              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${badge.bg} ${badge.text} ${badge.border}`}>
-                {badge.label}
-              </span>
+              <span className="tt-tag">{roleLabel}</span>
               {currentUser.department && (
-                <span className="text-[10px] text-[#64748B] dark:text-slate-400 truncate">
-                  {currentUser.department}
-                </span>
+                <span className="text-[11px] tt-text-3 tt-truncate">{currentUser.department}</span>
               )}
             </div>
           </div>
 
-          {/* Menu Navigation Links */}
           <div className="py-1">
-            <Link
-              to="/settings"
-              onClick={() => setIsOpen(false)}
-              className="w-full px-3 py-2 text-left flex items-center gap-2 text-[#334155] dark:text-slate-300 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 transition-colors"
-            >
-              <Settings className="w-4 h-4 text-[#64748B]" />
-              <span>Account &amp; System Settings</span>
+            <Link to="/settings" onClick={() => setIsOpen(false)} className="tt-menu-item" role="menuitem">
+              <Settings className="w-4 h-4 shrink-0" />
+              <span>Settings</span>
             </Link>
-
-            <Link
-              to="/notifications"
-              onClick={() => setIsOpen(false)}
-              className="w-full px-3 py-2 text-left flex items-center gap-2 text-[#334155] dark:text-slate-300 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 transition-colors"
-            >
-              <Bell className="w-4 h-4 text-[#64748B]" />
-              <span>Audit Alerts &amp; Notifications</span>
+            <Link to="/notifications" onClick={() => setIsOpen(false)} className="tt-menu-item" role="menuitem">
+              <Bell className="w-4 h-4 shrink-0" />
+              <span>Alerts and notifications</span>
             </Link>
-
-            <Link
-              to="/team"
-              onClick={() => setIsOpen(false)}
-              className="w-full px-3 py-2 text-left flex items-center gap-2 text-[#334155] dark:text-slate-300 hover:bg-[#F1F5F9] dark:hover:bg-slate-800 transition-colors"
-            >
-              <User className="w-4 h-4 text-[#64748B]" />
-              <span>Team Roster &amp; Capacity</span>
+            <Link to="/team" onClick={() => setIsOpen(false)} className="tt-menu-item" role="menuitem">
+              <User className="w-4 h-4 shrink-0" />
+              <span>Team and capacity</span>
             </Link>
           </div>
 
-          {/* Sign Out Action */}
-          <div className="py-1">
+          <div className="py-1 tt-menu-sep">
             <button
               type="button"
               onClick={handleSignOut}
-              className="w-full px-3 py-2 text-left flex items-center gap-2 text-[#DC2626] dark:text-red-400 hover:bg-[#FEF2F2] dark:hover:bg-red-950/30 transition-colors cursor-pointer font-medium"
+              className="tt-menu-item tt-menu-item-danger"
+              role="menuitem"
             >
-              <LogOut className="w-4 h-4" />
-              <span>Sign Out of Command Center</span>
+              <LogOut className="w-4 h-4 shrink-0" />
+              <span>Sign out</span>
             </button>
           </div>
         </div>
@@ -173,4 +131,3 @@ export const UserMenu: React.FC = () => {
     </div>
   );
 };
-

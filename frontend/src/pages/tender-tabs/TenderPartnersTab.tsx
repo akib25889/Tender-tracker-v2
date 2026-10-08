@@ -215,16 +215,16 @@ export const TenderPartnersTab: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bg-white rounded-xl p-5 border border-[#E2E8F0] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-[var(--bg-surface)] rounded-xl p-5 border border-[var(--border-default)] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
+            <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)]">
               Section 5 & 6 Compliant
             </span>
-            <span className="text-xs text-[#64748B]">Tender Context: {tender.id}</span>
+            <span className="text-xs text-[var(--text-secondary)]">Tender Context: {tender.id}</span>
           </div>
-          <h2 className="text-lg font-bold text-[#0F172A]">JV & External Partner Collaboration</h2>
-          <p className="text-xs text-[#64748B] mt-0.5">
+          <h2 className="text-lg font-bold text-[var(--text-primary)]">JV & External Partner Collaboration</h2>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             Assign partner organizations, enforce hard permission ceilings, and control cross-party data isolation.
           </p>
         </div>
@@ -235,14 +235,14 @@ export const TenderPartnersTab: React.FC = () => {
               fetchTenderPartners();
               fetchAllPartners();
             }}
-            className="p-2 rounded-lg border border-[#E2E8F0] hover:bg-[#F8FAFC] text-[#64748B] transition-colors"
+            className="p-2 rounded-lg border border-[var(--border-default)] hover:bg-[var(--bg-subtle)] text-[var(--text-secondary)] transition-colors"
             title="Refresh Partners"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
           <Link
             to="/partner/portal"
-            className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#0F172A] hover:bg-[#1E293B] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg text-xs font-semibold shadow-xs transition-colors"
             title="Launch external collaborative partner portal"
           >
             <ExternalLink className="w-3.5 h-3.5" />
@@ -250,7 +250,7 @@ export const TenderPartnersTab: React.FC = () => {
           </Link>
           <button
             onClick={() => setShowAssignModal(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg text-xs font-semibold shadow-xs transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>Assign Partner</span>
@@ -259,65 +259,65 @@ export const TenderPartnersTab: React.FC = () => {
       </div>
 
       {/* Partner List */}
-      <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-xs overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
+      <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-default)] shadow-xs overflow-hidden">
+        <div className="px-5 py-4 border-b border-[var(--border-default)] flex items-center justify-between bg-[var(--bg-subtle)]">
           <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-[#2563EB]" />
-            <h3 className="font-semibold text-xs text-[#0F172A]">Assigned Organizations</h3>
+            <Building2 className="w-4 h-4 text-[var(--accent)]" />
+            <h3 className="font-semibold text-xs text-[var(--text-primary)]">Assigned Organizations</h3>
           </div>
-          <span className="text-[11px] text-[#64748B] font-mono">{assignedPartners.length} Organization(s)</span>
+          <span className="text-[11px] text-[var(--text-secondary)] font-mono">{assignedPartners.length} Organization(s)</span>
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-xs text-[#64748B]">Loading partner assignments...</div>
+          <div className="p-8 text-center text-xs text-[var(--text-secondary)]">Loading partner assignments...</div>
         ) : assignedPartners.length === 0 ? (
           <div className="p-10 text-center space-y-3">
-            <div className="w-12 h-12 rounded-full bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center mx-auto">
               <Users className="w-6 h-6" />
             </div>
             <div className="max-w-sm mx-auto">
-              <h4 className="font-bold text-sm text-[#0F172A]">No External Partners Assigned</h4>
-              <p className="text-xs text-[#64748B] mt-1">
+              <h4 className="font-bold text-sm text-[var(--text-primary)]">No External Partners Assigned</h4>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">
                 This tender is currently internal-only to NYK Advance. Assign a JV partner or subcontractor to begin secure collaborative authoring.
               </p>
             </div>
             <button
               onClick={() => setShowAssignModal(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg text-xs font-semibold shadow-xs transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Assign First Partner</span>
             </button>
           </div>
         ) : (
-          <div className="divide-y divide-[#E2E8F0]">
+          <div className="divide-y divide-[var(--border-default)]">
             {assignedPartners.map((partner) => (
-              <div key={partner.organization_id} className="p-5 hover:bg-[#F8FAFC] transition-colors">
+              <div key={partner.organization_id} className="p-5 hover:bg-[var(--bg-subtle)] transition-colors">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   {/* Left: Organization Info */}
                   <div className="space-y-1.5 min-w-[260px]">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-sm text-[#0F172A]">{partner.organization_name}</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
+                      <span className="font-bold text-sm text-[var(--text-primary)]">{partner.organization_name}</span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent-line)]">
                         {partner.partner_type.replace('_', ' ')}
                       </span>
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          partner.status === 'ACTIVE'
-                            ? 'bg-[#DCFCE7] text-[#15803D]'
-                            : 'bg-[#FEE2E2] text-[#B91C1C]'
+ partner.status === 'ACTIVE'
+                            ? 'bg-[var(--ok-soft)] text-[var(--ok)]'
+                            : 'bg-[var(--crit-soft)] text-[var(--crit)]'
                         }`}
                       >
                         {partner.status}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-3 text-xs text-[#64748B] flex-wrap">
-                      <span className="font-mono text-[11px] text-[#2563EB]">{partner.organization_id}</span>
+                    <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)] flex-wrap">
+                      <span className="font-mono text-[11px] text-[var(--accent)]">{partner.organization_id}</span>
                       {partner.country && <span>📍 {partner.country}</span>}
                       {partner.contact_email && (
                         <span className="flex items-center gap-1">
-                          <Mail className="w-3 h-3 text-[#94A3B8]" />
+                          <Mail className="w-3 h-3 text-[var(--text-muted)]" />
                           {partner.contact_email}
                         </span>
                       )}
@@ -327,31 +327,31 @@ export const TenderPartnersTab: React.FC = () => {
                         const days = calculateRemainingDays(partner.end_date);
                         if (!partner.end_date) {
                           return (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded border border-[#E2E8F0]">
-                              <Clock className="w-3 h-3 text-[#94A3B8]" />
+                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[var(--text-secondary)] bg-[var(--bg-subtle)] px-2 py-0.5 rounded border border-[var(--border-default)]">
+                              <Clock className="w-3 h-3 text-[var(--text-muted)]" />
                               Access: Indefinite
                             </span>
                           );
                         }
                         if (days !== null && days < 0) {
                           return (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#B91C1C] bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FECACA]">
-                              <Clock className="w-3 h-3 text-[#EF4444]" />
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[var(--crit)] bg-[var(--crit-soft)] px-2 py-0.5 rounded border border-[var(--crit-line)]">
+                              <Clock className="w-3 h-3 text-[var(--crit)]" />
                               Access Expired ({partner.end_date})
                             </span>
                           );
                         }
                         if (days !== null && days <= 2) {
                           return (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#B45309] bg-[#FFFBEB] px-2 py-0.5 rounded border border-[#FDE68A]">
-                              <Clock className="w-3 h-3 text-[#F59E0B]" />
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[var(--warn)] bg-[var(--warn-soft)] px-2 py-0.5 rounded border border-[var(--warn-line)]">
+                              <Clock className="w-3 h-3 text-[var(--warn)]" />
                               {days === 0 ? 'Expires Today' : `${days} Day Left`} ({partner.end_date})
                             </span>
                           );
                         }
                         return (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#15803D] bg-[#F0FDF4] px-2 py-0.5 rounded border border-[#BBF7D0]">
-                            <Clock className="w-3 h-3 text-[#16A34A]" />
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[var(--ok)] bg-[var(--ok-soft)] px-2 py-0.5 rounded border border-[var(--ok-line)]">
+                            <Clock className="w-3 h-3 text-[var(--ok)]" />
                             {days} Days Access Left (Expires {partner.end_date})
                           </span>
                         );
@@ -361,7 +361,7 @@ export const TenderPartnersTab: React.FC = () => {
 
                   {/* Middle: Permission Ceilings Overview */}
                   <div className="flex items-center gap-2 flex-wrap">
-                    <div className="text-[11px] text-[#64748B] mr-1 font-medium">Ceilings:</div>
+                    <div className="text-[11px] text-[var(--text-secondary)] mr-1 font-medium">Ceilings:</div>
                     {[
                       { code: 'document.view', label: 'View Docs' },
                       { code: 'document.download', label: 'Download' },
@@ -375,9 +375,9 @@ export const TenderPartnersTab: React.FC = () => {
                           type="button"
                           onClick={() => handleToggleCeiling(partner.organization_id, perm.code, isAllowed)}
                           className={`inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold border transition-colors ${
-                            isAllowed
-                              ? 'bg-[#F0FDF4] text-[#15803D] border-[#BBF7D0] hover:bg-[#DCFCE7]'
-                              : 'bg-[#FEF2F2] text-[#B91C1C] border-[#FECACA] hover:bg-[#FEE2E2]'
+ isAllowed
+                              ? 'bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)] hover:bg-[var(--ok-soft)]'
+                              : 'bg-[var(--crit-soft)] text-[var(--crit)] border-[var(--crit-line)] hover:bg-[var(--crit-soft)]'
                           }`}
                           title={`Click to ${isAllowed ? 'prohibit' : 'allow'} ${perm.label}`}
                         >
@@ -395,15 +395,15 @@ export const TenderPartnersTab: React.FC = () => {
                         setSelectedPartnerForAccess(partner);
                         setExtendEndDate(partner.end_date || getFutureDateString(14));
                       }}
-                      className="px-2.5 py-1.5 text-xs font-semibold bg-white hover:bg-[#F1F5F9] text-[#0F172A] border border-[#E2E8F0] rounded-lg shadow-2xs transition-colors flex items-center gap-1"
+                      className="px-2.5 py-1.5 text-xs font-semibold bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)] text-[var(--text-primary)] border border-[var(--border-default)] rounded-lg shadow-2xs transition-colors flex items-center gap-1"
                       title="Configure or extend access duration"
                     >
-                      <Clock className="w-3 h-3 text-[#2563EB]" />
+                      <Clock className="w-3 h-3 text-[var(--accent)]" />
                       <span>Set Duration</span>
                     </button>
                     <Link
                       to="/partner/portal"
-                      className="px-2.5 py-1.5 text-xs font-semibold bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#2563EB] border border-[#BFDBFE] rounded-lg shadow-2xs transition-colors flex items-center gap-1"
+                      className="px-2.5 py-1.5 text-xs font-semibold bg-[var(--bg-subtle)] hover:bg-[var(--bg-subtle)] text-[var(--accent)] border border-[var(--accent-line)] rounded-lg shadow-2xs transition-colors flex items-center gap-1"
                       title="Open JV Partner Portal for this organization"
                     >
                       <ExternalLink className="w-3 h-3" />
@@ -411,13 +411,13 @@ export const TenderPartnersTab: React.FC = () => {
                     </Link>
                     <button
                       onClick={() => setSelectedPartnerForCeiling(partner)}
-                      className="px-2.5 py-1.5 text-xs font-semibold bg-white hover:bg-[#F1F5F9] text-[#0F172A] border border-[#E2E8F0] rounded-lg shadow-2xs transition-colors"
+                      className="px-2.5 py-1.5 text-xs font-semibold bg-[var(--bg-surface)] hover:bg-[var(--bg-subtle)] text-[var(--text-primary)] border border-[var(--border-default)] rounded-lg shadow-2xs transition-colors"
                     >
                       All Ceilings
                     </button>
                     <button
                       onClick={() => handleUnassignPartner(partner.organization_id, partner.organization_name)}
-                      className="p-1.5 text-[#EF4444] hover:bg-[#FEF2F2] border border-[#FECACA] rounded-lg shadow-2xs transition-colors"
+                      className="p-1.5 text-[var(--crit)] hover:bg-[var(--crit-soft)] border border-[var(--crit-line)] rounded-lg shadow-2xs transition-colors"
                       title="Remove partner from tender"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -426,8 +426,8 @@ export const TenderPartnersTab: React.FC = () => {
                 </div>
 
                 {partner.notes && (
-                  <div className="mt-2.5 text-[11px] text-[#64748B] bg-[#F1F5F9] px-3 py-1.5 rounded border border-[#E2E8F0]">
-                    <span className="font-semibold text-[#475569]">Assignment Notes: </span>
+                  <div className="mt-2.5 text-[11px] text-[var(--text-secondary)] bg-[var(--bg-subtle)] px-3 py-1.5 rounded border border-[var(--border-default)]">
+                    <span className="font-semibold text-[var(--text-secondary)]">Assignment Notes: </span>
                     {partner.notes}
                   </div>
                 )}
@@ -439,16 +439,16 @@ export const TenderPartnersTab: React.FC = () => {
 
       {/* Modal: Assign Partner Organization */}
       {showAssignModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl shadow-2xl border border-[#E2E8F0] max-w-md w-full overflow-hidden">
-            <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--text-primary)]/50 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-default)] max-w-md w-full overflow-hidden">
+            <div className="px-5 py-4 border-b border-[var(--border-default)] flex items-center justify-between bg-[var(--bg-subtle)]">
               <div className="flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-[#2563EB]" />
-                <h3 className="font-bold text-sm text-[#0F172A]">Assign Partner to Tender</h3>
+                <Building2 className="w-4 h-4 text-[var(--accent)]" />
+                <h3 className="font-bold text-sm text-[var(--text-primary)]">Assign Partner to Tender</h3>
               </div>
               <button
                 onClick={() => setShowAssignModal(false)}
-                className="text-[#94A3B8] hover:text-[#0F172A]"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
                 ✕
               </button>
@@ -456,14 +456,14 @@ export const TenderPartnersTab: React.FC = () => {
 
             <form onSubmit={handleAssignPartner} className="p-5 space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">
-                  Partner Organization <span className="text-red-500">*</span>
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">
+                  Partner Organization <span className="text-[var(--crit)]">*</span>
                 </label>
                 <select
                   value={selectedOrgId}
                   onChange={(e) => setSelectedOrgId(e.target.value)}
                   required
-                  className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
+                  className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)]"
                 >
                   <option value="">Select organization...</option>
                   {allPartners.map((p) => (
@@ -475,11 +475,11 @@ export const TenderPartnersTab: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-[#0F172A] mb-1">Collaboration Role</label>
+                <label className="block font-semibold text-[var(--text-primary)] mb-1">Collaboration Role</label>
                 <select
                   value={partnerType}
                   onChange={(e) => setPartnerType(e.target.value)}
-                  className="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#0F172A]"
+                  className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg text-xs text-[var(--text-primary)]"
                 >
                   <option value="JV_PARTNER">Joint Venture Partner (JV)</option>
                   <option value="CONSORTIUM_PARTNER">Consortium Member</option>
@@ -489,14 +489,14 @@ export const TenderPartnersTab: React.FC = () => {
               </div>
 
               {/* Access Duration Presets */}
-              <div className="space-y-1.5 bg-[#F8FAFC] p-3 rounded-lg border border-[#E2E8F0]">
+              <div className="space-y-1.5 bg-[var(--bg-subtle)] p-3 rounded-lg border border-[var(--border-default)]">
                 <div className="flex items-center justify-between">
-                  <label className="block font-bold text-[#0F172A] text-xs flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-[#2563EB]" />
+                  <label className="block font-bold text-[var(--text-primary)] text-xs flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-[var(--accent)]" />
                     <span>Access Duration (Days)</span>
                   </label>
                   {endDate && (
-                    <span className="text-[11px] font-bold text-[#2563EB]">
+                    <span className="text-[11px] font-bold text-[var(--accent)]">
                       {(() => {
                         const days = calculateRemainingDays(endDate);
                         return days !== null && days >= 0 ? `${days} Days Access Granted` : 'Custom Date';
@@ -522,9 +522,9 @@ export const TenderPartnersTab: React.FC = () => {
                         if (!startDate) setStartDate(new Date().toISOString().split('T')[0]);
                       }}
                       className={`px-2.5 py-1 text-xs font-semibold rounded-lg border transition-colors ${
-                        endDate === getFutureDateString(preset.days)
-                          ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-2xs'
-                          : 'bg-white text-[#475569] border-[#CBD5E1] hover:bg-[#F1F5F9]'
+ endDate === getFutureDateString(preset.days)
+                          ? 'bg-[var(--accent)] text-[var(--accent-on)] border-[var(--accent)] shadow-2xs'
+                          : 'bg-[var(--bg-surface)] text-[var(--text-secondary)] border-[var(--border-strong)] hover:bg-[var(--bg-subtle)]'
                       }`}
                     >
                       {preset.label}
@@ -534,9 +534,9 @@ export const TenderPartnersTab: React.FC = () => {
                     type="button"
                     onClick={() => setEndDate('')}
                     className={`px-2.5 py-1 text-xs font-semibold rounded-lg border transition-colors ${
-                      !endDate
-                        ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-2xs'
-                        : 'bg-white text-[#475569] border-[#CBD5E1] hover:bg-[#F1F5F9]'
+ !endDate
+                        ? 'bg-[var(--accent)] text-[var(--accent-on)] border-[var(--accent)] shadow-2xs'
+                        : 'bg-[var(--bg-surface)] text-[var(--text-secondary)] border-[var(--border-strong)] hover:bg-[var(--bg-subtle)]'
                     }`}
                   >
                     Indefinite
@@ -546,48 +546,48 @@ export const TenderPartnersTab: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#475569] mb-1">Start Date</label>
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">Start Date</label>
                   <input
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full px-2.5 py-1.5 border border-[#CBD5E1] rounded-lg text-xs"
+                    className="w-full px-2.5 py-1.5 border border-[var(--border-strong)] rounded-lg text-xs"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#475569] mb-1">Expiration / End Date</label>
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">Expiration / End Date</label>
                   <input
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full px-2.5 py-1.5 border border-[#CBD5E1] rounded-lg text-xs"
+                    className="w-full px-2.5 py-1.5 border border-[var(--border-strong)] rounded-lg text-xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-[#475569] mb-1">Assignment Scope / Notes</label>
+                <label className="block font-semibold text-[var(--text-secondary)] mb-1">Assignment Scope / Notes</label>
                 <textarea
                   rows={2}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="e.g. Assigned to Civil Engineering and Structural Design Packages 1-4"
-                  className="w-full px-3 py-2 border border-[#CBD5E1] rounded-lg text-xs"
+                  className="w-full px-3 py-2 border border-[var(--border-strong)] rounded-lg text-xs"
                 />
               </div>
 
-              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-[var(--border-default)] flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowAssignModal(false)}
-                  className="px-3 py-1.5 text-xs text-[#64748B] hover:bg-[#F1F5F9] rounded-lg"
+                  className="px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] rounded-lg"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={!selectedOrgId}
-                  className="px-4 py-1.5 text-xs font-semibold bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg disabled:opacity-50 transition-colors shadow-xs"
+                  className="px-4 py-1.5 text-xs font-semibold bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg disabled:opacity-50 transition-colors shadow-xs"
                 >
                   Confirm Assignment
                 </button>
@@ -599,19 +599,19 @@ export const TenderPartnersTab: React.FC = () => {
 
       {/* Modal: Set Access Duration & Expiration */}
       {selectedPartnerForAccess && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl shadow-2xl border border-[#E2E8F0] max-w-md w-full overflow-hidden">
-            <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--text-primary)]/50 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-default)] max-w-md w-full overflow-hidden">
+            <div className="px-5 py-4 border-b border-[var(--border-default)] flex items-center justify-between bg-[var(--bg-subtle)]">
               <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#2563EB]" />
+                <Clock className="w-4 h-4 text-[var(--accent)]" />
                 <div>
-                  <h3 className="font-bold text-sm text-[#0F172A]">Set Partner Access Duration</h3>
-                  <p className="text-[11px] text-[#64748B]">{selectedPartnerForAccess.organization_name}</p>
+                  <h3 className="font-bold text-sm text-[var(--text-primary)]">Set Partner Access Duration</h3>
+                  <p className="text-[11px] text-[var(--text-secondary)]">{selectedPartnerForAccess.organization_name}</p>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedPartnerForAccess(null)}
-                className="text-[#94A3B8] hover:text-[#0F172A]"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
                 ✕
               </button>
@@ -619,16 +619,16 @@ export const TenderPartnersTab: React.FC = () => {
 
             <div className="p-5 space-y-4 text-xs">
               {/* Current Status Box */}
-              <div className="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] space-y-1">
+              <div className="p-3 rounded-lg bg-[var(--bg-subtle)] border border-[var(--border-default)] space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-[#64748B]">Current Expiration:</span>
-                  <span className="font-mono font-bold text-[#0F172A]">
+                  <span className="text-[var(--text-secondary)]">Current Expiration:</span>
+                  <span className="font-mono font-bold text-[var(--text-primary)]">
                     {selectedPartnerForAccess.end_date || 'None (Indefinite)'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-[#64748B]">Remaining Validity:</span>
-                  <span className="font-semibold text-[#2563EB]">
+                  <span className="text-[var(--text-secondary)]">Remaining Validity:</span>
+                  <span className="font-semibold text-[var(--accent)]">
                     {(() => {
                       const days = calculateRemainingDays(selectedPartnerForAccess.end_date);
                       if (!selectedPartnerForAccess.end_date) return 'Indefinite';
@@ -641,7 +641,7 @@ export const TenderPartnersTab: React.FC = () => {
 
               {/* Quick Extend Buttons */}
               <div>
-                <label className="block font-bold text-[#0F172A] mb-1.5">Quick Grant / Extend Duration</label>
+                <label className="block font-bold text-[var(--text-primary)] mb-1.5">Quick Grant / Extend Duration</label>
                 <div className="grid grid-cols-4 gap-2">
                   {[3, 7, 14, 30].map((days) => (
                     <button
@@ -649,9 +649,9 @@ export const TenderPartnersTab: React.FC = () => {
                       type="button"
                       onClick={() => setExtendEndDate(getFutureDateString(days))}
                       className={`p-2 rounded-lg border text-center transition-colors ${
-                        extendEndDate === getFutureDateString(days)
-                          ? 'bg-[#0F172A] text-white border-[#0F172A]'
-                          : 'bg-white text-[#0F172A] border-[#CBD5E1] hover:bg-[#F8FAFC]'
+ extendEndDate === getFutureDateString(days)
+                          ? 'bg-[var(--accent)] text-[var(--accent-on)] border-[var(--accent)]'
+                          : 'bg-[var(--bg-surface)] text-[var(--text-primary)] border-[var(--border-strong)] hover:bg-[var(--bg-subtle)]'
                       }`}
                     >
                       <div className="font-bold text-xs">+{days}</div>
@@ -663,38 +663,38 @@ export const TenderPartnersTab: React.FC = () => {
 
               {/* Custom End Date Picker */}
               <div>
-                <label className="block font-semibold text-[#475569] mb-1">Set Specific Expiration Date</label>
+                <label className="block font-semibold text-[var(--text-secondary)] mb-1">Set Specific Expiration Date</label>
                 <input
                   type="date"
                   value={extendEndDate}
                   onChange={(e) => setExtendEndDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#CBD5E1] rounded-lg text-xs"
+                  className="w-full px-3 py-2 border border-[var(--border-strong)] rounded-lg text-xs"
                 />
               </div>
 
               {/* Computed Summary */}
               {extendEndDate && (
-                <div className="p-2.5 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-between text-[11px]">
-                  <span className="text-[#1D4ED8]">New Access Window:</span>
-                  <span className="font-bold text-[#1D4ED8]">
+                <div className="p-2.5 rounded-lg bg-[var(--accent-soft)] border border-[var(--accent-line)] flex items-center justify-between text-[11px]">
+                  <span className="text-[var(--accent)]">New Access Window:</span>
+                  <span className="font-bold text-[var(--accent)]">
                     {calculateRemainingDays(extendEndDate)} Days Access (Until {extendEndDate})
                   </span>
                 </div>
               )}
 
               {/* Action Buttons */}
-              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-[var(--border-default)] flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setSelectedPartnerForAccess(null)}
-                  className="px-3 py-1.5 text-xs text-[#64748B] hover:bg-[#F1F5F9] rounded-lg"
+                  className="px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] rounded-lg"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSaveAccessDuration(selectedPartnerForAccess, extendEndDate)}
-                  className="px-4 py-1.5 text-xs font-semibold bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg shadow-xs transition-colors"
+                  className="px-4 py-1.5 text-xs font-semibold bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)] rounded-lg shadow-xs transition-colors"
                 >
                   Save Access Duration
                 </button>
@@ -706,20 +706,20 @@ export const TenderPartnersTab: React.FC = () => {
 
       {/* Modal: Extended Ceilings Management */}
       {selectedPartnerForCeiling && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-xl shadow-2xl border border-[#E2E8F0] max-w-lg w-full overflow-hidden">
-            <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--text-primary)]/50 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-default)] max-w-lg w-full overflow-hidden">
+            <div className="px-5 py-4 border-b border-[var(--border-default)] flex items-center justify-between bg-[var(--bg-subtle)]">
               <div>
-                <h3 className="font-bold text-sm text-[#0F172A]">
+                <h3 className="font-bold text-sm text-[var(--text-primary)]">
                   Permission Ceilings — {selectedPartnerForCeiling.organization_name}
                 </h3>
-                <p className="text-[11px] text-[#64748B]">
+                <p className="text-[11px] text-[var(--text-secondary)]">
                   Hard ceiling limits: Even if given explicit role grants, partner cannot exceed these bounds.
                 </p>
               </div>
               <button
                 onClick={() => setSelectedPartnerForCeiling(null)}
-                className="text-[#94A3B8] hover:text-[#0F172A]"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
                 ✕
               </button>
@@ -739,11 +739,11 @@ export const TenderPartnersTab: React.FC = () => {
                 return (
                   <div
                     key={item.code}
-                    className="flex items-center justify-between p-3 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC]"
+                    className="flex items-center justify-between p-3 rounded-lg border border-[var(--border-default)] bg-[var(--bg-subtle)]"
                   >
                     <div>
-                      <div className="font-mono text-xs font-bold text-[#0F172A]">{item.label}</div>
-                      <div className="text-[10px] text-[#64748B]">{item.desc}</div>
+                      <div className="font-mono text-xs font-bold text-[var(--text-primary)]">{item.label}</div>
+                      <div className="text-[10px] text-[var(--text-secondary)]">{item.desc}</div>
                     </div>
                     <button
                       type="button"
@@ -755,9 +755,9 @@ export const TenderPartnersTab: React.FC = () => {
                         )
                       }
                       className={`px-3 py-1 text-xs font-bold rounded-lg border transition-colors ${
-                        isAllowed
-                          ? 'bg-[#15803D] text-white border-[#166534]'
-                          : 'bg-[#DC2626] text-white border-[#991B1B]'
+ isAllowed
+                          ? 'bg-[var(--ok)] text-[var(--accent-on)] border-[var(--ok)]'
+                          : 'bg-[var(--crit)] text-[var(--accent-on)] border-[var(--crit)]'
                       }`}
                     >
                       {isAllowed ? 'ALLOWED' : 'PROHIBITED'}
@@ -767,10 +767,10 @@ export const TenderPartnersTab: React.FC = () => {
               })}
             </div>
 
-            <div className="px-5 py-3 border-t border-[#E2E8F0] bg-[#F8FAFC] flex justify-end">
+            <div className="px-5 py-3 border-t border-[var(--border-default)] bg-[var(--bg-subtle)] flex justify-end">
               <button
                 onClick={() => setSelectedPartnerForCeiling(null)}
-                className="px-4 py-1.5 text-xs font-semibold bg-[#0F172A] text-white rounded-lg"
+                className="px-4 py-1.5 text-xs font-semibold bg-[var(--accent)] text-[var(--accent-on)] rounded-lg"
               >
                 Done
               </button>
