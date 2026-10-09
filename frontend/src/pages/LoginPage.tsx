@@ -309,7 +309,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
               className={`w-full py-2.5 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer disabled:opacity-60 ${
                 authMode === 'INTERNAL'
                   ? 'bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-on)]'
-                  : 'bg-[var(--ok)] hover:bg-[var(--ok)] text-white'
+                  : 'bg-[var(--ok)] hover:bg-[var(--ok-hover,var(--ok))] text-[var(--accent-on)]'
               }`}
             >
               <span>
