@@ -510,20 +510,21 @@ export const TenderDetailPage: React.FC = () => {
                 </span>
               </div>
               <ReadinessBar score={tender.readinessScore} showLabel={false} />
-              {(tender.missingDocumentsCount ?? 0) > 0 ? (
-                <span className="text-[10px] font-medium text-[var(--warn)] flex items-center gap-1.5">
-                  <AlertTriangle className="w-3.5 h-3.5 text-[var(--warn)] shrink-0" />
-                  <span>
-                    {tender.missingDocumentsCount} Mandatory Doc{tender.missingDocumentsCount === 1 ? '' : 's'} Missing
+              <div className="flex items-center justify-between text-[11px]">
+                {(tender.missingDocumentsCount ?? 0) > 0 ? (
+                  <span className="text-[10px] font-medium text-[var(--warn)] flex items-center gap-1.5">
+                    <AlertTriangle className="w-3.5 h-3.5 text-[var(--warn)] shrink-0" />
+                    <span>
+                      {tender.missingDocumentsCount} Mandatory Doc{tender.missingDocumentsCount === 1 ? '' : 's'} Missing
+                    </span>
                   </span>
-                </span>
-              ) : (
-                <span className="text-[10px] font-medium text-[var(--ok)] flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[var(--ok)] shrink-0" />
-                  <span>All Mandatory Docs Ready</span>
-                </span>
-              )}
-            </div>
+                ) : (
+                  <span className="text-[10px] font-medium text-[var(--ok)] flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[var(--ok)] shrink-0" />
+                    <span>All Mandatory Docs Ready</span>
+                  </span>
+                )}
+              </div>
             <div className="pt-1 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px]">
               <span className="text-[10px] text-[var(--text-secondary)] font-mono">Gate Status</span>
               <Link
