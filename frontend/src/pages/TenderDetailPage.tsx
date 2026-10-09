@@ -386,7 +386,7 @@ export const TenderDetailPage: React.FC = () => {
 
       {/* MASTER EXECUTIVE HEADER CARD */}
       <section className="bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-default)] shadow-xs p-6 relative">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 pb-6 border-b border-[var(--border-subtle)]">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 pb-6 border-b border-[var(--border-subtle)]">
           {/* Left Title & Status Badges */}
           <div className="space-y-3 flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2">
@@ -432,21 +432,32 @@ export const TenderDetailPage: React.FC = () => {
               )}
             </div>
 
-            <h1 className="font-display text-xl sm:text-2xl font-bold text-[var(--text-primary)] tracking-tight leading-tight">
+            <h1 className="font-display text-xl sm:text-2xl font-bold text-[var(--text-primary)] tracking-tight leading-snug break-words">
               {tender.title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-[var(--text-secondary)]">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium text-[var(--text-secondary)]">
               <span className="flex items-center gap-1.5 text-[var(--text-primary)] font-semibold">
-                <span className="w-2 h-2 rounded-full bg-[var(--accent)]" />
+                <span className="w-2 h-2 rounded-full bg-[var(--accent)] shrink-0" />
                 Authority: {tender.organization}
               </span>
-              <span className="text-[var(--text-muted)]">•</span>
+              <span className="text-[var(--text-muted)] hidden sm:inline">•</span>
               <span className="flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                <User className="w-3.5 h-3.5 text-[var(--text-muted)] shrink-0" />
                 Lead: <span className="text-[var(--text-primary)] font-semibold ml-0.5">{tender.leadOwner.name}</span>
               </span>
-              <span className="text-[var(--text-muted)]">•</span>
+              <span className="text-[var(--text-muted)] hidden sm:inline">•</span>
+              <span className="flex items-center gap-1.5 min-w-0 max-w-full sm:max-w-md">
+                <Building className="w-3.5 h-3.5 text-[var(--text-muted)] shrink-0" />
+                <span className="shrink-0">Scope:</span>
+                <span
+                  className="inline-flex items-center px-2 py-0.5 rounded bg-[var(--accent-soft)] text-[var(--accent)] font-semibold text-xs border border-[var(--accent-line)] truncate"
+                  title={tender.category || 'General Procurement'}
+                >
+                  {tender.category || 'General Procurement'}
+                </span>
+              </span>
+              <span className="text-[var(--text-muted)] hidden sm:inline">•</span>
               <div className="flex items-center gap-1.5 flex-wrap">
                 <Clock className="w-3.5 h-3.5 text-[var(--text-muted)] shrink-0" />
                 <span>Cutoff:</span>
@@ -478,19 +489,8 @@ export const TenderDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right SOW Category & Readiness Gauge */}
-          <div className="flex flex-wrap items-center gap-6 lg:border-l lg:border-[var(--border-subtle)] lg:pl-8 shrink-0">
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)] block">
-                Scope of Work (SOW)
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[var(--accent-soft)] text-[var(--accent)] font-semibold text-xs border border-[var(--accent-line)]">
-                <Building className="w-3.5 h-3.5 text-[var(--accent)]" />
-                {tender.category || 'IT & Cloud Infrastructure'}
-              </span>
-            </div>
-
-            <div className="space-y-1.5 min-w-[200px] sm:min-w-[220px]">
+          {/* Right Executive Scorecard: Submission Readiness */}
+          <div className="w-full sm:w-64 lg:w-72 shrink-0 lg:border-l lg:border-[var(--border-subtle)] lg:pl-6 space-y-2">
               <div className="flex items-center justify-between gap-3">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)] whitespace-nowrap">
                   Submission Readiness
@@ -523,6 +523,15 @@ export const TenderDetailPage: React.FC = () => {
                   <span>All Mandatory Docs Ready</span>
                 </span>
               )}
+            </div>
+            <div className="pt-1 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px]">
+              <span className="text-[10px] text-[var(--text-secondary)] font-mono">Gate Status</span>
+              <Link
+                to={`/tenders/${tender.id}/requirements`}
+                className="text-[10px] font-semibold text-[var(--accent)] hover:underline flex items-center gap-1"
+              >
+                <span>Compliance Checklist →</span>
+              </Link>
             </div>
           </div>
         </div>
@@ -730,13 +739,16 @@ export const TenderDetailPage: React.FC = () => {
             <div className="lg:col-span-8 space-y-6">
               <div className="bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-default)] shadow-xs overflow-hidden">
                 {/* Header bar */}
-                <div className="px-6 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-subtle)]">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)]" />
-                    <h3 className="text-sm font-bold text-[var(--text-primary)] tracking-tight">
+                <div className="px-6 py-4 border-b border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-3 bg-[var(--bg-subtle)]">
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] shrink-0" />
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] tracking-tight shrink-0 whitespace-nowrap">
                       Tender Specification Matrix &amp; Identity
                     </h3>
-                    <span className="tt-tag">
+                    <span
+                      className="tt-tag max-w-[220px] sm:max-w-xs md:max-w-md truncate"
+                      title={tender.category || 'Software / IT Related'}
+                    >
                       {tender.category || 'Software / IT Related'}
                     </span>
                   </div>
@@ -931,14 +943,14 @@ export const TenderDetailPage: React.FC = () => {
                       <span className="tt-def-label">
                         Official Reference / Tender No.
                       </span>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-mono font-bold text-[var(--text-primary)]">
+                      <div className="flex items-center justify-between gap-2 min-w-0">
+                        <span className="text-xs font-mono font-bold text-[var(--text-primary)] break-all" title={tender.referenceNo || tender.id}>
                           {tender.referenceNo || tender.id}
                         </span>
                         <button
                           type="button"
                           onClick={handleCopyRef}
-                          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-1 rounded hover:bg-[var(--bg-muted)] transition-colors"
+                          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-1 rounded hover:bg-[var(--bg-muted)] transition-colors shrink-0"
                           title="Copy reference number"
                         >
                           {copiedRef ? (
@@ -1507,101 +1519,121 @@ export const TenderDetailPage: React.FC = () => {
                       return (
                         <div
                           key={req.id}
-                          className={`p-2.5 rounded-xl border transition-all flex items-center justify-between ${
- isVerified
+                          className={`p-3 rounded-xl border transition-all space-y-2 ${
+                            isVerified
                               ? 'border-[var(--ok-line)] bg-[var(--ok-soft)]/50'
                               : isBlocker
                               ? 'border-[var(--crit-line)] bg-[var(--crit-soft)]/50'
                               : 'border-[var(--warn-line)] bg-[var(--warn-soft)]/50'
                           }`}
                         >
-                          <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                            <button
-                              type="button"
-                              onClick={() => handleCycleSentinelStatus(req.id, req.status)}
-                              title="Click to cycle status (Verified / Pending / Blocker)"
-                              className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold shrink-0 cursor-pointer transition-transform hover:scale-110 ${
- isVerified
-                                  ? 'bg-[var(--ok-soft)] text-[var(--ok)]'
+                          {/* Top: Status Icon + Title + Status Pill */}
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-start gap-2 min-w-0 flex-1">
+                              <button
+                                type="button"
+                                onClick={() => handleCycleSentinelStatus(req.id, req.status)}
+                                title="Click to cycle status (Verified / Pending / Blocker)"
+                                className={`w-5 h-5 rounded-md flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 cursor-pointer transition-transform hover:scale-110 shadow-2xs ${
+                                  isVerified
+                                    ? 'bg-[var(--ok-soft)] text-[var(--ok)]'
+                                    : isBlocker
+                                    ? 'bg-[var(--crit-soft)] text-[var(--crit)]'
+                                    : 'bg-[var(--warn-soft)] text-[var(--warn)]'
+                                }`}
+                              >
+                                {isVerified ? '✓' : '!'}
+                              </button>
+                              <div className="min-w-0 flex-1">
+                                <span className="text-xs font-bold text-[var(--text-primary)] block leading-snug break-words" title={req.title}>
+                                  {req.title}
+                                </span>
+                                <span className="text-[10px] text-[var(--text-secondary)] block truncate mt-0.5">
+                                  {req.evidenceFile
+                                    ? `Evidence: ${req.evidenceFile}`
+                                    : req.category
+                                    ? `${req.category} • ${isVerified ? 'Cleared' : isBlocker ? 'Disqualification risk' : 'Pending verification'}`
+                                    : isVerified
+                                    ? 'Verified & Ready'
+                                    : 'Pending verification'}
+                                </span>
+                              </div>
+                            </div>
+
+                            <span
+                              className={`text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded shrink-0 border ${
+                                isVerified
+                                  ? 'bg-[var(--ok-soft)] text-[var(--ok)] border-[var(--ok-line)]'
                                   : isBlocker
-                                  ? 'bg-[var(--crit-soft)] text-[var(--crit)]'
-                                  : 'bg-[var(--warn-soft)] text-[var(--warn)]'
+                                  ? 'bg-[var(--crit-soft)] text-[var(--crit)] border-[var(--crit-line)]'
+                                  : 'bg-[var(--warn-soft)] text-[var(--warn)] border-[var(--warn-line)]'
                               }`}
                             >
-                              {isVerified ? '✓' : '!'}
-                            </button>
-                            <div className="min-w-0">
-                              <span className="text-xs font-bold text-[var(--text-primary)] block truncate" title={req.title}>
-                                {req.title}
-                              </span>
-                              <span className="text-[10px] text-[var(--text-secondary)] block truncate">
-                                {req.evidenceFile
-                                  ? `Evidence: ${req.evidenceFile}`
-                                  : req.category
-                                  ? `${req.category} • ${isVerified ? 'Cleared' : isBlocker ? 'Disqualification risk' : 'Pending verification'}`
-                                  : isVerified
-                                  ? 'Verified & Ready'
-                                  : 'Pending verification'}
-                              </span>
-                            </div>
+                              {isVerified ? 'Cleared' : isBlocker ? 'Blocker' : 'Pending'}
+                            </span>
                           </div>
 
-                          <div className="shrink-0 flex items-center gap-1.5">
+                          {/* Bottom Action Footer */}
+                          <div className="flex items-center justify-between pt-1.5 border-t border-[var(--border-subtle)] text-[11px]">
                             {isVerified ? (
-                              <div className="flex items-center gap-1">
-                                <span className="text-[10px] font-bold text-[var(--ok)] uppercase bg-[var(--ok-soft)]/60 px-1.5 py-0.5 rounded flex items-center gap-1">
+                              <div className="flex items-center justify-between w-full">
+                                <span className="text-[10px] font-semibold text-[var(--ok)] flex items-center gap-1">
                                   <Check className="w-3 h-3" />
-                                  Ready
+                                  <span>Compliance Cleared</span>
                                 </span>
                                 {req.evidenceFile && (
                                   <Link
                                     to={`/tenders/${tender.id}/documents`}
-                                    className="p-1 text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"
+                                    className="inline-flex items-center gap-1 text-[10px] font-semibold text-[var(--accent)] hover:underline"
                                     title={`View ${req.evidenceFile} in vault`}
                                   >
-                                    <FileText className="w-3.5 h-3.5" />
+                                    <FileText className="w-3 h-3" />
+                                    <span>View Evidence</span>
                                   </Link>
                                 )}
                               </div>
                             ) : (
-                              <div className="flex items-center gap-1">
-                                {tender.documents && tender.documents.length > 0 && (
-                                  <select
-                                    aria-label={`Link file to ${req.title}`}
-                                    value=""
-                                    onChange={(e) => {
-                                      if (e.target.value) {
-                                        toggleRequirementStatus(tender.id, req.id, 'VERIFIED', e.target.value);
-                                        showSuccessNotification(`Attached "${e.target.value}" to ${req.title}`, 'Requirement Cleared');
-                                      }
+                              <div className="flex items-center justify-between w-full gap-2">
+                                <span className="text-[10px] text-[var(--text-muted)] font-mono">Evidence:</span>
+                                <div className="flex items-center gap-1.5 shrink-0">
+                                  {tender.documents && tender.documents.length > 0 && (
+                                    <select
+                                      aria-label={`Link file to ${req.title}`}
+                                      value=""
+                                      onChange={(e) => {
+                                        if (e.target.value) {
+                                          toggleRequirementStatus(tender.id, req.id, 'VERIFIED', e.target.value);
+                                          showSuccessNotification(`Attached "${e.target.value}" to ${req.title}`, 'Requirement Cleared');
+                                        }
+                                      }}
+                                      className="px-2 py-1 text-[10px] font-semibold bg-[var(--bg-surface)] border border-[var(--border-strong)] text-[var(--text-secondary)] rounded-md hover:border-[var(--accent)] cursor-pointer max-w-[120px] truncate"
+                                      title="Link an already uploaded document from vault"
+                                    >
+                                      <option value="">Link File...</option>
+                                      {tender.documents.map((d) => (
+                                        <option key={d.id} value={d.name}>
+                                          {d.name}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setActiveTenderIdForModal(tender.id);
+                                      setActiveRequirementForModal({ id: req.id, title: req.title });
                                     }}
-                                    className="px-1.5 py-1 text-[10px] font-semibold bg-[var(--bg-surface)] border border-[var(--border-strong)] text-[var(--text-secondary)] rounded hover:border-[var(--accent)] cursor-pointer max-w-[85px] truncate"
-                                    title="Link an already uploaded document from vault"
+                                    className={`px-2.5 py-1 text-[10px] font-semibold text-[var(--accent-on)] rounded-md transition-colors flex items-center gap-1 cursor-pointer shadow-xs ${
+                                      isBlocker
+                                        ? 'bg-[var(--crit)] hover:bg-[var(--crit)]'
+                                        : 'bg-[var(--accent)] hover:bg-[var(--accent-hover)]'
+                                    }`}
+                                    title={`Upload evidence file specifically for ${req.title}`}
                                   >
-                                    <option value="">Link File...</option>
-                                    {tender.documents.map((d) => (
-                                      <option key={d.id} value={d.name}>
-                                        {d.name}
-                                      </option>
-                                    ))}
-                                  </select>
-                                )}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setActiveTenderIdForModal(tender.id);
-                                    setActiveRequirementForModal({ id: req.id, title: req.title });
-                                  }}
-                                  className={`px-2 py-1 text-[10px] font-semibold text-[var(--accent-on)] rounded transition-colors flex items-center gap-1 cursor-pointer shadow-xs ${
- isBlocker
-                                      ? 'bg-[var(--crit)] hover:bg-[var(--crit)]'
-                                      : 'bg-[var(--accent)] hover:bg-[var(--accent-hover)]'
-                                  }`}
-                                  title={`Upload evidence file specifically for ${req.title}`}
-                                >
-                                  <UploadCloud className="w-3 h-3" />
-                                  <span>Upload</span>
-                                </button>
+                                    <UploadCloud className="w-3 h-3" />
+                                    <span>Upload</span>
+                                  </button>
+                                </div>
                               </div>
                             )}
                           </div>
