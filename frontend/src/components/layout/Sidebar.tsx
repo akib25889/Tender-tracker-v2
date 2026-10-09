@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Compass,
@@ -158,14 +158,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
               const Icon = item.icon;
               const active = matches(item.path);
               return (
-                <NavLink
+                <Link
                   key={item.path}
                   to={item.path}
-                  className={() =>
-                    `tt-nav-item tt-focus relative ${active ? 'is-active' : ''} ${
-                      collapsed ? 'justify-center px-0 py-2.5' : 'justify-between px-3 py-2 gap-2'
-                    }`
-                  }
+                  aria-current={active ? 'page' : undefined}
+                  className={`tt-nav-item tt-focus relative ${active ? 'is-active' : ''} ${
+                    collapsed ? 'justify-center px-0 py-2.5' : 'justify-between px-3 py-2 gap-2'
+                  }`}
                   title={collapsed ? item.label : undefined}
                 >
                   <span className={`flex items-center min-w-0 ${collapsed ? '' : 'gap-3'}`}>
@@ -180,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
                         />
                       )
                     : countPill(item)}
-                </NavLink>
+                </Link>
               );
             })}
           </nav>
@@ -208,20 +207,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
                 </div>
                 {toolsItems.map((item) => {
                   const Icon = item.icon;
-                  const active =
-                    location.pathname === item.path ||
-                    location.pathname.startsWith(item.path + '/');
+                  const active = matches(item.path);
                   return (
-                    <NavLink
+                    <Link
                       key={item.path}
                       to={item.path}
-                      className={() =>
-                        `tt-nav-sub flex items-center gap-2.5 px-2.5 py-1.5 ${active ? 'is-active' : ''}`
-                      }
+                      aria-current={active ? 'page' : undefined}
+                      className={`tt-nav-sub flex items-center gap-2.5 px-2.5 py-1.5 ${active ? 'is-active' : ''}`}
                     >
                       <Icon className="w-3.5 h-3.5 shrink-0" />
                       <span className="tt-truncate">{item.label}</span>
-                    </NavLink>
+                    </Link>
                   );
                 })}
               </div>
@@ -254,25 +250,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
                 >
                   {toolsItems.map((item) => {
                     const Icon = item.icon;
-                    const active =
-                      location.pathname === item.path ||
-                      location.pathname.startsWith(item.path + '/');
+                    const active = matches(item.path);
                     return (
-                      <NavLink
+                      <Link
                         key={item.path}
                         to={item.path}
-                        className={() =>
-                          `tt-nav-sub flex items-center justify-between gap-2 px-2.5 py-1.5 ${
-                            active ? 'is-active' : ''
-                          }`
-                        }
+                        aria-current={active ? 'page' : undefined}
+                        className={`tt-nav-sub flex items-center justify-between gap-2 px-2.5 py-1.5 ${
+                          active ? 'is-active' : ''
+                        }`}
                       >
                         <span className="flex items-center gap-2.5 min-w-0">
                           <Icon className="w-3.5 h-3.5 shrink-0" />
                           <span className="tt-truncate">{item.label}</span>
                         </span>
                         {countPill(item)}
-                      </NavLink>
+                      </Link>
                     );
                   })}
                 </div>
@@ -285,18 +278,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       {/* Footer */}
       <div className="p-3 tt-rail-foot">
         <nav className="space-y-0.5 mb-2">
-          <NavLink
-            to="/settings"
-            className={({ isActive }) =>
-              `tt-nav-item tt-focus ${isActive ? 'is-active' : ''} ${
-                collapsed ? 'justify-center px-0 py-2.5' : 'px-3 py-2 gap-3'
-              }`
-            }
-            title={collapsed ? 'Settings' : undefined}
-          >
-            <Settings className="w-4 h-4 shrink-0" />
-            {!collapsed && <span className="tt-truncate">Settings</span>}
-          </NavLink>
+          {(() => {
+            const active = matches('/settings');
+            return (
+              <Link
+                to="/settings"
+                aria-current={active ? 'page' : undefined}
+                className={`tt-nav-item tt-focus ${active ? 'is-active' : ''} ${
+                  collapsed ? 'justify-center px-0 py-2.5' : 'px-3 py-2 gap-3'
+                }`}
+                title={collapsed ? 'Settings' : undefined}
+              >
+                <Settings className="w-4 h-4 shrink-0" />
+                {!collapsed && <span className="tt-truncate">Settings</span>}
+              </Link>
+            );
+          })()}
         </nav>
 
         <button

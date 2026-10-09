@@ -254,10 +254,26 @@ export const TenderListPage: React.FC = () => {
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div>
-          <div className="tt-label">Operations / Pipeline</div>
-          <h1 className="font-display text-xl font-semibold tt-text tracking-tight mt-1">Pipeline</h1>
+          <div className="tt-label">
+            {selectedStage === 'DISCOVERED' ? 'Operations / Bid Discovery' : 'Operations / Pipeline'}
+          </div>
+          <div className="flex items-center gap-2.5 mt-1">
+            <h1 className="font-display text-xl font-semibold tt-text tracking-tight">
+              {selectedStage === 'DISCOVERED' ? 'Bid Discovery & Intake Queue' : 'Pipeline'}
+            </h1>
+            {selectedStage === 'DISCOVERED' && (
+              <span
+                className="tt-badge text-[11px] font-medium"
+                style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}
+              >
+                Gate 01 • Intake
+              </span>
+            )}
+          </div>
           <p className="text-xs tt-text-2 mt-1">
-            Every tracked opportunity, its gate and its submission readiness.
+            {selectedStage === 'DISCOVERED'
+              ? 'Newly identified tender opportunities awaiting initial qualification and Go/No-Go screening.'
+              : 'Every tracked opportunity, its gate and its submission readiness.'}
           </p>
         </div>
 
