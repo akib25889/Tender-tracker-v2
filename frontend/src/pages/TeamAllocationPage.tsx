@@ -345,66 +345,6 @@ export const TeamAllocationPage: React.FC = () => {
         </div>
       </Card>
 
-      {/* Cross-Department Workload Breakdown */}
-      <Card
-        title="Departmental Task Distribution Matrix"
-        subtitle="Live cross-tender task assignments grouped by operational unit"
-      >
-        <div className="divide-y divide-[var(--border-subtle)] -mx-5 -my-5">
-          {memberStats.map((member) => {
-            const memberTasks = tenders.flatMap((t) =>
-              t.tasks
-                .filter((task) => task.assignee.toLowerCase().includes(member.name.toLowerCase()))
-                .map((task) => ({ ...task, tenderId: t.id, tenderTitle: t.title }))
-            );
-
-            return (
-              <div key={member.id} className="p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs text-[var(--text-primary)]">{member.name}</span>
-                    <span className="text-[11px] text-[var(--text-secondary)]">({member.title})</span>
-                  </div>
-                  <span className="font-mono text-[11px] font-bold text-[var(--accent)] bg-[var(--accent-soft)] px-2 py-0.5 rounded">
-                    {memberTasks.length} Total Deliverables
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
-                  {memberTasks.slice(0, 4).map((task) => (
-                    <div
-                      key={`${task.tenderId}-${task.id}`}
-                      className="p-2.5 bg-[var(--bg-subtle)] rounded border border-[var(--border-default)] text-xs flex items-center justify-between gap-2"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <span className="font-semibold text-[var(--text-primary)] block truncate">
-                          {task.title}
-                        </span>
-                        <span className="font-mono text-[10px] text-[var(--text-secondary)] block">
-                          {task.tenderId} • Due {task.deadline}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-[9px] font-bold px-1.5 py-0.5 rounded font-mono shrink-0 ${
- task.status === 'DONE'
- ? 'bg-[var(--ok-soft)] text-[var(--ok)]'
-                            : 'bg-[var(--accent-soft)] text-[var(--accent)]'
-                        }`}
-                      >
-                        {task.status}
-                      </span>
-                    </div>
-                  ))}
-                  {memberTasks.length === 0 && (
-                    <span className="text-xs text-[var(--text-muted)] italic">No active tasks assigned yet.</span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
-
       {/* Modal: Create Team Member Profile */}
       {isAddModalOpen && (
         <div className="tt-overlay items-center justify-center p-4 animate-fadeIn">
