@@ -185,9 +185,9 @@ export const UploadDocumentModal: React.FC = () => {
   const effectiveFolder = uploadFolderTarget || (isJvTender ? '02A_jv_partner_credentials' : '02_company_statutory_documents');
 
   return (
-    <div className="tt-overlay items-center justify-center p-4 animate-fadeIn">
-      <div className="w-full max-w-lg bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-default)] overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-subtle)] bg-[var(--bg-subtle)]">
+    <div className="tt-overlay items-center justify-center p-3 sm:p-4 animate-fadeIn overflow-y-auto">
+      <div className="w-full max-w-lg bg-[var(--bg-surface)] rounded-xl shadow-2xl border border-[var(--border-default)] overflow-hidden flex flex-col max-h-[92vh] my-auto">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-subtle)] bg-[var(--bg-subtle)] shrink-0">
           <div>
             <h3 className="font-display text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
               <span>Upload Vault Document</span>
@@ -209,7 +209,8 @@ export const UploadDocumentModal: React.FC = () => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0 overflow-hidden text-xs">
+          <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
           {/* Target Folder with JV Prioritization */}
           <div>
             <div className="flex items-center justify-between mb-1">
@@ -393,7 +394,10 @@ export const UploadDocumentModal: React.FC = () => {
             </span>
           </div>
 
-          <div className="pt-2 flex items-center justify-end gap-2 border-t border-[var(--border-subtle)]">
+          </div>
+
+          {/* Sticky/pinned footer for buttons */}
+          <div className="shrink-0 px-6 py-3.5 bg-[var(--bg-subtle)] border-t border-[var(--border-subtle)] flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={handleClose}
