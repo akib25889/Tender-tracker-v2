@@ -8,9 +8,13 @@ interface UrgencyBadgeProps {
 }
 
 /**
- * Red is reserved for a deadline inside 48 hours and amber for one inside
- * five days. Anything further out is plain text, so a list of twenty tenders
- * shows colour only on the handful that need action today.
+ * A deadline is shown as a countdown from now — T-2d, T-18h — rather than as
+ * a span of time the reader has to re-anchor ("2 days left" from when?). The
+ * figure is set in the data face so a column of them lines up.
+ *
+ * Colour still does the triage: red inside 48 hours, amber inside five days,
+ * neutral beyond that, so a list of twenty tenders shows colour only on the
+ * handful that need action today.
  */
 export const UrgencyBadge: React.FC<UrgencyBadgeProps> = ({
   daysRemaining,
@@ -43,22 +47,23 @@ export const UrgencyBadge: React.FC<UrgencyBadgeProps> = ({
     );
   }
 
+  // U+2212 MINUS, not a hyphen: it is the same width as a digit in the mono
+  // face, so T-9d and T-12d keep their columns aligned.
   const text =
     effectiveHours !== undefined && effectiveHours < 48
-      ? `${effectiveHours}h left`
-      : `${effectiveDays}d left`;
+      ? `T\u2212${effectiveHours}h`
+      : `T\u2212${effectiveDays}d`;
 
-  if (effectiveDays <= 2) {
-    return <span className={`tt-tag tt-tag-crit ${className}`}>{text}</span>;
-  }
+  const label =
+    effectiveHours !== undefined && effectiveHours < 48
+      ? `${effectiveHours} hours remaining`
+      : `${effectiveDays} days remaining`;
 
-  if (effectiveDays <= 5) {
-    return <span className={`tt-tag tt-tag-warn ${className}`}>{text}</span>;
-  }
+  const tone =
+    effectiveDays <= 2 ? ' tt-countdown-crit' : effectiveDays <= 5 ? ' tt-countdown-warn' : '';
 
   return (
-    <span className={`inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 text-xs tt-text-2 ${className}`}>
-      <i className="tt-dot" aria-hidden="true" />
+    <span className={`tt-countdown${tone} ${className}`} title={label} aria-label={label}>
       {text}
     </span>
   );

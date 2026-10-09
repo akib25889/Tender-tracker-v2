@@ -4,58 +4,76 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    1. DESIGN TOKENS & SYSTEM PALETTE (CSS CUSTOM PROPERTIES)
 
-   Palette rule: ONE accent (indigo) marks things you can interact with.
-   THREE semantic states carry meaning — ok (green), warn (amber),
-   critical (red). Everything else is neutral. No fifth hue.
+   Direction: MISSION CONTROL — instrumentation, not paperwork.
 
-   The legacy --badge-purple-* tokens are kept so existing markup keeps
-   compiling, but they now resolve to the neutral set instead of adding
-   a fifth colour to the screen.
+   The dark theme is the one this palette was designed for: a deep blue-black
+   ground (#060A13) with cyan as the single accent, so dark reads as built for
+   darkness rather than as the light theme turned down. The light theme is the
+   day shift — the same hues on a cool blue paper, with the accent darkened to
+   a deep signal blue so it still carries on white.
+
+   Palette rule is unchanged from the previous system: ONE accent marks what
+   you can interact with; THREE semantic states carry meaning (ok / warn /
+   crit); everything else is neutral. The neutrals are deliberately blue-biased
+   toward the accent rather than pure grey.
+
+   Every value below was solved numerically and verified: 58 foreground /
+   background pairs clear WCAG AA (4.5:1 for text, 3:1 for the faint
+   decorative tier and the focus ring). See frontend/tools/check-contrast.py —
+   it runs against this file, so a future edit that breaks a pair gets caught.
+
+   The legacy --badge-purple-* tokens still resolve to the neutral set, so
+   older markup keeps compiling without adding a fifth hue.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Surface Hierarchy — neutrals carry a slight blue bias toward the accent */
-  --bg-canvas:           #F5F6F9;
-  --bg-surface:          #FFFFFF;
-  --bg-surface-raised:   #FFFFFF;
-  --bg-subtle:           #F1F3F7;
-  --bg-muted:            #E8EBF1;
-  --bg-hover:            #F7F8FB;
-  --bg-active:           #EDF0F6;
-  --bg-input:            #FFFFFF;
-  --bg-dropdown:         #FFFFFF;
+  --bg-canvas:          #E9EEF6;
+  --bg-surface:         #FFFFFF;
+  --bg-surface-raised:  #FFFFFF;
+  --bg-subtle:          #F2F6FC;
+  --bg-muted:           #D9E2EF;
+  --bg-hover:           #F2F5F9;
+  --bg-active:          #E9EEF5;
+  --bg-input:           #FFFFFF;
+  --bg-dropdown:        #FFFFFF;
+  --text-primary:       #091223;
+  --text-secondary:     #425579;
+  --text-muted:         #5B6B87;
+  --text-faint:         #8694AE;
+  --text-on-dark:       #FFFFFF;
+  --text-link:          #0A6ABA;
+  --border-default:     #C4D1E4;
+  --border-subtle:      #DDE6F2;
+  --border-strong:      #909CAE;
+  --border-focus:       #0A6ABA;
+  --accent:             #0A6ABA;
+  --accent-hover:       #085799;
+  --accent-on:          #FFFFFF;
+  --accent-soft:        #DCEBFA;
+  --accent-line:        #92BEE4;
+  --ok:                 #0C7850;
+  --ok-soft:            #D7F0E5;
+  --ok-line:            #86C0A9;
+  --warn:               #8A5000;
+  --warn-soft:          #FBEBD2;
+  --warn-line:          #CEAD7E;
+  --crit:               #BD2622;
+  --crit-soft:          #FBDEDC;
+  --crit-line:          #E29492;
+  --scrollbar-thumb:    #909CAE;
+  --scrollbar-hover:    #5B6B87;
 
-  /* Typography / Text Contrast */
-  --text-primary:        #10141B;
-  --text-secondary:      #59616F;
-  --text-muted:          #666E7D;
-  --text-faint:          #A3AAB7;
-  --text-on-dark:        #FFFFFF;
-  --text-link:           #3551B8;
+  /* State FILLS are a separate tier from state TEXT.
 
-  /* Borders & Dividers */
-  --border-default:      #E2E6ED;
-  --border-subtle:       #EEF0F5;
-  --border-strong:       #C9D0DC;
-  --border-focus:        #3551B8;
-
-  /* Accent — interaction only, never decoration */
-  --accent:              #3551B8;
-  --accent-hover:        #2B449F;
-  --accent-on:           #FFFFFF;
-  --accent-soft:         #E9EDFB;
-  --accent-line:         #C3CDF2;
-
-  /* Semantic state (three, and only three) */
-  --ok:                  #1C7A4C;
-  --ok-soft:             #E1F2E9;
-  --ok-line:             #B6DEC8;
-  --warn:                #8D5C07;
-  --warn-soft:           #FBEFD9;
-  --warn-line:           #EFD4A0;
-  --crit:                #B32F2C;
-  --crit-soft:           #FBE7E5;
-  --crit-line:           #F0C3C0;
+     Text has to clear 4.5:1 against the page, which in the light theme pushes
+     amber down to a brown; correct for a label, muddy as a progress bar. A
+     fill is a meaningful graphic, so WCAG 1.4.11 asks 3:1 against the colour
+     ADJACENT to it — the meter track — not against the page. That buys back
+     the chroma. In the dark theme the state colours are already bright, so
+     fill and text are the same value. */
+  --ok-fill:            #099360;
+  --warn-fill:          #BD6D00;
+  --crit-fill:          #E44945;
 
   /* Badge aliases (legacy names, new values) */
   --badge-info-bg:       var(--accent-soft);
@@ -84,62 +102,66 @@
   --badge-purple-border: var(--badge-neutral-border);
   --badge-purple-text:   var(--badge-neutral-text);
 
-  /* Scrollbar */
-  --scrollbar-thumb:     #C9D0DC;
-  --scrollbar-hover:     #A3AAB7;
+  /* Instrument glow — the accent's halo. Off in daylight, lit after dark;
+     this is what stops the dark theme reading as a dimmed light theme. */
+  --accent-glow:         none;
+  --accent-glow-soft:    none;
 
   /* Elevation — flat by default; depth is for popovers only */
-  --shadow-card:         0 1px 2px rgba(16, 20, 27, 0.05);
-  --shadow-elevated:     0 2px 6px -2px rgba(16, 20, 27, 0.10), 0 1px 2px rgba(16, 20, 27, 0.05);
-  --shadow-popover:      0 12px 28px -10px rgba(16, 20, 27, 0.22), 0 2px 6px rgba(16, 20, 27, 0.07);
+  --shadow-card:         0 1px 2px rgba(9, 18, 35, 0.06);
+  --shadow-elevated:     0 2px 6px -2px rgba(9, 18, 35, 0.11), 0 1px 2px rgba(9, 18, 35, 0.05);
+  --shadow-popover:      0 12px 28px -10px rgba(9, 18, 35, 0.24), 0 2px 6px rgba(9, 18, 35, 0.08);
 }
 
 /* ─── Dark ──────────────────────────────────────────────────────────────── */
 .dark {
-  --bg-canvas:           #0D1014;
-  --bg-surface:          #14181E;
-  --bg-surface-raised:   #1A1F26;
-  --bg-subtle:           #1A1F26;
-  --bg-muted:            #222831;
-  --bg-hover:            #1C222A;
-  --bg-active:           #222831;
-  --bg-input:            #11151A;
-  --bg-dropdown:         #171C23;
+  --bg-canvas:          #060A13;
+  --bg-surface:         #0C1424;
+  --bg-surface-raised:  #141C2B;
+  --bg-subtle:          #121D33;
+  --bg-muted:           #253045;
+  --bg-hover:           #171F2F;
+  --bg-active:          #202837;
+  --bg-input:           #090E1B;
+  --bg-dropdown:        #141C2B;
+  --text-primary:       #E7EEFA;
+  --text-secondary:     #92A5C4;
+  --text-muted:         #7489AD;
+  --text-faint:         #4F6486;
+  --text-on-dark:       #E7EEFA;
+  --text-link:          #36D3F5;
+  --border-default:     #1E2E4C;
+  --border-subtle:      #15213A;
+  --border-strong:      #56647D;
+  --border-focus:       #36D3F5;
+  --accent:             #36D3F5;
+  --accent-hover:       #5ADBF7;
+  --accent-on:          #04121A;
+  --accent-soft:        #0C2A3A;
+  --accent-line:        #1B657B;
+  --ok:                 #34E09A;
+  --ok-soft:            #07281D;
+  --ok-line:            #19724F;
+  --warn:               #FFB633;
+  --warn-soft:          #2B1E06;
+  --warn-line:          #805B18;
+  --crit:               #FF5F70;
+  --crit-soft:          #2C0D11;
+  --crit-line:          #802E37;
+  --scrollbar-thumb:    #56647D;
+  --scrollbar-hover:    #7489AD;
 
-  --text-primary:        #E8EBF0;
-  --text-secondary:      #99A2B0;
-  --text-muted:          #7F8794;
-  --text-faint:          #69717F;
-  --text-on-dark:        #E8EBF0;
-  --text-link:           #8BA1FF;
+  /* Already bright enough on the dark ground — fill tracks text here. */
+  --ok-fill:            var(--ok);
+  --warn-fill:          var(--warn);
+  --crit-fill:          var(--crit);
 
-  --border-default:      #262C35;
-  --border-subtle:       #1E242C;
-  --border-strong:       #39414D;
-  --border-focus:        #8BA1FF;
+  --accent-glow:         0 0 0 1px rgba(54, 211, 245, 0.22), 0 0 18px -6px rgba(54, 211, 245, 0.55);
+  --accent-glow-soft:    0 0 14px -6px rgba(54, 211, 245, 0.45);
 
-  --accent:              #8BA1FF;
-  --accent-hover:        #A3B4FF;
-  --accent-on:           #0D1014;
-  --accent-soft:         #1A2240;
-  --accent-line:         #2E3A63;
-
-  --ok:                  #5EC489;
-  --ok-soft:             #132A1F;
-  --ok-line:             #27503B;
-  --warn:                #E0AD4E;
-  --warn-soft:           #2B2313;
-  --warn-line:           #4F3F1C;
-  --crit:                #F0756F;
-  --crit-soft:           #2E1A19;
-  --crit-line:           #552B29;
-
-  --scrollbar-thumb:     #2D3440;
-  --scrollbar-hover:     #39414D;
-
-  --shadow-card:         0 1px 2px rgba(0, 0, 0, 0.40);
-  --shadow-elevated:     0 2px 8px -2px rgba(0, 0, 0, 0.55);
-  --shadow-popover:      0 14px 32px -12px rgba(0, 0, 0, 0.75), 0 2px 6px rgba(0, 0, 0, 0.5);
+  --shadow-card:         0 1px 0 rgba(255, 255, 255, 0.03);
+  --shadow-elevated:     0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 20px -10px rgba(0, 0, 0, 0.7);
+  --shadow-popover:      0 16px 36px -14px rgba(0, 0, 0, 0.85), 0 2px 6px rgba(0, 0, 0, 0.55);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -152,7 +174,7 @@ html, body {
   min-height: 100%;
   background-color: var(--bg-canvas);
   color: var(--text-primary);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -182,6 +204,53 @@ html, body {
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
+
+/* ─── Mission Control character ──────────────────────────────────────────
+   Four rules carry most of the direction's personality. They live here,
+   above the component layer, so a page picks them up without changing its
+   markup.
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* Page titles are the instrument label on the panel: Rajdhani, set in caps
+   with a little tracking. Every page already writes `h1.font-display`, so
+   this reaches all 19 of them without touching a single page file. */
+h1.font-display {
+  font-family: 'Rajdhani', 'IBM Plex Sans', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.035em;
+  font-weight: 700;
+}
+
+/* A measurement is set in the data face so digits line up down a column and
+   a figure never gets mistaken for prose. */
+.tt-num {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+/* A deadline reads as a countdown, not a date you have to subtract in your
+   head. Tone comes from the caller (-ok / -warn / -crit). */
+.tt-countdown {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background-color: var(--bg-subtle);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+.tt-countdown-ok   { background-color: var(--ok-soft);   color: var(--ok);   border-color: var(--ok-line); }
+.tt-countdown-warn { background-color: var(--warn-soft); color: var(--warn); border-color: var(--warn-line); }
+.tt-countdown-crit { background-color: var(--crit-soft); color: var(--crit); border-color: var(--crit-line); }
 
 /* Gentle smooth animations */
 @keyframes pulse-subtle {
@@ -260,6 +329,7 @@ html, body {
   border-color: var(--accent);
   color: var(--accent-on);
 }
+.tt-btn-primary { box-shadow: var(--accent-glow); }
 .tt-btn-primary:hover { background-color: var(--accent-hover); border-color: var(--accent-hover); }
 .tt-btn-quiet { border-color: transparent; background-color: transparent; color: var(--text-secondary); }
 .tt-btn-quiet:hover { background-color: var(--bg-hover); color: var(--text-primary); }
@@ -324,17 +394,17 @@ html, body {
 /* --- status dot ---------------------------------------------------------- */
 .tt-dot { width: 7px; height: 7px; border-radius: 50%; background-color: var(--text-muted); flex: none; }
 .tt-dot-accent { background-color: var(--accent); }
-.tt-dot-ok     { background-color: var(--ok); }
-.tt-dot-warn   { background-color: var(--warn); }
-.tt-dot-crit   { background-color: var(--crit); }
+.tt-dot-ok     { background-color: var(--ok-fill); }
+.tt-dot-warn   { background-color: var(--warn-fill); }
+.tt-dot-crit   { background-color: var(--crit-fill); }
 .tt-dot-ring   { background-color: transparent; box-shadow: inset 0 0 0 2px var(--text-muted); }
 
 /* --- readiness meter ----------------------------------------------------- */
 .tt-meter { height: 4px; border-radius: 2px; background-color: var(--bg-muted); overflow: hidden; }
-.tt-meter > i { display: block; height: 100%; border-radius: 2px; background-color: var(--accent); transition: width .3s; }
-.tt-meter-ok   > i { background-color: var(--ok); }
-.tt-meter-warn > i { background-color: var(--warn); }
-.tt-meter-crit > i { background-color: var(--crit); }
+.tt-meter > i { display: block; height: 100%; border-radius: 2px; background-color: var(--accent); transition: width .3s; box-shadow: var(--accent-glow-soft); }
+.tt-meter-ok   > i { background-color: var(--ok-fill); }
+.tt-meter-warn > i { background-color: var(--warn-fill); }
+.tt-meter-crit > i { background-color: var(--crit-fill); }
 
 /* --- form controls ------------------------------------------------------- */
 .tt-input, .tt-select {
@@ -412,8 +482,13 @@ html, body {
 .tt-tile[role="button"]:hover { border-color: var(--border-strong); }
 .tt-tile[aria-pressed="true"] { border-color: var(--accent); background-color: var(--accent-soft); }
 .tt-tile-value {
-  font-size: 26px; font-weight: 600; letter-spacing: -0.03em; line-height: 1;
-  font-variant-numeric: tabular-nums; color: var(--text-primary);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 27px;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
 }
 
 /* --- misc ---------------------------------------------------------------- */

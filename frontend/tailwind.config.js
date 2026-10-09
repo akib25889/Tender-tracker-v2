@@ -77,9 +77,13 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Plus Jakarta Sans"', 'sans-serif'],
-        sans: ['Inter', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'monospace'],
+        // Mission Control pairing. Rajdhani is the instrument face — narrow,
+        // flat-sided, legible in caps — and carries page titles only.
+        // Everything read as prose is IBM Plex Sans; everything read as a
+        // measurement is IBM Plex Mono, so columns of figures line up.
+        display: ['Rajdhani', '"IBM Plex Sans"', 'sans-serif'],
+        sans: ['"IBM Plex Sans"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
       },
       spacing: {
         'sidebar-expanded': '16rem',
