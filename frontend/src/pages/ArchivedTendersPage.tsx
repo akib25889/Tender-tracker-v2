@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Archive,
-  Search,
   RotateCcw,
   Trash2,
   FileText,
@@ -14,19 +13,26 @@ import {
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
-import { fuzzyMatch } from '../utils/fuzzySearch';
+import {
+  TenderFilterState,
+  INITIAL_FILTER_STATE,
+  filterTenders,
+  extractFilterOptions,
+} from '../utils/tenderFilters';
+import { TenderFilterToolbar } from '../components/common/TenderFilterToolbar';
 
 export const ArchivedTendersPage: React.FC = () => {
   const { tenders, restoreTender, deleteTender, deleteMultipleTenders, formatCurrency } = useTenders();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState<TenderFilterState>(INITIAL_FILTER_STATE);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [tenderToDelete, setTenderToDelete] = useState<{ id: string; title: string } | null>(null);
 
-  const archivedTenders = tenders.filter((t) => t.stage === 'ARCHIVED');
+  const archivedTenders = useMemo(() => tenders.filter((t) => t.stage === 'ARCHIVED'), [tenders]);
+  const filterOptions = useMemo(() => extractFilterOptions(archivedTenders), [archivedTenders]);
 
-  const filtered = archivedTenders.filter((t) => {
-    return fuzzyMatch([t.title, t.id, t.referenceNo, t.organization, t.country, t.category], searchQuery);
-  });
+  const filtered = useMemo(() => {
+    return filterTenders(archivedTenders, { ...filters, selectedStage: 'ARCHIVED' });
+  }, [archivedTenders, filters]);
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) =>
@@ -52,10 +58,9 @@ export const ArchivedTendersPage: React.FC = () => {
     setSelectedIds([]);
   };
 
-  const totalArchivedValue = archivedTenders.reduce(
-    (acc, curr) => acc + (curr.estimatedValue || 0),
-    0
-  );
+  const totalArchivedValue = useMemo(() => {
+    return filtered.reduce((acc, curr) => acc + (curr.estimatedValue || 0), 0);
+  }, [filtered]);
 
   return (
     <div className="space-y-6">
@@ -94,10 +99,10 @@ export const ArchivedTendersPage: React.FC = () => {
         <div className="bg-[var(--bg-surface)] p-4 rounded-xl border border-[var(--border-default)] shadow-xs">
           <span className="text-xs font-medium text-[var(--text-secondary)] block">Total Archived Records</span>
           <span className="text-2xl font-bold font-mono text-[var(--text-primary)] mt-1 block">
-            {archivedTenders.length}
+            {filtered.length} {filtered.length !== archivedTenders.length && <span className="text-xs text-[var(--text-secondary)] font-normal">/ {archivedTenders.length}</span>}
           </span>
           <span className="text-[11px] text-[var(--text-secondary)] mt-0.5 block">
-            Preserved historical opportunities
+            {filtered.length !== archivedTenders.length ? 'Filtered historical records' : 'Preserved historical opportunities'}
           </span>
         </div>
 
@@ -124,43 +129,44 @@ export const ArchivedTendersPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="bg-[var(--bg-surface)] p-3.5 rounded-lg border border-[var(--border-default)] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="relative w-full sm:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-4 h-4" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search archived tenders by ID, title, donor, country..."
-            className="w-full pl-9 pr-4 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-          />
-        </div>
-
-        {selectedIds.length > 0 && (
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-[var(--text-primary)]">
-              {selectedIds.length} selected
-            </span>
-            <button
-              type="button"
-              onClick={handleBulkRestore}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent)] text-[var(--accent-on)] hover:bg-[var(--accent-hover)] rounded-lg text-xs font-semibold transition-colors"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Restore Selected</span>
-            </button>
-            <button
-              type="button"
-              onClick={handleBulkDelete}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--crit-soft)] text-[var(--crit)] border border-[var(--crit-line)] hover:bg-[var(--crit-soft)] rounded-lg text-xs font-semibold transition-colors"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              <span>Delete Selected</span>
-            </button>
-          </div>
-        )}
-      </div>
+      {/* Advanced Filter Toolbar */}
+      <TenderFilterToolbar
+        filters={filters}
+        onChange={(patch) => setFilters((prev) => ({ ...prev, ...patch }))}
+        onReset={() => setFilters(INITIAL_FILTER_STATE)}
+        organizations={filterOptions.organizations}
+        companies={filterOptions.companies}
+        portals={filterOptions.portals}
+        tenderTypes={filterOptions.tenderTypes}
+        categories={filterOptions.categories}
+        searchPlaceholder="Search archived tenders by ID, title, donor, country..."
+        showOutcome={false}
+        extraRightActions={
+          selectedIds.length > 0 ? (
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-[var(--text-primary)]">
+                {selectedIds.length} selected
+              </span>
+              <button
+                type="button"
+                onClick={handleBulkRestore}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent)] text-[var(--accent-on)] hover:bg-[var(--accent-hover)] rounded-lg text-xs font-semibold transition-colors"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Restore Selected</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleBulkDelete}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--crit-soft)] text-[var(--crit)] border border-[var(--crit-line)] hover:bg-[var(--crit-soft)] rounded-lg text-xs font-semibold transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete Selected</span>
+              </button>
+            </div>
+          ) : null
+        }
+      />
 
       {/* Main Table or Empty State */}
       {filtered.length === 0 ? (

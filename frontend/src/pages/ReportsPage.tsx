@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
 import { useReportsAnalyticsQuery } from '../hooks/useTenderQueries';
+import {
+  TenderFilterState,
+  INITIAL_FILTER_STATE,
+  filterTenders,
+  extractFilterOptions,
+  countActiveFilters,
+} from '../utils/tenderFilters';
+import { TenderFilterToolbar } from '../components/common/TenderFilterToolbar';
 import {
   TrendingUp,
   Award,
@@ -52,63 +60,95 @@ export const ReportsPage: React.FC = () => {
   const { tenders, formatCurrency } = useTenders();
   const { data: analytics } = useReportsAnalyticsQuery<AnalyticsData>();
   const [reportMode, setReportMode] = useState<ReportMode>('GENERAL');
+  const [filters, setFilters] = useState<TenderFilterState>(INITIAL_FILTER_STATE);
 
-  const totalValue =
-    analytics?.total_pipeline_value ??
-    tenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
-  const winRate = analytics?.cumulative_win_rate ?? 68.5;
+  const filterOptions = useMemo(() => extractFilterOptions(tenders), [tenders]);
 
-  // Fallback category stats if analytics endpoint not yet loaded
-  const categories = Array.from(new Set(tenders.map((t) => t.category).filter(Boolean)));
-  const fallbackCategoryStats = categories.map((cat) => {
-    const catTenders = tenders.filter((t) => t.category === cat);
-    const catVal = catTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
-    const share = Math.round((catVal / (totalValue || 1)) * 100) || 0;
-    return {
-      category: cat,
-      count: catTenders.length,
-      total_value: catVal,
-      share_percent: share,
-      win_rate: 65.0,
-    };
-  });
+  const outcomeCounts = useMemo(() => {
+    const base = filterTenders(tenders, { ...filters, selectedOutcome: 'ALL' });
+    const won = base.filter((t) => t.stage === 'AWARDED').length;
+    const lost = base.filter((t) => t.stage === 'LOST').length;
+    const inFlight = base.filter(
+      (t) => t.stage !== 'AWARDED' && t.stage !== 'LOST' && t.stage !== 'DECLINED' && t.stage !== 'ARCHIVED'
+    ).length;
+    return { ALL: base.length, WON: won, LOST: lost, IN_FLIGHT: inFlight };
+  }, [tenders, filters]);
 
-  const categoryStats =
-    analytics?.category_breakdown?.length
-      ? analytics.category_breakdown
-      : fallbackCategoryStats;
+  const filteredTenders = useMemo(() => {
+    return filterTenders(tenders, filters);
+  }, [tenders, filters]);
 
-  // Advanced metrics computations
-  const awardedTenders = tenders.filter((t) => t.stage === 'AWARDED');
-  const lostTenders = tenders.filter((t) => t.stage === 'LOST');
-  const awardedTotalValue = awardedTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
+  const isFiltered = countActiveFilters(filters) > 0;
+
+  const totalValue = useMemo(() => {
+    if (!isFiltered && analytics?.total_pipeline_value) return analytics.total_pipeline_value;
+    return filteredTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
+  }, [filteredTenders, isFiltered, analytics]);
+
+  // Advanced metrics computations on filtered set
+  const awardedTenders = useMemo(() => filteredTenders.filter((t) => t.stage === 'AWARDED'), [filteredTenders]);
+  const lostTenders = useMemo(() => filteredTenders.filter((t) => t.stage === 'LOST'), [filteredTenders]);
+  const awardedTotalValue = useMemo(() => awardedTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0), [awardedTenders]);
   const evaluatedCount = awardedTenders.length + lostTenders.length;
+  const dynamicWinRate = evaluatedCount > 0
+    ? Math.round((awardedTenders.length / evaluatedCount) * 100)
+    : (awardedTenders.length > 0 ? 100 : 0);
+
+  const winRate = isFiltered
+    ? dynamicWinRate
+    : (analytics?.cumulative_win_rate ?? dynamicWinRate ?? 68.5);
+
   const captureEfficiency = evaluatedCount > 0
     ? Math.round((awardedTenders.length / evaluatedCount) * 100)
     : 72;
 
-  const stageBreakdown = [
-    // The five in-flight gates share one hue that deepens along the funnel;
-    // only the two terminal outcomes spend a semantic colour.
-    { stage: 'Discovered', key: 'DISCOVERED', color: 'var(--ramp-1)' },
-    { stage: 'Screening', key: 'SCREENING', color: 'var(--ramp-2)' },
-    { stage: 'Under analysis', key: 'UNDER_ANALYSIS', color: 'var(--ramp-3)' },
-    { stage: 'Preparation', key: 'PREPARATION', color: 'var(--ramp-4)' },
-    { stage: 'Submitted', key: 'SUBMITTED', color: 'var(--ramp-5)' },
-    { stage: 'Awarded', key: 'AWARDED', color: 'var(--ok)' },
-    { stage: 'Lost', key: 'LOST', color: 'var(--crit)' },
-  ].map((s) => {
-    const stageTenders = tenders.filter((t) => t.stage === s.key);
-    const sVal = stageTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
-    const sShare = totalValue > 0 ? Math.round((sVal / totalValue) * 100) : 0;
-    return {
-      name: s.stage,
-      count: stageTenders.length,
-      total_value: sVal,
-      share: sShare,
-      color: s.color,
-    };
-  });
+  // Category stats on filtered cohort
+  const categories = useMemo(() => Array.from(new Set(filteredTenders.map((t) => t.category).filter(Boolean))), [filteredTenders]);
+  const fallbackCategoryStats = useMemo(() => {
+    return categories.map((cat) => {
+      const catTenders = filteredTenders.filter((t) => t.category === cat);
+      const catVal = catTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
+      const share = Math.round((catVal / (totalValue || 1)) * 100) || 0;
+      const catAwarded = catTenders.filter((t) => t.stage === 'AWARDED').length;
+      const catLost = catTenders.filter((t) => t.stage === 'LOST').length;
+      const catEval = catAwarded + catLost;
+      const catWinRate = catEval > 0 ? Math.round((catAwarded / catEval) * 100) : 65.0;
+      return {
+        category: cat,
+        count: catTenders.length,
+        total_value: catVal,
+        share_percent: share,
+        win_rate: catWinRate,
+      };
+    });
+  }, [categories, filteredTenders, totalValue]);
+
+  const categoryStats = isFiltered || !analytics?.category_breakdown?.length
+    ? fallbackCategoryStats
+    : analytics.category_breakdown;
+
+  const stageBreakdown = useMemo(() => {
+    return [
+      { stage: 'Discovered', key: 'DISCOVERED', color: 'var(--ramp-1)' },
+      { stage: 'Screening', key: 'SCREENING', color: 'var(--ramp-2)' },
+      { stage: 'Under analysis', key: 'UNDER_ANALYSIS', color: 'var(--ramp-3)' },
+      { stage: 'Preparation', key: 'PREPARATION', color: 'var(--ramp-4)' },
+      { stage: 'Submitted', key: 'SUBMITTED', color: 'var(--ramp-5)' },
+      { stage: 'Awarded', key: 'AWARDED', color: 'var(--ok)' },
+      { stage: 'Lost', key: 'LOST', color: 'var(--crit)' },
+    ].map((s) => {
+      const stageTenders = filteredTenders.filter((t) => t.stage === s.key);
+      const sVal = stageTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
+      const sShare = totalValue > 0 ? Math.round((sVal / totalValue) * 100) : 0;
+      return {
+        name: s.stage,
+        count: stageTenders.length,
+        total_value: sVal,
+        share: sShare,
+        color: s.color,
+      };
+    });
+  }, [filteredTenders, totalValue]);
 
   // Scenario Simulator State (Advance Mode)
   const [minPWinHurdle, setMinPWinHurdle] = useState<number>(60);
@@ -130,26 +170,26 @@ export const ReportsPage: React.FC = () => {
   };
 
   // Risk-Adjusted Expected Contract Value (EV)
-  const riskAdjustedTotalValue = tenders.reduce((acc, t) => {
+  const riskAdjustedTotalValue = filteredTenders.reduce((acc, t) => {
     const pWin = calculatePWin(t) / 100;
     return acc + (t.estimatedValue || 0) * pWin;
   }, 0);
   const evRealizationRate = totalValue > 0 ? Math.round((riskAdjustedTotalValue / totalValue) * 100) : 0;
 
   // Capital at Immediate Risk (≤7 days remaining)
-  const capitalAtRiskTenders = tenders.filter(
+  const capitalAtRiskTenders = filteredTenders.filter(
     (t) => t.stage === 'PREPARATION' && ((t.daysRemaining ?? 99) <= 7)
   );
   const capitalAtRisk = capitalAtRiskTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
 
   // Scenario Simulator Metrics
-  const qualifiedTenders = tenders.filter(
+  const qualifiedTenders = filteredTenders.filter(
     (t) => calculatePWin(t) >= minPWinHurdle && t.stage !== 'LOST' && t.stage !== 'DECLINED'
   );
   const qualifiedEV = qualifiedTenders.reduce((acc, t) => acc + (t.estimatedValue || 0) * (calculatePWin(t) / 100), 0);
   const qualifiedNominalValue = qualifiedTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0);
   const projectedGrossProfit = qualifiedEV * (targetGrossMargin / 100);
-  const disqualifiedTenders = tenders.filter(
+  const disqualifiedTenders = filteredTenders.filter(
     (t) => calculatePWin(t) < minPWinHurdle && t.stage !== 'AWARDED' && t.stage !== 'LOST' && t.stage !== 'DECLINED'
   );
   const preservedBiddingCost = Math.round(disqualifiedTenders.reduce((acc, t) => acc + (t.estimatedValue || 0), 0) * 0.015);
@@ -162,7 +202,7 @@ export const ReportsPage: React.FC = () => {
     { organization: 'United Nations Development Programme (UNDP)', count: 2, total_value: 18500000, awarded_count: 1 },
     { organization: 'Civil Aviation Authority of Bangladesh (CAAB)', count: 2, total_value: 12500000, awarded_count: 0 },
   ]).map((org) => {
-    const matchingTenders = tenders.filter((t) =>
+    const matchingTenders = filteredTenders.filter((t) =>
       (t.organization || '').toLowerCase().includes(org.organization.toLowerCase()) ||
       org.organization.toLowerCase().includes((t.organization || '').toLowerCase())
     );
@@ -257,9 +297,32 @@ export const ReportsPage: React.FC = () => {
             ))}
           </div>
 
-          <ExportDropdown tenders={tenders} label="Export Executive Report" />
+          <ExportDropdown tenders={filteredTenders} label="Export Executive Report" />
         </div>
       </div>
+
+      {/* Advanced Filter Toolbar */}
+      <TenderFilterToolbar
+        filters={filters}
+        onChange={(patch) => setFilters((prev) => ({ ...prev, ...patch }))}
+        onReset={() => setFilters(INITIAL_FILTER_STATE)}
+        organizations={filterOptions.organizations}
+        companies={filterOptions.companies}
+        portals={filterOptions.portals}
+        tenderTypes={filterOptions.tenderTypes}
+        categories={filterOptions.categories}
+        outcomeCounts={outcomeCounts}
+        showOutcome={true}
+        showSearch={true}
+        searchPlaceholder="Filter analytics by title, ID, buyer, keyword..."
+        extraRightActions={
+          <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] font-medium">
+            <span>Cohort:</span>
+            <span className="font-mono font-bold text-[var(--accent)]">{filteredTenders.length}</span>
+            <span>of {tenders.length} tenders</span>
+          </div>
+        }
+      />
 
       {/* ========================================================================= */}
       {/* MODE 1: BASIC MODE                                                        */}
@@ -276,7 +339,7 @@ export const ReportsPage: React.FC = () => {
                 <span className="font-display text-2xl font-bold text-[var(--text-primary)] mt-1 block">
                   {formatCurrency(totalValue)}
                 </span>
-                <span className="text-[11px] text-[var(--accent)]">{tenders.length} Total Bids</span>
+                <span className="text-[11px] text-[var(--accent)]">{filteredTenders.length} Total Bids</span>
               </div>
               <div className="w-10 h-10 rounded-xl bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center">
                 <DollarSign className="w-5 h-5" />
