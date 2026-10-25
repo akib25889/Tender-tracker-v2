@@ -270,7 +270,8 @@ export const CompanyProfilesPage: React.FC = () => {
       const matchRole =
         roleFilter === 'ALL' ||
         (roleFilter === 'LEAD' && c.company_role === 'LEAD_BIDDER') ||
-        (roleFilter === 'JV' && c.company_role === 'JV_PARTNER');
+        (roleFilter === 'JV' && c.company_role === 'JV_PARTNER') ||
+        (roleFilter === 'SUB' && c.company_role === 'SUBCONTRACTOR');
 
       const matchSearch = fuzzyMatch(
         [c.legal_name, c.trade_name, c.registration_no, c.tin_number, c.country],
@@ -567,6 +568,10 @@ COMPANY PROFILE SUMMARY FOR TENDER SUBMISSION
               {
                 id: 'JV',
                 label: `⭐ JV Partners (${companyProfiles.filter((p) => p.company_role === 'JV_PARTNER').length})`,
+              },
+              {
+                id: 'SUB',
+                label: `🛡️ Subcontractors (${companyProfiles.filter((p) => p.company_role === 'SUBCONTRACTOR').length})`,
               },
             ].map((f) => (
               <button

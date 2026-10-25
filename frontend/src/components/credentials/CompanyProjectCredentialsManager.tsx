@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card } from '../ui/Card';
 import { useTenders } from '../../context/TenderContext';
 import { CompanyProjectCredential, CustomCredentialField } from '../../types/tender';
@@ -17,7 +17,6 @@ import {
   Link as LinkIcon,
   X,
   Search,
-  Award,
   AlertCircle,
   Briefcase,
   FileCheck2,
@@ -162,6 +161,7 @@ const CredentialField: React.FC<CredentialFieldProps> = ({
 export const CompanyProjectCredentialsManager: React.FC = () => {
   const {
     companyProjects,
+    companyProfiles,
     addCompanyProject,
     updateCompanyProject,
     deleteCompanyProject,
@@ -171,9 +171,37 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
     tenders,
   } = useTenders();
 
-  const [selectedCompany, setSelectedCompany] = useState<string>('PrimeTech Ltd');
+  const [selectedCompany, setSelectedCompany] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const distinctCompanies = useMemo(() => {
+    const list: { name: string; role: string; count: number }[] = [];
+    const seen = new Set<string>();
+
+    (companyProfiles || []).forEach((cp) => {
+      const name = cp.trade_name || cp.legal_name;
+      if (name && !seen.has(name.toLowerCase())) {
+        seen.add(name.toLowerCase());
+        const count = companyProjects.filter(
+          (p) => p.companyName?.toLowerCase() === name.toLowerCase()
+        ).length;
+        list.push({ name, role: cp.company_role, count });
+      }
+    });
+
+    companyProjects.forEach((p) => {
+      if (p.companyName && !seen.has(p.companyName.toLowerCase())) {
+        seen.add(p.companyName.toLowerCase());
+        const count = companyProjects.filter(
+          (pr) => pr.companyName?.toLowerCase() === p.companyName.toLowerCase()
+        ).length;
+        list.push({ name: p.companyName, role: p.companyRole, count });
+      }
+    });
+
+    return list;
+  }, [companyProfiles, companyProjects]);
 
   // Modal: Create New Project Credential
   const [isAddProjectModalOpen, setIsAddProjectModalOpen] = useState(false);
@@ -346,41 +374,43 @@ export const CompanyProjectCredentialsManager: React.FC = () => {
         <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto">
           <button
             type="button"
-            onClick={() => setSelectedCompany('PrimeTech Ltd')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
- selectedCompany === 'PrimeTech Ltd'
-                ? 'bg-[var(--accent)] text-[var(--accent-on)] shadow-xs'
-                : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-default)]'
-            }`}
-          >
-            <Building2 className="w-3.5 h-3.5" />
-            <span>🏛️ PrimeTech Ltd (Lead Bidder)</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setSelectedCompany('DataCore Systems Ltd')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
- selectedCompany === 'DataCore Systems Ltd'
-                ? 'bg-[var(--warn)] text-[var(--accent-on)] shadow-xs'
-                : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-default)]'
-            }`}
-          >
-            <Award className="w-3.5 h-3.5" />
-            <span>⭐ DataCore Systems Ltd (JV Partner)</span>
-          </button>
-
-          <button
-            type="button"
             onClick={() => setSelectedCompany('ALL')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
- selectedCompany === 'ALL'
-                ? 'bg-[var(--accent)] text-[var(--accent-on)] font-semibold'
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+              selectedCompany === 'ALL'
+                ? 'bg-[var(--accent)] text-[var(--accent-on)] shadow-xs'
                 : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-default)]'
             }`}
           >
             All Companies ({companyProjects.length})
           </button>
+
+          {distinctCompanies.map((c) => {
+            const isSelected = selectedCompany.toLowerCase() === c.name.toLowerCase();
+            const icon =
+              c.role === 'LEAD_BIDDER'
+                ? '🏛️'
+                : c.role === 'JV_PARTNER'
+                ? '⭐'
+                : c.role === 'SUBCONTRACTOR'
+                ? '🛡️'
+                : '🏢';
+            return (
+              <button
+                key={c.name}
+                type="button"
+                onClick={() => setSelectedCompany(c.name)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                  isSelected
+                    ? c.role === 'JV_PARTNER'
+                      ? 'bg-[var(--warn)] text-[var(--accent-on)] shadow-xs'
+                      : 'bg-[var(--accent)] text-[var(--accent-on)] shadow-xs'
+                    : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-default)]'
+                }`}
+              >
+                <span>{icon} {c.name} ({c.count})</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Search Bar */}

@@ -15,6 +15,16 @@ import {
   FileText,
   Upload,
   Languages,
+  Building2,
+  Handshake,
+  Globe,
+  Calendar,
+  Trophy,
+  XCircle,
+  SlidersHorizontal,
+  ChevronDown,
+  ChevronUp,
+  X,
 } from 'lucide-react';
 import { useTenders } from '../context/TenderContext';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -34,6 +44,36 @@ const STAGE_FILTERS: { value: string; label: string }[] = [
   { value: 'SUBMITTED', label: 'Submitted' },
   { value: 'ARCHIVED', label: 'Archived' },
 ];
+
+
+function parseSafeDate(dStr?: string): Date | null {
+  if (!dStr) return null;
+  const clean = dStr.trim();
+  const d = new Date(clean);
+  if (!isNaN(d.getTime())) return d;
+  const parts = clean.split('T')[0].split(' ')[0].split('-');
+  if (parts.length === 3) {
+    const parsed = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    if (!isNaN(parsed.getTime())) return parsed;
+  }
+  return null;
+}
+
+function getTenderPortal(t: any): string {
+  if (t.summary?.portal) {
+    if (t.summary.portal.includes('e-GP')) return 'e-GP (eprocure.gov.bd)';
+    if (t.summary.portal.includes('Quantum')) return 'UNDP Quantum Supplier Portal';
+    if (t.summary.portal.includes('UNGM')) return 'UNGM / UN Agencies';
+    return t.summary.portal;
+  }
+  const ref = t.referenceNo || '';
+  if (/^\d{6,}$/.test(ref)) return 'e-GP (eprocure.gov.bd)';
+  if (ref.includes('UNDP') || ref.includes('UN') || ref.includes('LRPS') || (t.organization && t.organization.includes('United Nations'))) {
+    return 'UNGM / UN Agencies';
+  }
+  if (ref.includes('BPD') || ref.includes('BRAC')) return 'BRAC / Corporate';
+  return 'Direct / Agency Portal';
+}
 
 function rowSeverity(daysRemaining: number): '' | 'tt-sev-warn' | 'tt-sev-crit' {
   if (daysRemaining > 0 && daysRemaining <= 2) return 'tt-sev-crit';
@@ -59,6 +99,15 @@ export const TenderListPage: React.FC = () => {
     stageFromUrl ? stageFromUrl.toUpperCase() : 'ALL'
   );
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+  const [selectedOrg, setSelectedOrg] = useState<string>('ALL');
+  const [selectedCompany, setSelectedCompany] = useState<string>('ALL');
+  const [selectedPortal, setSelectedPortal] = useState<string>('ALL');
+  const [selectedTenderType, setSelectedTenderType] = useState<string>('ALL');
+  const [selectedOutcome, setSelectedOutcome] = useState<'ALL' | 'WON' | 'LOST' | 'IN_FLIGHT' | 'DECLINED'>('ALL');
+  const [datePreset, setDatePreset] = useState<string>('ALL');
+  const [customStartDate, setCustomStartDate] = useState<string>('');
+  const [customEndDate, setCustomEndDate] = useState<string>('');
+  const [isFilterExpanded, setIsFilterExpanded] = useState<boolean>(true);
   // A nine-column table does not fit a phone. Cards are the better default
   // there; the Table/Cards toggle still works either way.
   const [viewMode, setViewMode] = useState<'list' | 'cards'>(() =>
@@ -90,6 +139,45 @@ export const TenderListPage: React.FC = () => {
     [tenders]
   );
 
+  // 1. Unique Organizations (Buyers)
+  const organizations = useMemo(
+    () => ['ALL', ...Array.from(new Set(tenders.map((t) => t.organization).filter(Boolean))).sort()],
+    [tenders]
+  );
+
+  // 2. Unique Bidding Companies & JV Partners
+  const companies = useMemo(() => {
+    const set = new Set<string>();
+    set.add('PrimeTech Solutions Ltd');
+    tenders.forEach((t) => {
+      const localPartner = t.summary?.jv?.localPartner;
+      if (localPartner) set.add(localPartner);
+      const leadMember = t.summary?.jv?.leadMember;
+      if (leadMember) {
+        const lead = leadMember.split('(')[0].trim();
+        if (lead) set.add(lead);
+      }
+    });
+    return ['ALL', ...Array.from(set).sort()];
+  }, [tenders]);
+
+  // 3. Unique Portals
+  const portals = useMemo(() => {
+    const set = new Set<string>();
+    tenders.forEach((t) => set.add(getTenderPortal(t)));
+    return ['ALL', ...Array.from(set).sort()];
+  }, [tenders]);
+
+  // 4. Unique Tender Types
+  const tenderTypes = useMemo(() => {
+    const set = new Set<string>();
+    tenders.forEach((t) => {
+      const type = t.tenderType || t.summary?.tenderType;
+      if (type) set.add(type);
+    });
+    return ['ALL', ...Array.from(set).sort()];
+  }, [tenders]);
+
   const stageCounts = useMemo(() => {
     const map: Record<string, number> = {
       ALL: tenders.filter((t) => t.stage !== 'ARCHIVED').length,
@@ -100,19 +188,169 @@ export const TenderListPage: React.FC = () => {
     return map;
   }, [tenders]);
 
+  const outcomeCounts = useMemo(() => {
+    return {
+      ALL: tenders.length,
+      WON: tenders.filter((t) => t.stage === 'AWARDED').length,
+      LOST: tenders.filter((t) => t.stage === 'LOST').length,
+      IN_FLIGHT: tenders.filter(
+        (t) =>
+          t.stage !== 'AWARDED' &&
+          t.stage !== 'LOST' &&
+          t.stage !== 'DECLINED' &&
+          t.stage !== 'ARCHIVED'
+      ).length,
+      DECLINED: tenders.filter((t) => t.stage === 'DECLINED').length,
+    };
+  }, [tenders]);
+
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (selectedCategory !== 'ALL') count++;
+    if (selectedOrg !== 'ALL') count++;
+    if (selectedCompany !== 'ALL') count++;
+    if (selectedPortal !== 'ALL') count++;
+    if (selectedTenderType !== 'ALL') count++;
+    if (selectedOutcome !== 'ALL') count++;
+    if (datePreset !== 'ALL' || customStartDate || customEndDate) count++;
+    return count;
+  }, [selectedCategory, selectedOrg, selectedCompany, selectedPortal, selectedTenderType, selectedOutcome, datePreset, customStartDate, customEndDate]);
+
+  const handleResetAllFilters = () => {
+    setSelectedStage('ALL');
+    setSelectedCategory('ALL');
+    setSelectedOrg('ALL');
+    setSelectedCompany('ALL');
+    setSelectedPortal('ALL');
+    setSelectedTenderType('ALL');
+    setSelectedOutcome('ALL');
+    setDatePreset('ALL');
+    setCustomStartDate('');
+    setCustomEndDate('');
+    setSearchQuery('');
+    setCurrentPage(1);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('stage');
+    setSearchParams(nextParams);
+  };
+
   const filteredTenders = useMemo(
     () =>
       tenders.filter((t) => {
+        // Search query
+        const tType = t.tenderType || t.summary?.tenderType || '';
+        const portal = getTenderPortal(t);
+        const jvPartner = t.summary?.jv?.localPartner || '';
         const matchesSearch = fuzzyMatch(
-          [t.title, t.organization, t.id, t.referenceNo, t.category],
+          [t.title, t.organization, t.id, t.referenceNo, t.category, tType, portal, jvPartner],
           searchQuery
         );
-        const matchesStage =
-          selectedStage === 'ALL' ? t.stage !== 'ARCHIVED' : t.stage === selectedStage;
+
+        // Stage
+        let matchesStage = true;
+        if (selectedStage === 'ALL') {
+          if (selectedOutcome === 'ALL') {
+            matchesStage = t.stage !== 'ARCHIVED';
+          }
+        } else {
+          matchesStage = t.stage === selectedStage;
+        }
+
+        // Category
         const matchesCategory = selectedCategory === 'ALL' || t.category === selectedCategory;
-        return matchesSearch && matchesStage && matchesCategory;
+
+        // Organization (Buyer)
+        const matchesOrg = selectedOrg === 'ALL' || t.organization === selectedOrg;
+
+        // Company / Partner
+        let matchesCompany = true;
+        if (selectedCompany !== 'ALL') {
+          if (selectedCompany.includes('PrimeTech')) {
+            matchesCompany = !t.summary?.jv?.localPartner || (t.summary?.jv?.leadMember?.includes('PrimeTech') ?? true);
+          } else {
+            matchesCompany =
+              t.summary?.jv?.localPartner === selectedCompany ||
+              (t.summary?.jv?.localPartner ? t.summary.jv.localPartner.includes(selectedCompany) : false) ||
+              (t.summary?.jv?.leadMember ? t.summary.jv.leadMember.includes(selectedCompany) : false);
+          }
+        }
+
+        // Portal
+        const matchesPortal = selectedPortal === 'ALL' || portal === selectedPortal;
+
+        // Tender Type
+        const matchesTenderType = selectedTenderType === 'ALL' || tType === selectedTenderType;
+
+        // Win / Loss Outcome
+        let matchesOutcome = true;
+        if (selectedOutcome === 'WON') {
+          matchesOutcome = t.stage === 'AWARDED';
+        } else if (selectedOutcome === 'LOST') {
+          matchesOutcome = t.stage === 'LOST';
+        } else if (selectedOutcome === 'IN_FLIGHT') {
+          matchesOutcome =
+            t.stage !== 'AWARDED' &&
+            t.stage !== 'LOST' &&
+            t.stage !== 'DECLINED' &&
+            t.stage !== 'ARCHIVED';
+        } else if (selectedOutcome === 'DECLINED') {
+          matchesOutcome = t.stage === 'DECLINED';
+        }
+
+        // Date & Range
+        let matchesDate = true;
+        if (datePreset !== 'ALL' || customStartDate || customEndDate) {
+          const d = parseSafeDate(t.submissionDeadline);
+          if (!d) {
+            matchesDate = false;
+          } else {
+            const dateStr = d.toISOString().split('T')[0];
+            const now = new Date();
+            if (datePreset === 'TODAY') {
+              matchesDate = t.daysRemaining === 0 || t.daysRemaining <= 1;
+            } else if (datePreset === 'NEXT_7_DAYS') {
+              matchesDate = t.daysRemaining >= 0 && t.daysRemaining <= 7;
+            } else if (datePreset === 'NEXT_30_DAYS') {
+              matchesDate = t.daysRemaining >= 0 && t.daysRemaining <= 30;
+            } else if (datePreset === 'THIS_MONTH') {
+              matchesDate =
+                (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()) ||
+                (d.getFullYear() === 2026 && d.getMonth() === 9);
+            } else if (datePreset === 'PAST') {
+              matchesDate = t.daysRemaining < 0;
+            } else if (datePreset === 'CUSTOM' || customStartDate || customEndDate) {
+              if (customStartDate && dateStr < customStartDate) matchesDate = false;
+              if (customEndDate && dateStr > customEndDate) matchesDate = false;
+            }
+          }
+        }
+
+        return (
+          matchesSearch &&
+          matchesStage &&
+          matchesCategory &&
+          matchesOrg &&
+          matchesCompany &&
+          matchesPortal &&
+          matchesTenderType &&
+          matchesOutcome &&
+          matchesDate
+        );
       }),
-    [tenders, searchQuery, selectedStage, selectedCategory]
+    [
+      tenders,
+      searchQuery,
+      selectedStage,
+      selectedCategory,
+      selectedOrg,
+      selectedCompany,
+      selectedPortal,
+      selectedTenderType,
+      selectedOutcome,
+      datePreset,
+      customStartDate,
+      customEndDate,
+    ]
   );
 
   const totalPages = Math.max(
@@ -327,6 +565,34 @@ export const TenderListPage: React.FC = () => {
               ))}
             </select>
 
+            <button
+              type="button"
+              onClick={() => setIsFilterExpanded(!isFilterExpanded)}
+              className={`tt-btn tt-btn-sm ${activeFiltersCount > 0 ? 'tt-btn-primary' : ''}`}
+              title="Toggle advanced filters"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Filters</span>
+              {activeFiltersCount > 0 && (
+                <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-white/20 text-current">
+                  {activeFiltersCount}
+                </span>
+              )}
+              {isFilterExpanded ? <ChevronUp className="w-3 h-3 ml-0.5" /> : <ChevronDown className="w-3 h-3 ml-0.5" />}
+            </button>
+
+            {activeFiltersCount > 0 && (
+              <button
+                type="button"
+                onClick={handleResetAllFilters}
+                className="tt-btn tt-btn-sm tt-btn-quiet text-[11px] text-[var(--crit)] hover:text-[var(--crit)]"
+                title="Reset all filters"
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>Reset</span>
+              </button>
+            )}
+
             <div className="tt-seg ml-auto">
               <button
                 type="button"
@@ -344,6 +610,222 @@ export const TenderListPage: React.FC = () => {
               </button>
             </div>
           </div>
+
+          {/* Advanced Multi-Filters Panel */}
+          {isFilterExpanded && (
+            <div className="pt-2.5 border-t border-[var(--border-default)] space-y-2.5 animate-fadeIn">
+              {/* Row 1: Org, Company, Portal, Tender Type */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                {/* 1. Organization / Buyer */}
+                <div className="relative">
+                  <Building2 className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)]" />
+                  <select
+                    value={selectedOrg}
+                    onChange={(e) => {
+                      setSelectedOrg(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="tt-select text-xs w-full pl-8"
+                    aria-label="Filter by Organization"
+                  >
+                    <option value="ALL">🏢 All Organizations ({organizations.length - 1})</option>
+                    {organizations.filter((o) => o !== 'ALL').map((org) => (
+                      <option key={org} value={org}>
+                        {org.length > 34 ? org.slice(0, 32) + '...' : org}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 2. Company / Partner */}
+                <div className="relative">
+                  <Handshake className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)]" />
+                  <select
+                    value={selectedCompany}
+                    onChange={(e) => {
+                      setSelectedCompany(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="tt-select text-xs w-full pl-8"
+                    aria-label="Filter by Company / Partner"
+                  >
+                    <option value="ALL">🤝 All Companies & JV</option>
+                    {companies.filter((c) => c !== 'ALL').map((c) => (
+                      <option key={c} value={c}>
+                        {c.length > 34 ? c.slice(0, 32) + '...' : c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 3. Portal */}
+                <div className="relative">
+                  <Globe className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)]" />
+                  <select
+                    value={selectedPortal}
+                    onChange={(e) => {
+                      setSelectedPortal(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="tt-select text-xs w-full pl-8"
+                    aria-label="Filter by Portal"
+                  >
+                    <option value="ALL">🌐 All Portals ({portals.length - 1})</option>
+                    {portals.filter((p) => p !== 'ALL').map((p) => (
+                      <option key={p} value={p}>
+                        {p}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 4. Tender Type */}
+                <div className="relative">
+                  <FileText className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)]" />
+                  <select
+                    value={selectedTenderType}
+                    onChange={(e) => {
+                      setSelectedTenderType(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="tt-select text-xs w-full pl-8"
+                    aria-label="Filter by Tender Type"
+                  >
+                    <option value="ALL">📋 All Tender Types ({tenderTypes.length - 1})</option>
+                    {tenderTypes.filter((t) => t !== 'ALL').map((t) => (
+                      <option key={t} value={t}>
+                        {t.length > 34 ? t.slice(0, 32) + '...' : t}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Row 2: Win / Loss Outcome + Date Range */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                {/* Outcome (Win / Loss) Segmented Chips */}
+                <div className="flex items-center gap-1.5 flex-wrap text-xs">
+                  <span className="font-medium tt-text-2 mr-1">Outcome:</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedOutcome('ALL');
+                      setCurrentPage(1);
+                    }}
+                    aria-pressed={selectedOutcome === 'ALL'}
+                    className="tt-chip tt-focus text-xs py-1"
+                  >
+                    All
+                    <span className="tt-chip-n">{outcomeCounts.ALL}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedOutcome('WON');
+                      setCurrentPage(1);
+                    }}
+                    aria-pressed={selectedOutcome === 'WON'}
+                    className={`tt-chip tt-focus text-xs py-1 ${selectedOutcome === 'WON' ? '!bg-[var(--ok-soft)] !text-[var(--ok)] !border-[var(--ok)] font-semibold' : ''}`}
+                  >
+                    <Trophy className="w-3 h-3 mr-1 inline text-[var(--ok)]" />
+                    Won (Awarded)
+                    <span className="tt-chip-n">{outcomeCounts.WON}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedOutcome('LOST');
+                      setCurrentPage(1);
+                    }}
+                    aria-pressed={selectedOutcome === 'LOST'}
+                    className={`tt-chip tt-focus text-xs py-1 ${selectedOutcome === 'LOST' ? '!bg-[var(--crit-soft)] !text-[var(--crit)] !border-[var(--crit)] font-semibold' : ''}`}
+                  >
+                    <XCircle className="w-3 h-3 mr-1 inline text-[var(--crit)]" />
+                    Lost
+                    <span className="tt-chip-n">{outcomeCounts.LOST}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedOutcome('IN_FLIGHT');
+                      setCurrentPage(1);
+                    }}
+                    aria-pressed={selectedOutcome === 'IN_FLIGHT'}
+                    className="tt-chip tt-focus text-xs py-1"
+                  >
+                    ⚡ In-Flight
+                    <span className="tt-chip-n">{outcomeCounts.IN_FLIGHT}</span>
+                  </button>
+                </div>
+
+                {/* Date & Range Picker */}
+                <div className="flex items-center gap-2 flex-wrap text-xs ml-auto">
+                  <Calendar className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                  <select
+                    value={datePreset}
+                    onChange={(e) => {
+                      setDatePreset(e.target.value);
+                      if (e.target.value !== 'CUSTOM') {
+                        setCustomStartDate('');
+                        setCustomEndDate('');
+                      }
+                      setCurrentPage(1);
+                    }}
+                    className="tt-select text-xs"
+                    aria-label="Filter by Deadline Date Range"
+                  >
+                    <option value="ALL">📅 All Deadlines</option>
+                    <option value="TODAY">Due Today / 24h</option>
+                    <option value="NEXT_7_DAYS">Closing Soon (≤ 7 Days)</option>
+                    <option value="NEXT_30_DAYS">Next 30 Days</option>
+                    <option value="THIS_MONTH">This Month (October 2026)</option>
+                    <option value="PAST">Past / Closed Deadlines</option>
+                    <option value="CUSTOM">Custom Date Range...</option>
+                  </select>
+
+                  {datePreset === 'CUSTOM' && (
+                    <div className="flex items-center gap-1.5 animate-fadeIn">
+                      <input
+                        type="date"
+                        value={customStartDate}
+                        onChange={(e) => {
+                          setCustomStartDate(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                        className="tt-input text-xs py-1 px-2 h-7"
+                        title="Start Date"
+                      />
+                      <span className="tt-text-muted">to</span>
+                      <input
+                        type="date"
+                        value={customEndDate}
+                        onChange={(e) => {
+                          setCustomEndDate(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                        className="tt-input text-xs py-1 px-2 h-7"
+                        title="End Date"
+                      />
+                      {(customStartDate || customEndDate) && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCustomStartDate('');
+                            setCustomEndDate('');
+                            setCurrentPage(1);
+                          }}
+                          className="p-1 text-[var(--text-muted)] hover:text-current"
+                          title="Clear date inputs"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="flex flex-wrap gap-1.5">
             {STAGE_FILTERS.map((s) => (
@@ -462,6 +944,17 @@ export const TenderListPage: React.FC = () => {
                           <span className="tt-tag">
                             {tender.tenderType || tender.summary?.tenderType || 'RFP'}
                           </span>
+                          {Boolean(
+                            tender.summary?.jv?.localPartner ||
+                            tender.summary?.jv?.participation?.toLowerCase().includes('allow')
+                          ) && (
+                            <span
+                              className="tt-tag tt-tag-accent font-semibold"
+                              title={`Joint Venture with ${tender.summary?.jv?.localPartner || 'Consortium Partner'}`}
+                            >
+                              🤝 JV: {tender.summary?.jv?.localPartner || 'Consortium'}
+                            </span>
+                          )}
                           <span className="font-mono">{displayId(tender)}</span>
                           {tender.amendments && tender.amendments.length > 0 && (
                             <span className="tt-tag tt-tag-warn">
@@ -569,6 +1062,17 @@ export const TenderListPage: React.FC = () => {
                       <span className="tt-tag">
                         {tender.tenderType || tender.summary?.tenderType || 'RFP'}
                       </span>
+                      {Boolean(
+                        tender.summary?.jv?.localPartner ||
+                        tender.summary?.jv?.participation?.toLowerCase().includes('allow')
+                      ) && (
+                        <span
+                          className="tt-tag tt-tag-accent font-semibold"
+                          title={`Joint Venture with ${tender.summary?.jv?.localPartner || 'Consortium Partner'}`}
+                        >
+                          🤝 JV: {tender.summary?.jv?.localPartner || 'Consortium'}
+                        </span>
+                      )}
                       <span className="font-mono tt-num">
                         {tender.estimatedValue && tender.estimatedValue > 0
                           ? formatCurrency(tender.estimatedValue)

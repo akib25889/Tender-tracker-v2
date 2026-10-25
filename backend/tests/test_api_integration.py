@@ -868,7 +868,7 @@ def test_16_document_update_delete_and_sharing_to_db():
 
 def test_17_company_profiles_crud():
     # 0. Ensure COMP-PRIMETECH exists for test
-    client.post(
+    create_res = client.post(
         "/api/companies/profiles",
         json={
             "id": "COMP-PRIMETECH",
@@ -884,6 +884,17 @@ def test_17_company_profiles_crud():
             ],
         },
     )
+    if create_res.status_code == 400:
+        client.put(
+            "/api/companies/profiles/COMP-PRIMETECH",
+            json={
+                "tin_number": "817294029148",
+                "bank_name": "Eastern Bank PLC",
+                "custom_fields": [
+                    {"id": f"cf-{i}", "name": f"f{i}", "value": f"v{i}"} for i in range(4)
+                ],
+            },
+        )
 
     # 1. Verify GET /api/companies/profiles
     list_res = client.get("/api/companies/profiles")

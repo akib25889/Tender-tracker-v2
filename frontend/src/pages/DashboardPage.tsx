@@ -450,9 +450,22 @@ export const DashboardPage: React.FC = () => {
                         )}
                       </td>
                       <td>
-                        <span className="tt-tag">
-                          {tender.tenderType || tender.summary?.tenderType || 'RFP'}
-                        </span>
+                        <div className="flex flex-col gap-1 items-start">
+                          <span className="tt-tag">
+                            {tender.tenderType || tender.summary?.tenderType || 'RFP'}
+                          </span>
+                          {Boolean(
+                            tender.summary?.jv?.localPartner ||
+                            tender.summary?.jv?.participation?.toLowerCase().includes('allow')
+                          ) && (
+                            <span
+                              className="tt-tag tt-tag-accent font-semibold text-[10px]"
+                              title={`Joint Venture with ${tender.summary?.jv?.localPartner || 'Consortium Partner'}`}
+                            >
+                              🤝 JV: {tender.summary?.jv?.localPartner || 'Consortium'}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td>
                         <UrgencyBadge

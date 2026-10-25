@@ -420,6 +420,19 @@ export const TenderDetailPage: React.FC = () => {
                   <ArrowRight className="w-3 h-3 text-[var(--ok)]" />
                 </Link>
               )}
+              {Boolean(
+                tender.summary?.jv?.localPartner ||
+                tender.summary?.jv?.participation?.toLowerCase().includes('allow')
+              ) && (
+                <Link
+                  to={`/tenders/${tender.id}/partners`}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[var(--warn-soft)] text-[var(--warn)] hover:bg-[var(--warn-soft)] font-bold text-xs border border-[var(--warn-line)] transition-colors shadow-2xs"
+                  title="View Joint Venture Consortium details"
+                >
+                  <span>🤝 JV: {tender.summary?.jv?.localPartner || 'Consortium'}</span>
+                  <ArrowRight className="w-3 h-3 text-[var(--warn)]" />
+                </Link>
+              )}
               {tender.tenderType === 'Request for Proposals (RFP)' && !tender.parentEoiId && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[var(--bg-subtle)] text-[var(--text-primary)] font-semibold text-xs border border-[var(--border-default)]">
                   🏷️ Direct RFP Modality
