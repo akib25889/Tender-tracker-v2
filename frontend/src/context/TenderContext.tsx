@@ -312,7 +312,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const refreshTendersFromBackend = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/tenders`);
+      const res = await fetch(`${API_BASE_URL}/tenders?include_archived=true`);
       if (res.ok) {
         const dbTenders = await res.json();
         if (Array.isArray(dbTenders)) {

@@ -29,7 +29,7 @@ def get_tenders(
 ):
     query = db.query(Tender)
 
-    if not include_archived:
+    if not include_archived and (not stage or stage.upper() != "ARCHIVED"):
         query = query.filter(Tender.stage != "ARCHIVED")
 
     if stage and stage.upper() != "ALL":
