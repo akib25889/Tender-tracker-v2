@@ -15,7 +15,6 @@ function RegistryLegacySlashRedirect() {
 
 import { AppLayout } from './components/layout/AppLayout';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
-import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { TenderListPage } from './pages/TenderListPage';
 import { TenderRegistryPage } from './pages/TenderRegistryPage';

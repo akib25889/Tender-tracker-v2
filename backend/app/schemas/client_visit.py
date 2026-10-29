@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Union
 from pydantic import BaseModel, ConfigDict
 
 
@@ -19,7 +19,7 @@ class ClientVisitBase(BaseModel):
     visitor_designation: Optional[str] = None
     visitor_phone: Optional[str] = None
     visitor_email: Optional[str] = None
-    accompanying_persons: Optional[List[Dict[str, Any]]] = None
+    accompanying_persons: Optional[List[Union[Dict[str, Any], str]]] = None
     internal_host_name: Optional[str] = "Sarah Jenkins"
     internal_host_role: Optional[str] = "Business Head"
     visit_type: Optional[str] = "IN_PERSON_OFFICE"
@@ -50,7 +50,7 @@ class ClientVisitUpdate(BaseModel):
     visitor_designation: Optional[str] = None
     visitor_phone: Optional[str] = None
     visitor_email: Optional[str] = None
-    accompanying_persons: Optional[List[Dict[str, Any]]] = None
+    accompanying_persons: Optional[List[Union[Dict[str, Any], str]]] = None
     internal_host_name: Optional[str] = None
     internal_host_role: Optional[str] = None
     visit_type: Optional[str] = None
