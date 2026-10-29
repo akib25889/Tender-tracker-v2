@@ -14,6 +14,8 @@ from app.schemas.tender import (
     AiChatLinkUpdate,
     TenderAmendmentIn,
 )
+import uuid
+from app.models.document import TenderDocument, ReusableDocument
 from app.services.storage import ensure_tender_directories
 
 router = APIRouter(prefix="/tenders", tags=["Tenders"])
@@ -149,6 +151,33 @@ def create_tender(tender_in: TenderCreate, db: Session = Depends(get_db)):
 
     # Auto-provision local SSD storage vault folders
     ensure_tender_directories(db_tender.id)
+
+    # Auto-link default mandatory documents
+    default_docs = (
+        db.query(ReusableDocument).filter(ReusableDocument.is_default == True).all()
+    )
+    for doc in default_docs:
+        target_folder = doc.default_folder or "02_company_statutory_documents"
+        link_id = f"DOC-DEF-{uuid.uuid4().hex[:8].upper()}"
+        new_doc = TenderDocument(
+            id=link_id,
+            tender_id=db_tender.id,
+            name=doc.name,
+            folder=target_folder,
+            company_name=doc.company_name or "PrimeTech Ltd",
+            company_role=doc.company_role or "LEAD_BIDDER",
+            is_jv_partner=doc.is_jv_partner or False,
+            size=doc.size or "1.5 MB",
+            revision=doc.revision or "v1.0",
+            sha256=doc.sha256 or "default",
+            uploaded_at=datetime.now().strftime("%Y-%m-%d"),
+            is_reusable_link=True,
+            reusable_source_id=doc.id,
+            access_level=doc.access_level or "ALL_TEAM",
+            file_path=doc.file_path,
+            status="VERIFIED",
+        )
+        db.add(new_doc)
 
     db.commit()
     db.refresh(db_tender)

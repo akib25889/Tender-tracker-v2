@@ -142,6 +142,8 @@ interface TenderContextType {
     accessLevel: DocumentAccessLevel;
     description?: string;
     file?: File;
+    isDefault?: boolean;
+    defaultFolder?: string;
   }) => Promise<ReusableDocument | void>;
   updateDocumentAccess: (docId: string, newAccess: DocumentAccessLevel) => void;
   updateReusableDocument: (
@@ -152,6 +154,7 @@ interface TenderContextType {
   deleteReusableDocument: (docId: string) => Promise<void>;
   updateTenderDocumentAccess: (tenderId: string, docId: string, newAccess: DocumentAccessLevel) => void;
   linkReusableDocumentToTender: (tenderId: string, reusableDocId: string, targetFolder: string) => void;
+  syncDefaultDocumentsToActiveTenders: () => Promise<{ synced_count: number; message: string }>;
   hasDocumentAccess: (accessLevel?: DocumentAccessLevel, role?: UserRole) => boolean;
   // Currency switcher
   currency: CurrencyMode;
@@ -393,6 +396,11 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
             accessLevel: d.access_level,
             sha256: d.sha256,
             description: d.description,
+            companyName: d.company_name,
+            companyRole: d.company_role,
+            isJvPartner: d.is_jv_partner,
+            isDefault: Boolean(d.is_default),
+            defaultFolder: d.default_folder || '02_company_statutory_documents',
           }));
           setReusableDocuments(docs);
           localStorage.setItem('tendertracker_reusable_docs', JSON.stringify(docs));
@@ -2115,6 +2123,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     accessLevel: DocumentAccessLevel;
     description?: string;
     file?: File;
+    isDefault?: boolean;
+    defaultFolder?: string;
   }) => {
     if (doc.file) {
       try {
@@ -2128,6 +2138,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         if (doc.expiryDate) formData.append('expiry_date', doc.expiryDate);
         formData.append('access_level', doc.accessLevel || 'ALL_TEAM');
         if (doc.description) formData.append('description', doc.description);
+        formData.append('is_default', String(Boolean(doc.isDefault)));
+        if (doc.defaultFolder) formData.append('default_folder', doc.defaultFolder);
 
         const res = await fetch(`${API_BASE_URL}/documents/reusable/upload`, {
           method: 'POST',
@@ -2151,6 +2163,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
             sha256: data.sha256,
             description: data.description || doc.description,
             filePath: data.file_path,
+            isDefault: Boolean(data.is_default !== undefined ? data.is_default : doc.isDefault),
+            defaultFolder: data.default_folder || doc.defaultFolder || '02_company_statutory_documents',
           };
           setReusableDocuments((prev) => [createdDoc, ...prev]);
           return createdDoc;
@@ -2184,6 +2198,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
       accessLevel: doc.accessLevel || 'ALL_TEAM',
       sha256: hash,
       description: doc.description,
+      isDefault: Boolean(doc.isDefault),
+      defaultFolder: doc.defaultFolder || '02_company_statutory_documents',
     };
 
     fetch(`${API_BASE_URL}/documents/reusable`, {
@@ -2199,6 +2215,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         expiry_date: newDoc.expiryDate,
         access_level: newDoc.accessLevel,
         description: newDoc.description,
+        is_default: Boolean(doc.isDefault),
+        default_folder: doc.defaultFolder || '02_company_statutory_documents',
       }),
     }).catch(() => {});
 
@@ -2264,6 +2282,8 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
           description: updatedFields.description,
           size: updatedFields.size,
           revision: updatedFields.revision,
+          is_default: updatedFields.isDefault,
+          default_folder: updatedFields.defaultFolder,
         }),
       });
     } catch (err) {
@@ -2273,6 +2293,27 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
     setReusableDocuments((prev) =>
       prev.map((d) => (d.id === docId ? { ...d, ...updatedFields } : d))
     );
+  };
+
+  const syncDefaultDocumentsToActiveTenders = async (): Promise<{ synced_count: number; message: string }> => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/documents/reusable/sync-defaults`, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        // Refresh tenders to see newly attached documents
+        if (typeof window !== 'undefined') {
+          setTimeout(() => {
+            refreshReusableDocuments();
+          }, 300);
+        }
+        return data;
+      }
+    } catch (e) {
+      console.error('Error syncing defaults:', e);
+    }
+    return { synced_count: 0, message: 'Sync request completed' };
   };
 
   const deleteReusableDocument = async (docId: string) => {
@@ -2686,6 +2727,7 @@ export const TenderProvider: React.FC<{ children: React.ReactNode }> = ({
         addReusableDocument,
         updateReusableDocument,
         deleteReusableDocument,
+        syncDefaultDocumentsToActiveTenders,
         updateDocumentAccess,
         updateTenderDocumentAccess,
         linkReusableDocumentToTender,

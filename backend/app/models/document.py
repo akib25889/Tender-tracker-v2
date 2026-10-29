@@ -72,3 +72,5 @@ class ReusableDocument(Base):
     sha256 = Column(String(64), nullable=False)
     description = Column(String(255), nullable=True)
     file_path = Column(String(255), nullable=True)
+    is_default = Column(Boolean, default=False)
+    default_folder = Column(String(100), nullable=True, default="02_company_statutory_documents")

@@ -610,6 +610,8 @@ def create_reusable_document(doc_in: ReusableDocCreate, db: Session = Depends(ge
         access_level=doc_in.access_level,
         sha256=mock_hash,
         description=doc_in.description,
+        is_default=bool(doc_in.is_default),
+        default_folder=doc_in.default_folder or "02_company_statutory_documents",
     )
     db.add(new_doc)
     db.commit()
@@ -637,6 +639,8 @@ async def upload_reusable_document(
     expiry_date: Optional[str] = Form(None),
     access_level: str = Form("ALL_TEAM"),
     description: Optional[str] = Form(None),
+    is_default: Optional[bool] = Form(False),
+    default_folder: Optional[str] = Form("02_company_statutory_documents"),
     db: Session = Depends(get_db),
 ):
     safe_company = "".join(
@@ -672,6 +676,8 @@ async def upload_reusable_document(
         sha256=sha256_hash,
         description=description,
         file_path=file_path,
+        is_default=bool(is_default),
+        default_folder=default_folder or "02_company_statutory_documents",
     )
     db.add(new_doc)
     db.commit()
@@ -1006,9 +1012,59 @@ def update_reusable_document(
         doc.size = payload.size
     if payload.revision is not None:
         doc.revision = payload.revision
+    if payload.is_default is not None:
+        doc.is_default = payload.is_default
+    if payload.default_folder is not None:
+        doc.default_folder = payload.default_folder
     db.commit()
     db.refresh(doc)
     return doc
+
+
+@router.post("/reusable-documents/sync-defaults")
+@router.post("/documents/reusable/sync-defaults")
+def sync_defaults_to_active_tenders(db: Session = Depends(get_db)):
+    """
+    Applies all active default documents into all non-archived tenders
+    that do not already have them linked.
+    """
+    defaults = db.query(ReusableDocument).filter(ReusableDocument.is_default == True).all()
+    if not defaults:
+        return {"synced_count": 0, "message": "No default documents configured"}
+    
+    tenders = db.query(Tender).filter(Tender.stage != "ARCHIVED").all()
+    count = 0
+    for t in tenders:
+        for d in defaults:
+            target_folder = d.default_folder or "02_company_statutory_documents"
+            exists = db.query(TenderDocument).filter(
+                TenderDocument.tender_id == t.id,
+                TenderDocument.reusable_source_id == d.id
+            ).first()
+            if not exists:
+                doc_id = f"DOC-DEF-{uuid.uuid4().hex[:8].upper()}"
+                linked = TenderDocument(
+                    id=doc_id,
+                    tender_id=t.id,
+                    name=d.name,
+                    folder=target_folder,
+                    company_name=d.company_name or "PrimeTech Ltd",
+                    company_role=d.company_role or "LEAD_BIDDER",
+                    is_jv_partner=d.is_jv_partner or False,
+                    size=d.size or "1.5 MB",
+                    revision=d.revision or "v1.0",
+                    sha256=d.sha256 or "default",
+                    uploaded_at=datetime.now().strftime("%Y-%m-%d"),
+                    is_reusable_link=True,
+                    reusable_source_id=d.id,
+                    access_level=d.access_level or "ALL_TEAM",
+                    file_path=d.file_path,
+                    status="VERIFIED",
+                )
+                db.add(linked)
+                count += 1
+    db.commit()
+    return {"synced_count": count, "message": f"Successfully synced {count} default document links across active tenders."}
 
 
 @router.post("/reusable-documents/{doc_id}/replace-file", response_model=ReusableDocOut)

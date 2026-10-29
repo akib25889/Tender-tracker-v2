@@ -60,6 +60,8 @@ export interface ReusableDocument {
   mimeType?: string;
   previewUrl?: string;
   downloadUrl?: string;
+  isDefault?: boolean;
+  defaultFolder?: string;
 }
 
 export interface TenderDocument {

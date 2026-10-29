@@ -84,6 +84,8 @@ class ReusableDocUpdate(BaseModel):
     description: Optional[str] = None
     size: Optional[str] = None
     revision: Optional[str] = None
+    is_default: Optional[bool] = None
+    default_folder: Optional[str] = None
 
 
 class ReusableDocCreate(BaseModel):
@@ -96,6 +98,8 @@ class ReusableDocCreate(BaseModel):
     expiry_date: Optional[str] = None
     access_level: str = "ALL_TEAM"
     description: Optional[str] = None
+    is_default: bool = False
+    default_folder: str = "02_company_statutory_documents"
 
 
 class ReusableDocOut(BaseModel):
@@ -113,6 +117,8 @@ class ReusableDocOut(BaseModel):
     sha256: str
     description: Optional[str] = None
     file_path: Optional[str] = None
+    is_default: bool = False
+    default_folder: str = "02_company_statutory_documents"
 
     class Config:
         from_attributes = True

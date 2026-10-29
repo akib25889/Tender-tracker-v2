@@ -4,6 +4,7 @@ import { Card } from '../components/ui/Card';
 import { useTenders } from '../context/TenderContext';
 import { DocumentAccessLevel, ReusableDocument, CompanyProfile } from '../types/tender';
 import { CompanyProjectCredentialsManager } from '../components/credentials/CompanyProjectCredentialsManager';
+import { DefaultDocumentsManager } from '../components/documents/DefaultDocumentsManager';
 import { fuzzyMatch } from '../utils/fuzzySearch';
 import {
   FileCheck,
@@ -35,6 +36,8 @@ import {
   Trash2,
   Save,
   Check,
+  Sparkles,
+  Star,
 } from 'lucide-react';
 import { DocumentPreviewModal } from '../components/modals/DocumentPreviewModal';
 
@@ -142,12 +145,24 @@ export const MasterDocumentVaultPage: React.FC = () => {
   } = useTenders();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialTab = searchParams.get('tab') === 'credentials' ? 'PROJECT_CREDENTIALS' : 'DOCUMENTS';
-  const [activeLibraryTab, setActiveLibraryTab] = useState<'DOCUMENTS' | 'PROJECT_CREDENTIALS'>(initialTab);
+  const tabParam = searchParams.get('tab');
+  const initialTab =
+    tabParam === 'credentials'
+      ? 'PROJECT_CREDENTIALS'
+      : tabParam === 'defaults'
+      ? 'DEFAULT_MANDATORY'
+      : 'DOCUMENTS';
+  const [activeLibraryTab, setActiveLibraryTab] = useState<
+    'DOCUMENTS' | 'PROJECT_CREDENTIALS' | 'DEFAULT_MANDATORY'
+  >(initialTab);
 
-  const handleSwitchTab = (tab: 'DOCUMENTS' | 'PROJECT_CREDENTIALS') => {
+  const handleSwitchTab = (
+    tab: 'DOCUMENTS' | 'PROJECT_CREDENTIALS' | 'DEFAULT_MANDATORY'
+  ) => {
     setActiveLibraryTab(tab);
-    setSearchParams(tab === 'PROJECT_CREDENTIALS' ? { tab: 'credentials' } : {});
+    if (tab === 'PROJECT_CREDENTIALS') setSearchParams({ tab: 'credentials' });
+    else if (tab === 'DEFAULT_MANDATORY') setSearchParams({ tab: 'defaults' });
+    else setSearchParams({});
   };
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -547,6 +562,22 @@ export const MasterDocumentVaultPage: React.FC = () => {
           </span>
         </button>
 
+        <button
+          type="button"
+          onClick={() => handleSwitchTab('DEFAULT_MANDATORY')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+            activeLibraryTab === 'DEFAULT_MANDATORY'
+              ? 'bg-white dark:bg-slate-800 text-[#0F172A] dark:text-slate-100 shadow-xs'
+              : 'text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200'
+          }`}
+        >
+          <Sparkles className="w-4 h-4 text-amber-500" />
+          <span>Default Tender Documents</span>
+          <span className="text-[10px] font-mono bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full font-bold border border-amber-200 dark:border-amber-900/40">
+            {reusableDocuments.filter((d) => d.isDefault).length}
+          </span>
+        </button>
+
         <Link
           to="/tools/company-profiles"
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-800/40"
@@ -561,6 +592,8 @@ export const MasterDocumentVaultPage: React.FC = () => {
 
       {activeLibraryTab === 'PROJECT_CREDENTIALS' ? (
         <CompanyProjectCredentialsManager />
+      ) : activeLibraryTab === 'DEFAULT_MANDATORY' ? (
+        <DefaultDocumentsManager />
       ) : (
         <>
           {/* KPI Stats Summary */}
@@ -852,6 +885,11 @@ export const MasterDocumentVaultPage: React.FC = () => {
                                   <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono font-medium">
                                     {doc.revision || 'v1.0'}
                                   </span>
+                                  {doc.isDefault && (
+                                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 font-bold">
+                                      ⭐ Default
+                                    </span>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -905,6 +943,20 @@ export const MasterDocumentVaultPage: React.FC = () => {
                           {/* Actions Column - Clean Redesigned Unified Action Bar */}
                           <td className="py-3 px-4 text-right whitespace-nowrap sticky right-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50/90 dark:group-hover:bg-slate-800/90 transition-colors shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.06)] z-10 w-[210px] min-w-[210px]">
                             <div className="flex items-center justify-end gap-1.5">
+                              {/* 0. Toggle Default Status */}
+                              <button
+                                type="button"
+                                onClick={() => updateReusableDocument(doc.id, { isDefault: !doc.isDefault })}
+                                className={`p-1.5 rounded-lg border transition-colors cursor-pointer shrink-0 ${
+                                  doc.isDefault
+                                    ? 'bg-amber-50 text-amber-600 border-amber-300 dark:bg-amber-950/60 dark:text-amber-400 dark:border-amber-800'
+                                    : 'text-slate-400 hover:text-amber-500 bg-slate-50 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700'
+                                }`}
+                                title={doc.isDefault ? 'Required in every tender (click to turn off)' : 'Make default in every tender'}
+                              >
+                                <Star className={`w-3.5 h-3.5 ${doc.isDefault ? 'fill-amber-400 text-amber-500' : ''}`} />
+                              </button>
+
                               {/* 1. Preview Document */}
                               <button
                                 type="button"
