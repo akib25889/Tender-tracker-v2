@@ -1,0 +1,26 @@
+{
+  "name": "tender-tracker-v2",
+  "version": "1.0.0",
+  "description": "[![Vite](https://img.shields.io/badge/Vite-8.2.2-646CFF?logo=vite)](https://vitejs.dev/) [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://reactjs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-3178C6?logo=typescript)](https://www.typescriptlang.org/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.1-38B2AC?logo=tailwind-css)](https://tailwindcss.com/) [![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-009688?logo=fastapi)](https://fastapi.tiangolo.com/) [![SQLite](https://img.shields.io/badge/SQLite-Zero--Config-003B57?logo=sqlite)](https://www.sqlite.org/) [![MySQL](https://img.shields.io/badge/MySQL-8.4_LTS-4479A1?logo=mysql)](https://www.mysql.com/)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akib25889/Tender-tracker-v2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akib25889/Tender-tracker-v2/issues"
+  },
+  "homepage": "https://github.com/akib25889/Tender-tracker-v2#readme",
+  "dependencies": {
+    "playwright": "^1.63.0"
+  }
+}

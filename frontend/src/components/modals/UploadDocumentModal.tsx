@@ -185,9 +185,9 @@ export const UploadDocumentModal: React.FC = () => {
   const effectiveFolder = uploadFolderTarget || (isJvTender ? '02A_jv_partner_credentials' : '02_company_statutory_documents');
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/60 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-[#E2E8F0] dark:border-slate-800 overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F5F9] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-800/60">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#0F172A]/60 backdrop-blur-sm animate-fadeIn overflow-y-auto">
+      <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-[#E2E8F0] dark:border-slate-800 overflow-hidden flex flex-col max-h-[92vh] my-auto">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#F1F5F9] dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-800/60 shrink-0">
           <div>
             <h3 className="font-display text-base font-bold text-[#0F172A] dark:text-white flex items-center gap-2">
               <span>Upload Vault Document</span>
@@ -209,7 +209,8 @@ export const UploadDocumentModal: React.FC = () => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0 overflow-hidden text-xs">
+          <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
           {/* Target Folder with JV Prioritization */}
           <div>
             <div className="flex items-center justify-between mb-1">
@@ -393,7 +394,10 @@ export const UploadDocumentModal: React.FC = () => {
             </span>
           </div>
 
-          <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#F1F5F9] dark:border-slate-800">
+          </div>
+
+          {/* Pinned action footer */}
+          <div className="shrink-0 px-6 py-3.5 bg-[#F8FAFC] dark:bg-slate-800/60 border-t border-[#F1F5F9] dark:border-slate-800 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={handleClose}

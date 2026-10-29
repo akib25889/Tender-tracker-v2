@@ -51,19 +51,19 @@ import { RootErrorBoundary } from './components/common/RootErrorBoundary';
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <LoginPage />,
+    element: <Navigate to="/dashboard" replace />,
   },
   {
     path: '/login',
-    element: <LoginPage />,
+    element: <Navigate to="/dashboard" replace />,
   },
   {
     path: '/jv',
-    element: <LoginPage initialMode="PARTNER" />,
+    element: <Navigate to="/dashboard" replace />,
   },
   {
     path: '/login/jv',
-    element: <LoginPage initialMode="PARTNER" />,
+    element: <Navigate to="/dashboard" replace />,
   },
   {
     path: '/shared/:token',
