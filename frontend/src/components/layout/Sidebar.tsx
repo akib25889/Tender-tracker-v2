@@ -24,6 +24,7 @@ import {
   UserCheck,
   Users,
   Tags,
+  BookOpen,
 } from 'lucide-react';
 import { useTenders } from '../../context/TenderContext';
 
@@ -169,6 +170,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       path: '/tools/archive',
       icon: Archive,
       badge: archivedCount > 0 ? `${archivedCount}` : undefined,
+    },
+    {
+      label: 'Site User Manual',
+      path: '/tools/manual',
+      icon: BookOpen,
+      badge: 'Docs',
     },
   ];
 

@@ -43,6 +43,7 @@ import { CompanyProfilesPage } from './pages/CompanyProfilesPage';
 import { UserProfilePage } from './pages/UserProfilePage';
 import { ClientVisitsPage } from './pages/ClientVisitsPage';
 import { CategoriesPage } from './pages/CategoriesPage';
+import { SiteManualPage } from './pages/SiteManualPage';
 import { NotFoundPage } from './pages/status/NotFoundPage';
 import { AccessDeniedPage } from './pages/status/AccessDeniedPage';
 import { RootErrorBoundary } from './components/common/RootErrorBoundary';
@@ -241,6 +242,18 @@ export const router = createBrowserRouter([
       {
         path: 'tools/company-profiles',
         element: <CompanyProfilesPage />,
+      },
+      {
+        path: 'tools/manual',
+        element: <SiteManualPage />,
+      },
+      {
+        path: 'tools/site-manual',
+        element: <Navigate to="/tools/manual" replace />,
+      },
+      {
+        path: 'manual',
+        element: <Navigate to="/tools/manual" replace />,
       },
       {
         path: 'companies',

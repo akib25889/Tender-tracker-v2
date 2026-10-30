@@ -221,6 +221,12 @@ def extract_project_nodes():
             "route": "/partner/portal",
             "module": "collaboration",
         },
+        {
+            "id": "screen:site_manual",
+            "name": "Site User Manual & Documentation",
+            "route": "/tools/manual",
+            "module": "tools",
+        },
     ]
 
     for sc in screens:

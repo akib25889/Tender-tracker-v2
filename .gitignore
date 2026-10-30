@@ -90,8 +90,10 @@ tender_info/**
 *.md
 **/*.md
 !tools/tender-extraction-prompt.md
+!CUSTOMER_USER_MANUAL.md
 
 
 
 # Screenshots
-screenshots/
+/screenshots/
+!frontend/public/screenshots/

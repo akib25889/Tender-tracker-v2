@@ -212,6 +212,13 @@
       "module": "collaboration"
     },
     {
+      "id": "screen:site_manual",
+      "name": "Site User Manual & Documentation",
+      "type": "screen",
+      "route": "/tools/manual",
+      "module": "tools"
+    },
+    {
       "id": "entity:users",
       "name": "users",
       "type": "db_table",
