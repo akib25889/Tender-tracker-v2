@@ -1,6 +1,7 @@
 import { API_BASE_URL } from '../../utils/apiConfig';
 import React, { useEffect, useState } from 'react';
-import { Search, Plus, Bell, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Search, Plus, Bell, PanelLeftClose, PanelLeftOpen, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../../hooks/useTheme';
 import { Link } from 'react-router-dom';
 import { UserMenu } from './UserMenu';
 import { useTenders } from '../../context/TenderContext';
@@ -17,6 +18,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleSidebar,
 }) => {
   const { setIsCommandPaletteOpen } = useTenders();
+  const { theme, toggleTheme } = useTheme();
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
@@ -74,12 +76,26 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Multi-Timezone Header Clock */}
         <HeaderClock />
 
+        {/* Quick Theme Mode Toggle */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="p-1.5 rounded-lg text-[#64748B] hover:text-[#0F172A] dark:text-slate-400 dark:hover:text-white hover:bg-[#F1F5F9] dark:hover:bg-slate-800 transition-colors cursor-pointer"
+          title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+        >
+          {theme === 'dark' ? (
+            <Sun className="w-4 h-4 text-amber-400 hover:rotate-45 transition-transform" />
+          ) : (
+            <Moon className="w-4 h-4 text-slate-600 hover:-rotate-12 transition-transform" />
+          )}
+        </button>
+
         <Link
           to="/registry"
-          className="flex items-center gap-1 px-3 py-1.5 bg-[#0F172A] text-white rounded-lg text-xs font-semibold hover:bg-[#1E293B] transition-colors shadow-sm"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold transition-all shadow-sm"
         >
           <Plus className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">New Opportunity</span>
+          <span className="hidden sm:inline">New Tender</span>
         </Link>
 
         {/* System Alert Bell — live unread badge */}

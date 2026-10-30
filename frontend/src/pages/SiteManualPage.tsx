@@ -734,13 +734,13 @@ export const SiteManualPage: React.FC = () => {
                   }}
                   className={`w-full text-left p-3 rounded-xl border transition-all flex items-start gap-3 cursor-pointer group ${
                     isActive
-                      ? 'bg-blue-50/80 border-blue-400 shadow-sm'
-                      : 'bg-white border-[#E2E8F0] hover:border-blue-200 hover:bg-slate-50/80'
+                      ? 'bg-blue-50/80 dark:bg-blue-950/40 border-blue-400 dark:border-blue-500 shadow-sm'
+                      : 'bg-white dark:bg-[#131B28] border-[#E2E8F0] dark:border-[#212E42] hover:border-blue-200 dark:hover:border-blue-800 hover:bg-slate-50/80 dark:hover:bg-slate-800/50'
                   }`}
                 >
                   <div
                     className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                      isActive ? 'bg-blue-600 text-white' : 'bg-[#F1F5F9] text-[#64748B] group-hover:text-blue-600'
+                      isActive ? 'bg-blue-600 text-white' : 'bg-[#F1F5F9] dark:bg-slate-800 text-[#64748B] dark:text-slate-400 group-hover:text-blue-600'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -755,12 +755,12 @@ export const SiteManualPage: React.FC = () => {
                     </div>
                     <div
                       className={`text-xs font-bold truncate mt-0.5 ${
-                        isActive ? 'text-blue-900' : 'text-[#0F172A] group-hover:text-blue-700'
+                        isActive ? 'text-blue-900 dark:text-blue-300' : 'text-[#0F172A] dark:text-[#E7EEFA] group-hover:text-blue-700 dark:group-hover:text-blue-400'
                       }`}
                     >
                       {section.title}
                     </div>
-                    <p className="text-[11px] text-[#64748B] line-clamp-1 mt-0.5">{section.summary}</p>
+                    <p className="text-[11px] text-[#64748B] dark:text-[#94A3B8] line-clamp-1 mt-0.5">{section.summary}</p>
                   </div>
 
                   <ChevronRight
@@ -773,7 +773,7 @@ export const SiteManualPage: React.FC = () => {
             })}
 
             {filteredSections.length === 0 && (
-              <div className="bg-white border border-[#E2E8F0] rounded-xl p-8 text-center text-xs text-[#64748B]">
+              <div className="bg-white dark:bg-[#131B28] border border-[#E2E8F0] dark:border-[#212E42] rounded-xl p-8 text-center text-xs text-[#64748B] dark:text-[#94A3B8]">
                 No manual sections match your search term "{searchTerm}".
               </div>
             )}
@@ -792,7 +792,7 @@ export const SiteManualPage: React.FC = () => {
                   </span>
                   <span className="text-xs font-medium text-[#64748B]">• {activeSection.category}</span>
                 </div>
-                <h2 className="text-lg font-bold text-[#0F172A] mt-1 flex items-center gap-2">
+                <h2 className="text-lg font-bold text-[#0F172A] dark:text-slate-100 mt-1 flex items-center gap-2">
                   <activeSection.icon className="w-5 h-5 text-blue-600" />
                   {activeSection.title}
                 </h2>
@@ -810,7 +810,7 @@ export const SiteManualPage: React.FC = () => {
             </div>
 
             {/* Summary */}
-            <div className="mt-4 text-xs text-[#334155] leading-relaxed bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4">
+            <div className="mt-4 text-xs text-[#334155] dark:text-slate-200 leading-relaxed bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E2E8F0] dark:border-slate-700/60 rounded-xl p-4">
               <strong>Module Overview:</strong> {activeSection.summary}
             </div>
 
@@ -860,7 +860,7 @@ export const SiteManualPage: React.FC = () => {
                 {activeSection.keyPoints.map((point, idx) => (
                   <div
                     key={idx}
-                    className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#1E293B] flex items-start gap-2"
+                    className="bg-[#F8FAFC] dark:bg-slate-800/50 border border-[#E2E8F0] dark:border-slate-700/60 rounded-xl p-3 text-xs text-[#1E293B] dark:text-slate-200 flex items-start gap-2"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
                     <span>{point}</span>
@@ -879,10 +879,10 @@ export const SiteManualPage: React.FC = () => {
                 {activeSection.instructions.map((inst, idx) => (
                   <div
                     key={idx}
-                    className="p-3.5 rounded-xl border border-[#E2E8F0] bg-white hover:border-blue-200 transition-colors"
+                    className="p-3.5 rounded-xl border border-[#E2E8F0] dark:border-slate-700/60 bg-white dark:bg-slate-800/40 hover:border-blue-200 dark:hover:border-blue-700 transition-colors"
                   >
-                    <div className="text-xs font-bold text-blue-900">{inst.step}</div>
-                    <div className="text-xs text-[#475569] mt-1 leading-relaxed">{inst.desc}</div>
+                    <div className="text-xs font-bold text-blue-900 dark:text-blue-400">{inst.step}</div>
+                    <div className="text-xs text-[#475569] dark:text-slate-300 mt-1 leading-relaxed">{inst.desc}</div>
                   </div>
                 ))}
               </div>

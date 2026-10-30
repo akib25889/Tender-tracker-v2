@@ -12,7 +12,7 @@ export const AppLayout: React.FC = () => {
   const { theme } = useTheme();
 
   return (
-    <div className={`min-h-screen bg-[#FDFBF7] ${theme}`}>
+    <div className={`min-h-screen ${theme}`} style={{ backgroundColor: "var(--bg-canvas)", color: "var(--text-primary)" }}>
       {/* Pinned Left Sidebar */}
       <Sidebar
         collapsed={sidebarCollapsed}

@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 export type Theme = 'light' | 'dark' | 'winter' | 'warm';
 
 let currentTheme: Theme = (() => {
-  if (typeof window === 'undefined') return 'light';
+  if (typeof window === 'undefined') return 'dark';
   const saved = localStorage.getItem('tt_theme');
   if (saved === 'worm') return 'warm';
   if (saved === 'dark' || saved === 'light' || saved === 'winter' || saved === 'warm') return saved as Theme;
-  return 'light';
+  return 'dark';
 })();
 
 const listeners = new Set<(theme: Theme) => void>();
@@ -52,15 +52,7 @@ export function useTheme() {
   };
 
   const toggleTheme = () => {
-    if (currentTheme === 'light') {
-      notify('dark');
-    } else if (currentTheme === 'dark') {
-      notify('winter');
-    } else if (currentTheme === 'winter') {
-      notify('warm');
-    } else {
-      notify('light');
-    }
+    notify(currentTheme === 'dark' ? 'light' : 'dark');
   };
 
   return { theme, setTheme, toggleTheme };

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* ═══════════════════════════════════════════════════════════════════════════
    1. DESIGN TOKENS & SYSTEM PALETTE (CSS CUSTOM PROPERTIES)
